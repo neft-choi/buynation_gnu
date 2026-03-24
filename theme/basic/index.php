@@ -405,7 +405,7 @@ include_once(G5_THEME_PATH . '/head.php');
     }
 
     // 현재는 좋아요 집계 전 단계이므로 최근 게시물 시각 기준으로 정렬
-    $sql_rank_board = " select b.bo_table, b.bo_subject, b.bo_content_head, b.gr_id, g.gr_subject, max(n.bn_datetime) as rank_latest_datetime
+    $sql_rank_board = " select b.bo_table, b.bo_subject, b.bo_content_head, b.gr_id ,b.bo_content_tail, g.gr_subject, max(n.bn_datetime) as rank_latest_datetime
                         from {$g5['board_table']} b
                         left join {$g5['group_table']} g on b.gr_id = g.gr_id
                         left join {$g5['board_new_table']} n on b.bo_table = n.bo_table
