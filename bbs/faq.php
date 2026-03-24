@@ -13,22 +13,28 @@ $result = sql_query($sql);
 while ($row=sql_fetch_array($result))
 {
     $key = $row['fm_id'];
-    if (!isset($fm_id)) $fm_id = $key;
     $faq_master_list[$key] = $row;
 }
 
 $fm = array();
-if (isset($fm_id) && $fm_id){
-    $fm_id = (int) $fm_id;
+$fm_id = isset($fm_id) ? (int) $fm_id : 0;
+$is_all_faq = !$fm_id;
+
+if (!$is_all_faq) {
+    if (!isset($faq_master_list[$fm_id])) {
+        alert('등록된 내용이 없습니다.');
+    }
+
     $qstr .= '&amp;fm_id=' . $fm_id; // 마스터faq key_id
-
     $fm = $faq_master_list[$fm_id];
+    $g5['title'] = $fm['fm_subject'];
+} else {
+    $fm = array(
+        'fm_id' => 0,
+        'fm_subject' => '전체'
+    );
+    $g5['title'] = 'FAQ';
 }
-
-if (! (isset($fm['fm_id']) && $fm['fm_id']))
-    alert('등록된 내용이 없습니다.');
-
-$g5['title'] = $fm['fm_subject'];
 
 $skin_file = $faq_skin_path.'/list.skin.php';
 
@@ -38,10 +44,10 @@ if(is_file($skin_file)) {
     $admin_href = '';
     $himg_src = '';
     $timg_src = '';
-    if($is_admin)
+    if($is_admin && !$is_all_faq)
         $admin_href = G5_ADMIN_URL.'/faqmasterform.php?w=u&amp;fm_id='.$fm_id;
 
-    if(!G5_IS_MOBILE) {
+    if(!G5_IS_MOBILE && !$is_all_faq) {
         $himg = G5_DATA_PATH.'/faq/'.$fm_id.'_h';
         if (is_file($himg)){
             $himg_src = G5_DATA_URL.'/faq/'.$fm_id.'_h';
@@ -56,12 +62,17 @@ if(is_file($skin_file)) {
     $category_href = G5_BBS_URL.'/faq.php';
     $category_stx = '';
     $faq_list = array();
+    $sql_fm = '';
 
     $stx = trim($stx);
     $sql_search = '';
 
     if($stx) {
-       $sql_search = " and ( INSTR(fa_subject, '$stx') > 0 or INSTR(fa_content, '$stx') > 0 ) ";
+       $sql_search = " and ( INSTR(a.fa_subject, '$stx') > 0 or INSTR(a.fa_content, '$stx') > 0 ) ";
+    }
+
+    if(!$is_all_faq) {
+        $sql_fm = " and a.fm_id = '$fm_id' ";
     }
 
     if ($page < 1) { $page = 1; } // 페이지가 없으면 첫 페이지 (1 페이지)
@@ -69,20 +80,23 @@ if(is_file($skin_file)) {
     $page_rows = G5_IS_MOBILE ? $config['cf_mobile_page_rows'] : $config['cf_page_rows'];
 
     $sql = " select count(*) as cnt
-                from {$g5['faq_table']}
-                where fm_id = '$fm_id'
-                  $sql_search ";
+                from {$g5['faq_table']} a
+                where 1=1
+                $sql_fm
+                $sql_search ";
     $total = sql_fetch($sql);
     $total_count = $total['cnt'];
 
     $total_page  = ceil($total_count / $page_rows);  // 전체 페이지 계산
     $from_record = ($page - 1) * $page_rows; // 시작 열을 구함
 
-    $sql = " select *
-                from {$g5['faq_table']}
-                where fm_id = '$fm_id'
-                  $sql_search
-                order by fa_order , fa_id
+    $sql = " select a.*, m.fm_subject as master_subject
+                from {$g5['faq_table']} a
+                left join {$g5['faq_master_table']} m on a.fm_id = m.fm_id
+                where 1=1
+                $sql_fm
+                $sql_search
+                order by a.fa_order , a.fa_id
                 limit $from_record, $page_rows ";
     $result = sql_query($sql);
     for ($i=0;$row=sql_fetch_array($result);$i++){

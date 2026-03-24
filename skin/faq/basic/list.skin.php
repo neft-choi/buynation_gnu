@@ -15,7 +15,7 @@ echo '<div id="faq_hhtml">'.conv_content($fm['fm_head_html'], 1).'</div>';
 ?>
 
 <fieldset id="faq_sch">
-    <legend>FAQ 검색</legend>
+    <legen>FAQ 검색</legend>
     <form name="faq_search_form" method="get">
     <span class="sch_tit">FAQ 검색</span>
     <input type="hidden" name="fm_id" value="<?php echo $fm_id;?>">

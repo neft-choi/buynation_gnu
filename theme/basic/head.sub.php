@@ -36,8 +36,9 @@ header("Pragma: no-cache"); // HTTP/1.0
 <head>
 <meta charset="utf-8">
 <?php
+echo '<meta name="viewport" id="meta_viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=10,viewport-fit=cover">'.PHP_EOL;
+
 if (G5_IS_MOBILE) {
-    echo '<meta name="viewport" id="meta_viewport" content="width=device-width,initial-scale=1.0,minimum-scale=0,maximum-scale=10">'.PHP_EOL;
     echo '<meta name="HandheldFriendly" content="true">'.PHP_EOL;
     echo '<meta name="format-detection" content="telephone=no">'.PHP_EOL;
 } else {
@@ -53,6 +54,8 @@ if($config['cf_add_meta'])
 $shop_css = '';
 if (defined('_SHOP_')) $shop_css = '_shop';
 echo '<link rel="stylesheet" href="'.run_replace('head_css_url', G5_THEME_CSS_URL.'/'.(G5_IS_MOBILE?'mobile':'default').$shop_css.'.css?ver='.G5_CSS_VER, G5_THEME_URL).'">'.PHP_EOL;
+add_stylesheet('<link rel="stylesheet" href="'.G5_THEME_CSS_URL.'/tailwind.build.css">', 50);
+add_stylesheet('<link rel="stylesheet" href="'.G5_THEME_CSS_URL.'/custom.css">', 60);
 ?>
 <!--[if lte IE 8]>
 <script src="<?php echo G5_JS_URL ?>/html5.js"></script>

@@ -1,0 +1,381 @@
+/* 커스텀 디자인 시스템 */
+:root {
+  --color-primary: #2f409f;
+  --color-secondary: ##3f51b5;
+}
+
+#logo {
+  background: var(--color-primary);
+}
+
+#gnb .gnb_ul {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 공통 - 상단 버튼 이동 */
+.btn_fixed_top {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+}
+
+.tbl_head01 thead th {
+  padding: 8px 16px;
+}
+
+/* SMS 관리 - 휴대폰번호 관리 */
+.local_ov01 {
+  display: flex;
+  gap: 4px;
+}
+
+/* SMS 관리 - 휴대폰번호 파일 */
+#sms5_fileup_frm #sms5_fileup {
+  border-top: 1px solid #f4f4f4;
+}
+
+/* 모바일 CSS */
+@media (max-width: 768px) {
+  /* 기본 클래스 */
+  select {
+    height: fit-content;
+    line-height: normal;
+    padding: 4px 2px;
+  }
+
+  /* 커스텀 클래스 */
+  .flex_gap {
+    display: flex;
+    gap: 8px;
+  }
+
+  .flex-column {
+    flex-direction: column;
+  }
+
+  /* 모바일 컨테이너 너비 제한 삭제 */
+  #container {
+    padding-left: 0;
+    min-width: 0;
+  }
+
+  #container.container-small {
+    padding-left: 0;
+  }
+
+  #container_title {
+    padding-left: 20px;
+  }
+
+  #container.container-small #container_title {
+    padding-left: 20px;
+  }
+
+  input[type="text"] {
+    width: 100%;
+  }
+
+  /* 테이블 가로 스크롤 */
+  .tbl_wrap {
+    overflow: auto;
+  }
+
+  .tbl_head01 table {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  /* 상단 우측 유틸 메뉴 숨김 */
+  #tnb {
+    display: none;
+  }
+
+  /* 모바일 사이드바 */
+  #gnb {
+    left: -220px;
+    transition: left 0.2s ease;
+  }
+
+  #gnb.gnb_small {
+    left: 0;
+  }
+
+  #gnb.gnb_small .gnb_li:hover .gnb_oparea {
+    display: none;
+  }
+
+  #gnb.gnb_small .gnb_li.on .gnb_oparea {
+    display: block;
+  }
+
+  #gnb .gnb_li_custom_bottom {
+    display: block;
+    margin-top: auto;
+    border-top: 1px solid #ddd;
+  }
+
+  #gnb .gnb_li_custom_bottom .btn_op.menu-custom-user {
+    position: relative;
+    background: #ebebeb;
+  }
+
+  #gnb .on.gnb_li_custom_bottom .btn_op.menu-custom-user {
+    background: #fff;
+  }
+
+  #gnb .gnb_li_custom_bottom .btn_op.menu-custom-user i {
+    display: block;
+    font-size: 18px;
+    line-height: 1;
+    color: #1e1e1e;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-indent: 0;
+  }
+
+  /* 모바일 사이드 바 오버레이 */
+  #gnb_overlay {
+    position: fixed;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 50px);
+    background: rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.2s ease,
+      visibility 0.2s ease;
+    z-index: 998;
+  }
+
+  #gnb_overlay.is-active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .frm_input_m {
+    width: 100%;
+    margin: 10px 0;
+  }
+
+  /* 스크롤 탑 버튼 */
+  .scroll_top {
+    background: rgba(201, 201, 201, 1);
+    border-radius: 100%;
+  }
+
+  /* 공통 - 탭 */
+  .anchor a {
+    margin: 2px 4px;
+    border-radius: 10px;
+  }
+
+  .anchor a:hover {
+    background-color: #c8ced1;
+  }
+
+  /* 공통 - 상단 버튼 이동 */
+  .btn_fixed_top {
+    margin: 8px 0px;
+    position: static;
+    display: flex;
+    gap: 4px;
+  }
+
+  .btn_row_flex {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* 환경 설정 - 테마 설정 */
+  #theme_list {
+    width: 100%;
+  }
+
+  #theme_list li {
+    margin: 0;
+    float: none;
+    margin-top: 1rem;
+  }
+
+  #theme_list li .tmli_if {
+    width: 100%;
+  }
+
+  #theme_list li .tmli_if > img {
+    width: 100%;
+    height: auto;
+  }
+
+  /* 환경설정 - 메일 테스트 */
+  .local_desc02 {
+    min-width: 0;
+  }
+
+  #fsendmailtest .btn_submit {
+    width: 100%;
+    border-radius: 0.25rem;
+  }
+
+  /* 환경설정 - 부가서비스 */
+  .service_wrap {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .service_2 {
+    padding: 0;
+  }
+
+  .svc_sms {
+    height: fit-content;
+    border: none;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .service_2 .svc_ri .svc_a {
+    padding: 4px;
+  }
+
+  .svc_sms .svc_btn2 {
+    position: relative;
+    border: 1px solid #ebe8e8;
+    width: fit-content;
+  }
+
+  .svc_sms .svc_btn2 a {
+    width: fit-content;
+    padding: 30px 10px;
+  }
+
+  /* 쇼핑몰 현황 */
+  .sidx_cs {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidx_cs section {
+    float: none;
+    margin: 0;
+    width: 100%;
+  }
+
+  /* 쇼핑몰 현황 (주문현황) */
+  #anc_sidx_ord {
+    float: none;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  #sidx_graph {
+    height: 350px;
+  }
+
+  #sidx_graph_price {
+    width: 56px;
+    left: calc((100% - 85%) / 2 - 56px - 8px);
+  }
+
+  #sidx_graph_area,
+  #sidx_graph_date,
+  #sidx_graph_legend {
+    left: 50%;
+    transform: translate(-50%);
+  }
+
+  /* 쇼핑몰 현황 (처리할 주문) */
+  #sidx_stat {
+    float: none;
+    width: 100%;
+  }
+
+  #sidx_stat .tbl_wrap {
+    padding: 0;
+  }
+
+  .sidx_cs #anc_sidx_ps .ul_wrap {
+    padding: 0;
+  }
+
+  .sidx_cs #anc_sidx_ps .btn_list03 {
+    margin: 0;
+  }
+
+  /* 관리자 설정 폼 테이블(2열) 모바일 스택 처리 */
+  .tbl_frm01.tbl_wrap {
+    overflow: visible;
+  }
+
+  .tbl_frm01.tbl_wrap > table,
+  .tbl_frm01.tbl_wrap > table > tbody,
+  .tbl_frm01.tbl_wrap > table > tbody > tr,
+  .tbl_frm01.tbl_wrap > table > tbody > tr > th,
+  .tbl_frm01.tbl_wrap > table > tbody > tr > td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .tbl_frm01.tbl_wrap > table > tbody > tr {
+    padding: 12px 0;
+    border-bottom: 1px solid #ececec;
+  }
+
+  .tbl_frm01.tbl_wrap > table > tbody > tr > th {
+    border: 0;
+    padding: 0 0 8px;
+    background: transparent;
+    font-weight: 600;
+    text-align: left;
+  }
+
+  .tbl_frm01.tbl_wrap > table > tbody > tr > td {
+    border: 0;
+    padding: 0 0 10px;
+  }
+
+  .tbl_frm01.tbl_wrap > table > tbody > tr > td:last-child {
+    padding-bottom: 0;
+  }
+
+  .tbl_frm01.tbl_wrap .btn_frmline {
+    margin-top: 8px;
+  }
+
+  #smart_editor2 {
+    min-width: 0 !important;
+  }
+
+  /* 포인트 관리 */
+  #fpointlist2 input {
+    width: 100%;
+  }
+
+  /* SMS 관리 - 휴대폰번호 관리 */
+  .local_ov {
+    min-width: 0;
+  }
+
+  /* SMS 관리 - 휴대폰번호 파일 */
+  #sms5_fileup_frm #sms5_fileup {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid #f4f4f4;
+  }
+}

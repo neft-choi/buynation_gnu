@@ -47,6 +47,19 @@ if(!$is_admin && $config['cf_cert_use']) {
 
 $g5['title'] = $ca['ca_name'].' 상품리스트';
 
+// list 페이지 헤더
+$shop_header = array(
+    'layout' => 'side_actions',
+    'title' => $ca['ca_name'],
+    'show_back' => true,
+    'show_title' => true,
+    'show_search_button' => false,
+    'show_searchbar' => false,
+    'show_notice' => false,
+    'show_cart' => true,
+    'back_mode' => 'history',
+);
+
 if ($ca['ca_include_head'] && is_include_path_check($ca['ca_include_head']))
     @include_once($ca['ca_include_head']);
 else
@@ -82,6 +95,9 @@ var itemlist_ca_id = "<?php echo $ca_id; ?>";
 </script>
 <script src="<?php echo G5_JS_URL; ?>/shop.list.js"></script>
 
+<style>
+
+</style>
 <!-- 상품 목록 시작 { -->
 <div id="sct">
 
@@ -112,7 +128,7 @@ var itemlist_ca_id = "<?php echo $ca_id; ?>";
 
     if (file_exists($skin_file)) {
 
-		echo '<div id="sct_sortlst">';
+		echo '<div id="sct_sortlst" class="!border-none">';
         $sort_skin = $skin_dir.'/list.sort.skin.php';
         if(!is_file($sort_skin))
             $sort_skin = G5_SHOP_SKIN_PATH.'/list.sort.skin.php';

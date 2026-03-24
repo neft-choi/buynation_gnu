@@ -93,10 +93,11 @@ $colspan = 16;
         <option value="mb_ip" <?php echo get_selected($sfl, "mb_ip"); ?>>IP</option>
         <option value="mb_recommend" <?php echo get_selected($sfl, "mb_recommend"); ?>>추천인</option>
     </select>
+    <div class="flex_gap">
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
     <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
     <input type="submit" class="btn_submit" value="검색">
-
+</div>
 </form>
 
 <div class="local_desc01 local_desc">

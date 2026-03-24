@@ -1,0 +1,50 @@
+@charset "utf-8";
+
+/* 사이트 외부 배경 */
+body {
+  background: lavender;
+}
+
+/* 사이트 너비와 내부 요소 너비 조절 */
+#app-shell {
+  width: 100%;
+  /* max-width: 375px; */
+  min-height: 100dvh;
+  margin: 0 auto;
+  background: #fff;
+}
+
+#hd,
+#wrapper,
+#ft {
+  min-width: 0;
+  width: 100%;
+}
+
+#hd_wrapper,
+#tnb .inner,
+#container,
+#ft_wr,
+#hd_menu {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* 사이드 메뉴 비활성화 */
+#side_menu {
+  display: none;
+}
+
+#aside {
+  display: none;
+}
+
+/* 본문 컨테이너 */
+#container .is_index {
+  margin-left: 0;
+}
+
+/* 카테고리 버튼 비활성화 */
+#menu_open {
+  display: none;
+}

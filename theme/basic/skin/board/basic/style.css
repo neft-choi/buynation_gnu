@@ -255,14 +255,17 @@ box-shadow:1px 1px 5px 0px hsl(232, 36%, 96%)}
 .cmt_btn span.cmt_more {float:right;display:inline-block;width:15px;height:10px;background:url(./img/btn_cmt.png) no-repeat right 2px;margin-top:5px}
 .cmt_btn_op span.cmt_more {background-position:right -8px}
 .cmt_btn b {font-size:1.2em;color:#000}
-.cmt_btn span.total:after {position:absolute;bottom:-17px;left:0;display:inline-block;background:#3a8afd;content:"";width:100%;height:2px}
+
+/* 댓글 개수 밑줄 비활성화 */
+/* .cmt_btn span.total:after {position:absolute;bottom:-17px;left:0;display:inline-block;background:#3a8afd;content:"";width:100%;height:2px} */
+
 #bo_vc {}
 #bo_vc h2 {position:absolute;font-size:0;line-height:0;overflow:hidden}
 #bo_vc article {margin:20px 0;position:relative;border-bottom:1px solid #f0f0f0}
 #bo_vc article:after {display:block;visibility:hidden;clear:both;content:""}
 #bo_vc article .profile_img img {border-radius:50%}
 #bo_vc article .pf_img {float:left;margin-right:10px}
-#bo_vc article .pf_img img {border-radius:50%;width:50px;height:50px}
+#bo_vc article .pf_img img {border-radius:50%;width:36px;height:36px}
 #bo_vc article .cm_wrap {float:left;max-width:870px;width:90%}
 #bo_vc header {position:relative;width:100%}
 #bo_vc header:after {display:block;visibility:hidden;clear:both;content:""}
@@ -276,9 +279,9 @@ box-shadow:1px 1px 5px 0px hsl(232, 36%, 96%)}
 #bo_vc p a.s_cmt {text-decoration:underline;color:#ed6479}
 #bo_vc_empty {margin:0;padding:80px 0 !important;color:#777;text-align:center}
 #bo_vc #bo_vc_winfo {float:left}
-#bo_vc .bo_vl_opt {position:absolute;top:0;right:0}
+#bo_vc .bo_vl_opt {position:absolute;top:0;right:0; z-index: 20;}
 
-.bo_vc_act {display:none;position:absolute;right:0;top:40px;width:58px;text-align:right;border:1px solid #b8bfc4;margin:0;list-style:none;background:#fff;zoom:1;z-index:9999}
+.bo_vc_act {display:none;position:absolute;right:8px;top:40px;width:60px;text-align:right;border:1px solid #b8bfc4;margin:0;list-style:none;background:#fff;zoom:1;z-index:9999}
 .bo_vc_act:before {content:"";position:absolute;top:-8px;right:5px;width:0;height:0;border-style:solid;border-width:0 6px 8px 6px;border-color:transparent transparent #b8bfc4 transparent}
 .bo_vc_act:after {content:"";position:absolute;top:-6px;right:5px;width:0;height:0;border-style:solid;border-width:0 6px 8px 6px;border-color:transparent transparent #fff transparent}
 .bo_vc_act li {border-bottom:1px solid #f0f0f0}

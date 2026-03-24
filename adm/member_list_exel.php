@@ -151,7 +151,7 @@ $colspan = 14;
             </div>
 
             <!-- 정보수신동의 조건 -->
-            <div class="sch_row">
+            <div class="sch_row flex-column">
                 <div class="label">
                     <label><input type="checkbox" name="ad_range_only" value="1" <?php echo isset($_GET['ad_range_only']) ? 'checked' : ''; ?>> 정보수신동의에 동의한 경우만</label>
                 </div>

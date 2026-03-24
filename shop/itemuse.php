@@ -19,9 +19,10 @@ if (G5_IS_MOBILE) {
     return;
 }
 
+// 썸네일 처리 라이브러리
 include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 
-// 현재페이지, 총페이지수, 한페이지에 보여줄 행, URL
+// 현재 페이지, 총 페이지 수, 한 페이지에 보여줄 행, URL
 function itemuse_page($write_pages, $cur_page, $total_page, $url, $add="")
 {
     //$url = preg_replace('#&amp;page=[0-9]*(&amp;page=)$#', '$1', $url);

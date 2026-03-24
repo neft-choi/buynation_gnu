@@ -26,11 +26,115 @@ $tmp_cart_id = preg_replace('/[^a-z0-9_\-]/i', '', $tmp_cart_id);
 $act = isset($_POST['act']) ? clean_xss_tags($_POST['act'], 1, 1) : '';
 $post_ct_chk = (isset($_POST['ct_chk']) && is_array($_POST['ct_chk'])) ? $_POST['ct_chk'] : array();
 $post_it_ids = (isset($_POST['it_id']) && is_array($_POST['it_id'])) ? $_POST['it_id'] : array();
+$post_qty_sync = (isset($_POST['qty_sync']) && is_array($_POST['qty_sync'])) ? $_POST['qty_sync'] : array();
 
 // 레벨(권한)이 상품구입 권한보다 작다면 상품을 구입할 수 없음.
 if ($member['mb_level'] < $default['de_level_sell'])
 {
     alert('상품을 구입할 수 있는 권한이 없습니다.');
+}
+
+if($act == "qtysync")
+{
+    $response = array('ok' => 1);
+
+    foreach($post_qty_sync as $raw_it_id => $raw_qty) {
+        $it_id = safe_replace_regex($raw_it_id, 'it_id');
+        $target_qty = (int) $raw_qty;
+
+        if(!$it_id) {
+            continue;
+        }
+
+        if($target_qty < 1) {
+            $target_qty = 1;
+        }
+
+        $sql = " select ct_id, ct_qty
+                   from {$g5['g5_shop_cart_table']}
+                  where od_id = '$tmp_cart_id'
+                    and it_id = '$it_id'
+                    and ct_status = '쇼핑'
+                  order by io_type asc, ct_id asc ";
+        $result = sql_query($sql);
+
+        $rows = array();
+        while($row = sql_fetch_array($result)) {
+            $rows[] = array(
+                'ct_id' => $row['ct_id'],
+                'ct_qty' => (int) $row['ct_qty']
+            );
+        }
+
+        $row_count = count($rows);
+        if(!$row_count) {
+            continue;
+        }
+
+        // 옵션 다중행은 기존 분포를 최대한 유지하면서 총합만 target으로 맞춘다.
+        if($row_count === 1) {
+            $sql = " update {$g5['g5_shop_cart_table']}
+                        set ct_qty = '{$target_qty}'
+                      where ct_id = '{$rows[0]['ct_id']}' ";
+            sql_query($sql);
+            continue;
+        }
+
+        if($target_qty < $row_count) {
+            $target_qty = $row_count;
+        }
+
+        $alloc = array_fill(0, $row_count, 1);
+        $remaining = $target_qty - $row_count;
+        $weight_sum = 0;
+
+        for($i=0; $i<$row_count; $i++) {
+            $weight_sum += max(0, $rows[$i]['ct_qty'] - 1);
+        }
+
+        if($remaining > 0) {
+            if($weight_sum > 0) {
+                $distributed = 0;
+                for($i=0; $i<$row_count; $i++) {
+                    $weight = max(0, $rows[$i]['ct_qty'] - 1);
+                    $add_qty = (int) floor(($remaining * $weight) / $weight_sum);
+                    $alloc[$i] += $add_qty;
+                    $distributed += $add_qty;
+                }
+
+                $left = $remaining - $distributed;
+                $cursor = 0;
+                while($left > 0) {
+                    $alloc[$cursor % $row_count] += 1;
+                    $cursor++;
+                    $left--;
+                }
+            } else {
+                $cursor = 0;
+                while($remaining > 0) {
+                    $alloc[$cursor % $row_count] += 1;
+                    $cursor++;
+                    $remaining--;
+                }
+            }
+        }
+
+        for($i=0; $i<$row_count; $i++) {
+            $next_qty = (int) $alloc[$i];
+            if($next_qty < 1) {
+                $next_qty = 1;
+            }
+
+            $sql = " update {$g5['g5_shop_cart_table']}
+                        set ct_qty = '{$next_qty}'
+                      where ct_id = '{$rows[$i]['ct_id']}' ";
+            sql_query($sql);
+        }
+    }
+
+    header('Content-Type: application/json; charset=utf-8');
+    echo json_encode($response);
+    exit;
 }
 
 if($act == "buy")

@@ -1037,3 +1037,14 @@ box-shadow:0 0 8px rgba(65,98,255,0.8)}
 .chk_box input[type="radio"]:checked + label {color:#305af9}
 .chk_box input[type="radio"]:checked + label span:before {width:7px;height:7px;background:#305af9;content:'';position:absolute;top:3px;left:3px;border-radius:50%}
 
+
+/* 하단 고정 네비게이션 */
+body {padding-bottom:130px}
+#mb_bottom_nav {position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:375px;background:#fff;border-top:1px solid #ececec;z-index:1000;padding:10px 12px calc(22px + env(safe-area-inset-bottom))}
+#mb_bottom_nav:after {content:"";position:absolute;left:50%;bottom:8px;transform:translateX(-50%);width:138px;height:5px;border-radius:999px;background:#111}
+#mb_bottom_nav .mb_nav_list {display:flex;align-items:flex-end;justify-content:space-between}
+#mb_bottom_nav .mb_nav_item {flex:1}
+#mb_bottom_nav .mb_nav_link {display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:6px;color:#222;font-size:13px;line-height:1.1}
+#mb_bottom_nav .mb_nav_link i {font-size:34px;line-height:1}
+#mb_bottom_nav .mb_nav_item.center {flex:0 0 78px}
+#mb_bottom_nav .mb_nav_brand {display:flex;align-items:center;justify-content:center;width:78px;height:78px;margin:0 auto 2px;border-radius:50%;background:#f5cd2c;color:#111;font-size:50px;font-weight:700;line-height:1;transform:translateY(-22px)}

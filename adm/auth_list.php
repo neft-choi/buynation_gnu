@@ -20,7 +20,7 @@ if ($stx) {
 }
 
 if (!$sst) {
-    $sst  = "a.mb_id, au_menu";
+    $sst = "a.mb_id, au_menu";
     $sod = "";
 }
 $sql_order = " order by $sst $sod ";
@@ -33,7 +33,7 @@ $row = sql_fetch($sql);
 $total_count = $row['cnt'];
 
 $rows = $config['cf_page_rows'];
-$total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
+$total_page = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) {
     $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 }
@@ -56,19 +56,21 @@ $colspan = 5;
 
 <div class="local_ov01 local_ov">
     <?php echo $listall ?>
-    <span class="btn_ov01"><span class="ov_txt">설정된 관리권한</span><span class="ov_num"><?php echo number_format($total_count) ?>건</span></span>
+    <span class="btn_ov01"><span class="ov_txt">설정된 관리권한</span><span
+            class="ov_num"><?php echo number_format($total_count) ?>건</span></span>
 </div>
 
 <form name="fsearch" id="fsearch" class="local_sch01 local_sch" method="get">
     <input type="hidden" name="sfl" value="a.mb_id" id="sfl">
-
-    <label for="stx" class="sound_only">회원아이디<strong class="sound_only"> 필수</strong></label>
-    <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-    <input type="submit" value="검색" id="fsearch_submit" class="btn_submit">
-
+    <div class="flex_gap">
+        <label for="stx" class="sound_only">회원아이디<strong class="sound_only"> 필수</strong></label>
+        <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
+        <input type="submit" value="검색" id="fsearch_submit" class="btn_submit">
+    </div>
 </form>
 
-<form name="fauthlist" id="fauthlist" method="post" action="./auth_list_delete.php" onsubmit="return fauthlist_submit(this);">
+<form name="fauthlist" id="fauthlist" method="post" action="./auth_list_delete.php"
+    onsubmit="return fauthlist_submit(this);">
     <input type="hidden" name="sst" value="<?php echo $sst ?>">
     <input type="hidden" name="sod" value="<?php echo $sod ?>">
     <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
@@ -115,7 +117,7 @@ $colspan = 5;
                     $mb_nick = get_sideview($row['mb_id'], $row['mb_nick'], $row['mb_email'], $row['mb_homepage']);
 
                     $bg = 'bg' . ($i % 2);
-                ?>
+                    ?>
                     <tr class="<?php echo $bg; ?>">
                         <td class="td_chk">
                             <input type="hidden" name="au_menu[<?php echo $i ?>]" value="<?php echo $row['au_menu'] ?>">
@@ -123,7 +125,8 @@ $colspan = 5;
                             <label for="chk_<?php echo $i; ?>" class="sound_only"><?php echo $row['mb_nick'] ?>님 권한</label>
                             <input type="checkbox" name="chk[]" value="<?php echo $i ?>" id="chk_<?php echo $i ?>">
                         </td>
-                        <td class="td_mbid"><a href="?sfl=a.mb_id&amp;stx=<?php echo $row['mb_id'] ?>"><?php echo $row['mb_id'] ?></a></td>
+                        <td class="td_mbid"><a
+                                href="?sfl=a.mb_id&amp;stx=<?php echo $row['mb_id'] ?>"><?php echo $row['mb_id'] ?></a></td>
                         <td class="td_auth_mbnick"><?php echo $mb_nick ?></td>
                         <td class="td_menu">
                             <?php echo $row['au_menu'] ?>
@@ -131,7 +134,7 @@ $colspan = 5;
                         </td>
                         <td class="td_auth"><?php echo $row['au_auth'] ?></td>
                     </tr>
-                <?php
+                    <?php
                     $count++;
                 }
 
@@ -150,7 +153,7 @@ $colspan = 5;
     <?php
     //if (isset($stx))
     //    echo '<script>document.fsearch.sfl.value = "'.$sfl.'";</script>'."\n";
-
+    
     if (strstr($sfl, 'mb_id')) {
         $mb_id = $stx;
     } else {
@@ -164,7 +167,8 @@ $pagelist = get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_w
 echo $pagelist;
 ?>
 
-<form name="fauthlist2" id="fauthlist2" action="./auth_update.php" method="post" autocomplete="off" onsubmit="return fauth_add_submit(this);">
+<form name="fauthlist2" id="fauthlist2" action="./auth_update.php" method="post" autocomplete="off"
+    onsubmit="return fauth_add_submit(this);">
     <input type="hidden" name="sfl" value="<?php echo $sfl ?>">
     <input type="hidden" name="stx" value="<?php echo $stx ?>">
     <input type="hidden" name="sst" value="<?php echo $sst ?>">
@@ -193,7 +197,8 @@ echo $pagelist;
                         <th scope="row"><label for="mb_id">회원아이디<strong class="sound_only">필수</strong></label></th>
                         <td>
                             <strong id="msg_mb_id" class="msg_sound_only"></strong>
-                            <input type="text" name="mb_id" value="<?php echo $mb_id ?>" id="mb_id" required class="required frm_input">
+                            <input type="text" name="mb_id" value="<?php echo $mb_id ?>" id="mb_id" required
+                                class="required frm_input">
                         </td>
                     </tr>
                     <tr>
@@ -228,7 +233,7 @@ echo $pagelist;
                             <?php
                             require_once G5_CAPTCHA_PATH . '/captcha.lib.php';
                             $captcha_html = captcha_html();
-                            $captcha_js   = chk_captcha_js();
+                            $captcha_js = chk_captcha_js();
                             echo $captcha_html;
                             ?>
                         </td>

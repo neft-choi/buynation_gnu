@@ -1207,14 +1207,3 @@ box-shadow: 1px 2px 5px rgba(150,150,150,0.5);z-index:1000}
 #itemuselist .use_href .tit_op{background:url(./../img/op_btn1.gif) no-repeat 50% 50%;display:inline-block;text-indent:-999px;overflow:hidden;width:7px;height:4px;margin-left:5px}
 #itemuselist .use_div{background:#d8dfe9;padding:10px;margin:5px 0 0;display:none;}
 #itemuselist .td_select{width:100px}
-
-
-@media only screen and (max-device-width : 768px) and (orientation : landscape){
-/* Styles */
-input[type="text"]{max-width:200px}
-}
-
-@media only screen and (max-device-width : 480px) and (orientation : portrait){
-/* Styles */
-input[type="text"]{max-width:200px}
-}

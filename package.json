@@ -1,0 +1,11 @@
+{
+  "scripts": {
+    "dev": "npx @tailwindcss/cli -i ./theme/basic/css/tailwind.css -o ./theme/basic/css/tailwind.build.css --watch --content \"./**/*.{php,html,js}\""
+  },
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.18",
+    "@tailwindcss/postcss": "^4.1.18",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18"
+  }
+}

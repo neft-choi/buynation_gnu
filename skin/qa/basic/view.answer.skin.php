@@ -2,7 +2,7 @@
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 ?>
 
-<section id="bo_v_ans">
+<section id="bo_v_ans" class="p-4 !pb-20">
     <h2><span class="bo_v_reply">답변</span> <?php echo get_text($answer['qa_subject']); ?></h2>
     <header>
 	    <div id="ans_datetime">

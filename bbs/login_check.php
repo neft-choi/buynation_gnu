@@ -152,6 +152,16 @@ if(function_exists('set_cart_id')){
 
     // 장바구니에서 주문하기를 하는 경우
     if (strpos($link, 'orderform.php') !== false) {
+        // 비회원 주문하기 -> 로그인 진입시 기존 회원 장바구니의 선택 상태를 먼저 해제해
+        // 방금 선택한 비회원 장바구니 항목과 섞여 중복되는 문제를 방지한다.
+        $sql = " update {$g5['g5_shop_cart_table']}
+                    set ct_select = '0'
+                  where od_id = '$s_cart_id'
+                    and mb_id = '{$mb['mb_id']}'
+                    and ct_direct = '0'
+                    and ct_status = '쇼핑' ";
+        sql_query($sql);
+
         $add_cart_where = " and ct_select_time < '".date('Y-m-d H:i:s', strtotime('-1 hour', G5_SERVER_TIME))."' ";
     }
 
