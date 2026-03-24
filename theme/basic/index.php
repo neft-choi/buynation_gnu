@@ -13,6 +13,28 @@ if (G5_COMMUNITY_USE === false) {
 }
 
 include_once(G5_THEME_PATH . '/head.php');
+
+if (!function_exists('board_thumbnail')) {
+    function board_thumbnail($row)
+    {
+        if (empty($row['bo_content_head'])) {
+            return '';
+        }
+
+        $head_html = run_replace(
+            'board_content_head',
+            html_purifier(stripslashes($row['bo_content_head'])),
+            $row
+        );
+
+        // bo
+        if (preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $head_html, $m)) {
+            return $m[1];
+        }
+
+        return '';
+    }
+}
 ?>
 
 <main class="space-y-6">
@@ -157,13 +179,10 @@ include_once(G5_THEME_PATH . '/head.php');
         $sql_pick_board .= " and b.bo_use_cert = '' ";
     }
     $sql_pick_board .= " order by b.bo_order, b.gr_id, b.bo_table ";
-    // 캐러셀에서 그대로 순회하기 위해 result 리소스를 유지한다.
+
+    // 결과 리소스
     $result_pick_board = sql_query($sql_pick_board);
     ?>
-
-    <script>
-        console.log(" . json_encode($sql_pick_board) . ");
-    </script>
 
     <section aria-label="놓치면 아쉬운 추천 바이클" class="bg-gray-100 py-8 space-y-4">
         <div class="px-4">
@@ -261,7 +280,7 @@ include_once(G5_THEME_PATH . '/head.php');
     // - 로그인 회원 레벨로 볼 수 있는 게시판만 노출
     // - mobile 전용 게시판 제외
     // - 위치와 관련된 DB 값 추가 시 수정 필요
-    $sql_club_board = " select bo_table, bo_subject, bo_content_head
+    $sql_club_board = " select bo_table, bo_subject, bo_content_head, bo_content_tail
                         from {$g5['board_table']}
                         where gr_id = 'club'
                         and bo_list_level <= '{$member['mb_level']}'
@@ -297,10 +316,21 @@ include_once(G5_THEME_PATH . '/head.php');
                 $club_card_url = G5_BBS_URL . '/board.php?bo_table=' . $club_row['bo_table'];
                 $club_card_title = $club_row['bo_subject'];
                 $club_card_image = '';
+                $club_card_desc = '';
                 $club_head_html = '';
+                $club_tail_html = '';
 
                 if (!empty($club_row['bo_content_head'])) {
                     $club_head_html = run_replace('board_content_head', html_purifier(stripslashes($club_row['bo_content_head'])), $club_row);
+                }
+                if (!empty($club_row['bo_content_tail'])) {
+                    $club_tail_html = run_replace('board_content_tail', html_purifier(stripslashes($club_row['bo_content_tail'])), $club_row);
+                    $club_card_desc = preg_replace('/<img[^>]*>/i', '', $club_tail_html);
+                    $club_card_desc = preg_replace([
+                        '/<\/?p[^>]*>/i',
+                        '/<br[^>]*>/i'
+                    ], ' ', $club_card_desc);
+                    $club_card_desc = trim(strip_tags($club_card_desc));
                 }
 
                 if ($club_head_html && preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $club_head_html, $club_img_match)) {
@@ -328,7 +358,7 @@ include_once(G5_THEME_PATH . '/head.php');
                     <div class="space-y-1">
                         <p class="text-base font-semibold text-gray-900"><?php echo $club_card_title; ?></p>
 
-                        <p class="text-sm text-gray-500">여기에 설명이 들어갑니다.</p>
+                        <p class="text-sm text-gray-500 line-clamp-1"><?php echo $club_card_desc ? $club_card_desc : '설명이 없습니다.'; ?></p>
 
                         <div class="flex items-center text-xs text-gray-500">
                             <div class="flex items-center gap-2 text-gray-400">
@@ -392,7 +422,7 @@ include_once(G5_THEME_PATH . '/head.php');
 
     $sql_rank_group = " select gr_id, gr_subject
                         from {$g5['group_table']}
-                        WHERE gr_id !='community'
+                        WHERE gr_id != 'community'
                         order by gr_order, gr_id ";
     $result_rank_group = sql_query($sql_rank_group);
     for ($rg = 0; $rank_group = sql_fetch_array($result_rank_group); $rg++) {
@@ -415,47 +445,165 @@ include_once(G5_THEME_PATH . '/head.php');
     if (!$is_admin) {
         $sql_rank_board .= " and b.bo_use_cert = '' ";
     }
-    if ($rank_gr_id) {
-        $sql_rank_board .= " and b.gr_id = '{$rank_gr_id}' ";
-    }
-    $sql_rank_board .= " group by b.bo_table, b.bo_subject, b.bo_content_head, b.gr_id, g.gr_subject
+    $sql_rank_board .= " group by b.bo_table, b.bo_subject, b.bo_content_head, b.bo_content_tail, b.gr_id, g.gr_subject
                          order by rank_latest_datetime desc, b.bo_order, b.bo_table
                          limit 20 ";
     $result_rank_board = sql_query($sql_rank_board);
     ?>
 
-    <section aria-label="인기 바이클 랭킹" class="mx-4 space-y-2">
+    <section id="rank-section" aria-label="인기 바이클 랭킹" class="mx-4 space-y-2">
         <div>
             <!-- <p class="text-sm text-gray-500">25분 전 업데이트</p> -->
             <h3 class="mt-1 text-base font-bold text-gray-900">인기 바이클 랭킹</h3>
         </div>
 
         <div class="-mx-4 mb-4 overflow-x-auto px-4 scrollbar-hidden">
-            <div class="grid w-max grid-flow-col gap-2">
+            <div class="grid w-max grid-flow-col gap-2" role="tablist" aria-label="인기 바이클 랭킹 카테고리">
                 <?php for ($rt = 0; $rt < count($rank_tabs); $rt++) { ?>
                     <?php
                     $rank_tab = $rank_tabs[$rt];
-                    $rank_tab_url = G5_URL . '/';
-                    if ($rank_tab['gr_id'] !== '') {
-                        $rank_tab_url = G5_URL . '/?rank_gr_id=' . urlencode($rank_tab['gr_id']);
-                    }
+                    $rank_tab_id_suffix = $rank_tab['gr_id'] !== '' ? $rank_tab['gr_id'] : 'all';
+                    $rank_tab_is_active = ($rank_tab['gr_id'] === $rank_gr_id || ($rank_tab['gr_id'] === '' && $rank_gr_id === ''));
                     $rank_tab_class = 'rounded-full bg-gray-100 px-4 py-2 text-xs text-gray-600';
-                    if ($rank_tab['gr_id'] === $rank_gr_id || ($rank_tab['gr_id'] === '' && $rank_gr_id === '')) {
+                    if ($rank_tab_is_active) {
                         $rank_tab_class = 'rounded-full bg-gray-900 px-4 py-2 text-xs text-white';
                     }
                     ?>
-                    <a href="<?php echo $rank_tab_url; ?>" class="<?php echo $rank_tab_class; ?>"><?php echo $rank_tab['gr_subject']; ?></a>
+                    <button
+                        type="button"
+                        id="rank-tab-<?php echo $rank_tab_id_suffix; ?>"
+                        class="<?php echo $rank_tab_class; ?>"
+                        data-rank-tab="1"
+                        data-rank-gr-id="<?php echo $rank_tab['gr_id']; ?>"
+                        role="tab"
+                        aria-controls="rank-panel"
+                        aria-selected="<?php echo $rank_tab_is_active ? 'true' : 'false'; ?>"
+                        tabindex="<?php echo $rank_tab_is_active ? '0' : '-1'; ?>">
+                        <?php echo $rank_tab['gr_subject']; ?>
+                    </button>
                 <?php } ?>
             </div>
         </div>
 
-        <div class="space-y-4">
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                var tabs = document.querySelectorAll("[data-rank-tab='1']");
+                var cards = document.querySelectorAll("[data-rank-card='1']");
+                var emptyState = document.getElementById("rank-empty-state");
+                var defaultGrId = "<?php echo $rank_gr_id; ?>";
+                var activeClass = "rounded-full bg-gray-900 px-4 py-2 text-xs text-white";
+                var inactiveClass = "rounded-full bg-gray-100 px-4 py-2 text-xs text-gray-600";
+
+                if (!tabs.length) {
+                    return;
+                }
+
+                function setTabActive(tab, isActive) {
+                    tab.className = isActive ? activeClass : inactiveClass;
+                    tab.setAttribute("aria-selected", isActive ? "true" : "false");
+                    tab.setAttribute("tabindex", isActive ? "0" : "-1");
+                }
+
+                function filterRank(selectedGrId, updateUrl) {
+                    var visibleCount = 0;
+
+                    for (var i = 0; i < cards.length; i++) {
+                        var cardGrId = cards[i].getAttribute("data-rank-gr-id") || "";
+                        var visible = selectedGrId === "" || selectedGrId === cardGrId;
+                        cards[i].classList.toggle("hidden", !visible);
+                        if (visible) {
+                            visibleCount++;
+                        }
+                    }
+
+                    for (var t = 0; t < tabs.length; t++) {
+                        var tabGrId = tabs[t].getAttribute("data-rank-gr-id") || "";
+                        setTabActive(tabs[t], tabGrId === selectedGrId);
+                    }
+
+                    if (emptyState) {
+                        emptyState.classList.toggle("hidden", visibleCount > 0);
+                    }
+
+                    if (updateUrl && window.history && window.history.replaceState) {
+                        var nextUrl = "<?php echo G5_URL; ?>/";
+                        if (selectedGrId !== "") {
+                            nextUrl += "?rank_gr_id=" + encodeURIComponent(selectedGrId);
+                        }
+                        window.history.replaceState(null, "", nextUrl + "#rank-section");
+                    }
+                }
+
+                var isValidDefault = false;
+                for (var d = 0; d < tabs.length; d++) {
+                    if ((tabs[d].getAttribute("data-rank-gr-id") || "") === defaultGrId) {
+                        isValidDefault = true;
+                        break;
+                    }
+                }
+                if (!isValidDefault) {
+                    defaultGrId = "";
+                }
+
+                filterRank(defaultGrId, false);
+
+                for (var j = 0; j < tabs.length; j++) {
+                    tabs[j].addEventListener("click", function() {
+                        var selectedGrId = this.getAttribute("data-rank-gr-id") || "";
+                        filterRank(selectedGrId, true);
+                    });
+
+                    tabs[j].addEventListener("keydown", function(e) {
+                        var currentIndex = -1;
+                        for (var k = 0; k < tabs.length; k++) {
+                            if (tabs[k] === this) {
+                                currentIndex = k;
+                                break;
+                            }
+                        }
+                        if (currentIndex < 0) {
+                            return;
+                        }
+
+                        var nextIndex = currentIndex;
+
+                        if (e.key === "ArrowRight") {
+                            e.preventDefault();
+                            nextIndex = (currentIndex + 1) % tabs.length;
+                        } else if (e.key === "ArrowLeft") {
+                            e.preventDefault();
+                            nextIndex = (currentIndex - 1 + tabs.length) % tabs.length;
+                        } else if (e.key === "Home") {
+                            e.preventDefault();
+                            nextIndex = 0;
+                        } else if (e.key === "End") {
+                            e.preventDefault();
+                            nextIndex = tabs.length - 1;
+                        } else if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            var selectedByKey = this.getAttribute("data-rank-gr-id") || "";
+                            filterRank(selectedByKey, true);
+                            return;
+                        } else {
+                            return;
+                        }
+
+                        tabs[nextIndex].focus();
+                        var selectedGrIdByArrow = tabs[nextIndex].getAttribute("data-rank-gr-id") || "";
+                        filterRank(selectedGrIdByArrow, true);
+                    });
+                }
+            });
+        </script>
+
+        <div id="rank-panel" class="space-y-4" role="tabpanel" aria-label="인기 바이클 랭킹 목록">
             <?php for ($r = 0; $rank_row = sql_fetch_array($result_rank_board); $r++) { ?>
                 <?php
                 $rank_row_url = G5_BBS_URL . '/board.php?bo_table=' . $rank_row['bo_table'];
                 $rank_row_title = $rank_row['bo_subject'];
                 $rank_row_group = $rank_row['gr_subject'] ? $rank_row['gr_subject'] : '게시판';
                 $rank_row_image = '';
+                $rank_row_desc = '';
                 $rank_row_badge_class = 'bg-gray-100 text-gray-600';
                 $rank_no = $r + 1;
                 $rank_no_class = ($rank_no <= 3) ? 'bg-amber-300 text-gray-900' : 'bg-gray-900 text-white';
@@ -478,8 +626,16 @@ include_once(G5_THEME_PATH . '/head.php');
                     $rank_row_image = $rank_row_img_match[1];
                     // $rank_row_image = str_replace('http://172.30.1.93', 'https://' . $_SERVER['HTTP_HOST'], $rank_row_image);
                 }
+
+                if (!empty($rank_row['bo_content_tail'])) {
+                    $rank_tail_html = run_replace('board_content_tail', html_purifier(stripslashes($rank_row['bo_content_tail'])), $rank_row);
+                    $rank_tail_text = preg_replace('/<img[^>]*>/i', '', $rank_tail_html);
+                    $rank_tail_text = preg_replace('/<br[^>]*>/i', ' ', $rank_tail_text);
+                    $rank_tail_text = strip_tags($rank_tail_text);
+                    $rank_row_desc = trim(preg_replace('/\s+/', ' ', $rank_tail_text));
+                }
                 ?>
-                <a href="<?php echo $rank_row_url; ?>" class="grid grid-cols-[132px_1fr] gap-4 bg-white">
+                <a href="<?php echo $rank_row_url; ?>" class="grid grid-cols-[132px_1fr] gap-4 bg-white" data-rank-card="1" data-rank-gr-id="<?php echo $rank_row['gr_id']; ?>">
                     <div class="relative h-33 overflow-hidden rounded bg-gray-100">
                         <?php if ($rank_row_image) { ?>
                             <img src="<?php echo $rank_row_image; ?>" alt="<?php echo $rank_row_title; ?>" class="absolute inset-0 h-full w-full object-cover">
@@ -492,7 +648,7 @@ include_once(G5_THEME_PATH . '/head.php');
                     </div>
                     <div class="space-y-1">
                         <p class="line-clamp-1 text-base font-semibold text-gray-900"><?php echo $rank_row_title; ?></p>
-                        <p class="text-sm text-gray-500">게시판 설명 입니다.</p>
+                        <p class="text-sm text-gray-500 line-clamp-1"><?php echo $rank_row_desc ? $rank_row_desc : '게시판 설명이 없습니다.'; ?></p>
                         <div class="flex items-center gap-1 my-2 text-gray-400">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
                                 <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
@@ -503,6 +659,7 @@ include_once(G5_THEME_PATH . '/head.php');
                     </div>
                 </a>
             <?php } ?>
+            <div id="rank-empty-state" class="hidden rounded border border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500">표시할 게시판이 없습니다.</div>
             <?php if (sql_num_rows($result_rank_board) < 1) { ?>
                 <div class="rounded border border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500">표시할 게시판이 없습니다.</div>
             <?php } ?>
