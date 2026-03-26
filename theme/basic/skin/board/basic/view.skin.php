@@ -128,9 +128,21 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
                                     <?php } else {
                                     if ($board['bo_use_good'] || $board['bo_use_nogood']) {
                                     ?>
-                                        <div id="bo_v_act">
-                                            <?php if ($board['bo_use_good']) { ?><span class="bo_v_good"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i><span class="sound_only">추천</span><strong><?php echo number_format($view['wr_good']) ?></strong></span><?php } ?>
-                                            <?php if ($board['bo_use_nogood']) { ?><span class="bo_v_nogood"><i class="fa fa-thumbs-o-down" aria-hidden="true"></i><span class="sound_only">비추천</span><strong><?php echo number_format($view['wr_nogood']) ?></strong></span><?php } ?>
+                                        <div id="bo_v_act" class="!m-0 !text-left">
+                                            <?php if ($board['bo_use_good']) { ?>
+                                                <span class="bo_v_good !inline-flex !w-fit !border-0 !text-gray-900 items-center gap-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up">
+                                                        <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+                                                        <path d="M7 10v12" />
+                                                    </svg>
+                                                    <span class="sound_only">추천</span><strong class="text-lg"><?php echo number_format($view['wr_good']) ?></strong>
+                                                </span>
+                                            <?php } ?>
+                                            <?php if ($board['bo_use_nogood']) { ?>
+                                                <span class="bo_v_nogood !inline-flex !w-fit !border-0 !text-gray-900 items-center gap-2">
+                                                    <i class="fa fa-thumbs-o-down" aria-hidden="true"></i><span class="sound_only">비추천</span><strong class="text-lg"><?php echo number_format($view['wr_nogood']) ?></strong>
+                                                </span>
+                                            <?php } ?>
                                         </div>
                                 <?php
                                     }
