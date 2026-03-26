@@ -14,6 +14,7 @@ if (G5_COMMUNITY_USE === false) {
 
 include_once(G5_THEME_PATH . '/head.php');
 
+// 게시판 썸네일
 if (!function_exists('board_thumbnail')) {
     function board_thumbnail($row)
     {
@@ -27,12 +28,91 @@ if (!function_exists('board_thumbnail')) {
             $row
         );
 
-        // bo
-        if (preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $head_html, $m)) {
+        // bo_content_head 에서 <img> 태그를 찾아 그 안에 src 값을 반환
+        if (preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $row['bo_content_head'], $m)) {
             return $m[1];
         }
 
         return '';
+    }
+}
+
+// 게시판 타이틀
+if (!function_exists('board_title')) {
+    function board_title($row)
+    {
+        if (empty($row['bo_subject'])) {
+            return '';
+        }
+
+        return trim($row['bo_subject']);
+    }
+}
+
+// 게시판 설명
+if (!function_exists('board_desc')) {
+    function board_desc($row)
+    {
+        if (empty($row['bo_content_tail'])) {
+            return '';
+        }
+
+        $tail_html = run_replace(
+            'board_content_tail',
+            html_purifier(stripslashes($row['bo_content_tail'])),
+            $row
+        );
+
+        $text = preg_replace('/<img[^>]*>/i', '', $row['bo_content_tail']);
+        $text = preg_replace([
+            '/<\/?p[^>]*>/i',
+            '/<br[^>]*>/i'
+        ], ' ', $text);
+
+        $text = strip_tags($text);
+        return trim(preg_replace('/\s+/', ' ', $text));
+    }
+}
+
+// 게시판 카테고리 텍스트
+if (!function_exists('board_group')) {
+    function board_group($row)
+    {
+        return !empty($row['gr_subject']) ? $row['gr_subject'] : '바이클';
+    }
+}
+
+// 게시판 카테고리 뱃지 Tailwind
+if (!function_exists('board_group_badge_class')) {
+    function board_group_badge_class($row)
+    {
+        $badge_class = 'bg-gray-100 text-gray-600';
+
+        if (!empty($row['gr_id']) && $row['gr_id'] === 'influencer') {
+            $badge_class = 'bg-rose-100 text-rose-600';
+        } else if (!empty($row['gr_id']) && $row['gr_id'] === 'club') {
+            $badge_class = 'bg-emerald-100 text-emerald-600';
+        } else if (!empty($row['gr_id']) && $row['gr_id'] === 'community') {
+            $badge_class = 'bg-sky-100 text-sky-600';
+        } else if (!empty($row['gr_id']) && $row['gr_id'] === 'religious') {
+            $badge_class = 'bg-amber-100 text-amber-600';
+        }
+
+        return $badge_class;
+    }
+}
+
+// 게시판 카드 생성
+if (!function_exists('board_card')) {
+    function board_card($row)
+    {
+        return array(
+            'thumbnail' => board_thumbnail($row),
+            'title' => board_title($row),
+            'desc' => board_desc($row),
+            'group' => board_group($row),
+            'group_badge_class' => board_group_badge_class($row)
+        );
     }
 }
 ?>
@@ -197,42 +277,15 @@ if (!function_exists('board_thumbnail')) {
                 // 각 카드는 board.php?bo_table=... 상세로 이동
                 for ($p = 0; $pick_row = sql_fetch_array($result_pick_board); $p++) { ?>
                     <?php
-                    // 기본 링크/텍스트/이미지
-                    $tail_html = run_replace('board_content_tail', html_purifier(stripslashes($pick_row['bo_content_tail'])), $pick_row);
-                    $text_only = preg_replace('/<img[^>]*>/i', '', $tail_html);
-                    $text_only = preg_replace([
-                        '/<\/?p[^>]*>/i',  // <p> 제거
-                        '/<br[^>]*>/i'    // <br> 제거
-                    ], '', $text_only);
-                    $pick_row_desc = $text_only;
+                    // 게시판 데이터
+                    $pick_card = board_card($pick_row);
+                    $pick_row_image = $pick_card['thumbnail'];
+                    $pick_row_title = $pick_card['title'];
+                    $pick_row_desc = $pick_card['desc'];
+                    $pick_row_group = $pick_card['group'];
+                    $pick_row_group_badge_class = $pick_card['group_badge_class'];
                     $pick_row_url = G5_BBS_URL . '/board.php?bo_table=' . $pick_row['bo_table'];
-                    $pick_row_title = $pick_row['bo_subject'];
-                    $pick_row_image = '';
-                    $pick_row_group = $pick_row['gr_subject'] ? $pick_row['gr_subject'] : '게시판';
-                    $pick_row_group_badge_class = 'bg-gray-100 text-gray-600';
 
-                    // 그룹 ID에 따라 배지 색상 분기
-                    if ($pick_row['gr_id'] === 'influencer') {
-                        $pick_row_group_badge_class = 'bg-rose-100 text-rose-600';
-                    } else if ($pick_row['gr_id'] === 'club') {
-                        $pick_row_group_badge_class = 'bg-emerald-100 text-emerald-600';
-                    } else if ($pick_row['gr_id'] === 'community') {
-                        $pick_row_group_badge_class = 'bg-sky-100 text-sky-600';
-                    } else if ($pick_row['gr_id'] === 'religious') {
-                        $pick_row_group_badge_class = 'bg-amber-100 text-amber-600';
-                    }
-
-                    // 게시판 bo_content_head 에서 대표 이미지 추출
-                    $pick_row_head_html = '';
-                    if (!empty($pick_row['bo_content_head'])) {
-                        $pick_row_head_html = run_replace('board_content_head', html_purifier(stripslashes($pick_row['bo_content_head'])), $pick_row);
-                    }
-
-                    // 첫 img src를 대표 썸네일로 사용하고, 내부 IP 경로는 현재 도메인으로 치환
-                    if ($pick_row_head_html && preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $pick_row_head_html, $pick_row_img_match)) {
-                        $pick_row_image = $pick_row_img_match[1];
-                        // $pick_row_image = str_replace('http://172.30.1.93', 'https://' . $_SERVER['HTTP_HOST'], $pick_row_image);
-                    }
                     ?>
                     <div class="w-60">
                         <a href="<?php echo $pick_row_url; ?>" class="block h-71 overflow-hidden rounded-lg border border-gray-100 bg-white">
@@ -276,7 +329,7 @@ if (!function_exists('board_thumbnail')) {
 
     <?php
     // [오프라인 모임] 섹션 데이터 준비
-    // - 현재는 club 그룹 게시판을 전체 조회
+    // - 현재는 club 그룹 게시판만 전체 조회
     // - 로그인 회원 레벨로 볼 수 있는 게시판만 노출
     // - mobile 전용 게시판 제외
     // - 위치와 관련된 DB 값 추가 시 수정 필요
@@ -313,30 +366,11 @@ if (!function_exists('board_thumbnail')) {
         <div class="space-y-6">
             <?php for ($c = 0; $club_row = sql_fetch_array($result_club_board); $c++) { ?>
                 <?php
+                $club_card = board_card($club_row);
                 $club_card_url = G5_BBS_URL . '/board.php?bo_table=' . $club_row['bo_table'];
-                $club_card_title = $club_row['bo_subject'];
-                $club_card_image = '';
-                $club_card_desc = '';
-                $club_head_html = '';
-                $club_tail_html = '';
-
-                if (!empty($club_row['bo_content_head'])) {
-                    $club_head_html = run_replace('board_content_head', html_purifier(stripslashes($club_row['bo_content_head'])), $club_row);
-                }
-                if (!empty($club_row['bo_content_tail'])) {
-                    $club_tail_html = run_replace('board_content_tail', html_purifier(stripslashes($club_row['bo_content_tail'])), $club_row);
-                    $club_card_desc = preg_replace('/<img[^>]*>/i', '', $club_tail_html);
-                    $club_card_desc = preg_replace([
-                        '/<\/?p[^>]*>/i',
-                        '/<br[^>]*>/i'
-                    ], ' ', $club_card_desc);
-                    $club_card_desc = trim(strip_tags($club_card_desc));
-                }
-
-                if ($club_head_html && preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $club_head_html, $club_img_match)) {
-                    $club_card_image = $club_img_match[1];
-                    // $club_card_image = str_replace('http://172.30.1.93', 'https://' . $_SERVER['HTTP_HOST'], $club_card_image);
-                }
+                $club_card_title = $club_card['title'];
+                $club_card_image = $club_card['thumbnail'];
+                $club_card_desc = $club_card['desc'];
                 ?>
 
                 <a href="<?php echo $club_card_url; ?>" class="block overflow-hidden bg-white space-y-3">
@@ -377,7 +411,7 @@ if (!function_exists('board_thumbnail')) {
                             </div>
                         </div>
 
-                        <span class="rounded bg-emerald-100 px-2 py-1 text-xs text-emerald-600">동호회</span>
+                        <span class="rounded px-2 py-1 text-xs bg-emerald-100 text-emerald-600">동호회</span>
                     </div>
                 </a>
             <?php } ?>
@@ -425,6 +459,7 @@ if (!function_exists('board_thumbnail')) {
                         WHERE gr_id != 'community'
                         order by gr_order, gr_id ";
     $result_rank_group = sql_query($sql_rank_group);
+    
     for ($rg = 0; $rank_group = sql_fetch_array($result_rank_group); $rg++) {
         $rank_tabs[] = $rank_group;
         $rank_valid_ids[] = $rank_group['gr_id'];
@@ -465,6 +500,7 @@ if (!function_exists('board_thumbnail')) {
                     $rank_tab_id_suffix = $rank_tab['gr_id'] !== '' ? $rank_tab['gr_id'] : 'all';
                     $rank_tab_is_active = ($rank_tab['gr_id'] === $rank_gr_id || ($rank_tab['gr_id'] === '' && $rank_gr_id === ''));
                     $rank_tab_class = 'rounded-full bg-gray-100 px-4 py-2 text-xs text-gray-600';
+
                     if ($rank_tab_is_active) {
                         $rank_tab_class = 'rounded-full bg-gray-900 px-4 py-2 text-xs text-white';
                     }
@@ -510,9 +546,22 @@ if (!function_exists('board_thumbnail')) {
                     for (var i = 0; i < cards.length; i++) {
                         var cardGrId = cards[i].getAttribute("data-rank-gr-id") || "";
                         var visible = selectedGrId === "" || selectedGrId === cardGrId;
+                        var rankBadge = cards[i].querySelector("[data-rank-no='1']");
                         cards[i].classList.toggle("hidden", !visible);
+
                         if (visible) {
                             visibleCount++;
+
+                            if (rankBadge) {
+                                rankBadge.textContent = visibleCount;
+                                rankBadge.classList.remove("bg-amber-300", "text-gray-900", "bg-gray-900", "text-white");
+
+                                if (visibleCount <= 3) {
+                                    rankBadge.classList.add("bg-amber-300", "text-gray-900");
+                                } else {
+                                    rankBadge.classList.add("bg-gray-900", "text-white");
+                                }
+                            }
                         }
                     }
 
@@ -599,41 +648,16 @@ if (!function_exists('board_thumbnail')) {
         <div id="rank-panel" class="space-y-4" role="tabpanel" aria-label="인기 바이클 랭킹 목록">
             <?php for ($r = 0; $rank_row = sql_fetch_array($result_rank_board); $r++) { ?>
                 <?php
+                $rank_card = board_card($rank_row);
                 $rank_row_url = G5_BBS_URL . '/board.php?bo_table=' . $rank_row['bo_table'];
-                $rank_row_title = $rank_row['bo_subject'];
-                $rank_row_group = $rank_row['gr_subject'] ? $rank_row['gr_subject'] : '게시판';
-                $rank_row_image = '';
-                $rank_row_desc = '';
-                $rank_row_badge_class = 'bg-gray-100 text-gray-600';
+                $rank_row_title = $rank_card['title'];
+                $rank_row_group = $rank_card['group'];
+                $rank_row_image = $rank_card['thumbnail'];
+                $rank_row_desc = $rank_card['desc'];
+                $rank_row_badge_class = $rank_card['group_badge_class'];
+
                 $rank_no = $r + 1;
                 $rank_no_class = ($rank_no <= 3) ? 'bg-amber-300 text-gray-900' : 'bg-gray-900 text-white';
-
-                if ($rank_row['gr_id'] === 'influencer') {
-                    $rank_row_badge_class = 'bg-rose-100 text-rose-600';
-                } else if ($rank_row['gr_id'] === 'club') {
-                    $rank_row_badge_class = 'bg-emerald-100 text-emerald-600';
-                } else if ($rank_row['gr_id'] === 'community') {
-                    $rank_row_badge_class = 'bg-sky-100 text-sky-600';
-                } else if ($rank_row['gr_id'] === 'religious') {
-                    $rank_row_badge_class = 'bg-amber-100 text-amber-600';
-                }
-
-                $rank_row_head_html = '';
-                if (!empty($rank_row['bo_content_head'])) {
-                    $rank_row_head_html = run_replace('board_content_head', html_purifier(stripslashes($rank_row['bo_content_head'])), $rank_row);
-                }
-                if ($rank_row_head_html && preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $rank_row_head_html, $rank_row_img_match)) {
-                    $rank_row_image = $rank_row_img_match[1];
-                    // $rank_row_image = str_replace('http://172.30.1.93', 'https://' . $_SERVER['HTTP_HOST'], $rank_row_image);
-                }
-
-                if (!empty($rank_row['bo_content_tail'])) {
-                    $rank_tail_html = run_replace('board_content_tail', html_purifier(stripslashes($rank_row['bo_content_tail'])), $rank_row);
-                    $rank_tail_text = preg_replace('/<img[^>]*>/i', '', $rank_tail_html);
-                    $rank_tail_text = preg_replace('/<br[^>]*>/i', ' ', $rank_tail_text);
-                    $rank_tail_text = strip_tags($rank_tail_text);
-                    $rank_row_desc = trim(preg_replace('/\s+/', ' ', $rank_tail_text));
-                }
                 ?>
                 <a href="<?php echo $rank_row_url; ?>" class="grid grid-cols-[132px_1fr] gap-4 bg-white" data-rank-card="1" data-rank-gr-id="<?php echo $rank_row['gr_id']; ?>">
                     <div class="relative h-33 overflow-hidden rounded bg-gray-100">
@@ -644,7 +668,7 @@ if (!function_exists('board_thumbnail')) {
                                 <p class="text-xs font-medium text-gray-500">사진이 없습니다</p>
                             </div>
                         <?php } ?>
-                        <span class="absolute left-0 top-0 flex h-6 w-6 items-center justify-center rounded-tl rounded-br text-xs font-semibold <?php echo $rank_no_class; ?>"><?php echo $rank_no; ?></span>
+                        <span data-rank-no="1" class="absolute left-0 top-0 flex h-6 w-6 items-center justify-center rounded-tl rounded-br text-xs font-semibold <?php echo $rank_no_class; ?>"><?php echo $rank_no; ?></span>
                     </div>
                     <div class="space-y-1">
                         <p class="line-clamp-1 text-base font-semibold text-gray-900"><?php echo $rank_row_title; ?></p>
@@ -666,8 +690,11 @@ if (!function_exists('board_thumbnail')) {
         </div>
 
         <div class="mt-4 text-center">
-            <button type="button" class="inline-flex items-center rounded-full border border-gray-200 bg-white px-4 py-2 text-xs text-gray-600">
-                랭킹 더보기
+            <button type="button" class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs text-gray-600">
+                <span>랭킹 더보기</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down">
+                    <path d="m6 9 6 6 6-6" />
+                </svg>
             </button>
         </div>
     </section>

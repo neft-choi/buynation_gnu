@@ -4,14 +4,14 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 // 필요 시 include 전에 아래 변수를 지정해 컨테이너 여백을 바꿀 수 있다.
 // 예) $quick_nav_container_class = 'mx-auto w-full max-w-full px-4';
 if (!isset($quick_nav_container_class) || !$quick_nav_container_class) {
-    $quick_nav_container_class = 'px-4';
+  $quick_nav_container_class = 'px-4';
 }
 
 $quick_nav_menu_datas = get_menu_db(0, true);
 
 // 목업 아이콘
 $quick_nav_mock_icons = array(
-    '인플루언서' => '<svg xmlns="http://www.w3.org/2000/svg" width="38" height="40" viewBox="0 0 38 40">
+  '인플루언서' => '<svg xmlns="http://www.w3.org/2000/svg" width="38" height="40" viewBox="0 0 38 40">
   <g id="Vector_Smart_Object" data-name="Vector Smart Object" transform="translate(-444.936 -346.332)">
     <g id="그룹_73" data-name="그룹 73">
       <g id="_554_Girl_person_woman_Avatar_Women" data-name="554, Girl , person , woman, Avatar, Women">
@@ -62,7 +62,7 @@ $quick_nav_mock_icons = array(
   </g>
 </svg>
 ',
-    '종교단체' => '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+  '종교단체' => '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
   <g id="Vector_Smart_Object" data-name="Vector Smart Object" transform="translate(-49.527 -322.036)">
     <g id="그룹_78" data-name="그룹 78">
       <g id="_566_Education_school_scroll_easter" data-name="566, Education, school, scroll, easter">
@@ -92,7 +92,7 @@ $quick_nav_mock_icons = array(
   </g>
 </svg>
 ',
-    '동호회' => '<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
+  '동호회' => '<svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 35 35">
   <g id="Vector_Smart_Object" data-name="Vector Smart Object" transform="translate(-196.985 -195.031)">
     <g id="D571_Communication_people_team" data-name="D571, Communication, people, team">
       <g id="그룹_87" data-name="그룹 87">
@@ -124,33 +124,33 @@ $quick_nav_mock_icons = array(
 ?>
 
 <section aria-label="퀵 메뉴" class="<?php echo $quick_nav_container_class; ?>">
-    <div class="flex items-center justify-start gap-2 flex-wrap">
-        <?php
-        $quick_nav_count = 0;
-        foreach ($quick_nav_menu_datas as $row) {
-            if (empty($row)) continue;
-            $quick_nav_count++;
-            $quick_nav_target = !empty($row['me_target']) ? '_' . $row['me_target'] : '_self';
-            if (empty($row['me_icon']) && isset($quick_nav_mock_icons[$row['me_name']])) {
-                $row['me_icon'] = $quick_nav_mock_icons[$row['me_name']];
-            }
+  <div class="flex items-center justify-start gap-2 flex-wrap">
+    <?php
+    $quick_nav_count = 0;
+    foreach ($quick_nav_menu_datas as $row) {
+      if (empty($row)) continue;
+      $quick_nav_count++;
+      $quick_nav_target = !empty($row['me_target']) ? '_' . $row['me_target'] : '_self';
+      if (empty($row['me_icon']) && isset($quick_nav_mock_icons[$row['me_name']])) {
+        $row['me_icon'] = $quick_nav_mock_icons[$row['me_name']];
+      }
+    ?>
+      <!-- bbs/bbs 중첩되던 내용수정 -->
+      <a href="<?php echo G5_URL . '/' . $row['me_link']; ?>" target="<?php echo $quick_nav_target; ?>" class="flex flex-col items-center gap-2 text-center">
+        <span class="inline-flex h-15 w-15 items-center justify-center rounded-lg bg-gray-100 text-gray-900">
+          <?php echo isset($row['me_icon']) ? $row['me_icon'] : ''; ?>
+        </span>
+        <span class="text-xs text-gray-900"><?php echo $row['me_name']; ?></span>
+      </a>
+    <?php } ?>
 
-        ?>
-            <a href="<?php echo $row['me_link']; ?>" target="<?php echo $quick_nav_target; ?>" class="flex flex-col items-center gap-2 text-center">
-                <span class="inline-flex h-15 w-15 items-center justify-center rounded-lg bg-gray-100 text-gray-900">
-                    <?php echo isset($row['me_icon']) ? $row['me_icon'] : ''; ?>
-                </span>
-                <span class="text-xs text-gray-900"><?php echo $row['me_name']; ?></span>
-            </a>
+    <?php if ($quick_nav_count < 1) { ?>
+      <div class="col-span-5 rounded-lg bg-gray-50 px-3 py-3 text-center text-sm text-gray-500">
+        메뉴 준비 중입니다.
+        <?php if ($is_admin) { ?>
+          <a href="<?php echo G5_ADMIN_URL; ?>/menu_list.php" class="underline">메뉴설정</a>
         <?php } ?>
-
-        <?php if ($quick_nav_count < 1) { ?>
-            <div class="col-span-5 rounded-lg bg-gray-50 px-3 py-3 text-center text-sm text-gray-500">
-                메뉴 준비 중입니다.
-                <?php if ($is_admin) { ?>
-                    <a href="<?php echo G5_ADMIN_URL; ?>/menu_list.php" class="underline">메뉴설정</a>
-                <?php } ?>
-            </div>
-        <?php } ?>
-    </div>
+      </div>
+    <?php } ?>
+  </div>
 </section>

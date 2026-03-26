@@ -10,7 +10,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$member_skin_url.'/style.css">', 
     <h1><?php echo $g5['title'] ?></h1>
 
     <p>
-        <strong>비밀번호를 한번 더 입력해주세요.</strong>
+        <strong class="!text-gray-900">비밀번호를 한번 더 입력해주세요.</strong>
         <?php if ($url == 'member_leave.php') { ?>
         비밀번호를 입력하시면 회원탈퇴가 완료됩니다.
         <?php }else{ ?>
@@ -27,7 +27,7 @@ add_stylesheet('<link rel="stylesheet" href="'.$member_skin_url.'/style.css">', 
         <span id="mb_confirm_id"><?php echo $member['mb_id'] ?></span>
         <label for="confirm_mb_password" class="sound_only">비밀번호<strong>필수</strong></label>
         <input type="password" name="mb_password" id="confirm_mb_password" required class="required frm_input" size="15" maxLength="20" placeholder="비밀번호">
-        <input type="submit" value="확인" id="btn_submit" class="btn_submit">
+        <input type="submit" value="확인" id="btn_submit" class="btn_submit !bg-[var(--color-primary)] !text-gray-900">
     </fieldset>
 
     </form>

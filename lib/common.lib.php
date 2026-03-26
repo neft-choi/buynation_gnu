@@ -30,7 +30,7 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add = "")
 
     $str = '';
     if ($cur_page > 1) {
-        $str .= '<a href="' . $url . '1' . $add . '" class="pg_page pg_start">처음</a>' . PHP_EOL;
+        $str .= '<a href="' . $url . '1' . $add . '" class="pg_page pg_start !border-0">처음</a>' . PHP_EOL;
     }
 
     $start_page = (((int)(($cur_page - 1) / $write_pages)) * $write_pages) + 1;
@@ -38,25 +38,25 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add = "")
 
     if ($end_page >= $total_page) $end_page = $total_page;
 
-    if ($start_page > 1) $str .= '<a href="' . $url . ($start_page - 1) . $add . '" class="pg_page pg_prev">이전</a>' . PHP_EOL;
+    if ($start_page > 1) $str .= '<a href="' . $url . ($start_page - 1) . $add . '" class="pg_page pg_prev !border-0">이전</a>' . PHP_EOL;
 
     if ($total_page > 1) {
         for ($k = $start_page; $k <= $end_page; $k++) {
             if ($cur_page != $k)
-                $str .= '<a href="' . $url . $k . $add . '" class="pg_page">' . $k . '<span class="sound_only">페이지</span></a>' . PHP_EOL;
+                $str .= '<a href="' . $url . $k . $add . '" class="pg_page !text-gray-900 !border-0">' . $k . '<span class="sound_only">페이지</span></a>' . PHP_EOL;
             else
-                $str .= '<span class="sound_only">열린</span><strong class="pg_current">' . $k . '</strong><span class="sound_only">페이지</span>' . PHP_EOL;
+                $str .= '<span class="sound_only">열린</span><strong class="pg_current !bg-[var(--color-primary)] !text-gray-900 !border-0">' . $k . '</strong><span class="sound_only">페이지</span>' . PHP_EOL;
         }
     }
 
-    if ($total_page > $end_page) $str .= '<a href="' . $url . ($end_page + 1) . $add . '" class="pg_page pg_next">다음</a>' . PHP_EOL;
+    if ($total_page > $end_page) $str .= '<a href="' . $url . ($end_page + 1) . $add . '" class="pg_page pg_next !border-0">다음</a>' . PHP_EOL;
 
     if ($cur_page < $total_page) {
-        $str .= '<a href="' . $url . $total_page . $add . '" class="pg_page pg_end">맨끝</a>' . PHP_EOL;
+        $str .= '<a href="' . $url . $total_page . $add . '" class="pg_page pg_end !border-0">맨끝</a>' . PHP_EOL;
     }
 
     if ($str)
-        return "<nav class=\"pg_wrap\"><span class=\"pg\">{$str}</span></nav>";
+        return "<nav class=\"pg_wrap !float-none !flex !justify-center !px-4 !pb-4\"><span class=\"pg\">{$str}</span></nav>";
     else
         return "";
 }

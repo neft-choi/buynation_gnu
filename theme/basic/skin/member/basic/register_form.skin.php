@@ -15,7 +15,9 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 				<path d="m15 18-6-6 6-6" />
 			</svg>
 		</button>
-		<h1 class="text-base font-semibold text-zinc-900">회원가입</h1>
+		<h1 class="text-base font-semibold text-zinc-900">
+			<?php echo $w === 'u' ? '회원정보 수정' : '회원가입'; ?>
+		</h1>
 		<a href="<?php echo G5_URL ?>" class="inline-flex h-10 w-10 items-center justify-center text-zinc-700" aria-label="닫기">
 			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
 				<path d="M18 6 6 18" />
@@ -52,7 +54,8 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 										<circle cx="12" cy="12" r="10" />
 										<path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
 										<path d="M12 17h.01" />
-									</svg><span class="sound_only">설명보기</span></button>
+									</svg><span class="sound_only">설명보기</span>
+								</button>
 								<span class="tooltip">영문자, 숫자, _ 만 입력 가능. 최소 3자이상 입력하세요.</span>
 							</label>
 							<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?> class="h-14 w-full rounded-md border border-zinc-300 px-4 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?> <?php echo $readonly ?>" minlength="3" maxlength="20" placeholder="아이디">

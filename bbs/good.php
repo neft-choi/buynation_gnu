@@ -29,11 +29,12 @@ if(isset($_POST['js']) && $_POST['js'] === "on") {
         print_result($error, $count);
     }
 
-    $ss_name = 'ss_view_'.$bo_table.'_'.$wr_id;
-    if (!get_session($ss_name)) {
-        $error = '해당 게시물에서만 추천 또는 비추천 하실 수 있습니다.';
-        print_result($error, $count);
-    }
+    // 리스트에서도 추천/비추천이 동작하도록 게시글 열람 세션 검증을 비활성화
+    // $ss_name = 'ss_view_'.$bo_table.'_'.$wr_id;
+    // if (!get_session($ss_name)) {
+    //     $error = '해당 게시물에서만 추천 또는 비추천 하실 수 있습니다.';
+    //     print_result($error, $count);
+    // }
 
     $row = sql_fetch(" select count(*) as cnt from {$g5['write_prefix']}{$bo_table} ", FALSE);
     if (!$row['cnt']) {
@@ -104,9 +105,10 @@ if(isset($_POST['js']) && $_POST['js'] === "on") {
     if (!($bo_table && $wr_id))
         alert('값이 제대로 넘어오지 않았습니다.');
 
-    $ss_name = 'ss_view_'.$bo_table.'_'.$wr_id;
-    if (!get_session($ss_name))
-        alert('해당 게시물에서만 추천 또는 비추천 하실 수 있습니다.');
+    // 리스트에서도 추천/비추천이 동작하도록 게시글 열람 세션 검증을 비활성화
+    // $ss_name = 'ss_view_'.$bo_table.'_'.$wr_id;
+    // if (!get_session($ss_name))
+    //     alert('해당 게시물에서만 추천 또는 비추천 하실 수 있습니다.');
 
     $row = sql_fetch(" select count(*) as cnt from {$g5['write_prefix']}{$bo_table} ", FALSE);
     if (!$row['cnt'])

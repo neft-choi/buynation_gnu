@@ -28,13 +28,13 @@ if (G5_IS_MOBILE) {
 
     // bo_content_head의 첫 이미지 src를 카드 커버로 재사용 (임시)(공부 필요)
     $cover_src = '';
-    if (preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $head_html, $m)) {
+    if (preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $board['bo_content_head'], $m)) {
         $cover_src = $m[1];
-        $cover_src = str_replace(
-            'http://172.30.1.93',
-            'https://' . $_SERVER['HTTP_HOST'],
-            $cover_src
-        );
+        // $cover_src = str_replace(
+        //     'http://172.30.1.93',
+        //     'https://' . $_SERVER['HTTP_HOST'],
+        //     $cover_src
+        // );
     }
 ?>
 

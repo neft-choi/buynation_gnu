@@ -48,7 +48,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
 
     ?>
     <div class="rounded border border-gray-200 bg-white p-4">
-        <section id="bo_v_info" class="">
+        <section id="bo_v_info" class="!border-0">
             <div class="profile_info !hidden">
                 <div class="pf_img"></div>
                 <div class="profile_info_ct">
@@ -63,17 +63,15 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
 
             <!-- 게시물 상단 버튼 시작 { -->
             <div id="bo_v_top" class="grid">
-                <div class="grid grid-cols-[auto_1fr_auto] gap-4  justify-between">
-                    <div>
-                        <?php echo get_member_profile_img($view['mb_id'], 44, 44) ?>
-                    </div>
+                <div class="grid grid-cols-[1fr_auto] gap-4 justify-between">
                     <div class="w-full">
                         <div class="grid grid-cols-1 gap-2">
-
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-end gap-2">
+                                <?php echo get_member_profile_img($view['mb_id'], 44, 44) ?>
                                 <p class="truncate w-fit text-xs font-medium px-1 text-white bg-gray-900 rounded"><?php echo trim(strip_tags($view['name'])); ?></p>
                                 <span class="text-xs text-gray-500"><?php echo $card_datetime; ?></span>
                             </div>
+
                             <section id="bo_v_atc">
                                 <h2 id="bo_v_atc_title">본문</h2>
                                 <div id="bo_v_share" class="!hidden">
@@ -96,7 +94,8 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
                                 ?>
 
                                 <!-- 본문 내용 시작 { -->
-                                <div id="bo_v_con"><?php echo get_view_thumbnail($view['content']); ?></div>
+
+                                <div id="bo_v_con"><?php echo get_view_thumbnail($view['wr_content']); ?></div>
                                 <?php //echo $view['rich_content']; // {이미지:0} 과 같은 코드를 사용할 경우 
                                 ?>
                                 <!-- } 본문 내용 끝 -->
@@ -106,10 +105,16 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
 
                                 <!--  추천 비추천 시작 { -->
                                 <?php if ($good_href || $nogood_href) { ?>
-                                    <div id="bo_v_act">
+                                    <div id="bo_v_act" class="!m-0 !text-left">
                                         <?php if ($good_href) { ?>
                                             <span class="bo_v_act_gng">
-                                                <a href="<?php echo $good_href . '&amp;' . $qstr ?>" id="good_button" class="bo_v_good"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i><span class="sound_only">추천</span><strong><?php echo number_format($view['wr_good']) ?></strong></a>
+                                                <a href="<?php echo $good_href . '&amp;' . $qstr ?>" id="good_button" class="bo_v_good !inline-flex !w-fit !leading-none !border-0 !text-gray-900 items-center gap-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up">
+                                                        <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+                                                        <path d="M7 10v12" />
+                                                    </svg>
+                                                    <span class="sound_only">추천</span><strong class="text-lg"><?php echo number_format($view['wr_good']) ?></strong>
+                                                </a>
                                                 <b id="bo_v_act_good"></b>
                                             </span>
                                         <?php } ?>

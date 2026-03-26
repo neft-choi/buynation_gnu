@@ -2,11 +2,11 @@
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
 // 선택옵션으로 인해 셀합치기가 가변적으로 변함
-$colspan = 5;
+$colspan = 1;
 
 if ($is_checkbox) $colspan++;
-if ($is_good) $colspan++;
-if ($is_nogood) $colspan++;
+// if ($is_good) $colspan++;
+// if ($is_nogood) $colspan++;
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">', 0);
@@ -14,6 +14,30 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
 $board_tab = isset($_GET['board_tab']) ? preg_replace('/[^a-z_]/', '', $_GET['board_tab']) : 'community';
 if (!$board_tab) {
     $board_tab = 'community';
+}
+
+// 좋아요와 댓글 숫자에 따라 소수점 표시 및 숫자 뒤에 한글로 표시
+if (!function_exists('format_k_count')) {
+    function format_k_count($value)
+    {
+        $n = (int)$value;
+
+        if ($n < 1000) {
+            return number_format($n);
+        }
+
+        if ($n < 10000) {
+            $v = floor(($n / 1000) * 10) / 10;
+            $s = number_format($v, 1);
+            $s = rtrim(rtrim($s, '0'), '.');
+            return $s . '천';
+        }
+
+        $v = floor(($n / 10000) * 10) / 10;
+        $s = number_format($v, 1);
+        $s = rtrim(rtrim($s, '0'), '.');
+        return $s . '만';
+    }
 }
 ?>
 <style>
@@ -137,27 +161,26 @@ if (!$board_tab) {
 
                     <!-- 카드 시작 -->
                     <article class="rounded border border-gray-200 bg-white p-4 w-full">
-                        <div class="grid grid-cols-[auto_1fr] gap-4 w-full">
-                            <div class="pt-1">
-                                <?php if ($profile_html) { ?>
-                                    <?php echo $profile_html; ?>
-                                <?php } else { ?>
-                                    <!-- 프로필 이미지가 없을 때 기본 아이콘 -->
-                                    <span class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
-                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                            <circle cx="12" cy="7" r="4" />
-                                        </svg>
-                                    </span>
-                                <?php } ?>
-                            </div>
-
+                        <div class="grid gap-4 w-full">
                             <div class="grid grid-cols-1 gap-2">
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-end gap-2">
+                                    <?php if ($profile_html) { ?>
+                                        <?php echo $profile_html; ?>
+                                    <?php } else { ?>
+                                        <!-- 프로필 이미지가 없을 때 기본 아이콘 -->
+                                        <span class="inline-flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
+                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                                <circle cx="12" cy="7" r="4" />
+                                            </svg>
+                                        </span>
+                                    <?php } ?>
+
                                     <p class="truncate w-fit text-xs font-medium px-1 text-white bg-gray-900 rounded"><?php echo $author_name; ?></p>
+                                    
                                     <span class="text-xs text-gray-500"><?php echo $card_datetime; ?></span>
                                 </div>
-                                <p class="overflow-hidden whitespace-pre-line text-sm font-medium text-gray-900" style="display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;"><?php echo get_text($card_content_text); ?></p>
+                                <p class="overflow-hidden whitespace-pre-line text-sm font-medium text-gray-900" style="display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;"><?php echo get_text($card_content_text); ?></p>
                                 <a href=" <?php echo $detail_href; ?>" class="inline-flex w-fit text-sm font-medium text-gray-600 hover:text-gray-900">자세히 보기</a>
                                 <?php
                                 preg_match_all('/<img[^>]+src="([^">]+)"/i', $list[$i]['wr_content'], $matches);
@@ -216,9 +239,44 @@ if (!$board_tab) {
 
                                     });
                                 </script>
-                                <?= $good_href ?>
-                                <?php echo number_format($list[$i]['wr_good']) ?>
-                                <?php var_dump($list[$i]['wr_comment']); ?>
+
+                                <?php
+                                // 특정 게시글 전용 좋아요 요청 URL 만들기
+                                // 로그인 사용자만 가능하고 게시판 설정에서 추천 사용이 켜진 경우만 가능
+                                $list_good_href = '';
+                                if ($is_member && $board['bo_use_good']) {
+                                    $list_good_href = G5_BBS_URL . '/good.php?bo_table=' . $bo_table . '&amp;wr_id=' . $list[$i]['wr_id'] . '&amp;good=good';
+                                }
+                                ?>
+                                <div class="flex items-center gap-8">
+                                    <div class="flex items-center gap-2">
+                                        <button type="button" data-href="<?php echo $list_good_href; ?>" class="js-list-good cursor-pointer">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up">
+                                                <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z" />
+                                                <path d="M7 10v12" />
+                                            </svg>
+                                        </button>
+                                        <span class="js-list-good-count text-sm"><?php echo format_k_count($list[$i]['wr_good']); ?></span>
+                                    </div>
+
+                                    <button type="button" class="cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-share-icon lucide-share">
+                                            <path d="M12 2v13" />
+                                            <path d="m16 6-4-4-4 4" />
+                                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                        </svg>
+                                    </button>
+
+                                    <a href="<?php echo $detail_href; ?>#bo_v" class="flex items-center gap-2 cursor-pointer">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-text-icon lucide-message-square-text">
+                                            <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
+                                            <path d="M7 11h10" />
+                                            <path d="M7 15h6" />
+                                            <path d="M7 7h8" />
+                                        </svg>
+                                        <span class="text-sm"><?php echo format_k_count($list[$i]['wr_comment']); ?></span>
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </article>
@@ -231,16 +289,16 @@ if (!$board_tab) {
 
             <!-- 게시판 페이지 정보 및 버튼 시작 (기존 코드) { -->
             <?php
-            if ($board['bo_admin'] === $member['mb_id'] || $member['mb_id'] == 'admin') {
+            if (
+                // $board['bo_admin'] === $member['mb_id'] || $member['mb_id'] == 'admin'
+                true
+                ) {
             ?>
-                <div class="m-4 mb-0 p-4 border border-b-0 rounded-bl-none rounded-br-none border-gray-200 rounded-sm shadow-sm">
+                <div class="m-4 p-4 border rounded border-gray-200 ">
 
                     <div id="bo_btn_top" class="">
                         <div id="bo_list_total">
-                            <div class="text-xl font-bold text-black">관리자 패널</div>
-                            <span>Total <?php echo number_format($total_count) ?>건</span>
-                            <?php echo $page ?> 페이지
-
+                            <div class="text-lg font-medium text-black">관리자 패널</div>
                         </div>
 
                         <ul class="btn_bo_user">
@@ -280,7 +338,7 @@ if (!$board_tab) {
                     </div>
                     <!-- } 게시판 페이지 정보 및 버튼 끝 -->
 
-                    <div class="tbl_head01 tbl_wrap ">
+                    <div class="tbl_head01 tbl_wrap">
                         <table>
                             <caption><?php echo $board['bo_subject'] ?> 목록</caption>
                             <thead>
@@ -294,17 +352,12 @@ if (!$board_tab) {
                                             </label>
                                         </th>
                                     <?php } ?>
-                                    <th scope="col">번호</th>
-                                    <th scope="col">제목</th>
-                                    <th scope="col">글쓴이</th>
-                                    <th scope="col"><?php echo subject_sort_link('wr_hit', $qstr2, 1) ?>조회 </a></th>
-                                    <?php if ($is_good) { ?><th scope="col"><?php echo subject_sort_link('wr_good', $qstr2, 1) ?>추천 </a></th><?php } ?>
-                                    <?php if ($is_nogood) { ?><th scope="col"><?php echo subject_sort_link('wr_nogood', $qstr2, 1) ?>비추천 </a></th><?php } ?>
-                                    <th scope="col"><?php echo subject_sort_link('wr_datetime', $qstr2, 1) ?>날짜 </a></th>
+                                    <th scope="col" class="!text-left">제목</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php
+                                // 짝수 행마다 even 클래스 붙여서 배경색 처리 (현재는 !bg-white로 고정 중)
                                 for ($i = 0; $i < count($list); $i++) {
                                     if ($i % 2 == 0) $lt_class = "even";
                                     else $lt_class = "";
@@ -323,7 +376,7 @@ if (!$board_tab) {
                                                 </label>
                                             </td>
                                         <?php } ?>
-                                        <td class="td_num2">
+                                        <td class="td_num2 !hidden">
                                             <?php
                                             if ($list[$i]['is_notice']) // 공지사항
                                                 echo '<strong class="notice_icon">공지</strong>';
@@ -340,7 +393,7 @@ if (!$board_tab) {
                                             ?>
                                                 <a href="<?php echo $list[$i]['ca_name_href'] ?>" class="bo_cate_link"><?php echo $list[$i]['ca_name'] ?></a>
                                             <?php } ?>
-                                            <div class="bo_tit">
+                                            <div class="bo_tit !font-medium">
                                                 <a href="<?php echo $detail_href; ?>">
                                                     <?php echo $list[$i]['icon_reply'] ?>
                                                     <?php
@@ -349,21 +402,18 @@ if (!$board_tab) {
                                                     <?php echo $list[$i]['subject'] ?>
                                                 </a>
                                                 <?php
-                                                if ($list[$i]['icon_new']) echo "<span class=\"new_icon\">N<span class=\"sound_only\">새글</span></span>";
-                                                // if ($list[$i]['file']['count']) { echo '<'.$list[$i]['file']['count'].'>'; }
-                                                if (isset($list[$i]['icon_hot'])) echo rtrim($list[$i]['icon_hot']);
-                                                if (isset($list[$i]['icon_file'])) echo rtrim($list[$i]['icon_file']);
-                                                if (isset($list[$i]['icon_link'])) echo rtrim($list[$i]['icon_link']);
+                                                // if ($list[$i]['icon_new']) echo "<span class=\"new_icon\">N<span class=\"sound_only\">새글</span></span>";
+                                                // // if ($list[$i]['file']['count']) { echo '<'.$list[$i]['file']['count'].'>'; }
+                                                // if (isset($list[$i]['icon_hot'])) echo rtrim($list[$i]['icon_hot']);
+                                                // if (isset($list[$i]['icon_file'])) echo rtrim($list[$i]['icon_file']);
+                                                // if (isset($list[$i]['icon_link'])) echo rtrim($list[$i]['icon_link']);
                                                 ?>
-                                                <?php if ($list[$i]['comment_cnt']) { ?><span class="sound_only">댓글</span><span class="cnt_cmt"><?php echo $list[$i]['wr_comment']; ?></span><span class="sound_only">개</span><?php } ?>
+
+                                                <?php
+                                                // 댓글이 존재하면 카운트 표시 (현재는 강제 false)
+                                                if ($list[$i]['comment_cnt']=false) { ?><span class="sound_only">댓글</span><span class="cnt_cmt"><?php echo $list[$i]['wr_comment']; ?></span><span class="sound_only">개</span><?php } ?>
                                             </div>
                                         </td>
-                                        <td class="td_name sv_use"><?php echo $list[$i]['name'] ?></td>
-                                        <td class="td_num"><?php echo $list[$i]['wr_hit'] ?></td>
-                                        <?php if ($is_good) { ?><td class="td_num"><?php echo $list[$i]['wr_good'] ?></td><?php } ?>
-                                        <?php if ($is_nogood) { ?><td class="td_num"><?php echo $list[$i]['wr_nogood'] ?></td><?php } ?>
-                                        <td class="td_datetime"><?php echo $list[$i]['datetime2'] ?></td>
-
                                     </tr>
                                 <?php } ?>
                                 <?php if (count($list) == 0) {
@@ -424,7 +474,56 @@ if (!$board_tab) {
                 $('.bo_sch_bg, .bo_sch_cls').click(function() {
                     $('.bo_sch_wrap').hide();
                 });
+
+                // 리스트 좋아요
+                $(".js-list-good").on("click", function() {
+                    var $btn = $(this);
+                    var href = $btn.data("href");
+                    var $count = $btn.closest(".flex.items-center.gap-2").find(".js-list-good-count");
+
+                    if (!href) {
+                        return false;
+                    }
+
+                    $.post(
+                        href, {
+                            js: "on"
+                        },
+                        function(data) {
+                            if (data && data.error) {
+                                alert(data.error);
+                                return false;
+                            }
+
+                            if (data && typeof data.count !== "undefined") {
+                                var nextCount = parseInt(data.count, 10);
+                                if (!isNaN(nextCount)) {
+                                    $count.text(formatCountForUi(nextCount));
+                                }
+                            }
+                        },
+                        "json"
+                    );
+
+                    return false;
+                });
             });
+
+            function formatCountForUi(value) {
+                var n = parseInt(value, 10);
+
+                if (isNaN(n) || n < 1000) {
+                    return String(isNaN(n) ? 0 : n);
+                }
+
+                if (n < 10000) {
+                    var v1 = Math.floor((n / 1000) * 10) / 10;
+                    return String(v1).replace(/\.0$/, "") + "천";
+                }
+
+                var v2 = Math.floor((n / 10000) * 10) / 10;
+                return String(v2).replace(/\.0$/, "") + "만";
+            }
         </script>
         <!-- } 게시판 검색 끝 -->
     <?php } elseif ($board_tab === 'product') { ?>
@@ -491,18 +590,16 @@ if (!$board_tab) {
                         <?php
                         $tail_html = run_replace('board_content_tail', html_purifier(stripslashes($board['bo_content_tail'])), $board);
                         $cover_src = '';
-                        if (preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $tail_html, $m)) {
+                        if (preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $board['bo_content_tail'], $m)) {
                             $cover_src = $m[1];
-                            $cover_src = str_replace(
-                                'http://172.30.1.93',
-                                'https://' . $_SERVER['HTTP_HOST'],
-                                $cover_src
-                            );
+                            // $cover_src = str_replace(
+                            //     'http://172.30.1.93',
+                            //     'https://' . $_SERVER['HTTP_HOST'],
+                            //     $cover_src
+                            // );
                         }
                         ?>
                         <img src="<?= $cover_src; ?>" alt="">
-
-
                     </div>
 
                 </div>

@@ -34,6 +34,7 @@ $header_hide_path_suffixes = array(
     '/bbs/qalist.php', // QA 리스트
     '/bbs/qawrite.php', // QA 작성
     '/bbs/notification.php', // 알림
+    '/bbs/mypage.php', // 커뮤니티 마이페이지
 );
 
 $current_script_path = isset($_SERVER['SCRIPT_NAME']) ? (string) $_SERVER['SCRIPT_NAME'] : '';

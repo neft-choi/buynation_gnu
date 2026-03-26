@@ -132,8 +132,21 @@ if ($config['cf_analytics']) {
                 <span class="text-xs">쇼핑</span>
             </a>
         </li>
+        <?php
+        $uri = $_SERVER['REQUEST_URI'];
+        $is_shop = strpos($uri, '/shop/') !== false;
+
+        if ($is_member) {
+            $mypage_url = $is_shop
+                ? G5_SHOP_URL . '/mypage.php'
+                : G5_BBS_URL . '/mypage.php';
+        } else {
+            $mypage_url = G5_BBS_URL . '/login.php?url=' . login_url($uri);
+        }
+        ?>
         <li>
-            <a href="<?php echo $is_member ? G5_SHOP_URL . '/mypage.php' : G5_BBS_URL . '/login.php?url=' . login_url($_SERVER['REQUEST_URI']); ?>" class="flex flex-col items-center justify-center gap-1 py-2 text-gray-900">
+            <?= $is_shop ?>
+            <a href="<?= $mypage_url ?>" class="flex flex-col items-center justify-center gap-1 py-2 text-gray-900">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
