@@ -177,7 +177,7 @@ if (!function_exists('format_k_count')) {
                                     <?php } ?>
 
                                     <p class="truncate w-fit text-xs font-medium px-1 text-white bg-gray-900 rounded"><?php echo $author_name; ?></p>
-                                    
+
                                     <span class="text-xs text-gray-500"><?php echo $card_datetime; ?></span>
                                 </div>
                                 <p class="overflow-hidden whitespace-pre-line text-sm font-medium text-gray-900" style="display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;"><?php echo get_text($card_content_text); ?></p>
@@ -289,10 +289,7 @@ if (!function_exists('format_k_count')) {
 
             <!-- 게시판 페이지 정보 및 버튼 시작 (기존 코드) { -->
             <?php
-            if (
-                // $board['bo_admin'] === $member['mb_id'] || $member['mb_id'] == 'admin'
-                true
-                ) {
+            if ($board['bo_admin'] === $member['mb_id'] || $member['mb_id'] == 'admin') {
             ?>
                 <div class="m-4 p-4 border rounded border-gray-200 ">
 
@@ -411,7 +408,7 @@ if (!function_exists('format_k_count')) {
 
                                                 <?php
                                                 // 댓글이 존재하면 카운트 표시 (현재는 강제 false)
-                                                if ($list[$i]['comment_cnt']=false) { ?><span class="sound_only">댓글</span><span class="cnt_cmt"><?php echo $list[$i]['wr_comment']; ?></span><span class="sound_only">개</span><?php } ?>
+                                                if ($list[$i]['comment_cnt'] = false) { ?><span class="sound_only">댓글</span><span class="cnt_cmt"><?php echo $list[$i]['wr_comment']; ?></span><span class="sound_only">개</span><?php } ?>
                                             </div>
                                         </td>
                                     </tr>
