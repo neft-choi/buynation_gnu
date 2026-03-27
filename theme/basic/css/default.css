@@ -116,6 +116,25 @@ html {
   display: none !important;
 }
 
+/* 스크롤 바 숨기기 */
+.scrollbar-hidden {
+  scrollbar-width: thin;
+}
+
+@media (any-hover: none), (any-pointer: coarse) {
+  .scrollbar-hidden {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hidden::-webkit-scrollbar {
+    width: 0 !important;
+    height: 0 !important;
+    display: none !important;
+    background: transparent;
+  }
+}
+
 /* 본문 하단 네비게이션 만큼 padding */
 body {
   padding-bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom));

@@ -214,7 +214,7 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
         <?php } else { ?>
 
             <!-- 기본 헤더 + 검색 바 시작 -->
-            <div id="hd_wrapper">
+            <div id="hd_wrapper" class="!bg-white">
                 <div id="shop-header" class="w-full min-h-16 flex items-center justify-between px-4">
                     <a href="<?php echo G5_SHOP_URL; ?>/" class="text-lg font-semibold tracking-tight text-gray-900">
                         BUYNATION
@@ -263,8 +263,8 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
             $is_benefit = ($current_type === '4');
             ?>
 
-            <nav id="hd_menu" class="py-2">
-                <button type="button" id="menu_open"><i class="fa fa-bars" aria-hidden="true"></i> 카테고리</button>
+            <nav id="hd_menu" class="!w-full !bg-white py-2">
+                <button type="button" id="menu_open" class="!hidden"><i class="fa fa-bars" aria-hidden="true"></i> 카테고리</button>
                 <?php include_once(G5_THEME_SHOP_PATH . '/category.php'); // 분류 
                 ?>
                 <ul class="shop-nav scrollbar-hidden flex gap-8 overflow-x-auto whitespace-nowrap text-base text-gray-600 font-medium px-4">
@@ -339,7 +339,7 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
     </header>
     <!-- } 상단 끝 -->
 
-    <div id="side_menu">
+    <div id="side_menu" class="!hidden">
         <ul id="quick">
             <li><button class="btn_sm_cl1 btn_sm"><i class="fa fa-user-o" aria-hidden="true"></i><span class="qk_tit">마이메뉴</span></button></li>
             <li><button class="btn_sm_cl2 btn_sm"><i class="fa fa-archive" aria-hidden="true"></i><span class="qk_tit">오늘 본 상품</span></button></li>
@@ -457,10 +457,10 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
     <!-- 전체 콘텐츠 시작 { -->
     <main id="wrapper" class="<?php echo implode(' ', $wrapper_class); ?>">
         <!-- #container 시작 { -->
-        <div id="container">
+        <div id="container" class="!w-full !bg-white">
 
             <?php if (defined('_INDEX_')) { ?>
-                <aside id="aside">
+                <aside id="aside" class="!hidden">
                     <?php include_once(G5_SHOP_SKIN_PATH . '/boxcategory.skin.php'); // 상품분류 
                     ?>
                     <?php if ($default['de_type4_list_use']) { ?>
@@ -503,7 +503,7 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
             }
             ?>
             <!-- .shop-content 시작 { -->
-            <div class="<?php echo implode(' ', $content_class); ?> !p-0 ">
+            <div class="<?php echo implode(' ', $content_class); ?> !p-0 !ml-0">
                 <?php if ((!$bo_table || $w == 's') && !defined('_INDEX_') && $current_shop_page !== 'listtype.php') { ?><div id="wrapper_title"><?php echo $g5['title'] ?></div><?php } ?>
                 <!-- 글자크기 조정 display:none 되어 있음 시작 { -->
                 <div id="text_size">

@@ -104,7 +104,7 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
                     </div>
                 </div>
             </div>
-            <div class="main_owl_pager">
+            <div class="main_owl_pager !hidden">
                 <div class="owl_pager">
                     <ul class="carousel-custom-dots owl-dots">
                         <?php

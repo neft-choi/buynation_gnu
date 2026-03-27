@@ -546,6 +546,9 @@
   .mb-6 {
     margin-bottom: calc(var(--spacing) * 6);
   }
+  .\!ml-0 {
+    margin-left: calc(var(--spacing) * 0) !important;
+  }
   .ml-1 {
     margin-left: calc(var(--spacing) * 1);
   }
@@ -1618,6 +1621,9 @@
   }
   .\!py-1 {
     padding-block: calc(var(--spacing) * 1) !important;
+  }
+  .\!py-2 {
+    padding-block: calc(var(--spacing) * 2) !important;
   }
   .\!py-50 {
     padding-block: calc(var(--spacing) * 50) !important;

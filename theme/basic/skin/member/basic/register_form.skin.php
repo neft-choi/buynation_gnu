@@ -47,27 +47,20 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 					<h2 class="text-2xl font-bold text-zinc-900">회원정보</h2>
 					<p class="text-sm text-zinc-500">회원정보를 입력하고 바이네이션 서비스를 이용해보세요.</p>
 					<ul class="grid gap-3">
-						<li class="grid gap-2">
-							<label for="reg_mb_id" class="sound_only">
-								아이디 (필수)
-								<button type="button" class="tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500" aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help">
-										<circle cx="12" cy="12" r="10" />
-										<path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
-										<path d="M12 17h.01" />
-									</svg><span class="sound_only">설명보기</span>
-								</button>
-								<span class="tooltip">영문자, 숫자, _ 만 입력 가능. 최소 3자이상 입력하세요.</span>
-							</label>
-							<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?> class="h-14 w-full rounded-md border border-zinc-300 px-4 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?> <?php echo $readonly ?>" minlength="3" maxlength="20" placeholder="아이디">
+						<li class="relative grid gap-2">
+							<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?> class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 pb-2 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?> <?php echo $readonly ?>" minlength="3" maxlength="20" placeholder=" ">
+							<label for="reg_mb_id" class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">아이디</label>
 							<span id="msg_mb_id"></span>
 						</li>
-						<li class="left_input margin_input grid gap-2">
+						<li class="left_input margin_input relative grid gap-2">
 							<label for="reg_mb_password" class="sound_only">비밀번호 (필수)</label>
-							<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?> class="h-14 w-full rounded-md border border-zinc-300 px-4 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?>" minlength="3" maxlength="20" placeholder="비밀번호">
+							<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?> class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 pb-2 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?>" minlength="3" maxlength="20" placeholder=" ">
+							<span class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호</span>
 						</li>
-						<li class="left_input grid gap-2">
+						<li class="left_input relative grid gap-2">
 							<label for="reg_mb_password_re" class="sound_only">비밀번호 확인 (필수)</label>
-							<input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?> class="h-14 w-full rounded-md border border-zinc-300 px-4 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?>" minlength="3" maxlength="20" placeholder="비밀번호 재입력">
+							<input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?> class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 pb-2 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?>" minlength="3" maxlength="20" placeholder=" ">
+							<span class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호 재입력</span>
 						</li>
 					</ul>
 				</div>
@@ -119,12 +112,13 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								<?php } ?>
 							</li>
 						<?php } ?>
-						<li class="grid gap-2">
+						<li class="relative grid gap-2">
 							<label for="reg_mb_name" class="sound_only">이름 (필수)<?php echo $desc_name ?></label>
-							<input type="text" id="reg_mb_name" name="mb_name" value="<?php echo get_text($member['mb_name']) ?>" <?php echo $required ?> <?php echo $name_readonly; ?> class="h-14 w-full rounded-md border border-zinc-300 px-4 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?> <?php echo $name_readonly ?>" size="10" placeholder="이름">
+							<input type="text" id="reg_mb_name" name="mb_name" value="<?php echo get_text($member['mb_name']) ?>" <?php echo $required ?> <?php echo $name_readonly; ?> class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 pb-2 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?> <?php echo $name_readonly ?>" size="10" placeholder=" ">
+							<span class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">이름</span>
 						</li>
 						<?php if ($req_nick) {  ?>
-							<li class="grid gap-2">
+							<li class="relative grid gap-2">
 								<label for="reg_mb_nick" class="sound_only">
 									닉네임 (필수)
 									<button type="button" class="tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500" aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help">
@@ -136,7 +130,8 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								</label>
 
 								<input type="hidden" name="mb_nick_default" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>">
-								<input type="text" name="mb_nick" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>" id="reg_mb_nick" required class="required nospace h-14 w-full rounded-md border border-zinc-300 px-4 text-base text-zinc-900 placeholder:text-zinc-400" size="10" maxlength="20" placeholder="닉네임">
+								<input type="text" name="mb_nick" value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>" id="reg_mb_nick" required class="peer required nospace h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 pb-2 text-base text-zinc-900 placeholder:text-zinc-400" size="10" maxlength="20" placeholder=" ">
+								<span class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">닉네임</span>
 								<span id="msg_mb_nick"></span>
 							</li>
 						<?php }  ?>
@@ -154,18 +149,19 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								<input type="text" name="mb_tel" value="<?php echo get_text($member['mb_tel']) ?>" id="reg_mb_tel" <?php echo $config['cf_req_tel'] ? "required" : ""; ?> class="frm_input full_input <?php echo $config['cf_req_tel'] ? "required" : ""; ?>" maxlength="20" placeholder="전화번호">
 							</li>
 						<?php }  ?>
-						<li class="grid gap-2">
+						<li class="relative grid gap-2">
 							<?php if ($config['cf_use_hp'] || ($config["cf_cert_use"] && ($config['cf_cert_hp'] || $config['cf_cert_simple']))) {  ?>
 								<label for="reg_mb_hp" class="sound_only">휴대폰번호<?php if (!empty($hp_required)) { ?> (필수)<?php } ?><?php echo $desc_phone ?></label>
 
-								<input type="text" name="mb_hp" value="<?php echo get_text($member['mb_hp']) ?>" id="reg_mb_hp" <?php echo $hp_required; ?> <?php echo $hp_readonly; ?> class="h-14 w-full rounded-md border border-zinc-300 px-4 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $hp_required; ?> <?php echo $hp_readonly; ?>" maxlength="20" placeholder="휴대폰 번호">
+								<input type="text" name="mb_hp" value="<?php echo get_text($member['mb_hp']) ?>" id="reg_mb_hp" <?php echo $hp_required; ?> <?php echo $hp_readonly; ?> class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 pb-2 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $hp_required; ?> <?php echo $hp_readonly; ?>" maxlength="20" placeholder=" ">
+								<span class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">휴대폰 번호</span>
 								<?php if ($config['cf_cert_use'] && ($config['cf_cert_hp'] || $config['cf_cert_simple'])) { ?>
 									<input type="hidden" name="old_mb_hp" value="<?php echo get_text($member['mb_hp']) ?>">
 								<?php } ?>
 							<?php }  ?>
 						</li>
 
-						<li class="grid gap-2">
+						<li class="relative grid gap-2">
 							<label for="reg_mb_email" class="sound_only">E-mail (필수)
 
 								<?php if ($config['cf_use_email_certify']) {  ?>
@@ -186,7 +182,8 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							</label>
 
 							<input type="hidden" name="old_email" value="<?php echo $member['mb_email'] ?>">
-							<input type="text" name="mb_email" value="<?php echo isset($member['mb_email']) ? $member['mb_email'] : ''; ?>" id="reg_mb_email" required class="email required h-14 w-full rounded-md border border-zinc-300 px-4 text-base text-zinc-900 placeholder:text-zinc-400" size="70" maxlength="100" placeholder="이메일">
+							<input type="text" name="mb_email" value="<?php echo isset($member['mb_email']) ? $member['mb_email'] : ''; ?>" id="reg_mb_email" required class="peer email required h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 pb-2 text-base text-zinc-900 placeholder:text-zinc-400" size="70" maxlength="100" placeholder=" ">
+							<span class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">이메일</span>
 						</li>
 
 						<?php if ($config['cf_use_addr']) { ?>

@@ -64,7 +64,7 @@ foreach ($header_hide_path_suffixes as $suffix) {
 <div id="app-shell">
     <!-- 상단 시작 { -->
     <?php if ($is_show_header) { ?>
-        <header id="hd" class="!min-w-0 !bg-white">
+        <header id="hd" class="!min-w-0 !w-full !bg-white">
             <h1 id="hd_h1"><?php echo $g5['title'] ?></h1>
             <div id="skip_to_container"><a href="#container">본문 바로가기</a></div>
 
@@ -73,7 +73,7 @@ foreach ($header_hide_path_suffixes as $suffix) {
                 include G5_BBS_PATH . '/newwin.inc.php'; // 팝업레이어
             }
             ?>
-            <div id="tnb">
+            <div id="tnb" class="!hidden">
                 <div class="inner">
                     <?php if (G5_COMMUNITY_USE) { ?>
                         <ul id="hd_define">
@@ -92,7 +92,7 @@ foreach ($header_hide_path_suffixes as $suffix) {
                     </ul>
                 </div>
             </div>
-            <div id="hd_wrapper" class="!p-4">
+            <div id="hd_wrapper" class="!w-full !p-4">
                 <div class="space-y-4">
                     <div class="flex items-center justify-between">
                         <a href="<?php echo G5_URL ?>" aria-label="메인으로 이동" class="text-lg font-semibold tracking-tight text-gray-900">BUYNATION</a>
@@ -171,7 +171,7 @@ foreach ($header_hide_path_suffixes as $suffix) {
     <?php } ?>
 
     <!-- 콘텐츠 시작 { -->
-    <div id="wrapper">
+    <div id="wrapper" class="!min-w-0 !w-full">
         <div id="container_wr" class="!w-full">
 
             <div id="container">
