@@ -119,7 +119,8 @@ if (!function_exists('board_card')) {
 
 <main class="space-y-6">
     <section aria-label="메인 배너" class="px-4">
-        <div id="hero-carousel" class="relative overflow-hidden rounded-xl">
+        <?php echo display_banner('커뮤니티', 'mainbanner.10.skin.php'); ?>
+        <!-- <div id="hero-carousel" class="relative overflow-hidden rounded-xl">
             <div class="hero_owl owl-carousel">
                 <a href="#" class="relative block h-[350px] overflow-hidden bg-gradient-to-br from-amber-100 via-orange-100 to-yellow-200 p-4">
                     <img
@@ -160,16 +161,16 @@ if (!function_exists('board_card')) {
                     </svg>
                 </button>
             </div>
-        </div>
+        </div> -->
     </section>
     <script>
         $(function() {
             var $heroOwl = $(".hero_owl");
             var $pickOwl = $(".pick_owl");
 
-            if (!$heroOwl.length || !$.fn.owlCarousel) {
-                return;
-            }
+            // if (!$heroOwl.length || !$.fn.owlCarousel) {
+            //     return;
+            // }
 
             function updateHeroCounter(event) {
                 if (!event || !event.item || !event.relatedTarget) {
@@ -220,7 +221,7 @@ if (!function_exists('board_card')) {
 
     <?php include G5_THEME_PATH . '/_quick_nav.php'; ?>
 
-    <section aria-label="프로모션 배너" class="px-4">
+    <!-- <section aria-label="프로모션 배너" class="px-4">
         <a href="#" class="flex items-center justify-between w-full h-20 rounded bg-gray-900 px-4 py-2 !text-white">
             <div class="flex items-center gap-4">
                 <span class="inline-flex h-9 w-14 items-center justify-center rounded bg-amber-100/20 text-amber-100">
@@ -240,7 +241,7 @@ if (!function_exists('board_card')) {
                 </svg>
             </div>
         </a>
-    </section>
+    </section> -->
 
     <?php
     // [추천 바이클] 섹션 데이터 준비
@@ -418,7 +419,7 @@ if (!function_exists('board_card')) {
 
         </div>
 
-        <div class="mt-4 text-center">
+        <!-- <div class="mt-4 text-center">
             <button type="button" class="inline-flex items-center gap-1 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs text-gray-600">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-cw-icon lucide-rotate-cw">
                     <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8" />
@@ -426,9 +427,9 @@ if (!function_exists('board_card')) {
                 </svg>
                 <span>모임 더보기</span>
             </button>
-        </div>
+        </div> -->
     </section>
-
+    <!-- 
     <section aria-label="프로모션 슬라이드 배너" class="mx-4">
         <a href="#" class="flex items-center justify-between rounded-lg bg-rose-100 px-4 py-4">
             <div>
@@ -444,7 +445,7 @@ if (!function_exists('board_card')) {
                 </svg>
             </span>
         </a>
-    </section>
+    </section> -->
 
     <?php
     $rank_gr_id = isset($_GET['rank_gr_id']) ? substr(preg_replace('#[^a-z0-9_]#i', '', $_GET['rank_gr_id']), 0, 10) : '';
@@ -459,7 +460,7 @@ if (!function_exists('board_card')) {
                         WHERE gr_id != 'community'
                         order by gr_order, gr_id ";
     $result_rank_group = sql_query($sql_rank_group);
-    
+
     for ($rg = 0; $rank_group = sql_fetch_array($result_rank_group); $rg++) {
         $rank_tabs[] = $rank_group;
         $rank_valid_ids[] = $rank_group['gr_id'];
@@ -689,14 +690,14 @@ if (!function_exists('board_card')) {
             <?php } ?>
         </div>
 
-        <div class="mt-4 text-center">
+        <!-- <div class="mt-4 text-center">
             <button type="button" class="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-4 py-2 text-xs text-gray-600">
                 <span>랭킹 더보기</span>
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down">
                     <path d="m6 9 6 6 6-6" />
                 </svg>
             </button>
-        </div>
+        </div> -->
     </section>
 
     <div class="hidden" aria-hidden="true">

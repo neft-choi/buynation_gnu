@@ -124,7 +124,7 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
         <!-- 상품 커스텀 헤더 시작 -->
         <?php if ($is_custom_header) { ?>
             <div id="hd_wrapper">
-                <div id="shop-header" class="<?php echo ($header['layout'] === 'center_title') ? 'w-full min-h-14 grid grid-cols-[36px_1fr_36px] items-center px-2' : 'w-full min-h-14 flex items-center justify-between pl-2 pr-4'; ?>">
+                <div id="shop-header" class="<?php echo ($header['layout'] === 'center_title') ? 'w-full min-h-14 grid grid-cols-[36px_1fr_36px] items-center px-2 bg-white' : 'w-full min-h-14 flex items-center justify-between pl-2 pr-4 bg-white'; ?>">
                     <?php if ($header['layout'] === 'center_title') { ?>
                         <?php if ($header['show_back']) { ?>
                             <button type="button"

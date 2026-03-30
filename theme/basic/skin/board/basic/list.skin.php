@@ -526,38 +526,87 @@ if (!function_exists('format_k_count')) {
     <?php } elseif ($board_tab === 'product') { ?>
         <section class="mx-auto w-full max-w-full p-4">
             <div class="grid grid-cols-1 gap-6">
-                <div id="product_category_tabs" class="grid grid-cols-5 gap-1">
+                <!-- <div id="product_category_tabs" class="grid grid-cols-5 gap-1">
                     <button type="button" class="product-chip rounded-full bg-gray-900 p-2 text-sm font-medium text-white" data-active="1">BEST</button>
                     <button type="button" class="product-chip rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-900">굿즈</button>
                     <button type="button" class="product-chip rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-900">화장품</button>
                     <button type="button" class="product-chip rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-900">패션</button>
                     <button type="button" class="product-chip rounded-full bg-gray-100 p-2 text-sm font-medium text-gray-900">IT/기기</button>
-                </div>
+                </div> -->
 
+                <?php
+                $product_map = array(
+                    'if_kim_woo_bin' => array(
+                        array('name' => '칸타타 프리미엄 라떼 275ml 24개', 'origin_price' => '32,000', 'discount_rate' => '33%', 'sale_price' => '24,000', 'image' => '01.png'),
+                        array('name' => '피그 앤 로터스 플라워 코롱', 'origin_price' => '120,000', 'discount_rate' => '20%', 'sale_price' => '96,000', 'image' => '02.png'),
+                        array('name' => '유니 파워포켓 집업플리스', 'origin_price' => '300,000', 'discount_rate' => '60%', 'sale_price' => '120,000', 'image' => '03.png'),
+                    ),
+                    'if_han_ji_min' => array(
+                        array('name' => '글로우 테라피 앰플 (30ml)', 'origin_price' => '52,000', 'discount_rate' => '21%', 'sale_price' => '40,000', 'image' => '01.png'),
+                        array('name' => '원글루타넥스 글로우 부스터 크림 50ml, 1개', 'origin_price' => '55,000', 'discount_rate' => '20%', 'sale_price' => '44,000', 'image' => '02.png'),
+                        array('name' => '에버콜라겐 스킨앤헤어 20ml x 28포 4개', 'origin_price' => '164,000', 'discount_rate' => '60%', 'sale_price' => '99,000', 'image' => '03.png'),
+                    ),
+                    'if_jo_in_sung' => array(
+                        array('name' => '바바 라떼 350ml 20개입', 'origin_price' => '24,000', 'discount_rate' => '22%', 'sale_price' => '19,000', 'image' => '01.png'),
+                        array('name' => '프로메가 알티지 오메가3 듀얼 6박스', 'origin_price' => '105,000', 'discount_rate' => '32%', 'sale_price' => '71,400', 'image' => '02.png'),
+                        array('name' => '오뚜기 엑소만두 X.O. 교자 324g, 3개', 'origin_price' => '21,000', 'discount_rate' => '30%', 'sale_price' => '14,700', 'image' => '03.png'),
+                    ),
+                    'club_kukrule' => array(
+                        array('name' => '빅토리랩 여름 하계용 테니스 장갑 스트레치 글러브', 'origin_price' => '21,000', 'discount_rate' => '38%', 'sale_price' => '12,900', 'image' => '01.png'),
+                        array('name' => '요넥스 테니스라켓 팀 스매시(290g)', 'origin_price' => '140,000', 'discount_rate' => '15%', 'sale_price' => '119,000', 'image' => '02.png'),
+                        array('name' => '윌슨 챔피언쉽 볼 테니스공 시합구 36개', 'origin_price' => '169,000', 'discount_rate' => '21%', 'sale_price' => '135,000', 'image' => '03.png'),
+                    ),
+                    'club_sumisa' => array(
+                        array('name' => '미즈노 습식 스포츠타올 44x68cm N2JYB010', 'origin_price' => '41,600', 'discount_rate' => '25%', 'sale_price' => '21,200', 'image' => '01.png'),
+                        array('name' => '스피도 하이드로 롤 탑 워터프루프 드라이백 레드', 'origin_price' => '34,000', 'discount_rate' => '40%', 'sale_price' => '20,400', 'image' => '02.png'),
+                        array('name' => '아레나로고 숄더백 15L', 'origin_price' => '40,000', 'discount_rate' => '20%', 'sale_price' => '32,000', 'image' => '03.png'),
+                    ),
+                    'club_running_maniac' => array(
+                        array('name' => '나이키 바람막이 우븐 재킷 러닝 드라이핏', 'origin_price' => '82,900', 'discount_rate' => '24%', 'sale_price' => '62,900', 'image' => '01.png'),
+                        array('name' => '론빅 프리미엄 러닝 조끼', 'origin_price' => '48,000', 'discount_rate' => '20%', 'sale_price' => '38,000', 'image' => '02.png'),
+                        array('name' => '액션캠 스트랩', 'origin_price' => '19,000', 'discount_rate' => '33%', 'sale_price' => '13,000', 'image' => '03.png'),
+                    ),
+                    'rg_hallelujah_church' => array(
+                        array('name' => 'GOD LOVES U 스티커 (30매) - 할렐루야 교회 굿즈', 'origin_price' => '3,000', 'discount_rate' => '26%', 'sale_price' => '2,100', 'image' => '01.png'),
+                        array('name' => '미니 기도손 십자가 - 할렐루야 교회 굿즈', 'origin_price' => '6,000', 'discount_rate' => '20%', 'sale_price' => '4,800', 'image' => '02.png'),
+                        array('name' => '천연소가죽 포켓 성경책 - 할렐루야 교회 굿즈', 'origin_price' => '130,000', 'discount_rate' => '26%', 'sale_price' => '95,000', 'image' => '03.png'),
+                    ),
+                    'rg_hiswill_stone_ch' => array(
+                        array('name' => '사도신경 키링 - 성암교회 굿즈', 'origin_price' => '7,000', 'discount_rate' => '28%', 'sale_price' => '5,000', 'image' => '01.png'),
+                        array('name' => '성경읽기표 1세트 (4매) - 주의뜻 성암교회 굿즈', 'origin_price' => '3,000', 'discount_rate' => '20%', 'sale_price' => '2,400', 'image' => '02.png'),
+                        array('name' => '초미니성경책 - 성암교회 굿즈', 'origin_price' => '7,400', 'discount_rate' => '18%', 'sale_price' => '6,000', 'image' => '03.png'),
+                    ),
+                    'rg_hyewon_shimindang' => array(
+                        array('name' => '발우 공양 밥그릇', 'origin_price' => '100,000', 'discount_rate' => '50%', 'sale_price' => '50,000', 'image' => '01.png'),
+                        array('name' => '불교개구리 3종+연잎접시세트', 'origin_price' => '28,000', 'discount_rate' => '11%', 'sale_price' => '25,000', 'image' => '02.png'),
+                        array('name' => '108 번뇌 소멸 18염주 씨앗 손목 불교염주팔찌', 'origin_price' => '18,500', 'discount_rate' => '20%', 'sale_price' => '14,800', 'image' => '03.png'),
+                    ),
+                );
+                $product_items = isset($product_map[$bo_table]) ? $product_map[$bo_table] : array();
+                ?>
                 <div class="grid grid-cols-1 gap-4">
-                    <article class="grid grid-cols-[1fr_auto] items-center gap-4 rounded border border-gray-200 bg-white p-4">
-                        <div class="grid grid-cols-1 gap-2">
-                            <p class="text-base font-semibold text-gray-900">김우빈 맨노블레스 잡지</p>
-                            <p class="text-base font-semibold text-gray-900">11,400 원</p>
-                        </div>
-                        <img src="https://placehold.co/105x105" alt="상품 썸네일" class="border border-gray-200 object-cover">
-                    </article>
-
-                    <article class="grid grid-cols-[1fr_auto] items-center gap-4 rounded border border-gray-200 bg-white p-4">
-                        <div class="grid grid-cols-1 gap-2">
-                            <p class="text-base font-semibold text-gray-900">김우빈 콩콩팡팡 선글라스</p>
-                            <p class="text-base font-semibold text-gray-900">11,400 원</p>
-                        </div>
-                        <img src="https://placehold.co/105x105" alt="상품 썸네일" class="border border-gray-200 object-cover">
-                    </article>
-
-                    <article class="grid grid-cols-[1fr_auto] items-center gap-3 rounded border border-gray-200 bg-white p-4">
-                        <div class="grid grid-cols-1 gap-2">
-                            <p class="text-base font-semibold text-gray-900">김우빈 맨노블레스 잡지</p>
-                            <p class="text-base font-semibold text-gray-900">11,400 원</p>
-                        </div>
-                        <img src="https://placehold.co/105x105" alt="상품 썸네일" class="border border-gray-200 object-cover">
-                    </article>
+                    <?php if (count($product_items)) { ?>
+                        <?php for ($i = 0; $i < count($product_items); $i++) { ?>
+                            <?php
+                            $image_url = G5_DATA_URL . '/product/' . $bo_table . '/' . $product_items[$i]['image'];
+                            ?>
+                            <article class="grid grid-cols-[1fr_auto] items-start gap-4 rounded border border-gray-200 bg-white p-4">
+                                <div class="grid grid-cols-1 gap-5">
+                                    <p class="text-base font-semibold text-gray-900"><?php echo $product_items[$i]['name']; ?></p>
+                                    <div>
+                                        <p class="text-sm font-semibold text-zinc-500 line-through"><?php echo $product_items[$i]['origin_price']; ?></p>
+                                        <div class="flex items-center gap-1">
+                                            <p class="text-base font-semibold text-red-600"><?php echo $product_items[$i]['discount_rate']; ?></p>
+                                            <p class="text-base font-semibold text-gray-900"><?php echo $product_items[$i]['sale_price']; ?></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <img src="<?php echo $image_url; ?>" alt="상품 썸네일" class="w-[105px] h-[105px] border border-gray-200 object-cover">
+                            </article>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <div class="h-60 flex items-center justify-center rounded border border-gray-200 bg-white p-4 text-sm text-gray-500">등록된 상품이 없습니다.</div>
+                    <?php } ?>
                 </div>
             </div>
         </section>
@@ -695,4 +744,63 @@ if (!function_exists('format_k_count')) {
         });
     </script>
 <?php } ?>
+
+<script>
+    // board_tab 전환 시 클릭 직전 스크롤 위치를 저장하고 다음 페이지 로드 후 복원
+    document.addEventListener("DOMContentLoaded", function() {
+        const STORAGE_FLAG_KEY = "board_tab_scroll_restore";
+        const STORAGE_Y_KEY = "board_tab_scroll_y";
+
+        // 현재 URL ?board_tab 값 읽기
+        function getBoardTabFromUrl() {
+            try {
+                const params = new URLSearchParams(window.location.search || "");
+                return params.get("board_tab") || "";
+            } catch (e) {
+                return "";
+            }
+        }
+
+        function restoreScrollPositionIfNeeded() {
+            const boardTab = getBoardTabFromUrl();
+            if (!boardTab) {
+                return;
+            }
+
+            const restoreFlag = sessionStorage.getItem(STORAGE_FLAG_KEY);
+            const savedY = parseInt(sessionStorage.getItem(STORAGE_Y_KEY) || "", 10);
+
+            if (restoreFlag !== "1" || isNaN(savedY)) {
+                return;
+            }
+
+            sessionStorage.removeItem(STORAGE_FLAG_KEY);
+            sessionStorage.removeItem(STORAGE_Y_KEY);
+
+            // 뒤로가기/이동 시 기존 스크롤 복원과 충돌 방지
+            window.history.scrollRestoration = "manual";
+
+            requestAnimationFrame(function() {
+                window.scrollTo(0, savedY);
+                setTimeout(function() {
+                    window.scrollTo(0, savedY);
+                }, 120);
+            });
+        }
+
+        document.addEventListener("click", function(e) {
+            const link = e.target.closest("a[href*='board_tab=']");
+            if (!link) {
+                return;
+            }
+
+            // window.scrollY 현재 세로 스크롤
+            // window.pageYOffset 구버전 호환 보조
+            sessionStorage.setItem(STORAGE_FLAG_KEY, "1");
+            sessionStorage.setItem(STORAGE_Y_KEY, String(window.scrollY || window.pageYOffset || 0));
+        });
+
+        restoreScrollPositionIfNeeded();
+    });
+</script>
 <!-- } 게시판 목록 끝 -->

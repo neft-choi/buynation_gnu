@@ -454,7 +454,7 @@ function get_it_image($it_id, $width, $height = 0, $anchor = false, $img_id = ''
 
     if ($thumb) {
         $file_url = str_replace(G5_PATH, G5_URL, $filepath . '/' . $thumb);
-        $img = '<img src="' . $file_url . '" width="' . $width . '" height="' . $height . '" style="width:100%;min-width: stretch;" alt="' . $img_alt . '"';
+        $img = '<img src="' . $file_url . '" width="' . $width . '" height="' . $height . '" style="width:100%;" alt="' . $img_alt . '"';
     } else {
         $img = '<img src="' . G5_SHOP_URL . '/img/no_image.gif" width="' . $width . '"';
         if ($height)
@@ -1199,7 +1199,7 @@ function display_banner($position, $skin = '')
 {
     global $g5;
 
-    if (!$position) $position = '왼쪽';
+    if (!$position) $position = '커뮤니티';
     if (!$skin) $skin = 'boxbanner.skin.php';
 
     $skin_path = G5_SHOP_SKIN_PATH . '/' . $skin;
