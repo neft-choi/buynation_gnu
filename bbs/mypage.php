@@ -26,6 +26,7 @@ include_once(G5_THEME_PATH . '/head.php');
                 <p class="text-2xl font-bold text-zinc-900">
                     <?php echo get_text($member['mb_nick']); ?>님
                 </p>
+                <a href="<?php echo G5_BBS_URL ?>/logout.php">로그아웃</a>
             </div>
         <?php } ?>
     </section>
