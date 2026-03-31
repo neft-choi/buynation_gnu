@@ -106,7 +106,7 @@ foreach ($header_hide_path_suffixes as $suffix) {
                         <input type="hidden" name="sfl" value="wr_subject||wr_content">
                         <input type="hidden" name="sop" value="and">
                         <label for="sch_stx_top" class="sound_only">검색어 입력</label>
-                        <input type="text" name="stx" id="sch_stx_top" maxlength="20" class="h-11 w-full rounded-full border-2 border-[var(--color-primary)] pl-4 pr-11 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:bg-white focus:outline-none">
+                        <input type="text" name="stx" id="sch_stx_top" maxlength="20" class="h-11 w-full !rounded-full !border-2 !border-[var(--color-primary)] !pl-4 !pr-11 text-sm text-gray-900 placeholder:text-gray-400 focus:border-gray-300 focus:bg-white focus:outline-none">
                         <button type="submit" class="absolute right-1 top-1 inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-500" aria-label="검색">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search">
                                 <circle cx="11" cy="11" r="8" />

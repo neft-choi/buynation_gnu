@@ -9,7 +9,7 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
         onsubmit="return shop_searchbar_submit(this);">
         <label for="shop_searchbar_input" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
         <input
-            type="text"
+            type="search"
             name="q"
             value="<?php echo stripslashes(get_text(get_search_string($q))); ?>"
             id="shop_searchbar_input"

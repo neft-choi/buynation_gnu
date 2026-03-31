@@ -306,6 +306,9 @@
   .inset-x-0 {
     inset-inline: calc(var(--spacing) * 0);
   }
+  .-top-0 {
+    top: calc(var(--spacing) * -0);
+  }
   .-top-0\.5 {
     top: calc(var(--spacing) * -0.5);
   }
@@ -332,6 +335,9 @@
   }
   .top-4 {
     top: calc(var(--spacing) * 4);
+  }
+  .-right-0 {
+    right: calc(var(--spacing) * -0);
   }
   .-right-0\.5 {
     right: calc(var(--spacing) * -0.5);
@@ -368,6 +374,9 @@
   }
   .left-0\.5 {
     left: calc(var(--spacing) * 0.5);
+  }
+  .left-1 {
+    left: calc(var(--spacing) * 1);
   }
   .left-1\/2 {
     left: calc(1/2 * 100%);
@@ -630,6 +639,9 @@
   .aspect-\[16\/9\] {
     aspect-ratio: 16/9;
   }
+  .\!h-6 {
+    height: calc(var(--spacing) * 6) !important;
+  }
   .\!h-8 {
     height: calc(var(--spacing) * 8) !important;
   }
@@ -638,6 +650,9 @@
   }
   .h-0 {
     height: calc(var(--spacing) * 0);
+  }
+  .h-1 {
+    height: calc(var(--spacing) * 1);
   }
   .h-1\.5 {
     height: calc(var(--spacing) * 1.5);
@@ -728,6 +743,9 @@
   }
   .min-h-screen {
     min-height: 100vh;
+  }
+  .\!w-8 {
+    width: calc(var(--spacing) * 8) !important;
   }
   .\!w-25 {
     width: calc(var(--spacing) * 25) !important;
@@ -840,17 +858,27 @@
   .flex-1 {
     flex: 1;
   }
+  .flex-shrink {
+    flex-shrink: 1;
+  }
   .shrink {
     flex-shrink: 1;
   }
   .shrink-0 {
     flex-shrink: 0;
   }
+  .flex-grow {
+    flex-grow: 1;
+  }
   .grow {
     flex-grow: 1;
   }
   .border-collapse {
     border-collapse: collapse;
+  }
+  .-translate-x-1 {
+    --tw-translate-x: calc(var(--spacing) * -1);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .-translate-x-1\/2 {
     --tw-translate-x: calc(calc(1/2 * 100%) * -1);
@@ -862,6 +890,10 @@
   }
   .translate-x-4 {
     --tw-translate-x: calc(var(--spacing) * 4);
+    translate: var(--tw-translate-x) var(--tw-translate-y);
+  }
+  .-translate-y-1 {
+    --tw-translate-y: calc(var(--spacing) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
   }
   .-translate-y-1\/2 {
@@ -1105,8 +1137,14 @@
   .overflow-y-auto {
     overflow-y: auto;
   }
+  .\!rounded-full {
+    border-radius: calc(infinity * 1px) !important;
+  }
   .\!rounded-md {
     border-radius: var(--radius-md) !important;
+  }
+  .\!rounded-none {
+    border-radius: 0 !important;
   }
   .rounded {
     border-radius: 0.25rem;
@@ -1122,6 +1160,9 @@
   }
   .rounded-md {
     border-radius: var(--radius-md);
+  }
+  .rounded-none {
+    border-radius: 0;
   }
   .rounded-xl {
     border-radius: var(--radius-xl);
@@ -1156,6 +1197,10 @@
     border-style: var(--tw-border-style) !important;
     border-width: 0px !important;
   }
+  .\!border-2 {
+    border-style: var(--tw-border-style) !important;
+    border-width: 2px !important;
+  }
   .border {
     border-style: var(--tw-border-style);
     border-width: 1px;
@@ -1172,9 +1217,17 @@
     border-style: var(--tw-border-style);
     border-width: 4px;
   }
+  .\!border-t-0 {
+    border-top-style: var(--tw-border-style) !important;
+    border-top-width: 0px !important;
+  }
   .border-t {
     border-top-style: var(--tw-border-style);
     border-top-width: 1px;
+  }
+  .border-t-0 {
+    border-top-style: var(--tw-border-style);
+    border-top-width: 0px;
   }
   .border-t-2 {
     border-top-style: var(--tw-border-style);
@@ -1188,13 +1241,25 @@
     border-right-style: var(--tw-border-style);
     border-right-width: 0px;
   }
+  .\!border-b-0 {
+    border-bottom-style: var(--tw-border-style) !important;
+    border-bottom-width: 0px !important;
+  }
   .border-b {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 1px;
   }
+  .border-b-0 {
+    border-bottom-style: var(--tw-border-style);
+    border-bottom-width: 0px;
+  }
   .border-b-2 {
     border-bottom-style: var(--tw-border-style);
     border-bottom-width: 2px;
+  }
+  .\!border-l-0 {
+    border-left-style: var(--tw-border-style) !important;
+    border-left-width: 0px !important;
   }
   .border-l-0 {
     border-left-style: var(--tw-border-style);
@@ -1212,8 +1277,17 @@
     --tw-border-style: dashed;
     border-style: dashed;
   }
+  .\!border-\[var\(--color-primary\)\] {
+    border-color: var(--color-primary) !important;
+  }
   .\!border-gray-200 {
     border-color: var(--color-gray-200) !important;
+  }
+  .\!border-gray-900 {
+    border-color: var(--color-gray-900) !important;
+  }
+  .\!border-zinc-500 {
+    border-color: var(--color-zinc-500) !important;
   }
   .border-\[\#2f3134\] {
     border-color: #2f3134;
@@ -1305,6 +1379,9 @@
   .\!bg-gray-900 {
     background-color: var(--color-gray-900) !important;
   }
+  .\!bg-transparent {
+    background-color: transparent !important;
+  }
   .\!bg-white {
     background-color: var(--color-white) !important;
   }
@@ -1361,6 +1438,9 @@
   }
   .bg-amber-400 {
     background-color: var(--color-amber-400);
+  }
+  .bg-black {
+    background-color: var(--color-black);
   }
   .bg-black\/40 {
     background-color: color-mix(in srgb, #000 40%, transparent);
@@ -1577,6 +1657,9 @@
   .\!py-1 {
     padding-block: calc(var(--spacing) * 1) !important;
   }
+  .\!py-2 {
+    padding-block: calc(var(--spacing) * 2) !important;
+  }
   .\!py-50 {
     padding-block: calc(var(--spacing) * 50) !important;
   }
@@ -1610,6 +1693,9 @@
   .py-50 {
     padding-block: calc(var(--spacing) * 50);
   }
+  .pt-0 {
+    padding-top: calc(var(--spacing) * 0);
+  }
   .pt-0\.5 {
     padding-top: calc(var(--spacing) * 0.5);
   }
@@ -1633,6 +1719,9 @@
   }
   .pt-px {
     padding-top: 1px;
+  }
+  .\!pr-11 {
+    padding-right: calc(var(--spacing) * 11) !important;
   }
   .pr-1 {
     padding-right: calc(var(--spacing) * 1);
@@ -1681,6 +1770,9 @@
   }
   .pb-\[calc\(0\.5rem\+env\(safe-area-inset-bottom\)\)\] {
     padding-bottom: calc(0.5rem + env(safe-area-inset-bottom));
+  }
+  .\!pl-4 {
+    padding-left: calc(var(--spacing) * 4) !important;
   }
   .pl-2 {
     padding-left: calc(var(--spacing) * 2);
@@ -1807,6 +1899,9 @@
   }
   .text-nowrap {
     text-wrap: nowrap;
+  }
+  .text-wrap {
+    text-wrap: wrap;
   }
   .\!break-all {
     word-break: break-all !important;

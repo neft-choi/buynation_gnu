@@ -284,7 +284,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
                                                         </svg>
                                                     </button>
 
-                                                    <input type="text" value="<?php echo (int) $item['qty']; ?>" inputmode="numeric" class="qty-input h-6 w-8 border border-zinc-500 text-center text-xs">
+                                                    <input type="text" value="<?php echo (int) $item['qty']; ?>" inputmode="numeric" class="qty-input !h-6 !w-8 !rounded-none !border-zinc-500 !p-0 text-center text-xs">
 
                                                     <button type="button" class="qty-plus inline-flex h-6 w-6 items-center justify-center border border-l-0 border-zinc-500">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">

@@ -88,10 +88,47 @@
   --bottom-nav-height: 60px;
 }
 
-@layer components {
-  .ui-btn {
-    @apply w-full;
-  }
+:where(
+  input[type="text"],
+  input[type="password"],
+  input[type="email"]
+) {
+  width: 100%;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  background: #ffffff;
+  padding: 16px;
+  color: #18181b;
+  outline: none;
+}
+
+:where(
+  input[type="text"],
+  input[type="password"],
+  input[type="email"]
+)::placeholder {
+  color: #a1a1aa;
+}
+
+:where(
+  input[type="text"],
+  input[type="password"],
+  input[type="email"]
+):focus {
+  border-color: #a1a1aa;
+  outline: none;
+}
+
+:where(textarea) {
+  min-height: 100px;
+  padding: 16px;
+  resize: vertical;
+  outline: none;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 /* 사이트 너비와 내부 요소 너비 조절 */
@@ -2070,3 +2107,4 @@ textarea.required {
   text-decoration: none;
   text-align: center;
 }
+

@@ -124,7 +124,7 @@ $mshop_categories = get_shop_category_array(true);
                 <label for="category_search_input" class="sound_only">검색어</label>
                 <div class="flex h-9 w-full items-center gap-1 rounded-full border-2 border-[var(--color-primary)] bg-white pl-2 pr-1">
                     <input
-                        type="text"
+                        type="search"
                         name="q"
                         id="category_search_input"
                         value="<?php echo isset($q) ? stripslashes(get_text(get_search_string($q))) : ''; ?>"

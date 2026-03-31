@@ -11,22 +11,19 @@ $list_count = (is_array($list) && $list) ? count($list) : 0;
         <?php
         global $g5;
 
-        // 카드 대표 이미지: 게시판 설정의 bo_content_head(상단내용)
-        $sql = " select bo_content_head from {$g5['board_table']} where bo_table = '$bo_table' ";
-        $board = sql_fetch($sql);
-        $head_html = run_replace('board_content_head', html_purifier(stripslashes($board['bo_content_head'])), $board);
-        $cover_src = '';
+        $sql = " select b.bo_table, b.bo_subject, b.bo_content_head, b.bo_content_tail, b.gr_id, g.gr_subject
+         from {$g5['board_table']} b
+         left join {$g5['group_table']} g on b.gr_id = g.gr_id
+         where b.bo_table = '{$bo_table}'
+         limit 1 ";
+        $board_row = sql_fetch($sql);
+        $card = board_card($board_row);
 
-        // bo_content_head 안의 첫 번째 <img ... src="..."> 주소를 추출
-        if (preg_match('/<img[^>]*src=["\']([^"\']+)["\']/i', $board['bo_content_head'], $m)) {
-            $cover_src = $m[1];
-            // 개발/내부 IP로 저장된 이미지 경로를 현재 도메인으로 치환한다.
-            // $cover_src = str_replace(
-            //     'http://172.30.1.93',
-            //     'https://' . $_SERVER['HTTP_HOST'],
-            //     $cover_src
-            // );
-        }
+        $cover_src = $card['thumbnail'];
+        $board_title = $card['title'] ? $card['title'] : $bo_subject;
+        $board_desc = $card['desc'] ? $card['desc'] : '설명이 없습니다.';
+        $board_group = $card['group'];
+        $board_group_badge_class = $card['group_badge_class'];
         ?>
 
         <a href="<?php echo get_pretty_url($bo_table); ?>" class="block w-full">
@@ -44,7 +41,7 @@ $list_count = (is_array($list) && $list) ? count($list) : 0;
         <div class="space-y-1">
             <h2 class="lat_title_custom text-sm font-bold"><a href="<?php echo get_pretty_url($bo_table); ?>"><?php echo $bo_subject ?></a></h2>
 
-            <p class="text-sm text-zinc-500 font-medium">여기에 게시판 설명이 들어갑니다.</p>
+            <p class="text-sm text-zinc-500 font-medium line-clamp-1 leading-normal"><?php echo $board_desc; ?></p>
 
             <div class="flex items-center gap-1 text-xs text-gray-500">
                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
@@ -52,6 +49,8 @@ $list_count = (is_array($list) && $list) ? count($list) : 0;
                 </svg>
                 <span>11.3k</span>
             </div>
+
+            <span class="rounded px-2 py-1 text-xs <?php echo $board_group_badge_class; ?>"><?php echo $board_group; ?></span>
         </div>
     </div>
     <ul class="hidden">
