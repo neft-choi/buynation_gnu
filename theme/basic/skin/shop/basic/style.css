@@ -2685,7 +2685,7 @@
   clear: both;
   content: "";
 }
-#sit_ov_btn button {
+/* #sit_ov_btn button {
   width: 186px;
   float: left;
   margin-right: 5px;
@@ -2699,7 +2699,7 @@
   border-radius: 3px;
   border: 1px solid #1c70e9;
   color: #fff;
-}
+} */
 .sit_btn_buy:hover {
   background: #2176f1;
 }
@@ -2728,7 +2728,7 @@
   border: 0;
   text-align: center;
 }
-.sit_btn_wish {
+/* .sit_btn_wish {
   float: left;
   display: inline-block;
   width: 65px;
@@ -2744,7 +2744,7 @@
 }
 .sit_btn_wish:hover {
   color: red;
-}
+} */
 
 /* 상품 상세보기 - 다른 상품 보기 */
 #sit_siblings {

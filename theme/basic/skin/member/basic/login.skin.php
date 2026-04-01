@@ -50,7 +50,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                     </label>
                 </div>
 
-                <button type="submit" class="my-2 p-4 w-full rounded bg-yellow-400 text-base font-semibold text-zinc-900">로그인</button>
+                <button type="submit" data-variant="primary" class="h-14 !text-base">로그인</button>
 
                 <div class="flex items-center justify-center my-2 gap-3 text-sm text-zinc-600">
                     <a href="<?php echo G5_BBS_URL ?>/password_lost.php">아이디/비밀번호 찾기</a>

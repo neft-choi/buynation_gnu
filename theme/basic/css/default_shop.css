@@ -85,11 +85,30 @@
   --color-primary-strong: color-mix(in srgb, rgb(var(--brand-rgb)) 80%, black);
 }
 
-:where(
-  input[type="text"],
-  input[type="password"],
-  input[type="email"]
-) {
+/* 버튼 테마 */
+:where(button[data-variant="primary"]) {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  background: var(--color-primary);
+  color: #18181b;
+  border-radius: 4px;
+  outline: none;
+}
+
+:where(button[data-variant="secondary"]) {
+  width: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  background: #ffffff;
+  color: #18181b;
+  border: 1px solid #98a3b3;
+  border-radius: 4px;
+  outline: none;
+}
+
+/* 인풋 테마 */
+:where(input[type="text"], input[type="password"], input[type="email"]) {
   width: 100%;
   border: 1px solid #d4d4d8;
   border-radius: 4px;
@@ -107,11 +126,7 @@
   color: #a1a1aa;
 }
 
-:where(
-  input[type="text"],
-  input[type="password"],
-  input[type="email"]
-):focus {
+:where(input[type="text"], input[type="password"], input[type="email"]):focus {
   border-color: #a1a1aa;
   outline: none;
 }
@@ -124,8 +139,8 @@
 }
 
 input[type="search"]::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-    appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 html {
@@ -3060,7 +3075,6 @@ textarea.required {
   padding: 10px 15px;
   background: #f9f9f9;
   border: 1px solid #e6e9ed;
-  margin: 10px 0;
   position: relative;
 }
 #sit_opt_added li:after {
@@ -3074,7 +3088,7 @@ textarea.required {
   font-weight: bold;
 }
 #sit_opt_added li .opt_count {
-}
+/* }
 #sit_opt_added button {
   float: left;
   width: 30px;
@@ -3084,7 +3098,7 @@ textarea.required {
   background: #fff;
   color: #666;
   font-size: 0.92em;
-}
+} */
 #sit_opt_added button:hover {
   color: #000;
 }
@@ -3650,7 +3664,8 @@ textarea.required {
   text-indent: -999px;
 }
 #sod_frm_paysel .naverpay_icon {
-  background: url("../../../img/ico-default-naverpay.png") no-repeat 50% 50% #fff;
+  background: url("../../../img/ico-default-naverpay.png") no-repeat 50% 50%
+    #fff;
   overflow: hidden;
   text-indent: -999px;
 }

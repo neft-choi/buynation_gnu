@@ -60,6 +60,7 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
         <style>
             #main_bn .btn_wr {
                 padding: 6px 12px;
+
             }
 
             #main_bn .pager-prev {
@@ -126,41 +127,46 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
             jQuery(function($) {
 
                 function owl_show_page(event) {
-
-                    if (event.item) {
-                        var count = event.item.count,
-                            item_index = event.item.index,
-                            index = 1;
-
-                        if (is_loop) {
-                            index = (1 + (event.property.value - Math.ceil(event.item.count / 2)) % event.item.count || 0) || 1;
-                        } else {
-                            index = event.item.index ? event.item.index + 1 : 1;
-                        }
-
-                        $(event.target).closest("#main_bn").find(".slide-index").text(index);
+                    if (!event || !event.item || !event.relatedTarget) {
+                        return;
                     }
+
+                    const index = event.relatedTarget.relative(event.item.index) + 1;
+                    $(event.target).closest("#main_bn").find(".current-index").text(index);
                 }
 
-                var is_loop = true,
-                    item_totals = $('.main_banner_owl .item').length,
-                    is_autoplay = true;
+                const is_loop = true;
+                const autoplayTimeout = 5000;
+                const item_totals = $('.main_banner_owl .item').length;
+                let is_autoplay = true;
 
                 if (item_totals) {
                     $('#slide-counter').prepend('<span class="slide-index current-index"></span> / ')
                         .append('<span class="total-slides">' + item_totals + '</span>');
                 }
 
-                var owl = $('.main_banner_owl').owlCarousel({
+                function restartAutoplayTimer() {
+                    if (!is_autoplay) {
+                        return;
+                    }
+
+                    owl.trigger('stop.owl.autoplay');
+                    owl.trigger('play.owl.autoplay', [autoplayTimeout]);
+                }
+
+                const owl = $('.main_banner_owl').owlCarousel({
                     items: 1,
                     loop: is_loop,
                     margin: 0,
                     nav: false,
                     autoHeight: false,
                     autoplay: true,
-                    autoplayTimeout: 5000, // 5000은 5초
+                    autoplayTimeout: autoplayTimeout,
                     autoplayHoverPause: true,
                     dotsContainer: '.carousel-custom-dots',
+                    onInitialized: function(event) {
+                        owl_show_page(event);
+                    },
                     onChanged: function(event) {
                         owl_show_page(event);
                     },
@@ -170,22 +176,29 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
                 $(document).on("click", ".carousel-custom-dots a", function(e) {
                     e.preventDefault();
                     owl.trigger('to.owl.carousel', [$(this).parent().index(), 300]);
+                    restartAutoplayTimer();
                 });
 
                 $(document).on("click", ".btn_wr .pager-next", function(e) {
                     e.preventDefault();
                     owl.trigger('next.owl.carousel');
+                    restartAutoplayTimer();
                 });
 
                 $(document).on("click", ".btn_wr .pager-prev", function(e) {
                     e.preventDefault();
                     owl.trigger('prev.owl.carousel');
+                    restartAutoplayTimer();
+                });
+
+                owl.on("dragged.owl.carousel", function() {
+                    restartAutoplayTimer();
                 });
 
                 $(document).on("click", ".main_bn_pause", function() {
-                    var $button = $(this);
-                    var $pauseIcon = $button.find(".pause-icon");
-                    var $playIcon = $button.find(".play-icon");
+                    const $button = $(this);
+                    const $pauseIcon = $button.find(".pause-icon");
+                    const $playIcon = $button.find(".play-icon");
 
                     if (is_autoplay) {
                         owl.trigger('stop.owl.autoplay');
@@ -193,7 +206,7 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
                         $pauseIcon.addClass("hidden");
                         $playIcon.removeClass("hidden");
                     } else {
-                        owl.trigger('play.owl.autoplay', [5000]);
+                        owl.trigger('play.owl.autoplay', [autoplayTimeout]);
                         $button.attr("aria-label", "배너 일시정지");
                         $pauseIcon.removeClass("hidden");
                         $playIcon.addClass("hidden");

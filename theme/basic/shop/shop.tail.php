@@ -105,7 +105,7 @@ if ($show_bottom_nav) {
     </style>
 
     <nav id="shop-bottom-nav-wrap" class="bg-white border-t border-gray-200">
-        <ul class="flex items-end justify-between px-3 pt-2 pb-4 text-xs">
+        <ul class="flex items-end justify-between py-2 text-xs">
             <li class="flex-1">
                 <a href="#" id="bottom_menu_open" class="flex flex-col items-center gap-1 text-gray-800">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu">
@@ -117,7 +117,7 @@ if ($show_bottom_nav) {
                 </a>
             </li>
             <li class="flex-1">
-                <button type="button" id="shop-bottom-search-trigger" class="flex w-full flex-col items-center gap-1 text-gray-800" aria-label="검색 열기">
+                <button type="button" id="shop-bottom-search-trigger" class="flex w-full flex-col items-center gap-1 !p-0 !text-xs !font-normal !text-gray-800" aria-label="검색 열기">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />

@@ -17,11 +17,23 @@ $star_avg = isset($it['it_use_avg']) ? number_format((float) $it['it_use_avg'], 
 $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cnt'];
 ?>
 
+<style>
+	#sit_tot_price {
+		display: none;
+	}
+
+	#sit_tot_price strong {
+		font-size: 16px;
+		font-weight: 600;
+		margin-left: 16px;
+	}
+</style>
 <div id="sit_ov_from">
 	<form name="fitem" method="post" action="<?php echo $action_url; ?>" onsubmit="return fitem_submit(this);">
 		<input type="hidden" name="it_id[]" value="<?php echo $it_id; ?>">
 		<input type="hidden" name="sw_direct">
 		<input type="hidden" name="url">
+		<input type="hidden" id="it_price" value="<?php echo $it_price; ?>">
 
 		<div id="sit_ov_wrap">
 			<!-- 상품이미지 미리보기 시작 { -->
@@ -114,7 +126,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						$(".sns_area").show();
 					});
 					$(document).mouseup(function(e) {
-						var container = $(".sns_area");
+						const container = $(".sns_area");
 						if (container.has(e.target).length === 0)
 							container.hide();
 					});
@@ -266,7 +278,8 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						id="sit_open_drawer"
 						aria-controls="sit_purchase_drawer"
 						aria-expanded="false"
-						class="h-12 rounded bg-[var(--color-primary)] px-4 text-sm font-semibold text-gray-900">
+						data-variant="primary"
+						class="h-12">
 						장바구니 담기
 					</button>
 				</div>
@@ -313,15 +326,15 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						?>
 
 						<!-- 선택된 옵션 시작 { -->
-						<section id="sit_sel_option">
+						<section id="sit_sel_option" class="mb-4">
 							<h3>선택된 옵션</h3>
 							<?php
 							if (!$option_item) {
 								if (!$it['it_buy_min_qty'])
 									$it['it_buy_min_qty'] = 1;
 							?>
-								<ul id="sit_opt_added">
-									<li class="sit_opt_list">
+								<ul id="sit_opt_added" class="space-y-2">
+									<li class="sit_opt_list space-y-2">
 										<input type="hidden" name="io_type[<?php echo $it_id; ?>][]" value="0">
 										<input type="hidden" name="io_id[<?php echo $it_id; ?>][]" value="">
 										<input type="hidden" name="io_value[<?php echo $it_id; ?>][]" value="<?php echo $it['it_name']; ?>">
@@ -330,12 +343,28 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 										<div class="opt_name">
 											<span class="sit_opt_subj"><?php echo $it['it_name']; ?></span>
 										</div>
-										<div class="opt_count">
+										<div class="opt_count flex items-center justify-between gap-2">
 											<label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
-											<button type="button" class="sit_qty_minus"><i class="fa fa-minus" aria-hidden="true"></i><span class="sound_only">감소</span></button>
-											<input type="text" name="ct_qty[<?php echo $it_id; ?>][]" value="<?php echo $it['it_buy_min_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="num_input" size="5">
-											<button type="button" class="sit_qty_plus"><i class="fa fa-plus" aria-hidden="true"></i><span class="sound_only">증가</span></button>
+											<div class="flex">
+												<button type="button" class="sit_qty_minus flex items-center justify-center p-1 border border-gray-600">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">
+														<path d="M5 12h14" />
+													</svg>
+													<span class="sound_only">감소</span>
+												</button>
+
+												<input type="text" name="ct_qty[<?php echo $it_id; ?>][]" value="<?php echo $it['it_buy_min_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="num_input !p-0 !w-fit !rounded-none !border-gray-900 !border-l-0 !border-r-0 text-center" size="5">
+
+												<button type="button" class="sit_qty_plus flex items-center justify-center p-1 border border-gray-600">
+													<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
+														<path d="M5 12h14" />
+														<path d="M12 5v14" />
+													</svg>
+													<span class="sound_only">증가</span>
+												</button>
+											</div>
 											<span class="sit_opt_prc">+0원</span>
+											<span class="opt_prc_custom whitespace-nowrap text-sm font-semibold text-gray-900">+0원</span>
 										</div>
 									</li>
 								</ul>
@@ -350,10 +379,18 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 						<div id="sit_tot_price"></div>
 
-						<div id="sit_ov_btn">
-							<button type="submit" onclick="document.pressed=this.value;" value="장바구니" class="sit_btn_cart !w-full">장바구니</button>
-							<button type="submit" onclick="document.pressed=this.value;" value="바로구매" class="sit_btn_buy !w-full">바로구매</button>
-							<a href="javascript:item_wish(document.fitem, '<?php echo $it['it_id']; ?>');" class="sit_btn_wish !w-25"><i class="fa fa-heart-o" aria-hidden="true"></i><span class="sound_only">위시리스트</span></a>
+						<div id="sit_ov_btn" class="gap-2 items-center">
+							<button type="submit" data-variant="secondary" onclick="document.pressed=this.value;" value="장바구니" class="h-12">장바구니</button>
+							
+							<button type="submit" data-variant="primary" onclick="document.pressed=this.value;" value="바로구매" class="h-12">바로구매</button>
+							
+							<a href="javascript:item_wish(document.fitem, '<?php echo $it['it_id']; ?>');" class="flex !w-12 !h-12 shrink-0 p-2 items-center justify-center rounded border border-gray-300 bg-white text-gray-700">
+								<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
+									<path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+								</svg>
+								<span class="sound_only">위시리스트</span>
+							</a>
+							
 							<?php if ($naverpay_button_js) { ?>
 								<div class="itemform-naverpay"><?php echo $naverpay_request_js . $naverpay_button_js; ?></div>
 							<?php } ?>
@@ -368,18 +405,18 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 <script>
 	$(function() {
-		var $drawer = $("#sit_purchase_drawer");
-		var $overlay = $("#sit_drawer_overlay");
-		var $openDrawerBtn = $("#sit_open_drawer");
-		var $closeDrawerBtn = $("#sit_close_drawer");
-		var lastFocusedElement = null;
+		const $drawer = $("#sit_purchase_drawer");
+		const $overlay = $("#sit_drawer_overlay");
+		const $openDrawerBtn = $("#sit_open_drawer");
+		const $closeDrawerBtn = $("#sit_close_drawer");
+		let lastFocusedElement = null;
 
 		function resetDrawerOptionSelects() {
-			var $optionSelects = $drawer.find("select.it_option");
+			const $optionSelects = $drawer.find("select.it_option");
 			if (!$optionSelects.length) return;
 
 			$optionSelects.each(function(index) {
-				var $sel = $(this);
+				const $sel = $(this);
 				$sel.val("");
 				if (index === 0) {
 					$sel.prop("selectedIndex", 0).attr("disabled", false).trigger("change");
@@ -404,7 +441,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			$drawer.attr("aria-hidden", "false");
 
 			setTimeout(function() {
-				var $firstFocusable = $drawer.find("select, input, button, textarea, a[href]").filter(":visible").first();
+				const $firstFocusable = $drawer.find("select, input, button, textarea, a[href]").filter(":visible").first();
 				if ($firstFocusable.length) {
 					$firstFocusable.focus();
 				}
@@ -434,11 +471,11 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			if (e.key === "Escape") closePurchaseDrawer();
 		});
 
-		var $slider = $("#sit_pvi_big .sit-pvi-slider");
-		var $zoomButton = $("#popup_item_image");
+		const $slider = $("#sit_pvi_big .sit-pvi-slider");
+		const $zoomButton = $("#popup_item_image");
 
 		if ($slider.length && $.fn.owlCarousel) {
-			var slideCount = $slider.find(".sit-pvi-slide").length;
+			const slideCount = $slider.find(".sit-pvi-slide").length;
 
 			$slider.owlCarousel({
 				items: 1,
@@ -453,13 +490,13 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			});
 
 			if ($zoomButton.length) {
-				var syncZoomButtonHref = function(e) {
-					var index = 0;
+				const syncZoomButtonHref = function(e) {
+					let index = 0;
 					if (e && e.item && typeof e.item.index !== "undefined") {
 						index = e.item.index;
 					}
 
-					var href = $slider.find(".owl-item").eq(index).find(".popup_item_image").attr("href");
+					const href = $slider.find(".owl-item").eq(index).find(".popup_item_image").attr("href");
 					if (href) {
 						$zoomButton.attr("href", href);
 					}
@@ -472,10 +509,10 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 		// 상품이미지 크게보기
 		$(".popup_item_image").click(function() {
-			var url = $(this).attr("href");
-			var top = 10;
-			var left = 10;
-			var opt = 'scrollbars=yes,top=' + top + ',left=' + left;
+			const url = $(this).attr("href");
+			const top = 10;
+			const left = 10;
+			const opt = 'scrollbars=yes,top=' + top + ',left=' + left;
 			popup_window(url, "largeimage", opt);
 
 			return false;
@@ -485,7 +522,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		$(document).on("click", ".btn_wish", function(e) {
 			e.preventDefault();
 
-			var itId = $(this).data("it_id");
+			const itId = $(this).data("it_id");
 			if (!itId) {
 				alert("상품코드가 올바르지 않습니다.");
 				return false;
@@ -521,7 +558,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		$("#sit_copy_link_btn").on("click", function(e) {
 			e.preventDefault();
 
-			var pageUrl = window.location.href;
+			const pageUrl = window.location.href;
 
 			if (navigator.clipboard && window.isSecureContext) {
 				navigator.clipboard.writeText(pageUrl).then(function() {
@@ -535,7 +572,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		});
 
 		function copyWithFallback(text) {
-			var $temp = $("<input>").val(text).appendTo("body");
+			const $temp = $("<input>").val(text).appendTo("body");
 			$temp.trigger("select");
 
 			try {
@@ -547,6 +584,58 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 			$temp.remove();
 		}
+
+		function syncOptionPriceLabels() {
+			const itemPrice = parseInt($("input#it_price").val(), 10);
+			const safeItemPrice = isNaN(itemPrice) ? 0 : itemPrice;
+
+			$("#sit_sel_option li").each(function() {
+				const $row = $(this);
+				const $legacyPrice = $row.find(".sit_opt_prc").first();
+				if (!$legacyPrice.length) return;
+
+				$legacyPrice.addClass("sound_only");
+
+				let $customPrice = $row.find(".opt_prc_custom").first();
+				if (!$customPrice.length) {
+					$legacyPrice.after('<span class="opt_prc_custom whitespace-nowrap text-sm font-semibold text-gray-900">+0원</span>');
+					$customPrice = $row.find(".opt_prc_custom").first();
+				}
+
+				const qty = parseInt($row.find("input[name^=ct_qty]").val(), 10);
+				const ioType = String($row.find("input[name^=io_type]").val());
+				const ioPrice = parseInt($row.find("input.io_price").val(), 10);
+
+				const safeQty = isNaN(qty) || qty < 1 ? 1 : qty;
+				const safeIoPrice = isNaN(ioPrice) ? 0 : ioPrice;
+
+				let unitPrice = 0;
+				if (ioType === "0") {
+					unitPrice = safeItemPrice + safeIoPrice;
+				} else {
+					unitPrice = safeIoPrice;
+				}
+
+				let extraPrice = unitPrice * (safeQty - 1);
+				if (extraPrice < 0) {
+					extraPrice = 0;
+				}
+
+				const formattedPrice = "+" + number_format(String(extraPrice)) + "원";
+				$legacyPrice.text(formattedPrice);
+				$customPrice.text(formattedPrice);
+			});
+		}
+
+		$("#sit_tot_price").on("price_calculate", function() {
+			syncOptionPriceLabels();
+		});
+
+		$("#sit_sel_option").on("add_sit_sel_option", function() {
+			syncOptionPriceLabels();
+		});
+
+		syncOptionPriceLabels();
 	});
 
 	function fsubmit_check(f) {
@@ -561,11 +650,13 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			return false;
 		}
 
-		var val, io_type, result = true;
-		var sum_qty = 0;
-		var min_qty = parseInt(<?php echo $it['it_buy_min_qty']; ?>);
-		var max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
-		var $el_type = $("input[name^=io_type]");
+		let val;
+		let io_type;
+		let result = true;
+		let sum_qty = 0;
+		const min_qty = parseInt(<?php echo $it['it_buy_min_qty']; ?>);
+		const max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
+		const $el_type = $("input[name^=io_type]");
 
 		$("input[name^=ct_qty]").each(function(index) {
 			val = $(this).val();
@@ -632,11 +723,13 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			return false;
 		}
 
-		var val, io_type, result = true;
-		var sum_qty = 0;
-		var min_qty = parseInt(<?php echo $it['it_buy_min_qty']; ?>);
-		var max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
-		var $el_type = $("input[name^=io_type]");
+		let val;
+		let io_type;
+		let result = true;
+		let sum_qty = 0;
+		const min_qty = parseInt(<?php echo $it['it_buy_min_qty']; ?>);
+		const max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
+		const $el_type = $("input[name^=io_type]");
 
 		$("input[name^=ct_qty]").each(function(index) {
 			val = $(this).val();

@@ -63,8 +63,8 @@ include_once(G5_THEME_PATH . '/head.php');
     </section>
     <script>
         $(function() {
-            var $heroOwl = $(".hero_owl");
-            var $pickOwl = $(".pick_owl");
+            const $heroOwl = $(".hero_owl");
+            const $pickOwl = $(".pick_owl");
 
             // if (!$heroOwl.length || !$.fn.owlCarousel) {
             //     return;
@@ -75,8 +75,8 @@ include_once(G5_THEME_PATH . '/head.php');
                     return;
                 }
 
-                var total = event.item.count;
-                var current = event.relatedTarget.relative(event.item.index) + 1;
+                const total = event.item.count;
+                const current = event.relatedTarget.relative(event.item.index) + 1;
 
                 $("#hero-total").text(total);
                 $("#hero-current").text(current);
@@ -422,12 +422,12 @@ include_once(G5_THEME_PATH . '/head.php');
 
         <script>
             document.addEventListener("DOMContentLoaded", function() {
-                var tabs = document.querySelectorAll("[data-rank-tab='1']");
-                var cards = document.querySelectorAll("[data-rank-card='1']");
-                var emptyState = document.getElementById("rank-empty-state");
-                var defaultGrId = "<?php echo $rank_gr_id; ?>";
-                var activeClass = "rounded-full bg-gray-900 px-4 py-2 text-xs text-white";
-                var inactiveClass = "rounded-full bg-gray-100 px-4 py-2 text-xs text-gray-600";
+                const tabs = document.querySelectorAll("[data-rank-tab='1']");
+                const cards = document.querySelectorAll("[data-rank-card='1']");
+                const emptyState = document.getElementById("rank-empty-state");
+                let defaultGrId = "<?php echo $rank_gr_id; ?>";
+                const activeClass = "rounded-full bg-gray-900 px-4 py-2 text-xs text-white";
+                const inactiveClass = "rounded-full bg-gray-100 px-4 py-2 text-xs text-gray-600";
 
                 if (!tabs.length) {
                     return;
@@ -440,12 +440,12 @@ include_once(G5_THEME_PATH . '/head.php');
                 }
 
                 function filterRank(selectedGrId, updateUrl) {
-                    var visibleCount = 0;
+                    let visibleCount = 0;
 
-                    for (var i = 0; i < cards.length; i++) {
-                        var cardGrId = cards[i].getAttribute("data-rank-gr-id") || "";
-                        var visible = selectedGrId === "" || selectedGrId === cardGrId;
-                        var rankBadge = cards[i].querySelector("[data-rank-no='1']");
+                    for (let i = 0; i < cards.length; i++) {
+                        const cardGrId = cards[i].getAttribute("data-rank-gr-id") || "";
+                        const visible = selectedGrId === "" || selectedGrId === cardGrId;
+                        const rankBadge = cards[i].querySelector("[data-rank-no='1']");
                         cards[i].classList.toggle("hidden", !visible);
 
                         if (visible) {
@@ -464,8 +464,8 @@ include_once(G5_THEME_PATH . '/head.php');
                         }
                     }
 
-                    for (var t = 0; t < tabs.length; t++) {
-                        var tabGrId = tabs[t].getAttribute("data-rank-gr-id") || "";
+                    for (let t = 0; t < tabs.length; t++) {
+                        const tabGrId = tabs[t].getAttribute("data-rank-gr-id") || "";
                         setTabActive(tabs[t], tabGrId === selectedGrId);
                     }
 
@@ -474,7 +474,7 @@ include_once(G5_THEME_PATH . '/head.php');
                     }
 
                     if (updateUrl && window.history && window.history.replaceState) {
-                        var nextUrl = "<?php echo G5_URL; ?>/";
+                        let nextUrl = "<?php echo G5_URL; ?>/";
                         if (selectedGrId !== "") {
                             nextUrl += "?rank_gr_id=" + encodeURIComponent(selectedGrId);
                         }
@@ -482,8 +482,8 @@ include_once(G5_THEME_PATH . '/head.php');
                     }
                 }
 
-                var isValidDefault = false;
-                for (var d = 0; d < tabs.length; d++) {
+                let isValidDefault = false;
+                for (let d = 0; d < tabs.length; d++) {
                     if ((tabs[d].getAttribute("data-rank-gr-id") || "") === defaultGrId) {
                         isValidDefault = true;
                         break;
@@ -495,15 +495,15 @@ include_once(G5_THEME_PATH . '/head.php');
 
                 filterRank(defaultGrId, false);
 
-                for (var j = 0; j < tabs.length; j++) {
+                for (let j = 0; j < tabs.length; j++) {
                     tabs[j].addEventListener("click", function() {
-                        var selectedGrId = this.getAttribute("data-rank-gr-id") || "";
+                        const selectedGrId = this.getAttribute("data-rank-gr-id") || "";
                         filterRank(selectedGrId, true);
                     });
 
                     tabs[j].addEventListener("keydown", function(e) {
-                        var currentIndex = -1;
-                        for (var k = 0; k < tabs.length; k++) {
+                        let currentIndex = -1;
+                        for (let k = 0; k < tabs.length; k++) {
                             if (tabs[k] === this) {
                                 currentIndex = k;
                                 break;
@@ -513,7 +513,7 @@ include_once(G5_THEME_PATH . '/head.php');
                             return;
                         }
 
-                        var nextIndex = currentIndex;
+                        let nextIndex = currentIndex;
 
                         if (e.key === "ArrowRight") {
                             e.preventDefault();
@@ -529,7 +529,7 @@ include_once(G5_THEME_PATH . '/head.php');
                             nextIndex = tabs.length - 1;
                         } else if (e.key === "Enter" || e.key === " ") {
                             e.preventDefault();
-                            var selectedByKey = this.getAttribute("data-rank-gr-id") || "";
+                            const selectedByKey = this.getAttribute("data-rank-gr-id") || "";
                             filterRank(selectedByKey, true);
                             return;
                         } else {
@@ -537,7 +537,7 @@ include_once(G5_THEME_PATH . '/head.php');
                         }
 
                         tabs[nextIndex].focus();
-                        var selectedGrIdByArrow = tabs[nextIndex].getAttribute("data-rank-gr-id") || "";
+                        const selectedGrIdByArrow = tabs[nextIndex].getAttribute("data-rank-gr-id") || "";
                         filterRank(selectedGrIdByArrow, true);
                     });
                 }

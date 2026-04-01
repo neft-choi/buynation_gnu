@@ -127,8 +127,8 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
         </div>
 
         <div class="mt-8 grid grid-cols-2 gap-3">
-            <a href="<?php echo G5_URL ?>" class="inline-flex h-14 items-center justify-center rounded border border-zinc-300 text-base font-semibold text-zinc-700">처음으로</a>
-            <button type="submit" class="h-14 rounded bg-amber-400 text-base font-semibold text-zinc-900">가입하기</button>
+            <a href="<?php echo G5_URL ?>" class="inline-flex h-12 items-center justify-center rounded border border-zinc-300 text-base font-semibold text-zinc-700">처음으로</a>
+            <button type="submit" data-variant="primary" class="h-12 !text-base">가입하기</button>
         </div>
 
     </form>
