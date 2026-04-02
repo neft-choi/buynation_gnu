@@ -112,8 +112,8 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
 
 
 <div id="app-shell" class="app-shell">
-    <!-- 상단 시작 { -->
-    <header id="hd">
+    <!-- 상단 시작 -->
+    <header id="hd" class="!bg-white">
         <h1 id="hd_h1"><?php echo $g5['title'] ?></h1>
         <div id="skip_to_container"><a href="#container">본문 바로가기</a></div>
 
@@ -121,7 +121,7 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
             include G5_BBS_PATH . '/newwin.inc.php'; // 팝업레이어
         } ?>
 
-        <!-- 상품 커스텀 헤더 시작 -->
+        <!-- 커스텀 헤더 시작 -->
         <?php if ($is_custom_header) { ?>
             <div id="hd_wrapper">
                 <div id="shop-header" class="<?php echo ($header['layout'] === 'center_title') ? 'w-full min-h-14 grid grid-cols-[36px_1fr_36px] items-center px-2 bg-white' : 'w-full min-h-14 flex items-center justify-between pl-2 pr-4 bg-white'; ?>">
@@ -213,38 +213,38 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
 
         <?php } else { ?>
 
-            <!-- 기본 헤더 + 검색 바 시작 -->
-            <div id="hd_wrapper" class="!bg-white">
-                <div id="shop-header" class="w-full min-h-16 flex items-center justify-between px-4">
-                    <a href="<?php echo G5_SHOP_URL; ?>/" class="text-lg font-semibold tracking-tight text-gray-900">
-                        BUYNATION
-                    </a>
+            <!-- 기본 헤더 본문 (로고/아이콘/검색) -->
+            <div id="hd_wrapper">
+                <div class="header-inner mx-auto w-full p-4 pb-0 space-y-4">
+                    <div id="shop-header" class="flex items-center justify-between">
+                        <a href="<?php echo G5_SHOP_URL; ?>/" class="text-lg font-semibold tracking-tight text-gray-900">
+                            BUYNATION
+                        </a>
 
-                    <div class="flex items-center gap-2 text-2xl">
-                        <?= get_notification() ?>
+                        <div class="flex items-center gap-2 text-2xl">
+                            <?= get_notification() ?>
+                        </div>
                     </div>
+
+                    <!-- 검색 바 -->
+                    <?php
+                    $searchbar_mode = 'shop';
+                    include_once(G5_THEME_PATH . '/_searchbar.php');
+                    ?>
+                    <!-- 검색 바 끝 -->
+
+                    <ul class="hd_login !hidden">
+                        <?php if ($is_member) {  ?>
+                            <li class="shop_login">
+                                <?php echo outlogin('theme/shop_basic'); // 아웃로그인 
+                                ?>
+                            </li>
+                            <li class="shop_cart"><a href="<?php echo G5_SHOP_URL; ?>/cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="sound_only">장바구니</span><span class="count"><?php echo get_boxcart_datas_count(); ?></span></a></li>
+                        <?php } else { ?>
+                            <li class="login"><a href="<?php echo G5_BBS_URL ?>/login.php?url=<?php echo $urlencode; ?>">로그인</a></li>
+                        <?php }  ?>
+                    </ul>
                 </div>
-
-                <!-- 커스텀 검색 바 -->
-                <?php include_once(G5_THEME_SHOP_PATH . '/searchbar.modern.php'); ?>
-                <!-- 커스텀 검색 바 끝 -->
-
-                <!-- 쇼핑몰 배너 시작 { -->
-                <?php // echo display_banner('왼쪽'); 
-                ?>
-                <!-- } 쇼핑몰 배너 끝 -->
-
-                <ul class="hd_login !hidden">
-                    <?php if ($is_member) {  ?>
-                        <li class="shop_login">
-                            <?php echo outlogin('theme/shop_basic'); // 아웃로그인 
-                            ?>
-                        </li>
-                        <li class="shop_cart"><a href="<?php echo G5_SHOP_URL; ?>/cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="sound_only">장바구니</span><span class="count"><?php echo get_boxcart_datas_count(); ?></span></a></li>
-                    <?php } else { ?>
-                        <li class="login"><a href="<?php echo G5_BBS_URL ?>/login.php?url=<?php echo $urlencode; ?>">로그인</a></li>
-                    <?php }  ?>
-                </ul>
             </div>
 
             <?php

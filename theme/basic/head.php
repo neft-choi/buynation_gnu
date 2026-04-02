@@ -92,8 +92,8 @@ foreach ($header_hide_path_suffixes as $suffix) {
                     </ul>
                 </div>
             </div>
-            <div id="hd_wrapper" class="!w-full !p-4">
-                <div class="space-y-4">
+            <div id="hd_wrapper">
+                <div class="space-y-4 w-full p-4">
                     <div class="flex items-center justify-between">
                         <a href="<?php echo G5_URL ?>" aria-label="메인으로 이동" class="text-lg font-semibold tracking-tight text-gray-900">BUYNATION</a>
 
@@ -102,7 +102,12 @@ foreach ($header_hide_path_suffixes as $suffix) {
                         </div>
                     </div>
 
-                    <form name="fsearchbox_top" method="get" action="<?php echo G5_BBS_URL ?>/search.php" onsubmit="return fsearchbox_submit(this);" class="relative">
+                    <?php
+                    $searchbar_mode = 'community';
+                    include_once(G5_THEME_PATH . '/_searchbar.php');
+                    ?>
+
+                    <!-- <form name="fsearchbox_top" method="get" action="<?php echo G5_BBS_URL ?>/search.php" onsubmit="return fsearchbox_submit(this);" class="relative">
                         <input type="hidden" name="sfl" value="wr_subject||wr_content">
                         <input type="hidden" name="sop" value="and">
                         <label for="sch_stx_top" class="sound_only">검색어 입력</label>
@@ -145,7 +150,7 @@ foreach ($header_hide_path_suffixes as $suffix) {
 
                         <?php //echo popular('theme/basic'); // 인기검색어, 테마의 스킨을 사용하려면 스킨을 theme/basic 과 같이 지정 
                         ?>
-                    </form>
+                    </form> -->
 
                 </div>
 

@@ -248,7 +248,7 @@ if (!function_exists('format_k_count')) {
                                     $list_good_href = G5_BBS_URL . '/good.php?bo_table=' . $bo_table . '&amp;wr_id=' . $list[$i]['wr_id'] . '&amp;good=good';
                                 }
                                 ?>
-                                <div class="flex items-center gap-8">
+                                <div class="flex items-center gap-8 text-gray-900">
                                     <div class="flex items-center gap-2">
                                         <button type="button" data-href="<?php echo $list_good_href; ?>" class="js-list-good cursor-pointer">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up">

@@ -21,9 +21,8 @@ foreach ((array) $list as $count_row) {
 }
 
 ?>
-<div class="flex items-center justify-between mx-4 py-2">
-    <div class="text-red-500 font-semibold">총 <?php echo number_format($wish_total_count); ?><span class="text-zinc-900 font-normal"> / 200</span></div>
-    <button type="button" class="text-sm text-gray-500">편집</button>
+<div class="flex items-center px-4 py-2">
+    <div class="text-red-500 font-semibold">총 <?php echo number_format($wish_total_count); ?>개</div>
 </div>
 
 <?php foreach ((array) $list as $row) { ?>
@@ -81,12 +80,6 @@ foreach ((array) $list as $count_row) {
                         </div>
                     <?php } ?>
 
-                    <button type="button" class="btn_wish absolute right-2 bottom-2 z-30 text-white" data-it_id="<?= $row['it_id'] ?>" aria-label="위시리스트">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart" aria-hidden="true">
-                            <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
-                        </svg>
-                    </button>
-
                     <div class="cart-layer"></div>
 
                     <?php if ($this->view_it_icon && $is_soldout) { ?>
@@ -94,13 +87,23 @@ foreach ((array) $list as $count_row) {
                     <?php } ?>
                 </div>
 
-                <button type="button" class="btn_cart sct_btn flex items-center justify-center w-full border border-gray-300 rounded-lg px-4 py-2" data-it_id="<?= $row['it_id'] ?>" aria-label="장바구니">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
-                        <circle cx="8" cy="21" r="1" />
-                        <circle cx="19" cy="21" r="1" />
-                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                    </svg>
-                </button>
+                <div class="flex items-center gap-1">
+                    <a href="./wishupdate.php?w=d&amp;wi_id=<?= $row['wi_id'] ?>" class="wish_del flex items-center justify-center w-full border border-gray-300 rounded-lg px-4 py-2 text-gray-700" aria-label="삭제">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-icon lucide-trash">
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+                            <path d="M3 6h18" />
+                            <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+                        </svg>
+                    </a>
+
+                    <button type="button" class="btn_cart sct_btn flex items-center justify-center w-full border border-gray-300 rounded-lg px-4 py-2" data-it_id="<?= $row['it_id'] ?>" aria-label="장바구니">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
+                            <circle cx="8" cy="21" r="1" />
+                            <circle cx="19" cy="21" r="1" />
+                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                        </svg>
+                    </button>
+                </div>
 
                 <div class="sct_ct_wrap space-y-2">
                     <?php if ($this->view_it_id) { ?>

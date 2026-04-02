@@ -135,7 +135,6 @@
 }
 
 :where(textarea) {
-  min-height: 100px;
   padding: 16px;
   resize: vertical;
   outline: none;
@@ -336,7 +335,7 @@ a {
 }
 
 /* 레이아웃 크기 지정 */
-#hd,
+/* #hd,
 #wrapper,
 #ft {
   min-width: 1200px;
@@ -349,7 +348,7 @@ a {
 #container_wr,
 #ft_wr {
   width: 1200px;
-}
+} */
 
 /* 공통 - display none/block */
 .is-hidden {

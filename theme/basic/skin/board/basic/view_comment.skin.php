@@ -86,7 +86,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
                 <textarea id="save_comment_<?php echo $comment_id ?>" style="display:none"><?php echo get_text($list[$i]['content1'], 0) ?></textarea>
             </div>
             <?php if ($is_comment_reply_edit) { ?>
-                <div class="bo_vl_opt">
+                <div class="bo_vl_opt !static">
                     <button type="button" class="btn_cm_opt btn_b01 btn"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical-icon lucide-ellipsis-vertical">
                             <circle cx="12" cy="12" r="1" />
                             <circle cx="12" cy="5" r="1" />
