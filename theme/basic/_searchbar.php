@@ -43,7 +43,7 @@ if ($is_community_mode && isset($stx)) {
             name="<?php echo $search_input_name; ?>"
             id="<?php echo $search_input_id; ?>"
             value="<?php echo $search_input_value; ?>"
-            class="text-sm flex-auto"
+            class="text-sm flex-auto focus-visible:outline-0"
             required
             placeholder="검색어를 입력해주세요">
         <button type="submit" id="shop_searchbar_submit" class="text-[var(--color-primary)]" value="검색">
