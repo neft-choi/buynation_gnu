@@ -87,27 +87,16 @@ $show_bottom_nav = !in_array($current_shop_page, $bottom_nav_blacklist, true);
 if ($show_bottom_nav) {
 ?>
     <style>
-        /* 쇼핑 하단 고정 네비 */
+        /* 본문 하단 네비게이션 만큼 padding */
         body {
-            padding-bottom: 72px;
-        }
-
-        #shop-bottom-nav-wrap {
-            position: fixed;
-            left: 50%;
-            bottom: 0;
-            transform: translateX(-50%);
-            width: 100%;
-            /* max-width: 375px; */
-            z-index: 9999;
-            padding-bottom: env(safe-area-inset-bottom);
+            padding-bottom: calc(var(--bottom-nav-icon) + env(safe-area-inset-bottom));
         }
     </style>
 
-    <nav id="shop-bottom-nav-wrap" class="bg-white border-t border-gray-200">
-        <ul class="flex items-end justify-between py-2 text-xs">
-            <li class="flex-1">
-                <a href="#" id="bottom_menu_open" class="flex flex-col items-center gap-1 text-gray-800">
+    <nav id="shop-bottom-nav-wrap" class="fixed bottom-0 left-1/2 z-50 w-full h-[var(--bottom-nav-height)] max-w-full -translate-x-1/2 border-t border-gray-200 bg-white">
+        <ul class="h-full grid grid-cols-5 items-center text-xs">
+            <li>
+                <a href="#" id="bottom_menu_open" class="h-full flex flex-col items-center justify-center gap-1 text-gray-900">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu">
                         <path d="M4 5h16" />
                         <path d="M4 12h16" />
@@ -116,8 +105,8 @@ if ($show_bottom_nav) {
                     <span>카테고리</span>
                 </a>
             </li>
-            <li class="flex-1">
-                <button type="button" id="shop-bottom-search-trigger" class="flex w-full flex-col items-center gap-1 !p-0 !text-xs !font-normal !text-gray-800" aria-label="검색 열기">
+            <li>
+                <button type="button" id="shop-bottom-search-trigger" class="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-900" aria-label="검색 열기">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
@@ -125,13 +114,13 @@ if ($show_bottom_nav) {
                     <span>검색</span>
                 </button>
             </li>
-            <li class="w-18 shrink-0">
-                <a href="<?php echo G5_SHOP_URL; ?>" class="mx-auto -mt-6 flex h-18 w-18 items-center justify-center rounded-full bg-yellow-400 text-4xl font-bold text-black">
+            <li>
+                <a href="<?php echo G5_SHOP_URL; ?>" class="flex mx-auto -mt-[calc(var(--bottom-nav-icon)-var(--bottom-nav-height))] h-[var(--bottom-nav-icon)] w-[var(--bottom-nav-icon)] items-center justify-center rounded-full bg-yellow-400 text-4xl font-bold text-black">
                     B
                 </a>
             </li>
-            <li class="flex-1">
-                <a href="<?php echo G5_URL; ?>/index.php" class="flex flex-col items-center gap-1 text-gray-800">
+            <li>
+                <a href="<?php echo G5_URL; ?>/index.php" class="h-full flex flex-col items-center justify-center gap-1 text-gray-900">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-more-icon lucide-message-circle-more">
                         <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
                         <path d="M8 12h.01" />
@@ -141,8 +130,8 @@ if ($show_bottom_nav) {
                     <span>커뮤니티</span>
                 </a>
             </li>
-            <li class="flex-1">
-                <a href="<?php echo $is_member ? G5_SHOP_URL . '/mypage.php' : G5_BBS_URL . '/login.php?url=' . login_url($_SERVER['REQUEST_URI']); ?>" class="flex flex-col items-center gap-1 text-gray-800">
+            <li>
+                <a href="<?php echo $is_member ? G5_SHOP_URL . '/mypage.php' : G5_BBS_URL . '/login.php?url=' . login_url($_SERVER['REQUEST_URI']); ?>" class="h-full flex flex-col items-center justify-center gap-1 text-gray-900">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
                         <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                         <circle cx="12" cy="7" r="4" />
@@ -157,8 +146,8 @@ if ($show_bottom_nav) {
             $("#bottom_menu_open").on("click", function(e) {
                 e.preventDefault();
 
-                var $category = $("#category");
-                var $categoryBg = $("#category_all_bg");
+                const $category = $("#category");
+                const $categoryBg = $("#category_all_bg");
 
                 if ($category.hasClass("is-open")) {
                     $category.removeClass("is-open");
@@ -183,16 +172,16 @@ if ($show_bottom_nav) {
 
             // 하단 검색 버튼 클릭 시 상단 검색창으로 이동 및 포커스
             $("#shop-bottom-search-trigger").on("click", function() {
-                var $input = $("#shop_searchbar_input, #sch_stx_top, #ssch_q, #sch_str").filter(":visible").first();
+                const $input = $("#shop_searchbar_input, #sch_stx_top, #ssch_q, #sch_str").filter(":visible").first();
 
                 // 검색 input 없으면 종료
                 if (!$input.length) {
                     return;
                 }
 
-                var input = $input.get(0);
-                var form = input.closest("form");
-                var target = form || input;
+                const input = $input.get(0);
+                const form = input.closest("form");
+                const target = form || input;
 
                 target.scrollIntoView({
                     behavior: "smooth",

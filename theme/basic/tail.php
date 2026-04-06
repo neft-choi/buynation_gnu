@@ -96,9 +96,9 @@ if ($config['cf_analytics']) {
 
 <!-- 커뮤니티 하단 고정 네비게이션 -->
 <nav class="fixed bottom-0 left-1/2 z-50 w-full h-[var(--bottom-nav-height)] max-w-full -translate-x-1/2 border-t border-gray-200 bg-white">
-    <ul class="grid grid-cols-5">
+    <ul class="h-full grid grid-cols-5 items-center">
         <li>
-            <a href="<?php echo G5_URL; ?>" class="flex flex-col items-center justify-center gap-1 py-2 text-gray-900">
+            <a href="<?php echo G5_URL; ?>" class="h-full flex flex-col items-center justify-center gap-1 text-gray-900">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-house-icon lucide-house">
                     <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8" />
                     <path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
@@ -107,7 +107,7 @@ if ($config['cf_analytics']) {
             </a>
         </li>
         <li>
-            <button type="button" id="bottom-search-trigger" class="flex w-full flex-col items-center justify-center gap-1 py-2 text-gray-900" aria-label="검색 열기">
+            <button type="button" id="bottom-search-trigger" class="w-full h-full flex flex-col items-center justify-center gap-1 text-gray-900" aria-label="검색 열기">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
                     <path d="m21 21-4.34-4.34" />
                     <circle cx="11" cy="11" r="8" />
@@ -116,7 +116,7 @@ if ($config['cf_analytics']) {
             </button>
         </li>
         <li>
-            <a href="<?php echo G5_BBS_URL; ?>/group.php" class="flex flex-col items-center justify-center gap-1 py-2 text-gray-900">
+            <a href="<?php echo G5_BBS_URL; ?>/group.php" class="h-full flex flex-col items-center justify-center gap-1 text-gray-900">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
                     <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                 </svg>
@@ -124,7 +124,7 @@ if ($config['cf_analytics']) {
             </a>
         </li>
         <li>
-            <a href="<?php echo G5_SHOP_URL; ?>" class="flex flex-col items-center justify-center gap-1 py-2 text-gray-900">
+            <a href="<?php echo G5_SHOP_URL; ?>" class="h-full flex flex-col items-center justify-center gap-1 text-gray-900">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-handbag-icon lucide-handbag">
                     <path d="M2.048 18.566A2 2 0 0 0 4 21h16a2 2 0 0 0 1.952-2.434l-2-9A2 2 0 0 0 18 8H6a2 2 0 0 0-1.952 1.566z" />
                     <path d="M8 11V6a4 4 0 0 1 8 0v5" />
@@ -146,7 +146,7 @@ if ($config['cf_analytics']) {
         ?>
         <li>
             <?= $is_shop ?>
-            <a href="<?= $mypage_url ?>" class="flex flex-col items-center justify-center gap-1 py-2 text-gray-900">
+            <a href="<?= $mypage_url ?>" class="h-full flex flex-col items-center justify-center gap-1 text-gray-900">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
@@ -161,16 +161,16 @@ if ($config['cf_analytics']) {
     $(function() {
         // 하단 검색 버튼 클릭 시 상단 검색창으로 이동 및 포커스
         $("#bottom-search-trigger").on("click", function() {
-            var $input = $("#sch_stx_top");
+            const $input = $("#sch_stx_top");
 
             // 검색 input 없으면 종료
             if (!$input.length) {
                 return;
             }
 
-            var input = $input.get(0);
-            var form = input.closest("form");
-            var target = form || input;
+            const input = $input.get(0);
+            const form = input.closest("form");
+            const target = form || input;
 
             target.scrollIntoView({
                 behavior: "smooth",

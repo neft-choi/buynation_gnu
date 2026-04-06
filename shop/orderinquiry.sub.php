@@ -77,8 +77,8 @@ if (!empty($order_ids)) {
 </style>
 
 <!-- 주문 내역 시작 -->
-<div class="mx-auto w-full max-w-full px-4">
-    <div id="order-filter-tabs" class="my-8">
+<div class="mx-auto w-full max-w-full">
+    <div id="order-filter-tabs" class="p-4">
         <div class="grid grid-flow-col auto-cols-max justify-start gap-2">
             <button
                 type="button"
@@ -121,7 +121,7 @@ if (!empty($order_ids)) {
         </div>
     </div>
 
-    <section id="order-history-list" class="space-y-8">
+    <section id="order-history-list" class="space-y-8 p-4">
         <?php
         for ($i = 0; $i < count($orders); $i++) {
             $row = $orders[$i];
