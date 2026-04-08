@@ -10,9 +10,9 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 <!-- 전체 상품 사용후기 목록 시작 { -->
 <section id="sps_page" class="mx-auto w-full max-w-full p-4">
 	<form method="get" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
-		<div id="sps_sch">
+		<div id="sps_sch_custom" class="flex flex-col gap-1">
 			<label for="sfl" class="sound_only">검색항목 필수</label>
-			<select name="sfl" id="sfl" required>
+			<select name="sfl" id="sfl" class="w-full h-10 px-2 border border-zinc-300 rounded focus-visible:outline-0" required>
 				<option value="">선택</option>
 				<option value="b.it_name" <?php echo get_selected($sfl, "b.it_name"); ?>>상품명</option>
 				<option value="a.it_id" <?php echo get_selected($sfl, "a.it_id"); ?>>상품코드</option>
@@ -21,12 +21,18 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 				<option value="a.is_name" <?php echo get_selected($sfl, "a.is_name"); ?>>작성자명</option>
 				<option value="a.mb_id" <?php echo get_selected($sfl, "a.mb_id"); ?>>작성자아이디</option>
 			</select>
-			<div class="sch_wr">
-				<label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
-				<input type="text" name="stx" value="<?php echo $stx; ?>" id="stx" required class="sch_input">
-				<button type="submit" value="검색" class="sch_btn"><i class="fa fa-search" aria-hidden="true"></i><span class="sound_only">검색</span></button>
+			<div class="relative w-full">
+				<label for="stx" class="sound_only">검색어<span class="sound_only"> 필수</span></label>
+				<input type="text" name="stx" value="<?php echo $stx; ?>" id="stx" required class="h-10 w-full rounded border border-zinc-300 bg-white pl-3 pr-10 text-sm text-zinc-900 focus-visible:outline-0">
+				<button type="submit" value="검색" class="absolute right-0 top-0 inline-flex h-10 w-10 items-center justify-center text-gray-900">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search w-5 h-5">
+						<path d="m21 21-4.34-4.34" />
+						<circle cx="11" cy="11" r="8" />
+					</svg>
+					<span class="sound_only">검색</span>
+				</button>
 			</div>
-			<a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>">전체보기</a>
+			<a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>" class="inline-flex h-10 w-fit items-center justify-center rounded border border-zinc-300 px-2 text-sm font-semibold bg-gray-900 text-white">전체보기</a>
 		</div>
 	</form>
 

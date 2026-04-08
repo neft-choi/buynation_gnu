@@ -510,6 +510,9 @@
   .mt-10 {
     margin-top: calc(var(--spacing) * 10);
   }
+  .mr-1 {
+    margin-right: calc(var(--spacing) * 1);
+  }
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
   }
@@ -644,6 +647,9 @@
   }
   .\!h-8 {
     height: calc(var(--spacing) * 8) !important;
+  }
+  .\!h-10 {
+    height: calc(var(--spacing) * 10) !important;
   }
   .\!h-12 {
     height: calc(var(--spacing) * 12) !important;
@@ -943,6 +949,12 @@
   }
   .grid-cols-\[1fr_auto\] {
     grid-template-columns: 1fr auto;
+  }
+  .grid-cols-\[1fr_auto_1fr\] {
+    grid-template-columns: 1fr auto 1fr;
+  }
+  .grid-cols-\[1fr_auto_1fr_auto_auto\] {
+    grid-template-columns: 1fr auto 1fr auto auto;
   }
   .grid-cols-\[36px_1fr_36px\] {
     grid-template-columns: 36px 1fr 36px;
@@ -1263,6 +1275,9 @@
   .\!border-gray-900 {
     border-color: var(--color-gray-900) !important;
   }
+  .\!border-zinc-300 {
+    border-color: var(--color-zinc-300) !important;
+  }
   .\!border-zinc-500 {
     border-color: var(--color-zinc-500) !important;
   }
@@ -1340,6 +1355,9 @@
   }
   .border-zinc-300 {
     border-color: var(--color-zinc-300);
+  }
+  .border-zinc-400 {
+    border-color: var(--color-zinc-400);
   }
   .border-zinc-500 {
     border-color: var(--color-zinc-500);
@@ -1451,6 +1469,9 @@
   }
   .bg-gray-300 {
     background-color: var(--color-gray-300);
+  }
+  .bg-gray-400 {
+    background-color: var(--color-gray-400);
   }
   .bg-gray-800 {
     background-color: var(--color-gray-800);
@@ -1694,6 +1715,9 @@
   .pr-4 {
     padding-right: calc(var(--spacing) * 4);
   }
+  .pr-10 {
+    padding-right: calc(var(--spacing) * 10);
+  }
   .pr-12 {
     padding-right: calc(var(--spacing) * 12);
   }
@@ -1741,6 +1765,9 @@
   }
   .pl-2 {
     padding-left: calc(var(--spacing) * 2);
+  }
+  .pl-3 {
+    padding-left: calc(var(--spacing) * 3);
   }
   .pl-4 {
     padding-left: calc(var(--spacing) * 4);
@@ -2306,6 +2333,13 @@
       }
     }
   }
+  .hover\:text-zinc-900 {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-zinc-900);
+      }
+    }
+  }
   .hover\:opacity-80 {
     &:hover {
       @media (hover: hover) {
@@ -2367,6 +2401,11 @@
           background-color: var(--color-gray-200);
         }
       }
+    }
+  }
+  .sm\:grid-cols-\[1fr_auto_1fr_auto_auto\] {
+    @media (width >= 40rem) {
+      grid-template-columns: 1fr auto 1fr auto auto;
     }
   }
 }

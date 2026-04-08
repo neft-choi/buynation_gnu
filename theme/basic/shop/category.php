@@ -27,7 +27,7 @@ $mshop_categories = get_shop_category_array(true);
         /* max-width: 375px; */
         height: 100dvh;
         overflow: hidden;
-        z-index: 1000;
+        z-index: 30;
         pointer-events: none;
     }
 
@@ -42,7 +42,6 @@ $mshop_categories = get_shop_category_array(true);
         overflow: hidden;
         background: #fff;
         pointer-events: auto;
-
         /* 카테고리 메뉴 초기 위치를 왼쪽으로 */
         transform: translateX(-100%);
         transition: transform 0.25s ease;

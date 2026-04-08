@@ -36,7 +36,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
             <p class="mt-2 text-center text-sm text-gray-500">총 <?php echo number_format($total_count); ?>개의 리뷰</p>
         </div>
 
-        <div class="mt-4 w-full space-y-8">
+        <!-- <div class="mt-4 w-full space-y-8">
             <div class="grid grid-cols-[56px_1fr_110px_40px] items-center gap-2">
                 <div class="row-span-3 self-start pt-0.5">
                     <span class="inline-flex rounded-md bg-zinc-200 px-3 py-1 text-sm text-zinc-900">기능</span>
@@ -105,7 +105,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
                 </div>
                 <p class="text-right text-sm text-zinc-700">6%</p>
             </div>
-        </div>
+        </div> -->
     </div>
 
     <?php
@@ -152,13 +152,13 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
                     ?>
                 </div>
 
-                <div class="mt-3 flex flex-wrap gap-2">
+                <!-- <div class="mt-3 flex flex-wrap gap-2">
                     <span class="inline-flex rounded bg-[#F4F4F4] px-2 py-1 text-xs text-[#6F6F6F]">기능 - 아주 마음에 들어요</span>
                     <span class="inline-flex rounded bg-[#F4F4F4] px-2 py-1 text-xs text-[#6F6F6F]">디자인 - 마음에 들어요</span>
                     <span class="inline-flex rounded bg-[#F4F4F4] px-2 py-1 text-xs text-[#6F6F6F]">색상 - 화면과 같아요</span>
-                </div>
+                </div> -->
 
-                <div class="mt-4 flex items-center justify-between">
+                <div class="flex items-center justify-between">
                     <p class="text-sm text-gray-400"><?php echo $is_time_dot; ?></p>
                     <button type="button" class="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm text-[#6F6F6F]">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -170,7 +170,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
                 </div>
 
                 <?php if ($is_admin || $row['mb_id'] == $member['mb_id']) { ?>
-                    <div class="sit_use_cmd">
+                    <div class="sit_use_cmd flex items-center gap-1">
                         <a href="<?php echo $itemuse_form . "&amp;is_id={$row['is_id']}&amp;w=u"; ?>" class="itemuse_form px-2 py-1 border border-gray-400 text-gray-500 rounded" onclick="return false;">수정</a>
                         <a href="<?php echo $itemuse_formupdate . "&amp;is_id={$row['is_id']}&amp;w=d&amp;hash={$hash}"; ?>" class="itemuse_delete px-2 py-1 border border-gray-400 text-gray-500 rounded">삭제</a>
                     </div>
