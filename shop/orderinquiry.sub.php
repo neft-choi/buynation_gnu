@@ -159,12 +159,12 @@ if (!empty($order_ids)) {
         <div
             id="order-filter-custom"
             class="<?php echo $is_custom_range ? '' : 'hidden '; ?>mt-4 flex flex-col gap-2">
-            <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-2">
+            <div class="grid grid-cols-[1fr_auto_1fr] items-center gap-1">
                 <div class="relative">
                     <input
                         type="date"
                         id="order-filter-from"
-                        class="h-10 w-full min-w-0 rounded border border-zinc-300 px-3 pr-10 text-sm focus-visible:outline-0"
+                        class="h-10 w-full min-w-0 rounded border border-zinc-300 px-3 text-sm focus-visible:outline-0"
                         value="<?php echo htmlspecialchars($from_date, ENT_QUOTES); ?>">
                     <!-- 커스텀 달력 버튼: 시작일 입력의 네이티브 date picker를 연다 -->
                     <button
@@ -187,7 +187,7 @@ if (!empty($order_ids)) {
                     <input
                         type="date"
                         id="order-filter-to"
-                        class="h-10 w-full min-w-0 rounded border border-zinc-300 px-3 pr-10 text-sm focus-visible:outline-0"
+                        class="h-10 w-full min-w-0 rounded border border-zinc-300 px-3 text-sm focus-visible:outline-0"
                         value="<?php echo htmlspecialchars($to_date, ENT_QUOTES); ?>">
                     <!-- 커스텀 달력 버튼: 종료일 입력의 네이티브 date picker를 연다 -->
                     <button

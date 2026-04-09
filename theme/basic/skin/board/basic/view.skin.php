@@ -95,7 +95,20 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
 
                                 <!-- 본문 내용 시작 { -->
 
-                                <div id="bo_v_con"><?php echo get_view_thumbnail($view['wr_content']); ?></div>
+                                <div id="bo_v_con">
+                                    <?php
+                                    // script 제거
+                                    $content = $view['wr_content'];
+                                    $content = preg_replace('#<script(.*?)>(.*?)</script>#is', '', $content);
+
+                                    // onXXX 이벤트 제거 (onclick, onerror 등)
+                                    $content = preg_replace('#on[a-z]+\s*=\s*("|\').*?("|\')#is', '', $content);
+
+                                    // javascript: 제거
+                                    $content = preg_replace('#javascript:#i', '', $content);
+                                    echo get_view_thumbnail($content);
+                                    ?>
+                                </div>
                                 <?php //echo $view['rich_content']; // {이미지:0} 과 같은 코드를 사용할 경우 
                                 ?>
                                 <!-- } 본문 내용 끝 -->
@@ -357,13 +370,13 @@ add_stylesheet('<link rel="stylesheet" href="' . $board_skin_url . '/style.css">
 
                 if (data.count) {
                     $el.find("strong").text(number_format(String(data.count)));
-                    if ($tx.attr("id").search("nogood") > -1) {
-                        $tx.text("이 글을 비추천하셨습니다.");
-                        $tx.fadeIn(200).delay(2500).fadeOut(200);
-                    } else {
-                        $tx.text("이 글을 추천하셨습니다.");
-                        $tx.fadeIn(200).delay(2500).fadeOut(200);
-                    }
+                    // if ($tx.attr("id").search("nogood") > -1) {
+                    //     $tx.text("이 글을 비추천하셨습니다.");
+                    //     $tx.fadeIn(200).delay(2500).fadeOut(200);
+                    // } else {
+                    //     $tx.text("이 글을 추천하셨습니다.");
+                    //     $tx.fadeIn(200).delay(2500).fadeOut(200);
+                    // }
                 }
             }, "json"
         );

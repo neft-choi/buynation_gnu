@@ -99,15 +99,8 @@ $cp_count = count($coupon_list);
         <div class="h-8 w-8" aria-hidden="true"></div>
     </div>
 
-    <div class="mt-6 flex items-center justify-between">
+    <div class="mt-6 flex items-center">
         <p class="text-base font-medium text-zinc-900">전체 <span class="text-orange-500"><?php echo number_format($cp_count); ?>개</span></p>
-        <a href="#" class="inline-flex items-center gap-1 text-base font-medium text-zinc-900">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus">
-                <path d="M5 12h14" />
-                <path d="M12 5v14" />
-            </svg>
-            쿠폰 등록
-        </a>
     </div>
 
     <ul class="mt-4 space-y-3">
@@ -127,7 +120,6 @@ $cp_count = count($coupon_list);
                                 <?php if ($row['dday_label']) { ?>
                                     <li class="rounded-lg bg-orange-500 !px-2 !py-1 text-xs font-semibold text-white whitespace-nowrap"><?php echo $row['dday_label']; ?></li>
                                 <?php } ?>
-                                <li class="rounded-lg bg-zinc-100 !px-2 !py-1 text-xs font-semibold text-zinc-500 whitespace-nowrap">앱전용</li>
                             </ul>
                             <p class="text-sm text-zinc-500"><?php echo $row['expire_label']; ?></p>
                         </div>

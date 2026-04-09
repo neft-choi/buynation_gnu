@@ -81,7 +81,14 @@ $header_map = array(
         'title_class' => 'text-base font-semibold',
         'back_mode' => 'fallback',
     ),
-
+    'couponzone.php' => array(
+        'layout' => 'center_title',
+        'show_back' => true,
+        'show_title' => true,
+        'title' => '다운로드 쿠폰',
+        'title_class' => 'text-center text-lg font-semibold',
+        'back_mode' => 'fallback',
+    ),
 );
 
 // 별도 커스텀 variant를 주지 않았으면 현재 페이지 파일명으로 직접 조회

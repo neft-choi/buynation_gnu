@@ -12,15 +12,24 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 	<form method="get" action="<?php echo $_SERVER['SCRIPT_NAME']; ?>">
 		<div id="sps_sch_custom" class="flex flex-col gap-1">
 			<label for="sfl" class="sound_only">검색항목 필수</label>
-			<select name="sfl" id="sfl" class="w-full h-10 px-2 border border-zinc-300 rounded focus-visible:outline-0" required>
-				<option value="">선택</option>
-				<option value="b.it_name" <?php echo get_selected($sfl, "b.it_name"); ?>>상품명</option>
-				<option value="a.it_id" <?php echo get_selected($sfl, "a.it_id"); ?>>상품코드</option>
-				<option value="a.is_subject" <?php echo get_selected($sfl, "a.is_subject"); ?>>후기제목</option>
-				<option value="a.is_content" <?php echo get_selected($sfl, "a.is_content"); ?>>후기내용</option>
-				<option value="a.is_name" <?php echo get_selected($sfl, "a.is_name"); ?>>작성자명</option>
-				<option value="a.mb_id" <?php echo get_selected($sfl, "a.mb_id"); ?>>작성자아이디</option>
-			</select>
+			<div class="relative w-full">
+				<select name="sfl" id="sfl" class="w-full h-10 appearance-none px-2 border border-zinc-300 rounded focus-visible:outline-0" required>
+					<option value="">선택</option>
+					<option value="b.it_name" <?php echo get_selected($sfl, "b.it_name"); ?>>상품명</option>
+					<option value="a.it_id" <?php echo get_selected($sfl, "a.it_id"); ?>>상품코드</option>
+					<option value="a.is_subject" <?php echo get_selected($sfl, "a.is_subject"); ?>>후기제목</option>
+					<option value="a.is_content" <?php echo get_selected($sfl, "a.is_content"); ?>>후기내용</option>
+					<option value="a.is_name" <?php echo get_selected($sfl, "a.is_name"); ?>>작성자명</option>
+					<option value="a.mb_id" <?php echo get_selected($sfl, "a.mb_id"); ?>>작성자아이디</option>
+				</select>
+
+				<span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2" aria-hidden="true">
+					<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down">
+						<path d="m6 9 6 6 6-6" />
+					</svg>
+				</span>
+			</div>
+
 			<div class="relative w-full">
 				<label for="stx" class="sound_only">검색어<span class="sound_only"> 필수</span></label>
 				<input type="text" name="stx" value="<?php echo $stx; ?>" id="stx" required class="h-10 w-full rounded border border-zinc-300 bg-white pl-3 pr-10 text-sm text-zinc-900 focus-visible:outline-0">
@@ -52,7 +61,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 
 			if ($i == 0) echo '<ol>';
 		?>
-			<li>
+			<li class="!p-0">
 				<div class="sps_img">
 					<div class="sps_img_inner">
 						<a href="<?php echo $it_href; ?>">

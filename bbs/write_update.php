@@ -46,6 +46,17 @@ if (isset($_POST['wr_content'])) {
     if (function_exists('normalize_utf8_string')) {
         $wr_content = normalize_utf8_string($wr_content);
     }
+    $wr_content = html_entity_decode($wr_content, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+    $wr_content = stripslashes($wr_content);
+
+    // script 제거
+    $wr_content = preg_replace('#<script\b[^>]*>(.*?)</script>#is', '', $wr_content);
+
+    // 이벤트 제거
+    $wr_content = preg_replace('#\son\w+\s*=\s*(".*?"|\'.*?\'|[^\s>]+)#i', '', $wr_content);
+
+    // javascript 제거
+    $wr_content = preg_replace('#javascript\s*:#i', '', $wr_content);
 }
 if ($wr_content == '') {
     $msg[] = '<strong>내용</strong>을 입력하세요.';

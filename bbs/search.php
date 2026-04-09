@@ -1,6 +1,43 @@
 <?php
 include_once('./_common.php');
 
+if (!function_exists('search_relative_datetime')) {
+    function search_relative_datetime($datetime)
+    {
+        $display = $datetime;
+
+        if (!empty($datetime)) {
+            $date_only = substr($datetime, 0, 10);
+            if ($date_only == G5_TIME_YMD) {
+                $display = substr($datetime, 11, 5);
+            } else {
+                $display = substr($datetime, 5, 5);
+            }
+
+            $time = strtotime($datetime);
+            if ($time) {
+                $today_start = strtotime(G5_TIME_YMD . ' 00:00:00');
+                $day_start = strtotime(date('Y-m-d 00:00:00', $time));
+
+                if ($today_start !== false && $day_start !== false && $today_start > $day_start) {
+                    $past_days = (int)(($today_start - $day_start) / 86400);
+
+                    if ($past_days >= 1 && $past_days <= 6) {
+                        $display = $past_days . '일전';
+                    } else if ($past_days >= 7 && $past_days <= 28) {
+                        $past_weeks = (int)($past_days / 7);
+                        if ($past_weeks < 1) $past_weeks = 1;
+                        if ($past_weeks > 4) $past_weeks = 4;
+                        $display = $past_weeks . '주일 전';
+                    }
+                }
+            }
+        }
+
+        return $display;
+    }
+}
+
 $g5['title'] = '전체검색 결과';
 include_once('./_head.php');
 
@@ -119,6 +156,7 @@ if ($stx) {
     $time1 = get_microtime();
 
     $total_count = 0;
+    $board_result_count = array();
     for ($i=0; $i<count($g5_search['tables']); $i++) {
         $tmp_write_table   = $g5['write_prefix'] . $g5_search['tables'][$i];
 
@@ -129,6 +167,7 @@ if ($stx) {
         $total_count += $row['cnt'];
         if ($row['cnt']) {
             $board_count++;
+            $board_result_count[$g5_search['tables'][$i]] = (int)$row['cnt'];
             $search_table[] = $g5_search['tables'][$i];
             $read_level[]   = $g5_search['read_level'][$i];
             $search_table_count[] = $total_count;
@@ -139,7 +178,7 @@ if ($stx) {
             $sch_all = "";
             if ($onetable == $g5_search['tables'][$i]) $sch_class = "class=sch_on";
             else $sch_all = "class=sch_on";
-            $str_board_list .= '<li><a href="'.$_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;onetable='.$g5_search['tables'][$i].'" '.$sch_class.'><strong>'.((G5_IS_MOBILE && $row2['bo_mobile_subject']) ? $row2['bo_mobile_subject'] : $row2['bo_subject']).'</strong><span class="cnt_cmt">'.$row['cnt'].'</span></a></li>';
+            $str_board_list .= '<li><a href="'.$_SERVER['SCRIPT_NAME'].'?'.$search_query.'&amp;gr_id='.$gr_id.'&amp;onetable='.$g5_search['tables'][$i].'" '.$sch_class.'><span>'.((G5_IS_MOBILE && $row2['bo_mobile_subject']) ? $row2['bo_mobile_subject'] : $row2['bo_subject']).'</span><span class="cnt_cmt">'.$row['cnt'].'</span></a></li>';
         }
     }
 
@@ -187,8 +226,8 @@ if ($stx) {
                 $row['wr_content'] = '[비밀글 입니다.]';
 
             $subject = get_text($row['wr_subject']);
-            if (strstr($sfl, 'wr_subject'))
-                $subject = search_font($stx, $subject);
+            //if (strstr($sfl, 'wr_subject'))
+            //    $subject = search_font($stx, $subject);
 
             if ($read_level[$idx] <= $member['mb_level'])
             {
@@ -199,8 +238,8 @@ if ($stx) {
                 $content = str_replace('&nbsp;', '', $content);
                 $content = cut_str($content, 300, "…");
 
-                if (strstr($sfl, 'wr_content'))
-                    $content = search_font($stx, $content);
+                //if (strstr($sfl, 'wr_content'))
+                //    $content = search_font($stx, $content);
             }
             else
                 $content = '';
@@ -208,6 +247,37 @@ if ($stx) {
             $list[$idx][$i]['subject'] = $subject;
             $list[$idx][$i]['content'] = $content;
             $list[$idx][$i]['name'] = get_sideview($row['mb_id'], get_text(cut_str($row['wr_name'], $config['cf_cut_name'])), $row['wr_email'], $row['wr_homepage']);
+            $list[$idx][$i]['wr_datetime_display'] = search_relative_datetime($row['wr_datetime']);
+
+            $parent_id = (int)$row['wr_parent'];
+            $sql3 = " select mb_id, wr_name, wr_content, wr_datetime
+                        from {$tmp_write_table}
+                       where wr_parent = '{$parent_id}'
+                         and wr_is_comment = '1'
+                    order by wr_id desc
+                       limit 1 ";
+            $row3 = sql_fetch($sql3);
+
+            if (isset($row3['wr_datetime']) && $row3['wr_datetime']) {
+                $comment_content = strip_tags($row3['wr_content']);
+                $comment_content = get_text($comment_content, 1);
+                $comment_content = strip_tags($comment_content);
+                $comment_content = str_replace('&nbsp;', '', $comment_content);
+                $comment_content = cut_str($comment_content, 300, "…");
+
+                $list[$idx][$i]['latest_comment_name'] = get_text(cut_str($row3['wr_name'], $config['cf_cut_name']));
+
+                $list[$idx][$i]['latest_comment_content'] = $comment_content;
+                $list[$idx][$i]['latest_comment_datetime'] = $row3['wr_datetime'];
+                $list[$idx][$i]['latest_comment_datetime_display'] = search_relative_datetime($row3['wr_datetime']);
+                $list[$idx][$i]['has_latest_comment'] = true;
+            } else {
+                $list[$idx][$i]['latest_comment_name'] = '';
+                $list[$idx][$i]['latest_comment_content'] = '';
+                $list[$idx][$i]['latest_comment_datetime'] = '';
+                $list[$idx][$i]['latest_comment_datetime_display'] = '';
+                $list[$idx][$i]['has_latest_comment'] = false;
+            }
 
             $k++;
             if ($k >= $rows)
