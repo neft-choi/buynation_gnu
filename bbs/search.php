@@ -160,7 +160,7 @@ if ($stx) {
     for ($i=0; $i<count($g5_search['tables']); $i++) {
         $tmp_write_table   = $g5['write_prefix'] . $g5_search['tables'][$i];
 
-        $sql = " select wr_id from {$tmp_write_table} where {$sql_search} ";
+        $sql = " select wr_id from {$tmp_write_table} where {$sql_search} and wr_is_comment = '1' ";
         $result = sql_query($sql, false);
         $row['cnt'] = @sql_num_rows($result);
 
@@ -206,7 +206,7 @@ if ($stx) {
 
         $tmp_write_table = $g5['write_prefix'] . $search_table[$idx];
 
-        $sql = " select * from {$tmp_write_table} where {$sql_search} order by wr_id desc limit {$from_record}, {$rows} ";
+        $sql = " select * from {$tmp_write_table} where {$sql_search} and wr_is_comment = '1' order by wr_id desc limit {$from_record}, {$rows} ";
         $result = sql_query($sql);
         for ($i=0; $row=sql_fetch_array($result); $i++) {
             // 검색어까지 링크되면 게시판 부하가 일어남
@@ -215,7 +215,7 @@ if ($stx) {
 
             if ($row['wr_is_comment'])
             {
-                $sql2 = " select wr_subject, wr_option from {$tmp_write_table} where wr_id = '{$row['wr_parent']}' ";
+                $sql2 = " select wr_subject, wr_option, wr_datetime from {$tmp_write_table} where wr_id = '{$row['wr_parent']}' ";
                 $row2 = sql_fetch($sql2);
                 //$row['wr_subject'] = $row2['wr_subject'];
                 $row['wr_subject'] = get_text($row2['wr_subject']);
@@ -248,6 +248,14 @@ if ($stx) {
             $list[$idx][$i]['content'] = $content;
             $list[$idx][$i]['name'] = get_sideview($row['mb_id'], get_text(cut_str($row['wr_name'], $config['cf_cut_name'])), $row['wr_email'], $row['wr_homepage']);
             $list[$idx][$i]['wr_datetime_display'] = search_relative_datetime($row['wr_datetime']);
+
+            // 제목 영역은 "원글 시간"을 보여줘야 하므로 별도 필드를 만든다.
+            // 댓글 검색 결과인 경우(wr_is_comment=1)에는 부모글(row2)의 시간을 사용한다.
+            $post_datetime = $row['wr_datetime'];
+            if (!empty($row['wr_is_comment']) && !empty($row2['wr_datetime'])) {
+                $post_datetime = $row2['wr_datetime'];
+            }
+            $list[$idx][$i]['post_wr_datetime_display'] = search_relative_datetime($post_datetime);
 
             $parent_id = (int)$row['wr_parent'];
             $sql3 = " select mb_id, wr_name, wr_content, wr_datetime

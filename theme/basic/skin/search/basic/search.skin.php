@@ -118,8 +118,10 @@ add_stylesheet('<link rel="stylesheet" href="' . $search_skin_url . '/style.css"
                     <a href="<?php echo get_pretty_url($search_table[$idx], '', $search_query); ?>" class="sch_more text-xs text-zinc-500 font-medium">더보기</a>
                 </div>
                 <ul class="space-y-4">
+                    
                     <?php
-                    for ($i = 0; $i < count($list[$idx]) && $k < $rows; $i++, $k++) {
+                    for ($i = 0; $i < (isset($list[$idx]) ? count($list[$idx]) : 0) && $k < $rows; $i++, $k++) {
+                        // var_dump($list[$idx][$i]);
                         if ($list[$idx][$i]['wr_is_comment']) {
                             $comment_def = '<span class="cmt_def"><span class="sound_only">댓글</span></span> ';
                             $comment_href = '#c_' . $list[$idx][$i]['wr_id'];
@@ -132,7 +134,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $search_skin_url . '/style.css"
                         <li class="space-y-2">
                             <div class="sch_tit !flex items-center justify-between gap-2 !p-4 border border-zinc-300 rounded">
                                 <a href="<?php echo $list[$idx][$i]['href'] ?><?php echo $comment_href ?>" class="sch_res_title !text-sm"><?php echo $comment_def ?><?php echo $list[$idx][$i]['subject'] ?></a>
-                                <div class="sch_info text-xs text-zinc-500 font-medium"><?php echo $list[$idx][$i]['wr_datetime_display'] ?></div>
+                                <div class="sch_info text-xs text-zinc-500 font-medium text-nowrap"><?php echo $list[$idx][$i]['post_wr_datetime_display'] ?></div>
                             </div>
 
                             <?php if (!empty($list[$idx][$i]['has_latest_comment'])) { ?>
@@ -143,10 +145,10 @@ add_stylesheet('<link rel="stylesheet" href="' . $search_skin_url . '/style.css"
                                     </svg>
                                     <div class="sch_comment flex flex-1 items-center justify-between p-4 border border-zinc-300 rounded">
                                         <div class="flex items-center gap-2">
-                                            <span class="h-fit flex items-center justify-center text-xs px-1 rounded bg-[#222] text-white font-medium"><?php echo $list[$idx][$i]['wr_name'] ?></span>
-                                            <p><?php echo $list[$idx][$i]['content'] ?></p>
+                                            <span class="h-fit flex items-center justify-center text-xs px-1 rounded bg-[#222] text-white font-medium text-nowrap"><?php echo $list[$idx][$i]['wr_name'] ?></span>
+                                            <p class="line-clamp-2"><?php echo $list[$idx][$i]['content'] ?></p>
                                         </div>
-                                        <span class="sch_datetime text-xs text-zinc-500 font-medium"><?php echo $list[$idx][$i]['latest_comment_datetime_display'] ?></span>
+                                        <span class="sch_datetime text-xs text-zinc-500 font-medium text-nowrap"><?php echo $list[$idx][$i]['wr_datetime_display'] ?></span>
                                     </div>
                                 </div>
                             <?php } ?>

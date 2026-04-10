@@ -91,7 +91,7 @@
   --bottom-nav-icon: 72px;
 }
 
-/* 버튼 테마 */
+/* 버튼 테마 (priamry) */
 :where(button[data-variant="primary"]) {
   width: 100%;
   font-size: 14px;
@@ -102,6 +102,14 @@
   outline: none;
 }
 
+:where(button[data-variant="primary"]:disabled),
+:where(button[data-variant="primary"].disabled) {
+  background: #e4e4e7;
+  color: #71717a;
+  cursor: not-allowed;
+}
+
+/* 버튼 테마 (secondary) */
 :where(button[data-variant="secondary"]) {
   width: 100%;
   font-size: 14px;
