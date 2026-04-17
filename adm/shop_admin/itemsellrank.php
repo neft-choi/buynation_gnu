@@ -59,7 +59,7 @@ $result = sql_query($sql);
 //$qstr = 'page='.$page.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2;
 $qstr1 = $qstr.'&amp;fr_date='.$fr_date.'&amp;to_date='.$to_date.'&amp;sel_ca_id='.$sel_ca_id;
 
-$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목록</a>';
 ?>
 
 <div class="local_ov01 local_ov">
@@ -95,7 +95,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 <input type="text" name="fr_date" value="<?php echo $fr_date; ?>" id="fr_date" required class="required frm_input" size="8" maxlength="8"> 에서
 <label for="to_date" class="sound_only">종료일</label>
 <input type="text" name="to_date" value="<?php echo $to_date; ?>" id="to_date" required class="required frm_input" size="8" maxlength="8"> 까지
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 
 </form>
 
@@ -104,8 +104,8 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./itemstocklist.php" class="btn_02 btn">상품재고관리</a>
-    <a href="./itemlist.php" class="btn_01 btn">상품등록</a>
+    <a href="./itemstocklist.php" class="btn btn_04">상품재고관리</a>
+    <a href="./itemlist.php" class="btn btn_04">상품등록</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">

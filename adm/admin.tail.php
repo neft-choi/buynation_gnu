@@ -18,9 +18,47 @@ $print_version = ($is_admin == 'super') ? 'Version ' . G5_GNUBOARD_VER : '';
 <footer id="ft">
     <p>
         Copyright &copy; <?php echo $_SERVER['HTTP_HOST']; ?>. All rights reserved. <?php echo $print_version; ?><br>
-        <button type="button" class="scroll_top"><span class="top_img"></span><span class="top_txt">TOP</span></button>
+        <button type="button" class="scroll_top !hidden"><span class="top_img"></span><span class="top_txt">TOP</span></button>
     </p>
 </footer>
+
+<!-- 관리자 하단 네비게이션 바 -->
+<nav id="admin_bottom_nav" class="fixed bottom-0 left-0 z-[1200] w-full max-w-full border-t border-gray-200 bg-white md:!hidden">
+    <ul class="grid grid-cols-3 h-[var(--admin-bottom-nav-height)]">
+        <li class="h-full">
+            <button type="button" id="btn_gnb" aria-label="메뉴 열기" class="js-btn-gnb-toggle flex w-full h-full items-center justify-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu h-5 w-5">
+                    <path d="M4 5h16" />
+                    <path d="M4 12h16" />
+                    <path d="M4 19h16" />
+                </svg>
+            </button>
+        </li>
+        <?php if (defined('G5_USE_SHOP') && G5_USE_SHOP) { ?>
+            <li class="h-full">
+                <a href="<?php echo G5_SHOP_URL ?>/" target="_blank" title="쇼핑몰 바로가기" aria-label="쇼핑몰 바로가기" class="flex h-full w-full items-center justify-center text-gray-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store-icon lucide-store h-5 w-5">
+                        <path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5" />
+                        <path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244" />
+                        <path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05" />
+                    </svg>
+                </a>
+            </li>
+        <?php } ?>
+        <li class="h-full">
+            <a href="<?php echo G5_URL ?>/" target="_blank" title="커뮤니티 바로가기" aria-label="커뮤니티 바로가기" class="flex h-full w-full items-center justify-center text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list-icon lucide-clipboard-list h-5 w-5">
+                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                    <path d="M12 11h4" />
+                    <path d="M12 16h4" />
+                    <path d="M8 11h.01" />
+                    <path d="M8 16h.01" />
+                </svg>
+            </a>
+        </li>
+    </ul>
+</nav>
 
 <!-- 공통 레이어 팝업 컨테이너 -->
 <div id="adminPopupContainer">
@@ -59,7 +97,7 @@ $print_version = ($is_admin == 'super') ? 'Version ' . G5_GNUBOARD_VER : '';
 
         var admin_head_height = $("#hd_top").height() + $("#container_title").height() + 5;
 
-        $("a[href^='#']").anchorScroll({
+        $("a[href^='#']:not([data-tab-target])").anchorScroll({
             scrollSpeed: 0, // scroll speed
             offsetTop: admin_head_height, // offset for fixed top bars (defaults to 0)
             onScroll: function() {

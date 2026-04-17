@@ -42,7 +42,7 @@ include_once(G5_PATH.'/head.sub.php');
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="배송정보 등록" class="btn_submit">
+        <input type="submit" value="배송정보 등록" class="btn btn_04">
         <button type="button" onclick="window.close();">닫기</button>
     </div>
 

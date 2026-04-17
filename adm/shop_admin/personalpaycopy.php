@@ -41,7 +41,7 @@ if(!$row['pp_id'])
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="복사하기" class="btn_submit">
+        <input type="submit" value="복사하기" class="btn btn_04">
         <button type="button" onclick="self.close();">창닫기</button>
     </div>
 

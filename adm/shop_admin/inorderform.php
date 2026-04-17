@@ -377,7 +377,7 @@ $pg_anchor = '<ul class="anchor">
         </table>
 
         <div class="btn_confirm01 btn_confirm">
-            <input type="submit" value="주문 복구" class="btn_submit">
+            <input type="submit" value="주문 복구" class="btn btn_04">
         </div>
         </form>
     </div>

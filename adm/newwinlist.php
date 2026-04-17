@@ -51,7 +51,7 @@ $result = sql_query($sql);
 <div class="local_ov01 local_ov"><span class="btn_ov01"><span class="ov_txt">전체 </span><span class="ov_num"> <?php echo $total_count; ?>건</span></span></div>
 
 <div class="btn_fixed_top ">
-    <a href="./newwinform.php" class="btn btn_01">새창관리추가</a>
+    <a href="./newwinform.php" class="btn btn_04">새창관리추가</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -101,8 +101,8 @@ $result = sql_query($sql);
                     <td class="td_num"><?php echo $row['nw_width']; ?>px</td>
                     <td class="td_num"><?php echo $row['nw_height']; ?>px</td>
                     <td class="td_mng td_mng_m">
-                        <a href="./newwinform.php?w=u&amp;nw_id=<?php echo $row['nw_id']; ?>" class="btn btn_03"><span class="sound_only"><?php echo $row['nw_subject']; ?> </span>수정</a>
-                        <a href="./newwinformupdate.php?w=d&amp;nw_id=<?php echo $row['nw_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only"><?php echo $row['nw_subject']; ?> </span>삭제</a>
+                        <a href="./newwinform.php?w=u&amp;nw_id=<?php echo $row['nw_id']; ?>" class="btn btn_04"><span class="sound_only"><?php echo $row['nw_subject']; ?> </span>수정</a>
+                        <a href="./newwinformupdate.php?w=d&amp;nw_id=<?php echo $row['nw_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_05"><span class="sound_only"><?php echo $row['nw_subject']; ?> </span>삭제</a>
                     </td>
                 </tr>
             <?php

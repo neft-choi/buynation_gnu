@@ -66,7 +66,7 @@ $colspan = 10;
     </select>
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
     <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-    <input type="submit" class="btn_submit" value="검색">
+    <input type="submit" class="btn btn_04" value="검색">
 </form>
 
 
@@ -124,8 +124,8 @@ $colspan = 10;
         <td class="td_date"><?php echo is_null_time($row['pp_receipt_time']) ? '' : substr($row['pp_receipt_time'], 2, 8); ?></td>
         <td class="td_boolean"><?php echo $row['pp_use'] ? '예' : '아니오'; ?></td>
         <td class="td_mng td_mng_m">
-            <a href="./personalpayform.php?w=u&amp;pp_id=<?php echo $row['pp_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03"><span class="sound_only"><?php echo $row['pp_id']; ?> </span>수정</a>
-            <a href="./personalpaycopy.php?pp_id=<?php echo $row['pp_id']; ?>" class="personalpaycopy btn btn_02"><span class="sound_only"><?php echo $row['pp_id']; ?> </span>복사</a>
+            <a href="./personalpayform.php?w=u&amp;pp_id=<?php echo $row['pp_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_04"><span class="sound_only"><?php echo $row['pp_id']; ?> </span>수정</a>
+            <a href="./personalpaycopy.php?pp_id=<?php echo $row['pp_id']; ?>" class="personalpaycopy btn btn_05"><span class="sound_only"><?php echo $row['pp_id']; ?> </span>복사</a>
         </td>
     </tr>
 
@@ -140,8 +140,8 @@ $colspan = 10;
 </div>
 
 <div class="btn_fixed_top">
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
-    <a href="./personalpayform.php" id="personalpay_add" class="btn btn_01">개인결제 추가</a>
+    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
+    <a href="./personalpayform.php" id="personalpay_add" class="btn btn_04">개인결제 추가</a>
 </div>
 
 </form>

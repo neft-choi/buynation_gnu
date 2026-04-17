@@ -44,7 +44,7 @@ $sql = " select *
             limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="ov_listall">전체목록</a>';
+$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체목록</a>';
 
 $g5['title'] = '투표관리';
 require_once './admin.head.php';
@@ -65,7 +65,7 @@ $colspan = 8;
         </select>
         <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
         <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-        <input type="submit" class="btn_submit" value="검색">
+        <input type="submit" class="btn btn_04" value="검색">
     </div>
 </form>
 
@@ -104,7 +104,7 @@ $colspan = 8;
                     $po_etc = ($row['po_etc']) ? "사용" : "미사용";
                     $po_use = ($row['po_use']) ? "사용" : "미사용";
 
-                    $s_mod = '<a href="./poll_form.php?' . $qstr . '&amp;w=u&amp;po_id=' . $row['po_id'] . '" class="btn btn_03">수정</a>';
+                    $s_mod = '<a href="./poll_form.php?' . $qstr . '&amp;w=u&amp;po_id=' . $row['po_id'] . '" class="btn btn_04">수정</a>';
 
                     $bg = 'bg' . ($i % 2);
                     ?>
@@ -135,8 +135,8 @@ $colspan = 8;
     </div>
 
     <div class="btn_fixed_top">
-        <input type="submit" value="선택삭제" class="btn btn_02">
-        <a href="./poll_form.php" id="poll_add" class="btn btn_01">투표 추가</a>
+        <input type="submit" value="선택삭제" class="btn btn_05">
+        <a href="./poll_form.php" id="poll_add" class="btn btn_04">투표 추가</a>
     </div>
 </form>
 

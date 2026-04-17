@@ -30,7 +30,7 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add = "")
 
     $str = '';
     if ($cur_page > 1) {
-        $str .= '<a href="' . $url . '1' . $add . '" class="pg_page pg_start !border-0">처음</a>' . PHP_EOL;
+        $str .= '<a href="' . $url . '1' . $add . '" class="pg_page pg_start !inline-flex !items-center !justify-center !w-8 !h-8 !bg-white !text-gray-900 !border !border-gray-200"><span class="sound_only">처음</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-left-icon lucide-chevrons-left !w-4 !h-4" aria-hidden="true"><path d="m11 17-5-5 5-5"/><path d="m18 17-5-5 5-5"/></svg></a>' . PHP_EOL;
     }
 
     $start_page = (((int)(($cur_page - 1) / $write_pages)) * $write_pages) + 1;
@@ -38,25 +38,25 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add = "")
 
     if ($end_page >= $total_page) $end_page = $total_page;
 
-    if ($start_page > 1) $str .= '<a href="' . $url . ($start_page - 1) . $add . '" class="pg_page pg_prev !border-0">이전</a>' . PHP_EOL;
+    if ($start_page > 1) $str .= '<a href="' . $url . ($start_page - 1) . $add . '" class="pg_page pg_prev !inline-flex !items-center !justify-center !w-8 !h-8 !bg-white !text-gray-900 !border !border-gray-200"><span class="sound_only">이전</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left !w-4 !h-4" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></a>' . PHP_EOL;
 
     if ($total_page > 1) {
         for ($k = $start_page; $k <= $end_page; $k++) {
             if ($cur_page != $k)
-                $str .= '<a href="' . $url . $k . $add . '" class="pg_page !text-gray-900 !border-0">' . $k . '<span class="sound_only">페이지</span></a>' . PHP_EOL;
+                $str .= '<a href="' . $url . $k . $add . '" class="pg_page !inline-flex !items-center !justify-center !w-8 !h-8 !bg-white !text-gray-900 !font-medium !border !border-gray-200">' . $k . '<span class="sound_only">페이지</span></a>' . PHP_EOL;
             else
-                $str .= '<span class="sound_only">열린</span><strong class="pg_current !bg-[var(--color-primary)] !text-gray-900 !border-0">' . $k . '</strong><span class="sound_only">페이지</span>' . PHP_EOL;
+                $str .= '<span class="pg_current !inline-flex !items-center !justify-center !w-8 !h-8 !bg-blue-500 !text-white !font-medium !border !border-gray-200"><span class="sound_only">열린</span>' . $k . '</span><span class="sound_only">페이지</span>' . PHP_EOL;
         }
     }
 
-    if ($total_page > $end_page) $str .= '<a href="' . $url . ($end_page + 1) . $add . '" class="pg_page pg_next !border-0">다음</a>' . PHP_EOL;
+    if ($total_page > $end_page) $str .= '<a href="' . $url . ($end_page + 1) . $add . '" class="pg_page pg_next !inline-flex !items-center !justify-center !w-8 !h-8 !bg-white !text-gray-900 !border !border-gray-200"><span class="sound_only">다음</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right !w-4 !h-4" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></a>' . PHP_EOL;
 
     if ($cur_page < $total_page) {
-        $str .= '<a href="' . $url . $total_page . $add . '" class="pg_page pg_end !border-0">맨끝</a>' . PHP_EOL;
+        $str .= '<a href="' . $url . $total_page . $add . '" class="pg_page pg_end !inline-flex !items-center !justify-center !w-8 !h-8 !bg-white !text-gray-900 !border !border-gray-200"><span class="sound_only">맨끝</span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-right-icon lucide-chevrons-right !w-4 !h-4" aria-hidden="true"><path d="m6 17 5-5-5-5"/><path d="m13 17 5-5-5-5"/></svg></a>' . PHP_EOL;
     }
 
     if ($str)
-        return "<nav class=\"pg_wrap !float-none !flex !justify-center !px-4 !pb-4\"><span class=\"pg\">{$str}</span></nav>";
+        return "<nav class=\"pg_wrap text-center p-4\"><span class=\"pg inline-flex items-center space-x-[-1px]\">{$str}</span></nav>";
     else
         return "";
 }

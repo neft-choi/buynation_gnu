@@ -53,7 +53,7 @@ if (empty($bo_table)) {
             </div>
         </div>
         <div class="win_btn ">
-            <input type="submit" class="btn_submit btn" value="복사">
+            <input type="submit" class="btn btn_04" value="복사">
             <input type="button" class="btn_close btn" value="창닫기" onclick="window.close();">
         </div>
 

@@ -148,7 +148,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <th scope="row"><label for="cp_target"><?php echo $cp_target_label; ?></label></th>
         <td>
            <input type="text" name="cp_target" value="<?php echo stripslashes($cp['cp_target']); ?>" id="cp_target" required class="required frm_input">
-           <button type="button" id="sch_target" class="btn_frmline"><?php echo $cp_target_btn; ?></button>
+           <button type="button" id="sch_target" class="btn btn_04"><?php echo $cp_target_btn; ?></button>
         </td>
     </tr>
     <tr>
@@ -194,8 +194,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./couponzonelist.php?<?php echo $qstr; ?>" class="btn_02 btn">목록</a>
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+    <a href="./couponzonelist.php?<?php echo $qstr; ?>" class="btn btn_04">목록</a>
+    <input type="submit" value="확인" class="btn btn_04" accesskey="s">
 </div>
 
 </form>

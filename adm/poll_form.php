@@ -121,8 +121,8 @@ require_once './admin.head.php';
     </div>
 
     <div class="btn_fixed_top ">
-        <a href="./poll_list.php?<?php echo $qstr ?>" class="btn_02 btn">목록</a>
-        <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+        <a href="./poll_list.php?<?php echo $qstr ?>" class="btn btn_04">목록</a>
+        <input type="submit" value="확인" class="btn btn_04" accesskey="s">
     </div>
 
 </form>

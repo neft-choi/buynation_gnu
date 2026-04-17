@@ -125,7 +125,7 @@ function no_hp_click(val)
 </select>
 <label for="sv" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="sv" value="<?php echo $sv?>" id="sv" required class="frm_input required">
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 </form>
 
 <form name="search_form" class="local_sch01 local_sch">
@@ -199,9 +199,9 @@ function no_hp_click(val)
         <td class="td_mbid"><?php echo $res['mb_id'] ? $res['mb_id'] : '비회원'?></td>
         <td class="td_datetime"><?php echo $res['bk_datetime']?></td>
         <td class="td_mng td_mng_l">
-            <a href="./num_book_write.php?w=u&amp;bk_no=<?php echo $res['bk_no']?>&amp;page=<?php echo $page?>&amp;bg_no=<?php echo $bg_no?>&amp;st=<?php echo $st?>&amp;sv=<?php echo $sv?>&amp;ap=<?php echo $ap?>" class="btn btn_03">수정</a>
-            <a href="./sms_write.php?bk_no=<?php echo $res['bk_no']?>" class="btn btn_02">보내기</a>
-            <a href="./history_num.php?st=hs_hp&amp;sv=<?php echo $res['bk_hp']?>" class="btn btn_02">내역</a>
+            <a href="./num_book_write.php?w=u&amp;bk_no=<?php echo $res['bk_no']?>&amp;page=<?php echo $page?>&amp;bg_no=<?php echo $bg_no?>&amp;st=<?php echo $st?>&amp;sv=<?php echo $sv?>&amp;ap=<?php echo $ap?>" class="btn btn_04">수정</a>
+            <a href="./sms_write.php?bk_no=<?php echo $res['bk_no']?>" class="btn btn_05">보내기</a>
+            <a href="./history_num.php?st=hs_hp&amp;sv=<?php echo $res['bk_hp']?>" class="btn btn_05">내역</a>
         </td>
     </tr>
     <?php } ?>
@@ -209,12 +209,12 @@ function no_hp_click(val)
     </table>
 </div>
 <div class="btn_fixed_top">
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
-    <input type="submit" name="act_button" value="수신허용" onclick="document.pressed=this.value" class="btn btn_02">
-    <input type="submit" name="act_button" value="수신거부" onclick="document.pressed=this.value" class="btn btn_02">
-    <input type="submit" name="act_button" value="선택이동" onclick="document.pressed=this.value" class="btn btn_02">
-    <input type="submit" name="act_button" value="선택복사" onclick="document.pressed=this.value" class="btn btn_02">
-    <a href="./num_book_write.php?page=<?php echo $page?>&amp;bg_no=<?php echo $bg_no?>" class="btn btn_01">번호추가</a>
+    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
+    <input type="submit" name="act_button" value="수신허용" onclick="document.pressed=this.value" class="btn btn_05">
+    <input type="submit" name="act_button" value="수신거부" onclick="document.pressed=this.value" class="btn btn_05">
+    <input type="submit" name="act_button" value="선택이동" onclick="document.pressed=this.value" class="btn btn_05">
+    <input type="submit" name="act_button" value="선택복사" onclick="document.pressed=this.value" class="btn btn_05">
+    <a href="./num_book_write.php?page=<?php echo $page?>&amp;bg_no=<?php echo $bg_no?>" class="btn btn_04">번호추가</a>
 </div>
 </form>
 <script>

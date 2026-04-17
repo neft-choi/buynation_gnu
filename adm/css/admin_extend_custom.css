@@ -4,9 +4,9 @@
   --color-secondary: ##3f51b5;
 }
 
-#logo {
+/* #logo {
   background: var(--color-primary);
-}
+} */
 
 #gnb .gnb_ul {
   display: flex;
@@ -17,7 +17,7 @@
 .btn_fixed_top {
   display: flex;
   flex-direction: row;
-  gap: 4px;
+  gap: 8px;
 }
 
 .tbl_head01 thead th {
@@ -27,6 +27,7 @@
 /* SMS 관리 - 휴대폰번호 관리 */
 .local_ov01 {
   display: flex;
+  align-items: center;
   gap: 4px;
 }
 
@@ -38,11 +39,11 @@
 /* 모바일 CSS */
 @media (max-width: 768px) {
   /* 기본 클래스 */
-  select {
+  /* select {
     height: fit-content;
     line-height: normal;
     padding: 4px 2px;
-  }
+  } */
 
   /* 커스텀 클래스 */
   .flex_gap {
@@ -139,7 +140,7 @@
   /* 모바일 사이드 바 오버레이 */
   #gnb_overlay {
     position: fixed;
-    top: 50px;
+    top: 48px;
     left: 0;
     width: 100%;
     height: calc(100% - 50px);
@@ -169,28 +170,20 @@
   }
 
   /* 공통 - 탭 */
-  .anchor a {
+  /* .anchor a {
     margin: 2px 4px;
     border-radius: 10px;
-  }
+  } */
 
-  .anchor a:hover {
+  /* .anchor a:hover {
     background-color: #c8ced1;
-  }
+  } */
 
-  /* 공통 - 상단 버튼 이동 */
-  .btn_fixed_top {
-    margin: 8px 0px;
-    position: static;
-    display: flex;
-    gap: 4px;
-  }
-
-  .btn_row_flex {
+  /* .btn_row_flex {
     display: flex;
     align-items: center;
     gap: 4px;
-  }
+  } */
 
   /* 환경 설정 - 테마 설정 */
   #theme_list {
@@ -353,7 +346,7 @@
     padding-bottom: 0;
   }
 
-  .tbl_frm01.tbl_wrap .btn_frmline {
+  .tbl_frm01.tbl_wrap .btn btn_04 {
     margin-top: 8px;
   }
 

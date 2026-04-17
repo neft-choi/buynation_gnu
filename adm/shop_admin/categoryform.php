@@ -102,10 +102,10 @@ $g5['title'] = $html_title;
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $pg_anchor ='<ul class="anchor">
-<li><a href="#anc_scatefrm_basic">필수입력</a></li>
-<li><a href="#anc_scatefrm_optional">선택입력</a></li>
-<li><a href="#anc_scatefrm_extra">여분필드</a></li>';
-if ($w == 'u') $pg_anchor .= '<li><a href="#frm_etc">기타설정</a></li>';
+<li><a href="#anc_scatefrm_basic" data-tab-target="anc_scatefrm_basic">필수입력</a></li>
+<li><a href="#anc_scatefrm_optional" data-tab-target="anc_scatefrm_optional">선택입력</a></li>
+<li><a href="#anc_scatefrm_extra" data-tab-target="anc_scatefrm_extra">여분필드</a></li>';
+if ($w == 'u') $pg_anchor .= '<li><a href="#frm_etc" data-tab-target="frm_etc">기타설정</a></li>';
 $pg_anchor .= '</ul>';
 
 // 쿠폰 적용 불가 설정 필드 추가
@@ -163,13 +163,13 @@ else {
 <input type="hidden" name="stx" value="<?php echo $stx; ?>">
 <input type="hidden" name="page" value="<?php echo $page; ?>">
 <input type="hidden" name="ca_explan_html" value="<?php echo $ca['ca_explan_html']; ?>">
+<?php echo $pg_anchor; ?>
 
 <section id="anc_scatefrm_basic">
     <h2 class="h2_frm">필수입력</h2>
-    <?php echo $pg_anchor; ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>분류 추가 필수입력</caption>
         <colgroup>
             <col class="grid_4">
@@ -185,9 +185,9 @@ else {
             <?php } else { ?>
                 <input type="hidden" name="ca_id" value="<?php echo $ca['ca_id']; ?>">
                 <span class="frm_ca_id"><?php echo $ca['ca_id']; ?></span>
-                <a href="<?php echo shop_category_url($ca_id); ?>" class="btn_frmline">미리보기</a>
-                <a href="./categoryform.php?ca_id=<?php echo $ca_id; ?>&amp;<?php echo $qstr; ?>" class="btn_frmline">하위분류 추가</a>
-                <a href="./itemlist.php?sca=<?php echo $ca['ca_id']; ?>" class="btn_frmline">상품리스트</a>
+                <a href="<?php echo shop_category_url($ca_id); ?>" class="btn btn_04">미리보기</a>
+                <a href="./categoryform.php?ca_id=<?php echo $ca_id; ?>&amp;<?php echo $qstr; ?>" class="btn btn_04">하위분류 추가</a>
+                <a href="./itemlist.php?sca=<?php echo $ca['ca_id']; ?>" class="btn btn_04">상품리스트</a>
             <?php } ?>
             </td>
         </tr>
@@ -350,16 +350,15 @@ else {
         </tbody>
         </table>
     </div>
-    <button type="button" class="shop_category btn_02 btn">테마설정 가져오기</button>
+    <button type="button" class="shop_category btn btn_04">테마설정 가져오기</button>
 </section>
 
 
 <section id="anc_scatefrm_optional">
     <h2 class="h2_frm">선택 입력</h2>
-    <?php echo $pg_anchor; ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>분류 추가 선택입력</caption>
         <colgroup>
             <col class="grid_4">
@@ -432,10 +431,9 @@ else {
 
 <section id="anc_scatefrm_extra">
     <h2>여분필드 설정</h2>
-    <?php echo $pg_anchor ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <colgroup>
             <col class="grid_3">
             <col>
@@ -461,10 +459,9 @@ else {
 <?php if ($w == "u") { ?>
 <section id="frm_etc">
     <h2 class="h2_frm">기타설정</h2>
-    <?php echo $pg_anchor; ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>분류 추가 기타설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -486,8 +483,8 @@ else {
 
 <?php } ?>
 <div class="btn_fixed_top">
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
-    <a href="./categorylist.php?<?php echo $qstr; ?>" class="btn_02 btn">목록</a>
+    <input type="submit" value="확인" class="btn btn_04" accesskey="s">
+    <a href="./categorylist.php?<?php echo $qstr; ?>" class="btn btn_04">목록</a>
 </div>
 </form>
 
@@ -630,6 +627,118 @@ jQuery(function($){
             }
         });
     });
+
+    const tabIds = Object.freeze([
+        "anc_scatefrm_basic",
+        "anc_scatefrm_optional",
+        "anc_scatefrm_extra",
+        "frm_etc"
+    ]);
+
+    const isValidTabId = (tabId) => tabIds.indexOf(tabId) > -1;
+
+    const getTabPanels = () =>
+        tabIds
+            .map((id) => document.getElementById(id))
+            .filter((panel) => panel !== null);
+
+    const getTabLinks = () =>
+        Array.from(document.querySelectorAll(".anchor a[data-tab-target]"));
+
+    const getHashTabId = () => window.location.hash.replace("#", "");
+
+    const getInitialTabId = () => {
+        const hashTabId = getHashTabId();
+
+        if (isValidTabId(hashTabId)) {
+            return hashTabId;
+        }
+
+        const firstLink = getTabLinks()[0];
+        const firstTargetId = firstLink ? (firstLink.getAttribute("data-tab-target") || "") : "";
+        return isValidTabId(firstTargetId) ? firstTargetId : tabIds[0];
+    };
+
+    const renderTab = (activeId) => {
+        const panels = getTabPanels();
+        const links = getTabLinks();
+
+        panels.forEach((panel) => {
+            const isActive = panel.id === activeId;
+            if (isActive) {
+                panel.style.visibility = "visible";
+                panel.style.position = "";
+                panel.style.height = "";
+                panel.style.overflow = "";
+                panel.style.pointerEvents = "";
+            } else {
+                panel.style.visibility = "hidden";
+                panel.style.position = "absolute";
+                panel.style.height = "0";
+                panel.style.overflow = "hidden";
+                panel.style.pointerEvents = "none";
+            }
+            panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+        });
+
+        links.forEach((link) => {
+            const targetId = link.getAttribute("data-tab-target") || "";
+            const isActive = targetId === activeId;
+            link.setAttribute("aria-selected", isActive ? "true" : "false");
+            link.classList.toggle("tab-active", isActive);
+        });
+    };
+
+    const activateTab = (tabId, syncHash = true) => {
+        if (!isValidTabId(tabId)) {
+            return;
+        }
+
+        renderTab(tabId);
+
+        if (syncHash && window.location.hash !== "#" + tabId) {
+            history.replaceState(null, "", "#" + tabId);
+        }
+    };
+
+    const bindTabEvents = () => {
+        const links = getTabLinks();
+
+        links.forEach((link) => {
+            link.addEventListener("click", (event) => {
+                const tabId = link.getAttribute("data-tab-target") || "";
+
+                if (!isValidTabId(tabId)) {
+                    return;
+                }
+
+                event.preventDefault();
+                activateTab(tabId);
+                window.scrollTo(0, 0);
+            });
+        });
+
+        window.addEventListener("hashchange", () => {
+            const hashTabId = getHashTabId();
+
+            if (isValidTabId(hashTabId)) {
+                renderTab(hashTabId);
+            }
+        });
+    };
+
+    const initTabs = () => {
+        const links = getTabLinks();
+
+        if (!links.length) {
+            return;
+        }
+
+        bindTabEvents();
+        activateTab(getInitialTabId(), false);
+    };
+
+    initTabs();
 });
 
 /*document.fcategoryform.ca_name.focus(); 포커스 해제*/

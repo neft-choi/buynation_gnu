@@ -161,8 +161,8 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
     </div>
 
     <div class="btn_fixed_top">
-        <a href="./bannerlist.php" class="btn_02 btn">목록</a>
-        <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+        <a href="./bannerlist.php" class="btn btn_04">목록</a>
+        <input type="submit" value="확인" class="btn btn_04" accesskey="s">
     </div>
 
 </form>

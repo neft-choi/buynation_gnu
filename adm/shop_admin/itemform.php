@@ -175,17 +175,17 @@ if (!sql_query(" select ec_mall_pid from {$g5['g5_shop_item_table']} limit 1 ", 
 }
 
 $pg_anchor = '<ul class="anchor">
-<li><a href="#anc_sitfrm_cate">상품분류</a></li>
-<li><a href="#anc_sitfrm_skin">스킨설정</a></li>
-<li><a href="#anc_sitfrm_ini">기본정보</a></li>
-<li><a href="#anc_sitfrm_compact">요약정보</a></li>
-<li><a href="#anc_sitfrm_cost">가격 및 재고</a></li>
-<li><a href="#anc_sitfrm_sendcost">배송비</a></li>
-<li><a href="#anc_sitfrm_img">상품이미지</a></li>
-<li><a href="#anc_sitfrm_relation">관련상품</a></li>
-<li><a href="#anc_sitfrm_event">관련이벤트</a></li>
-<li><a href="#anc_sitfrm_optional">상세설명설정</a></li>
-<li><a href="#anc_sitfrm_extra">여분필드</a></li>
+<li><a href="#anc_sitfrm_cate" data-tab-target="anc_sitfrm_cate">상품분류</a></li>
+<li><a href="#anc_sitfrm_skin" data-tab-target="anc_sitfrm_skin">스킨설정</a></li>
+<li><a href="#anc_sitfrm_ini" data-tab-target="anc_sitfrm_ini">기본정보</a></li>
+<li><a href="#anc_sitfrm_compact" data-tab-target="anc_sitfrm_compact">요약정보</a></li>
+<li><a href="#anc_sitfrm_cost" data-tab-target="anc_sitfrm_cost">가격 및 재고</a></li>
+<li><a href="#anc_sitfrm_sendcost" data-tab-target="anc_sitfrm_sendcost">배송비</a></li>
+<li><a href="#anc_sitfrm_img" data-tab-target="anc_sitfrm_img">상품이미지</a></li>
+<li><a href="#anc_sitfrm_relation" data-tab-target="anc_sitfrm_relation">관련상품</a></li>
+<li><a href="#anc_sitfrm_event" data-tab-target="anc_sitfrm_event">관련이벤트</a></li>
+<li><a href="#anc_sitfrm_optional" data-tab-target="anc_sitfrm_optional">상세설명설정</a></li>
+<li><a href="#anc_sitfrm_extra" data-tab-target="anc_sitfrm_extra">여분필드</a></li>
 </ul>
 ';
 
@@ -213,16 +213,16 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
     <input type="hidden" name="sfl" value="<?php echo $sfl; ?>">
     <input type="hidden" name="stx" value="<?php echo $stx; ?>">
     <input type="hidden" name="page" value="<?php echo $page; ?>">
+    <?php echo $pg_anchor; ?>
 
     <section id="anc_sitfrm_cate">
         <h2 class="h2_frm">상품분류</h2>
-        <?php echo $pg_anchor; ?>
         <div class="local_desc02 local_desc">
             <p>기본분류는 반드시 선택하셔야 합니다. 하나의 상품에 최대 3개의 다른 분류를 지정할 수 있습니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>상품분류 입력</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -272,13 +272,12 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_skin">
         <h2 class="h2_frm">스킨설정</h2>
-        <?php echo $pg_anchor; ?>
         <div class="local_desc02 local_desc">
             <p>상품상세보기에서 사용할 스킨을 설정합니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>스킨설정</caption>
 
                 <tbody>
@@ -314,9 +313,8 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_ini">
         <h2 class="h2_frm">기본정보</h2>
-        <?php echo $pg_anchor; ?>
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>기본정보 입력</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -334,9 +332,9 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php } else { ?>
                                 <input type="hidden" name="it_id" value="<?php echo $it['it_id']; ?>">
                                 <span class="frm_ca_id"><?php echo $it['it_id']; ?></span>
-                                <a href="<?php echo shop_item_url($it_id); ?>" class="btn_frmline">상품확인</a>
-                                <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/itemuselist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" class="btn_frmline">사용후기</a>
-                                <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/itemqalist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" class="btn_frmline">상품문의</a>
+                                <a href="<?php echo shop_item_url($it_id); ?>" class="btn btn_04">상품확인</a>
+                                <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/itemuselist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" class="btn btn_04">사용후기</a>
+                                <a href="<?php echo G5_ADMIN_URL; ?>/shop_admin/itemqalist.php?sfl=a.it_id&amp;stx=<?php echo $it_id; ?>" class="btn btn_04">상품문의</a>
                             <?php } ?>
                         </td>
                     </tr>
@@ -532,7 +530,6 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_compact">
         <h2 class="h2_frm">상품요약정보</h2>
-        <?php echo $pg_anchor; ?>
         <div class="local_desc02 local_desc">
             <p><strong>전자상거래 등에서의 상품 등의 정보제공에 관한 고시</strong>에 따라 총 35개 상품군에 대해 상품 특성 등을 양식에 따라 입력할 수 있습니다.</p>
         </div>
@@ -574,10 +571,9 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_cost">
         <h2 class="h2_frm">가격 및 재고</h2>
-        <?php echo $pg_anchor; ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>가격 및 재고 입력</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -760,7 +756,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <td colspan="2">
                             <div class="sit_option tbl_frm01">
                                 <?php echo help('옵션항목은 콤마(,) 로 구분하여 여러개를 입력할 수 있습니다. 옷을 예로 들어 [옵션1 : 사이즈 , 옵션1 항목 : XXL,XL,L,M,S] , [옵션2 : 색상 , 옵션2 항목 : 빨,파,노]<br><strong>옵션명과 옵션항목에 따옴표(\', ")는 입력할 수 없습니다.</strong>'); ?>
-                                <table>
+                                <table class="md:m-[-16px] m-0">
                                     <caption>상품선택옵션 입력</caption>
                                     <colgroup>
                                         <col class="grid_4">
@@ -800,7 +796,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                     </tbody>
                                 </table>
                                 <div class="btn_confirm02 btn_confirm">
-                                    <button type="button" id="option_table_create" class="btn_frmline">옵션목록생성</button>
+                                    <button type="button" id="option_table_create" class="btn btn_04">옵션목록생성</button>
                                 </div>
                             </div>
                             <div id="sit_option_frm"><?php include_once(G5_ADMIN_PATH . '/shop_admin/itemoption.php'); ?></div>
@@ -947,7 +943,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <td colspan="2">
                             <div id="sit_supply_frm" class="sit_option tbl_frm01">
                                 <?php echo help('옵션항목은 콤마(,) 로 구분하여 여러개를 입력할 수 있습니다. 스마트폰을 예로 들어 [추가1 : 추가구성상품 , 추가1 항목 : 액정보호필름,케이스,충전기]<br><strong>옵션명과 옵션항목에 따옴표(\', ")는 입력할 수 없습니다.</strong>'); ?>
-                                <table>
+                                <table class="md:m-[-16px] m-0">
                                     <caption>상품추가옵션 입력</caption>
                                     <colgroup>
                                         <col class="grid_4">
@@ -969,7 +965,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                                     <input type="text" name="spl[]" id="spl_item_<?php echo $seq; ?>" value="" class="frm_input" size="40">
                                                     <?php
                                                     if ($i > 0)
-                                                        echo '<button type="button" id="del_supply_row" class="btn_frmline">삭제</button>';
+                                                        echo '<button type="button" id="del_supply_row" class="btn btn_04">삭제</button>';
                                                     ?>
                                                 </td>
                                             </tr>
@@ -979,7 +975,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                         ?>
                                     </tbody>
                                 </table>
-                                <div id="sit_option_addfrm_btn"><button type="button" id="add_supply_row" class="btn_frmline">옵션추가</button></div>
+                                <div id="sit_option_addfrm_btn"><button type="button" id="add_supply_row" class="btn btn_04">옵션추가</button></div>
                                 <div class="btn_confirm02 btn_confirm">
                                     <button type="button" id="supply_table_create">옵션목록생성</button>
                                 </div>
@@ -1023,7 +1019,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                         fld += "<td>\n";
                                         fld += "<label for=\"\"><b>추가 항목</b></label>\n";
                                         fld += "<input type=\"text\" name=\"spl[]\" value=\"\" class=\"frm_input\" size=\"40\">\n";
-                                        fld += "<button type=\"button\" id=\"del_supply_row\" class=\"btn_frmline\">삭제</button>\n";
+                                        fld += "<button type=\"button\" id=\"del_supply_row\" class=\"btn btn_04\">삭제</button>\n";
                                         fld += "</td>\n";
                                         fld += "</tr>";
 
@@ -1171,13 +1167,12 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_sendcost">
         <h2 class="h2_frm">배송비</h2>
-        <?php echo $pg_anchor; ?>
         <div class="local_desc02 local_desc">
             <p>쇼핑몰설정 &gt; 배송비유형 설정보다 <strong>개별상품 배송비설정이 우선</strong> 적용됩니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>배송비 입력</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1327,10 +1322,9 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_img">
         <h2 class="h2_frm">이미지</h2>
-        <?php echo $pg_anchor; ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>이미지 업로드</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1358,7 +1352,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                         <button type="button" class="sit_wimg_close">닫기</button>
                                     </div>
                                     <script>
-                                        $('<button type="button" id="it_limg<?php echo $i; ?>_view" class="btn_frmline sit_wimg_view">이미지<?php echo $i; ?> 확인</button>').appendTo('.sit_wimg_limg<?php echo $i; ?>');
+                                        $('<button type="button" id="it_limg<?php echo $i; ?>_view" class="btn btn_04 sit_wimg_view">이미지<?php echo $i; ?> 확인</button>').appendTo('.sit_wimg_limg<?php echo $i; ?>');
                                     </script>
                                 <?php } ?>
                             </td>
@@ -1372,7 +1366,6 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_relation" class="srel">
         <h2 class="h2_frm">관련상품</h2>
-        <?php echo $pg_anchor; ?>
 
         <div class="local_desc02 local_desc">
             <p>
@@ -1410,7 +1403,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                     </select>
                     <label for="sch_name" class="sound_only">상품명</label>
                     <input type="text" name="sch_name" id="sch_name" class="frm_input" size="15">
-                    <button type="button" id="btn_search_item" class="btn_frmline">검색</button>
+                    <button type="button" id="btn_search_item" class="btn btn_04">검색</button>
                 </span>
                 <div id="relation" class="srel_list">
                     <p>상품의 분류를 선택하시거나 상품명을 입력하신 후 검색하여 주십시오.</p>
@@ -1502,7 +1495,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <li>
                             <input type="hidden" name="re_it_id[]" value="<?php echo $row['it_id']; ?>">
                             <div class="list_item"><?php echo $it_name; ?></div>
-                            <div class="list_item_btn"><button type="button" class="del_item btn_frmline">삭제</button></div>
+                            <div class="list_item_btn"><button type="button" class="del_item btn btn_04">삭제</button></div>
                         </li>
                     <?php
                         $str[] = $row['it_id'];
@@ -1525,7 +1518,6 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_event" class="srel">
         <h2 class="h2_frm">관련이벤트</h2>
-        <?php echo $pg_anchor; ?>
 
         <div class="compare_wrap">
             <section class="compare_left">
@@ -1541,7 +1533,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <li>
                             <input type="hidden" name="ev_id[]" value="<?php echo $row['ev_id']; ?>">
                             <div class="list_item"><?php echo get_text($row['ev_subject']); ?></div>
-                            <div class="list_item_btn"><button type="button" class="add_event btn_frmline">추가</button></div>
+                            <div class="list_item_btn"><button type="button" class="add_event btn btn_04">추가</button></div>
                         </li>
                     <?php
                     }
@@ -1619,7 +1611,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <li>
                             <input type="hidden" name="ev_id[]" value="<?php echo $row['ev_id']; ?>">
                             <div class="list_item"><?php echo get_text($row['ev_subject']); ?></div>
-                            <div class="list_item_btn"><button type="button" class="del_event btn_frmline">삭제</button></div>
+                            <div class="list_item_btn"><button type="button" class="del_event btn btn_04">삭제</button></div>
                         </li>
                     <?php
                     }
@@ -1639,10 +1631,9 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_optional">
         <h2 class="h2_frm">상세설명설정</h2>
-        <?php echo $pg_anchor; ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>상세설명설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1698,10 +1689,9 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     <section id="anc_sitfrm_extra">
         <h2>여분필드 설정</h2>
-        <?php echo $pg_anchor ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <colgroup>
                     <col class="grid_4">
                     <col>
@@ -1747,9 +1737,9 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
     </section>
 
     <div class="btn_fixed_top">
-        <a href="./itemlist.php?<?php echo $qstr; ?>" class="btn btn_02">목록</a>
+        <a href="./itemlist.php?<?php echo $qstr; ?>" class="btn btn_05">목록</a>
         <a href="<?php echo shop_item_url($it_id); ?>" class="btn_02  btn">상품보기</a>
-        <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+        <input type="submit" value="확인" class="btn btn_04" accesskey="s">
     </div>
 </form>
 
@@ -1901,6 +1891,125 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
             f.it_sell_email.value = ca_sell_email[idx];
         }
     }
+
+    const tabIds = Object.freeze([
+        "anc_sitfrm_cate",
+        "anc_sitfrm_skin",
+        "anc_sitfrm_ini",
+        "anc_sitfrm_compact",
+        "anc_sitfrm_cost",
+        "anc_sitfrm_sendcost",
+        "anc_sitfrm_img",
+        "anc_sitfrm_relation",
+        "anc_sitfrm_event",
+        "anc_sitfrm_optional",
+        "anc_sitfrm_extra"
+    ]);
+
+    const isValidTabId = (tabId) => tabIds.indexOf(tabId) > -1;
+
+    const getTabPanels = () =>
+        tabIds
+            .map((id) => document.getElementById(id))
+            .filter((panel) => panel !== null);
+
+    const getTabLinks = () =>
+        Array.from(document.querySelectorAll(".anchor a[data-tab-target]"));
+
+    const getHashTabId = () => window.location.hash.replace("#", "");
+
+    const getInitialTabId = () => {
+        const hashTabId = getHashTabId();
+
+        if (isValidTabId(hashTabId)) {
+            return hashTabId;
+        }
+
+        const firstLink = getTabLinks()[0];
+        const firstTargetId = firstLink ? (firstLink.getAttribute("data-tab-target") || "") : "";
+        return isValidTabId(firstTargetId) ? firstTargetId : tabIds[0];
+    };
+
+    const renderTab = (activeId) => {
+        const panels = getTabPanels();
+        const links = getTabLinks();
+
+        panels.forEach((panel) => {
+            const isActive = panel.id === activeId;
+            if (isActive) {
+                panel.style.visibility = "visible";
+                panel.style.position = "";
+                panel.style.height = "";
+                panel.style.overflow = "";
+                panel.style.pointerEvents = "";
+            } else {
+                panel.style.visibility = "hidden";
+                panel.style.position = "absolute";
+                panel.style.height = "0";
+                panel.style.overflow = "hidden";
+                panel.style.pointerEvents = "none";
+            }
+            panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+        });
+
+        links.forEach((link) => {
+            const targetId = link.getAttribute("data-tab-target") || "";
+            const isActive = targetId === activeId;
+            link.setAttribute("aria-selected", isActive ? "true" : "false");
+            link.classList.toggle("tab-active", isActive);
+        });
+    };
+
+    const activateTab = (tabId, syncHash = true) => {
+        if (!isValidTabId(tabId)) {
+            return;
+        }
+
+        renderTab(tabId);
+
+        if (syncHash && window.location.hash !== "#" + tabId) {
+            history.replaceState(null, "", "#" + tabId);
+        }
+    };
+
+    const bindTabEvents = () => {
+        const links = getTabLinks();
+
+        links.forEach((link) => {
+            link.addEventListener("click", (event) => {
+                const tabId = link.getAttribute("data-tab-target") || "";
+
+                if (!isValidTabId(tabId)) {
+                    return;
+                }
+
+                event.preventDefault();
+                activateTab(tabId);
+                window.scrollTo(0, 0);
+            });
+        });
+
+        window.addEventListener("hashchange", () => {
+            const hashTabId = getHashTabId();
+
+            if (isValidTabId(hashTabId)) {
+                renderTab(hashTabId);
+            }
+        });
+    };
+
+    const initTabs = () => {
+        const links = getTabLinks();
+
+        if (!links.length) {
+            return;
+        }
+
+        bindTabEvents();
+        activateTab(getInitialTabId(), false);
+    };
+
+    initTabs();
 
     categorychange(document.fitemform);
 </script>

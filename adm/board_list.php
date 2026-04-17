@@ -48,7 +48,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 $sql = " select * {$sql_common} {$sql_search} {$sql_order} limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="ov_listall">전체목록</a>';
+$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체목록</a>';
 
 $g5['title'] = '게시판관리';
 require_once './admin.head.php';
@@ -70,7 +70,7 @@ $colspan = 15;
     </select>
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
     <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-    <input type="submit" value="검색" class="btn_submit">
+    <input type="submit" value="검색" class="btn btn_04">
 </form>
 
 <form name="fboardlist" id="fboardlist" action="./board_list_update.php" onsubmit="return fboardlist_submit(this);" method="post">
@@ -109,8 +109,8 @@ $colspan = 15;
             <tbody>
                 <?php
                 for ($i = 0; $row = sql_fetch_array($result); $i++) {
-                    $one_update = '<a href="./board_form.php?w=u&amp;bo_table=' . $row['bo_table'] . '&amp;' . $qstr . '" class="btn btn_03">수정</a>';
-                    $one_copy = '<a href="./board_copy.php?bo_table=' . $row['bo_table'] . '" class="board_copy btn btn_02" target="win_board_copy">복사</a>';
+                    $one_update = '<a href="./board_form.php?w=u&amp;bo_table=' . $row['bo_table'] . '&amp;' . $qstr . '" class="btn btn_04">수정</a>';
+                    $one_copy = '<a href="./board_copy.php?bo_table=' . $row['bo_table'] . '" class="board_copy btn btn_05" target="win_board_copy">복사</a>';
 
                     $bg = 'bg' . ($i % 2);
                 ?>
@@ -195,10 +195,10 @@ $colspan = 15;
     </div>
 
     <div class="btn_fixed_top">
-        <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn_02 btn">
+        <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_04">
         <?php if ($is_admin == 'super') { ?>
-            <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn_02 btn">
-            <a href="./board_form.php" id="bo_add" class="btn_01 btn">게시판 추가</a>
+            <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_04">
+            <a href="./board_form.php" id="bo_add" class="btn btn_04">게시판 추가</a>
         <?php } ?>
     </div>
 

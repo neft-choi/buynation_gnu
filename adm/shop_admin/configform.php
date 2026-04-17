@@ -17,14 +17,14 @@ $g5['title'] = '쇼핑몰설정';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $pg_anchor = '<ul class="anchor">
-<li><a href="#anc_scf_info">사업자정보</a></li>
-<li><a href="#anc_scf_skin">스킨설정</a></li>
-<li><a href="#anc_scf_index">쇼핑몰 초기화면</a></li>
-<li><a href="#anc_mscf_index">모바일 초기화면</a></li>
-<li><a href="#anc_scf_payment">결제설정</a></li>
-<li><a href="#anc_scf_delivery">배송설정</a></li>
-<li><a href="#anc_scf_etc">기타설정</a></li>
-<li><a href="#anc_scf_sms">SMS설정</a></li>
+<li><a href="#anc_scf_info" data-tab-target="anc_scf_info">사업자정보</a></li>
+<li><a href="#anc_scf_skin" data-tab-target="anc_scf_skin">스킨설정</a></li>
+<li><a href="#anc_scf_index" data-tab-target="anc_scf_index">쇼핑몰 초기화면</a></li>
+<li><a href="#anc_mscf_index" data-tab-target="anc_mscf_index">모바일 초기화면</a></li>
+<li><a href="#anc_scf_payment" data-tab-target="anc_scf_payment">결제설정</a></li>
+<li><a href="#anc_scf_delivery" data-tab-target="anc_scf_delivery">배송설정</a></li>
+<li><a href="#anc_scf_etc" data-tab-target="anc_scf_etc">기타설정</a></li>
+<li><a href="#anc_scf_sms" data-tab-target="anc_scf_sms">SMS설정</a></li>
 </ul>';
 
 // 무이자 할부 사용설정 필드 추가
@@ -234,9 +234,9 @@ if(!$default['de_kakaopay_cancelpwd']){
 
 <form name="fconfig" action="./configformupdate.php" onsubmit="return fconfig_check(this)" method="post" enctype="MULTIPART/FORM-DATA">
 <input type="hidden" name="token" value="">
+<?php echo $pg_anchor; ?>
 <section id="anc_scf_info">
     <h2 class="h2_frm">사업자정보</h2>
-    <?php echo $pg_anchor; ?>
     <div class="local_desc02 local_desc">
         <p>
             사업자정보는 tail.php 와 content.php 에서 표시합니다.<br>
@@ -245,7 +245,7 @@ if(!$default['de_kakaopay_cancelpwd']){
     </div>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>사업자정보 입력</caption>
         <colgroup>
             <col class="grid_4">
@@ -318,13 +318,12 @@ if(!$default['de_kakaopay_cancelpwd']){
 
 <section id="anc_scf_skin">
     <h2 class="h2_frm">스킨설정</h2>
-    <?php echo $pg_anchor; ?>
     <div class="local_desc02 local_desc">
         <p>상품 분류리스트, 상품상세보기 등 에서 사용할 스킨을 설정합니다.</p>
     </div>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>스킨설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -346,13 +345,11 @@ if(!$default['de_kakaopay_cancelpwd']){
         </tbody>
         </table>
     </div>
+    <button type="button" class="get_shop_skin">테마 스킨설정 가져오기</button>
 </section>
-
-<button type="button" class="get_shop_skin">테마 스킨설정 가져오기</button>
 
 <section id="anc_scf_index">
     <h2 class="h2_frm">쇼핑몰 초기화면</h2>
-    <?php echo $pg_anchor; ?>
     <div class="local_desc02 local_desc">
         <p>
             상품관리에서 선택한 상품의 타입대로 쇼핑몰 초기화면에 출력합니다. (상품 타입 히트/추천/최신/인기/할인)<br>
@@ -361,7 +358,7 @@ if(!$default['de_kakaopay_cancelpwd']){
     </div>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>쇼핑몰 초기화면 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -466,13 +463,11 @@ if(!$default['de_kakaopay_cancelpwd']){
         </tbody>
         </table>
     </div>
+    <button type="button" class="shop_pc_index">테마설정 가져오기</button>
 </section>
-
-<button type="button" class="shop_pc_index">테마설정 가져오기</button>
 
 <section id="anc_mscf_index">
     <h2 class="h2_frm">모바일 쇼핑몰 초기화면 설정</h2>
-    <?php echo $pg_anchor; ?>
     <div class="local_desc02 local_desc">
         <p>
             상품관리에서 선택한 상품의 타입대로 쇼핑몰 초기화면에 출력합니다. (상품 타입 히트/추천/최신/인기/할인)<br>
@@ -481,7 +476,7 @@ if(!$default['de_kakaopay_cancelpwd']){
     </div>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>모바일 쇼핑몰 초기화면 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -585,16 +580,14 @@ if(!$default['de_kakaopay_cancelpwd']){
         </tbody>
         </table>
     </div>
+    <button type="button" class="shop_mobile_index">테마설정 가져오기</button>
 </section>
-
-<button type="button" class="shop_mobile_index">테마설정 가져오기</button>
 
 <section id ="anc_scf_payment">
     <h2 class="h2_frm">결제설정</h2>
-    <?php echo $pg_anchor; ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>결제설정 입력</caption>
         <colgroup>
             <col class="grid_4">
@@ -1093,18 +1086,18 @@ if(!$default['de_kakaopay_cancelpwd']){
                 <input type="radio" name="de_card_test" value="1" <?php echo $default['de_card_test']==1?"checked":""; ?> id="de_card_test2">
                 <label for="de_card_test2">테스트결제</label>
                 <div class="scf_cardtest kcp_cardtest">
-                    <a href="http://admin.kcp.co.kr/" target="_blank" class="btn_frmline">실결제 관리자</a>
-                    <a href="http://testadmin8.kcp.co.kr/" target="_blank" class="btn_frmline">테스트 관리자</a>
+                    <a href="http://admin.kcp.co.kr/" target="_blank" class="btn btn_04">실결제 관리자</a>
+                    <a href="http://testadmin8.kcp.co.kr/" target="_blank" class="btn btn_04">테스트 관리자</a>
                 </div>
                 <div class="scf_cardtest lg_cardtest">
-                    <a href="https://app.tosspayments.com/" target="_blank" class="btn_frmline">실결제 관리자</a>
-                    <a href="https://pgweb.tosspayments.com/tmert" target="_blank" class="btn_frmline">테스트 관리자</a>
+                    <a href="https://app.tosspayments.com/" target="_blank" class="btn btn_04">실결제 관리자</a>
+                    <a href="https://pgweb.tosspayments.com/tmert" target="_blank" class="btn btn_04">테스트 관리자</a>
                 </div>
                 <div class="scf_cardtest toss_cardtest">
-                    <a href="https://app.tosspayments.com/" target="_blank" class="btn_frmline">상점 관리자</a>
+                    <a href="https://app.tosspayments.com/" target="_blank" class="btn btn_04">상점 관리자</a>
                 </div>
                 <div class="scf_cardtest inicis_cardtest">
-                    <a href="https://iniweb.inicis.com/" target="_blank" class="btn_frmline">상점 관리자</a>
+                    <a href="https://iniweb.inicis.com/" target="_blank" class="btn btn_04">상점 관리자</a>
                 </div>
                 <div id="scf_cardtest_tip">
                     <strong>일반결제 사용시 테스트 결제</strong>
@@ -1148,7 +1141,7 @@ if(!$default['de_kakaopay_cancelpwd']){
         </table>
         <script>
         $('#scf_cardtest_tip').addClass('scf_cardtest_tip');
-        $('<button type="button" class="scf_cardtest_btn btn_frmline">테스트결제 팁 더보기</button>').appendTo('.scf_cardtest');
+        $('<button type="button" class="scf_cardtest_btn btn btn_04">테스트결제 팁 더보기</button>').appendTo('.scf_cardtest');
 
         $(".scf_cardtest").addClass("scf_cardtest_hide");
         $(".<?php echo $default['de_pg_service']; ?>_cardtest").removeClass("scf_cardtest_hide");
@@ -1160,10 +1153,9 @@ if(!$default['de_kakaopay_cancelpwd']){
 
 <section id="anc_scf_delivery">
     <h2 >배송설정</h2>
-     <?php echo $pg_anchor; ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>배송설정 입력</caption>
         <colgroup>
             <col class="grid_4">
@@ -1235,10 +1227,9 @@ if(!$default['de_kakaopay_cancelpwd']){
 
 <section id="anc_scf_etc">
     <h2 class="h2_frm">기타 설정</h2>
-    <?php echo $pg_anchor; ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>기타 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -1390,7 +1381,7 @@ if(!$default['de_kakaopay_cancelpwd']){
                     <button type="button" class="sit_wimg_close">닫기</button>
                 </div>
                 <script>
-                $('<button type="button" id="cf_logoimg_view" class="btn_frmline scf_img_view">상단로고이미지 확인</button>').appendTo('.scf_img_logoimg');
+                $('<button type="button" id="cf_logoimg_view" class="btn btn_04 scf_img_view">상단로고이미지 확인</button>').appendTo('.scf_img_logoimg');
                 </script>
                 <?php } ?>
             </td>
@@ -1414,7 +1405,7 @@ if(!$default['de_kakaopay_cancelpwd']){
                     <button type="button" class="sit_wimg_close">닫기</button>
                 </div>
                 <script>
-                $('<button type="button" id="cf_logoimg2_view" class="btn_frmline scf_img_view">하단로고이미지 확인</button>').appendTo('.scf_img_logoimg2');
+                $('<button type="button" id="cf_logoimg2_view" class="btn btn_04 scf_img_view">하단로고이미지 확인</button>').appendTo('.scf_img_logoimg2');
                 </script>
                 <?php } ?>
             </td>
@@ -1438,7 +1429,7 @@ if(!$default['de_kakaopay_cancelpwd']){
                     <button type="button" class="sit_wimg_close">닫기</button>
                 </div>
                 <script>
-                $('<button type="button" id="cf_mobilelogoimg_view" class="btn_frmline scf_img_view">모바일 상단로고이미지 확인</button>').appendTo('.scf_img_mobilelogoimg');
+                $('<button type="button" id="cf_mobilelogoimg_view" class="btn btn_04 scf_img_view">모바일 상단로고이미지 확인</button>').appendTo('.scf_img_mobilelogoimg');
                 </script>
                 <?php } ?>
             </td>
@@ -1462,7 +1453,7 @@ if(!$default['de_kakaopay_cancelpwd']){
                     <button type="button" class="sit_wimg_close">닫기</button>
                 </div>
                 <script>
-                $('<button type="button" id="cf_mobilelogoimg2_view" class="btn_frmline scf_img_view">모바일 하단로고이미지 확인</button>').appendTo('.scf_img_mobilelogoimg2');
+                $('<button type="button" id="cf_mobilelogoimg2_view" class="btn btn_04 scf_img_view">모바일 하단로고이미지 확인</button>').appendTo('.scf_img_mobilelogoimg2');
                 </script>
                 <?php } ?>
             </td>
@@ -1541,9 +1532,8 @@ if(!$default['de_kakaopay_cancelpwd']){
         </tbody>
         </table>
     </div>
+    <button type="button" class="shop_etc">테마설정 가져오기</button>
 </section>
-
-<button type="button" class="shop_etc">테마설정 가져오기</button>
 
 <?php if (file_exists($logo_img) || file_exists($logo_img2) || file_exists($mobile_logo_img) || file_exists($mobile_logo_img2)) { ?>
 <script>
@@ -1642,10 +1632,9 @@ function byte_check(el_cont, el_byte)
 
 <section id="anc_scf_sms" >
     <h2 class="h2_frm">SMS 설정</h2>
-    <?php echo $pg_anchor; ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>SMS 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -1716,7 +1705,7 @@ function byte_check(el_cont, el_byte)
             <th scope="row">충전 잔액</th>
             <td>
                 <?php echo number_format($userinfo['coin']); ?> 원.
-                <a href="http://www.icodekorea.com/smsbiz/credit_card_amt.php?icode_id=<?php echo $config['cf_icode_id']; ?>&amp;icode_passwd=<?php echo $config['cf_icode_pw']; ?>" target="_blank" class="btn_frmline" onclick="window.open(this.href,'icode_payment', 'scrollbars=1,resizable=1'); return false;">충전하기</a>
+                <a href="http://www.icodekorea.com/smsbiz/credit_card_amt.php?icode_id=<?php echo $config['cf_icode_id']; ?>&amp;icode_passwd=<?php echo $config['cf_icode_pw']; ?>" target="_blank" class="btn btn_04" onclick="window.open(this.href,'icode_payment', 'scrollbars=1,resizable=1'); return false;">충전하기</a>
             </td>
         </tr>
         <?php } ?>
@@ -1734,7 +1723,7 @@ function byte_check(el_cont, el_byte)
             <th scope="row">아이코드 SMS 신청<br>회원가입</th>
             <td>
                 <?php echo help("아래 링크에서 회원가입 하시면 문자 건당 16원에 제공 받을 수 있습니다."); ?>
-                <a href="http://icodekorea.com/res/join_company_fix_a.php?sellid=sir2" target="_blank" class="btn_frmline">아이코드 회원가입</a>
+                <a href="http://icodekorea.com/res/join_company_fix_a.php?sellid=sir2" target="_blank" class="btn btn_04">아이코드 회원가입</a>
             </td>
         </tr>
          </tbody>
@@ -1783,8 +1772,8 @@ function byte_check(el_cont, el_byte)
 
 
 <div class="btn_fixed_top">
-    <a href=" <?php echo G5_SHOP_URL; ?>" class="btn btn_02">쇼핑몰</a>
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+    <a href=" <?php echo G5_SHOP_URL; ?>" class="btn btn_05">쇼핑몰</a>
+    <input type="submit" value="확인" class="btn btn_04" accesskey="s">
 </div>
 
 </form>
@@ -1838,6 +1827,22 @@ function fconfig_check(f)
 
 $(function() {
 
+    // 탭으로 제어할 section id 목록(허용 목록). 다른 페이지 적용 시 이 배열만 교체하면 됩니다.
+    const tabIds = Object.freeze([
+        "anc_scf_info",
+        "anc_scf_skin",
+        "anc_scf_index",
+        "anc_mscf_index",
+        "anc_scf_payment",
+        "anc_scf_delivery",
+        "anc_scf_etc",
+        "anc_scf_sms"
+    ]);
+
+    // 전달받은 id가 탭 허용 목록(tabIds)에 존재하는지 검사합니다.
+    // indexOf 결과가 -1보다 크면(0 이상이면) 배열에 존재한다는 의미입니다.
+    const isValidTabId = (tabId) => tabIds.indexOf(tabId) > -1;
+
     $(document).ready(function () {
         
         $("#de_global_nhnkcp_naverpay").on("click", function(e){
@@ -1847,7 +1852,13 @@ $(function() {
         });
 
         function hash_goto_scroll(hash){
-            var $elem = hash ? $("#"+hash) : $('#' + window.location.hash.replace('#', ''));
+            var current_hash = hash ? hash : window.location.hash.replace('#', '');
+
+            if (isValidTabId(current_hash)) {
+                return;
+            }
+
+            var $elem = current_hash ? $("#"+current_hash) : $();
             if($elem.length) {
 
                 var admin_head_height = $("#hd_top").height() + $("#container_title").height() + 30;
@@ -1989,6 +2000,114 @@ $(function() {
             }
         });
     });
+
+    // tabIds를 실제 DOM section 배열로 변환합니다. 없는 id는 null이므로 filter로 제거합니다.
+    const getTabPanels = () =>
+        tabIds
+            .map((id) => document.getElementById(id))
+            .filter((panel) => panel !== null);
+
+    // 탭 클릭 트리거(anchor) 목록을 배열로 반환합니다.
+    const getTabLinks = () =>
+        Array.from(document.querySelectorAll('.anchor a[data-tab-target]'));
+
+    // URL hash 값에서 #을 제거해 순수 탭 id 문자열로 반환합니다.
+    const getHashTabId = () => window.location.hash.replace("#", "");
+
+    // 최초 진입 시 활성 탭 id를 결정합니다.
+    // hash가 유효하면 해당 탭을 사용하고, 아니면 첫 번째 탭을 기본값으로 사용합니다.
+    const getInitialTabId = () => {
+        const hashTabId = getHashTabId();
+
+        if (isValidTabId(hashTabId)) {
+            return hashTabId;
+        }
+
+        return tabIds[0];
+    };
+
+    // 활성 탭 id를 기준으로 section 표시 상태와 앵커 선택 상태를 동기화합니다.
+    const renderTab = (activeId) => {
+        const panels = getTabPanels();
+        const links = getTabLinks();
+
+        // section은 활성 탭 1개만 노출하고 나머지는 hidden 처리합니다.
+        panels.forEach((panel) => {
+            const isActive = panel.id === activeId;
+            if (isActive) {
+                panel.style.visibility = "visible";
+                panel.style.position = "";
+                panel.style.height = "";
+                panel.style.overflow = "";
+                panel.style.pointerEvents = "";
+            } else {
+                panel.style.visibility = "hidden";
+                panel.style.position = "absolute";
+                panel.style.height = "0";
+                panel.style.overflow = "hidden";
+                panel.style.pointerEvents = "none";
+            }
+            panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+        });
+
+        // 앵커는 data-tab-target 값과 activeId를 비교해 선택 상태를 맞춥니다.
+        links.forEach((link) => {
+            const targetId = link.getAttribute("data-tab-target") || "";
+            const isActive = targetId === activeId;
+
+            link.setAttribute("aria-selected", isActive ? "true" : "false");
+            link.classList.toggle("tab-active", isActive);
+        });
+    };
+
+    // 유효한 탭 id인지 확인 후 화면 렌더링과 URL hash 동기화를 수행합니다.
+    const activateTab = (tabId, syncHash = true) => {
+        if (!isValidTabId(tabId)) {
+            return;
+        }
+
+        renderTab(tabId);
+
+        if (syncHash && window.location.hash !== "#" + tabId) {
+            history.replaceState(null, "", "#" + tabId);
+        }
+    };
+
+    // 탭 앵커 클릭과 hashchange 이벤트를 연결합니다.
+    const bindTabEvents = () => {
+        const links = getTabLinks();
+
+        links.forEach((link) => {
+            link.addEventListener("click", (event) => {
+                const tabId = link.getAttribute("data-tab-target") || "";
+
+                if (!isValidTabId(tabId)) {
+                    return;
+                }
+
+                event.preventDefault();
+                activateTab(tabId);
+                window.scrollTo(0, 0);
+            });
+        });
+
+        // 주소 hash가 바뀐 경우(직접 변경, 뒤로가기 등) 화면 상태를 동기화합니다.
+        window.addEventListener("hashchange", () => {
+            const hashTabId = getHashTabId();
+
+            if (isValidTabId(hashTabId)) {
+                renderTab(hashTabId);
+            }
+        });
+    };
+
+    // 이벤트 연결 후 초기 활성 탭을 반영합니다.
+    const initTabs = () => {
+        bindTabEvents();
+        activateTab(getInitialTabId(), false);
+    };
+
+    initTabs();
 
     $(document).on("change", "#de_taxsave_use", function(e){
         var $val = $(this).val();

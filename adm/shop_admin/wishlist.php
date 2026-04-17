@@ -49,7 +49,7 @@ $result = sql_query($sql);
 
 $qstr1 = $qstr.'&amp;fr_date='.$fr_date.'&amp;to_date='.$to_date.'&amp;sel_ca_id='.$sel_ca_id;
 
-$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목록</a>';
 ?>
 
 <div class="local_ov01 local_ov">
@@ -83,7 +83,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 ~
 <label for="to_date" class="sound_only">종료일</label>
 <input type="text" name="to_date" value="<?php echo $to_date; ?>" id="to_date" required class="required frm_input" size="8" maxlength="8">
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 
 </form>
 

@@ -137,7 +137,7 @@ if($default['de_escrow_use'])
     $qstr1 .= "&amp;od_escrow=$od_escrow";
 $qstr = "$qstr1&amp;sort1=$sort1&amp;sort2=$sort2&amp;page=$page";
 
-$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목록</a>';
 
 // 주문삭제 히스토리 테이블 필드 추가
 if(!sql_query(" select mb_id from {$g5['g5_shop_order_delete_table']} limit 1 ", false)) {
@@ -183,7 +183,7 @@ if( function_exists('pg_setting_check') ){
 
 <label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="search" value="<?php echo $search; ?>" id="search" required class="required frm_input" autocomplete="off">
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 
 </form>
 
@@ -257,7 +257,7 @@ if( function_exists('pg_setting_check') ){
     <button type="button" onclick="javascript:set_date('지난주');">지난주</button>
     <button type="button" onclick="javascript:set_date('지난달');">지난달</button>
     <button type="button" onclick="javascript:set_date('전체');">전체</button>
-    <input type="submit" value="검색" class="btn_submit">
+    <input type="submit" value="검색" class="btn btn_04">
 </div>
 </form>
 
@@ -382,7 +382,7 @@ if( function_exists('pg_setting_check') ){
         <td rowspan="3" class="td_num_right"><?php echo number_format($row['couponprice']); ?></td>
         <td rowspan="3" class="td_num_right"><?php echo number_format($row['od_misu']); ?></td>
         <td rowspan="3" class="td_mng td_mng_s">
-            <a href="./orderform.php?od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" class="mng_mod btn btn_02"><span class="sound_only"><?php echo $row['od_id']; ?> </span>보기</a>
+            <a href="./orderform.php?od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" class="mng_mod btn btn_05"><span class="sound_only"><?php echo $row['od_id']; ?> </span>보기</a>
         </td>
     </tr>
     <tr class="<?php echo $bg; ?>">
@@ -482,9 +482,9 @@ if( function_exists('pg_setting_check') ){
     <input type="checkbox" name="send_escrow" value="1" id="od_send_escrow">
     <label for="od_send_escrow">에스크로배송등록</label>
     <?php } ?>
-    <input type="submit" value="선택수정" class="btn_submit" onclick="document.pressed=this.value">
+    <input type="submit" value="선택수정" class="btn btn_04" onclick="document.pressed=this.value">
 <?php } ?>
-    <?php if ($od_status == '주문') { ?> <span>주문상태에서만 삭제가 가능합니다.</span> <input type="submit" value="선택삭제" class="btn_submit" onclick="document.pressed=this.value"><?php } ?>
+    <?php if ($od_status == '주문') { ?> <span>주문상태에서만 삭제가 가능합니다.</span> <input type="submit" value="선택삭제" class="btn btn_04" onclick="document.pressed=this.value"><?php } ?>
 </div>
 
 <div class="local_desc02 local_desc">
@@ -520,7 +520,7 @@ $(function(){
                 $this.after("<div id=\"orderitemlist\"><div class=\"itemlist\"></div></div>");
                 $("#orderitemlist .itemlist")
                     .html(data)
-                    .append("<div id=\"orderitemlist_close\"><button type=\"button\" id=\"orderitemlist-x\" class=\"btn_frmline\">닫기</button></div>");
+                    .append("<div id=\"orderitemlist_close\"><button type=\"button\" id=\"orderitemlist-x\" class=\"btn btn_04\">닫기</button></div>");
             }
         );
 

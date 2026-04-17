@@ -52,7 +52,7 @@ include_once(G5_ADMIN_PATH.'/admin.head.php');
     <label for="csv">파일선택</label>
     <input type="file" name="csv" id="csv" onchange="document.getElementById('upload_info').style.display='none';">
     <span id="upload_button">
-        <input type="button" value="파일전송" onclick="upload();" class="btn_submit btn">
+        <input type="button" value="파일전송" onclick="upload();" class="btn btn_04">
     </span>
     <span id="uploading" class="sms_fileup_hide">
         파일을 업로드 중입니다. 잠시만 기다려주세요.
@@ -90,7 +90,7 @@ include_once(G5_ADMIN_PATH.'/admin.head.php');
         <option value="<?php echo $group[$i]['bg_no']?>"> <?php echo $group[$i]['bg_name']?> (<?php echo number_format($group[$i]['bg_count'])?>) </option>
         <?php } ?>
     </select>
-    <button type="button" onclick="download()" class="btn_01 btn">다운로드</button>
+    <button type="button" onclick="download()" class="btn btn_04">다운로드</button>
 </div>
 
 <script>

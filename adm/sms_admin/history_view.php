@@ -92,7 +92,7 @@ function all_send()
 </select>
 <label for="ssv" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="ssv" value="<?php echo get_sanitize_input($ssv); ?>" id="ssv" class="frm_input">
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 </form>
 
 <div id="sms5_sent">
@@ -147,7 +147,7 @@ function all_send()
         <td><?php echo number_format($res['wr_success'])?></td>
         <td><?php echo number_format($res['wr_failure'])?></td>
         <td class="td_mng">
-            <a href="./history_view.php?page=<?php echo $page?>&amp;st=<?php echo $st?>&amp;sv=<?php echo $sv?>&amp;wr_no=<?php echo $res['wr_no']?>&amp;wr_renum=<?php echo $res['wr_renum']?>" class="btn btn_03">수정</a>
+            <a href="./history_view.php?page=<?php echo $page?>&amp;st=<?php echo $st?>&amp;sv=<?php echo $sv?>&amp;wr_no=<?php echo $res['wr_no']?>&amp;wr_renum=<?php echo $res['wr_renum']?>" class="btn btn_04">수정</a>
             <!-- <a href="./history_del.php?page=<?php echo $page?>&amp;st=<?php echo $st?>&amp;sv=<?php echo $sv?>&amp;wr_no=<?php echo $res['wr_no']?>&amp;wr_renum=<?php echo $res['wr_renum']?>">삭제</a> -->
         </td>
     </tr>
@@ -250,9 +250,9 @@ function all_send()
             </td>
             <td class="td_mng td_mng_s">
                 <?php if ($res['bk_no']) { ?>
-                <a href="./history_num.php?wr_id=<?php echo $res['wr_no']?>&amp;st=bk_no&amp;sv=<?php echo $res['bk_no']?>" class="btn_03 btn">내역</a>
+                <a href="./history_num.php?wr_id=<?php echo $res['wr_no']?>&amp;st=bk_no&amp;sv=<?php echo $res['bk_no']?>" class="btn btn_04">내역</a>
                 <?php } else { ?>
-                <a href="./history_num.php?wr_id=<?php echo $res['wr_no']?>&amp;st=hs_hp&amp;sv=<?php echo $res['hs_hp']?>" class="btn_03 btn">내역</a>
+                <a href="./history_num.php?wr_id=<?php echo $res['wr_no']?>&amp;st=hs_hp&amp;sv=<?php echo $res['hs_hp']?>" class="btn btn_04">내역</a>
                 <?php } ?>
             </td>
         </tr>

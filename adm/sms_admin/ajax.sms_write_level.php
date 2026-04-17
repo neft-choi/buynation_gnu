@@ -45,7 +45,7 @@ $tmp_str .= '
         <tr class="'.$bg.'">
             <td>'.$i.' 레벨</td>
             <td class="td_num">'.number_format($lev[$i]).'</td>
-            <td class="td_mng"><button type="button" class="btn_frmline" onclick="sms_obj.level_add('.$i.', \''.number_format($lev[$i]).'\')">추가</button></td>
+            <td class="td_mng"><button type="button" class="btn btn_04" onclick="sms_obj.level_add('.$i.', \''.number_format($lev[$i]).'\')">추가</button></td>
         </tr>';
     }
 $tmp_str .= '

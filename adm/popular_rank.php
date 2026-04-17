@@ -35,7 +35,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 $sql = " select pp_word, count(*) as cnt {$sql_common} {$sql_search} {$sql_group} {$sql_order} limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="ov_listall">전체목록</a>';
+$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체목록</a>';
 
 $g5['title'] = '인기검색어순위';
 require_once './admin.head.php';

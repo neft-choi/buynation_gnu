@@ -99,8 +99,8 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
         <th>이벤트번호</th>
         <td>
             <span class="frm_ev_id"><?php echo $ev_id; ?></span>
-            <a href="<?php echo G5_SHOP_URL; ?>/event.php?ev_id=<?php echo $ev['ev_id']; ?>" class="btn_frmline">이벤트바로가기</a>
-            <button type="button" class="btn_frmline shop_event">테마설정 가져오기</button>
+            <a href="<?php echo G5_SHOP_URL; ?>/event.php?ev_id=<?php echo $ev['ev_id']; ?>" class="btn btn_04">이벤트바로가기</a>
+            <button type="button" class="btn btn_04 shop_event">테마설정 가져오기</button>
         </td>
     </tr>
     <?php } ?>
@@ -231,7 +231,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                     </select>
                     <label for="sch_name" class="sound_only">상품명</label>
                     <input type="text" name="sch_name" id="sch_name" class="frm_input" size="15">
-                    <button type="button" id="btn_search_item" class="btn_frmline">검색</button>
+                    <button type="button" id="btn_search_item" class="btn btn_04">검색</button>
                 </span>
                 <div id="sch_item_list" class="srel_list">
                     <p>상품의 분류를 선택하시거나 상품명을 입력하신 후 검색하여 주십시오.</p>
@@ -253,7 +253,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
                         <li>
                             <input type="hidden" name="it_id[]" value="<?php echo $row['it_id']; ?>">
                             <div class="list_item"><?php echo $it_name; ?></div>
-                            <div class="list_item_btn"><button type="button" class="del_item btn_frmline">삭제</button></div>
+                            <div class="list_item_btn"><button type="button" class="del_item btn btn_04">삭제</button></div>
                         </li>
                     <?php
                     }   // end for
@@ -335,8 +335,8 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./itemevent.php" class="btn btn_02">목록</a>
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+    <a href="./itemevent.php" class="btn btn_05">목록</a>
+    <input type="submit" value="확인" class="btn btn_04" accesskey="s">
 </div>
 </form>
 

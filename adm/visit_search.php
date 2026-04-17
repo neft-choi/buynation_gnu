@@ -29,7 +29,7 @@ if(isset($sfl) && $sfl && !in_array($sfl, array('vi_ip','vi_date','vi_time','vi_
     </select>
     <label for="sch_word" class="sound_only">검색어</label>
     <input type="text" name="stx" size="20" value="<?php echo stripslashes($stx); ?>" id="sch_word" class="frm_input">
-    <input type="submit" value="검색" class="btn_submit">
+    <input type="submit" value="검색" class="btn btn_04">
     </form>
 </div>
 

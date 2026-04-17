@@ -51,7 +51,7 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
         <td>
             <?php echo help('숫자가 작을수록 FAQ 페이지에서 먼저 출력됩니다.'); ?>
             <input type="text" name="fa_order" value="<?php echo $fa['fa_order']; ?>" id="fa_order" class="frm_input" maxlength="10" size="10">
-            <?php if ($w == 'u') { ?><a href="<?php echo G5_BBS_URL; ?>/faq.php?fm_id=<?php echo $fm_id; ?>" class="btn_frmline">내용보기</a><?php } ?>
+            <?php if ($w == 'u') { ?><a href="<?php echo G5_BBS_URL; ?>/faq.php?fm_id=<?php echo $fm_id; ?>" class="btn btn_04">내용보기</a><?php } ?>
         </td>
     </tr>
     <tr>
@@ -67,8 +67,8 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 </div>
 
 <div class="btn_fixed_top">
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
-    <a href="./faqlist.php?fm_id=<?php echo $fm_id; ?>" class="btn btn_02">목록</a>
+    <input type="submit" value="확인" class="btn btn_04" accesskey="s">
+    <a href="./faqlist.php?fm_id=<?php echo $fm_id; ?>" class="btn btn_05">목록</a>
 </div>
 
 </form>

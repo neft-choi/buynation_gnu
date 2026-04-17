@@ -130,7 +130,7 @@ require_once './admin.head.php';
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="확인" class="btn_submit">
+        <input type="submit" value="확인" class="btn btn_04">
         <a href="./mail_list.php">목록 </a>
     </div>
 </form>

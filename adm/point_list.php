@@ -49,7 +49,7 @@ $sql = " select po.*, mb.mb_name, mb.mb_nick, mb.mb_email, mb.mb_homepage, mb.mb
             limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="ov_listall">전체목록</a>';
+$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체목록</a>';
 
 $mb = array();
 if ($sfl == 'mb_id' && $stx) {
@@ -94,7 +94,7 @@ if (strstr($sfl, "mb_id")) {
     </select>
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
     <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-    <input type="submit" class="btn_submit" value="검색">
+    <input type="submit" class="btn btn_04" value="검색">
 </form>
 
 <form name="fpointlist" id="fpointlist" method="post" action="./point_list_delete.php" onsubmit="return fpointlist_submit(this);">
@@ -180,7 +180,7 @@ if (strstr($sfl, "mb_id")) {
     </div>
 
     <div class="btn_fixed_top">
-        <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+        <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
     </div>
 
 </form>
@@ -228,7 +228,7 @@ if (strstr($sfl, "mb_id")) {
         </div>
 
         <div class="btn_confirm01 btn_confirm">
-            <input type="submit" value="확인" class="btn_submit btn">
+            <input type="submit" value="확인" class="btn btn_04">
         </div>
 
     </form>

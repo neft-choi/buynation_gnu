@@ -45,7 +45,7 @@ $colspan = 4;
             }
             ?>
         </select>
-        <input type="submit" value="선택" class="btn_submit btn" accesskey="s">
+        <input type="submit" value="선택" class="btn btn_04" accesskey="s">
     </div>
 </form>
 
@@ -106,7 +106,7 @@ $colspan = 4;
     </div>
 
     <div class="btn_list01 btn_list">
-        <input type="submit" name="" value="선택삭제" class="btn btn_02">
+        <input type="submit" name="" value="선택삭제" class="btn btn_05">
     </div>
 </form>
 

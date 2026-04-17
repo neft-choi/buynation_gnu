@@ -176,10 +176,10 @@ function get_max_value($arr)
                     $li_bg = 'bg'.($i%2);
                 ?>
                 <li class="<?php echo $li_bg; ?>" style="z-index:<?php echo $k; ?>">
-                    <div class="graph order" title="<?php echo $order_title; ?>">
+                    <div class="graph order !bg-blue-500" title="<?php echo $order_title; ?>">
 
                     </div>
-                    <div class="graph cancel" title="<?php echo $cancel_title; ?>">
+                    <div class="graph cancel !bg-red-500" title="<?php echo $cancel_title; ?>">
 
                     </div>
                 </li>
@@ -197,8 +197,8 @@ function get_max_value($arr)
                 ?>
             </ul>
             <div id="sidx_graph_legend">
-                <span id="legend_order"></span> 주문
-                <span id="legend_cancel"></span> 취소
+                <span id="legend_order" class="!bg-blue-500"></span> 주문
+                <span id="legend_cancel" class="!bg-red-500"></span> 취소
             </div>
         </div>
     </section>

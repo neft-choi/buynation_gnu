@@ -59,7 +59,7 @@ $sql = " select count(*) as cnt {$sql_common} {$sql_search} and mb_intercept_dat
 $row = sql_fetch($sql);
 $intercept_count = $row['cnt'];
 
-$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="ov_listall">전체목록</a>';
+$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체목록</a>';
 
 $g5['title'] = '회원관리';
 require_once './admin.head.php';
@@ -96,7 +96,7 @@ $colspan = 16;
     <div class="flex_gap">
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
     <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-    <input type="submit" class="btn_submit" value="검색">
+    <input type="submit" class="btn btn_04" value="검색">
 </div>
 </form>
 
@@ -161,9 +161,9 @@ $colspan = 16;
                     if ($is_admin == 'group') {
                         $s_mod = '';
                     } else {
-                        $s_mod = '<a href="./member_form.php?' . $qstr . '&amp;w=u&amp;mb_id=' . $row['mb_id'] . '" class="btn btn_03">수정</a>';
+                        $s_mod = '<a href="./member_form.php?' . $qstr . '&amp;w=u&amp;mb_id=' . $row['mb_id'] . '" class="btn btn_04">수정</a>';
                     }
-                    $s_grp = '<a href="./boardgroupmember_form.php?mb_id=' . $row['mb_id'] . '" class="btn btn_02">그룹</a>';
+                    $s_grp = '<a href="./boardgroupmember_form.php?mb_id=' . $row['mb_id'] . '" class="btn btn_05">그룹</a>';
 
                     $leave_date = $row['mb_leave_date'] ? $row['mb_leave_date'] : date('Ymd', G5_SERVER_TIME);
                     $intercept_date = $row['mb_intercept_date'] ? $row['mb_intercept_date'] : date('Ymd', G5_SERVER_TIME);
@@ -317,10 +317,10 @@ $colspan = 16;
     </div>
 
     <div class="btn_fixed_top">
-        <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
-        <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+        <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_05">
+        <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
         <?php if ($is_admin == 'super') { ?>
-            <a href="./member_form.php" id="member_add" class="btn btn_01">회원추가</a>
+            <a href="./member_form.php" id="member_add" class="btn btn_04">회원추가</a>
         <?php } ?>
 
     </div>

@@ -119,7 +119,7 @@ while ($res = sql_fetch_array($qry)) array_push($group, $res);
         <!-- <td class="td_boolean"><?php echo $res['bk_receipt'] ? '수신' : '거부'?></td> -->
         <!-- <td class="td_boolean"><?php echo $res['bk_receipt'] ? '예' : ''?></td> -->
         <td class="td_boolean"><?php echo $res['mb_id'] ? '회원' : '비회원'?></td>
-        <td class="td_mngsmall"><button type="button" class="btn_frmline" onclick="sms_obj.person_add(<?php echo $res['bk_no']?>, '<?php echo get_text($res['bk_name']) ?>', '<?php echo $res['bk_hp']?>')">추가</button></td>
+        <td class="td_mngsmall"><button type="button" class="btn btn_04" onclick="sms_obj.person_add(<?php echo $res['bk_no']?>, '<?php echo get_text($res['bk_name']) ?>', '<?php echo $res['bk_hp']?>')">추가</button></td>
     </tr>
     <?php } ?>
     </tbody>
@@ -157,7 +157,7 @@ while ($res = sql_fetch_array($qry)) array_push($group, $res);
 
 <label for="svv" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" size="15" name="sv" value="<?php echo $sv?>" id="svv" required class="required frm_input">
-<input type="submit" value="검색" class="btn_submit btn">
+<input type="submit" value="검색" class="btn btn_04">
 </form>
 
 <!--

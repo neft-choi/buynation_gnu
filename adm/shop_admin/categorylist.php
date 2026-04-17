@@ -51,7 +51,7 @@ $sql  = " select *
              limit $from_record, $rows ";
 $result = sql_query($sql);
 
-$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목록</a>';
 ?>
 
 <div class="local_ov01 local_ov">
@@ -72,7 +72,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx; ?>" id="stx" required class="required frm_input">
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 
 </form>
 
@@ -130,12 +130,12 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
         $s_level = '<div><label for="ca_name_'.$i.'" '.$class.'><span class="sound_only">'.$p_ca_name.''.($level+1).'단 분류</span></label></div>';
         $s_level_input_size = 25 - $level *2; // 하위 분류일 수록 입력칸 넓이 작아짐 - 지운아빠 2013-04-02
 
-        if ($level+2 < 6) $s_add = '<a href="./categoryform.php?ca_id='.$row['ca_id'].'&amp;'.$qstr.'" class="btn btn_03">추가</a> '; // 분류는 5단계까지만 가능
+        if ($level+2 < 6) $s_add = '<a href="./categoryform.php?ca_id='.$row['ca_id'].'&amp;'.$qstr.'" class="btn btn_04">추가</a> '; // 분류는 5단계까지만 가능
         else $s_add = '';
-        $s_upd = '<a href="./categoryform.php?w=u&amp;ca_id='.$row['ca_id'].'&amp;'.$qstr.'" class="btn btn_02"><span class="sound_only">'.get_text($row['ca_name']).' </span>수정</a> ';
+        $s_upd = '<a href="./categoryform.php?w=u&amp;ca_id='.$row['ca_id'].'&amp;'.$qstr.'" class="btn btn_05"><span class="sound_only">'.get_text($row['ca_name']).' </span>수정</a> ';
 
         if ($is_admin == 'super')
-            $s_del = '<a href="./categoryformupdate.php?w=d&amp;ca_id='.$row['ca_id'].'&amp;'.$qstr.'" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only">'.get_text($row['ca_name']).' </span>삭제</a> ';
+            $s_del = '<a href="./categoryformupdate.php?w=d&amp;ca_id='.$row['ca_id'].'&amp;'.$qstr.'" onclick="return delete_confirm(this);" class="btn btn_05"><span class="sound_only">'.get_text($row['ca_name']).' </span>삭제</a> ';
 
         // 해당 분류에 속한 상품의 수
         $sql1 = " select COUNT(*) as cnt from {$g5['g5_shop_item_table']}
@@ -252,10 +252,10 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 </div>
 
 <div class="btn_fixed_top">
-    <input type="submit" value="일괄수정" class="btn_02 btn">
+    <input type="submit" value="일괄수정" class="btn btn_04">
 
     <?php if ($is_admin == 'super') {?>
-    <a href="./categoryform.php" id="cate_add" class="btn btn_01">분류 추가</a>
+    <a href="./categoryform.php" id="cate_add" class="btn btn_04">분류 추가</a>
     <?php } ?>
 </div>
 

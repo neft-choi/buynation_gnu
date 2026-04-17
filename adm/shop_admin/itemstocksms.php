@@ -64,7 +64,7 @@ $result = sql_query($sql);
 $qstr1 = 'sel_field='.$sel_field.'&amp;search='.$search;
 $qstr = $qstr1.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2.'&amp;page='.$page;
 
-$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목록</a>';
 ?>
 
 <div class="local_ov01 local_ov">
@@ -87,7 +87,7 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
 
 <label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="search" id="search" value="<?php echo $search; ?>" required class="frm_input required">
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 
 </form>
 
@@ -154,9 +154,9 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목�
     
 <div class="btn_fixed_top">
     <?php if ($is_admin == 'super') { ?>
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
     <?php } ?>
-    <input type="submit" name="act_button" value="선택SMS전송" class="btn_submit btn" onclick="document.pressed=this.value">
+    <input type="submit" name="act_button" value="선택SMS전송" class="btn btn_04" onclick="document.pressed=this.value">
 </div>
 </form>
 

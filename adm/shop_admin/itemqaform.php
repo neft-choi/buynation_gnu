@@ -78,8 +78,8 @@ $qstr .= ($qstr ? '&amp;' : '').'sca='.$sca;
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./itemqalist.php?<?php echo $qstr; ?>" class="btn btn_02">목록</a>
-    <input type="submit" accesskey='s' value="확인" class="btn_submit btn">
+    <a href="./itemqalist.php?<?php echo $qstr; ?>" class="btn btn_05">목록</a>
+    <input type="submit" accesskey='s' value="확인" class="btn btn_04">
 </div>
 </form>
 

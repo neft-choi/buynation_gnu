@@ -57,7 +57,7 @@ require_once './admin.head.php';
     </div>
 
     <div class="btn_fixed_top ">
-        <input type="submit" class="btn_submit btn" accesskey="s" value="확인">
+        <input type="submit" class="btn btn_04" accesskey="s" value="확인">
     </div>
 </form>
 

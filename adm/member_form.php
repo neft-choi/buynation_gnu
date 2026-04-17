@@ -248,7 +248,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <th scope="row"><label for="mb_id">아이디<?php echo $sound_only ?></label></th>
                     <td>
                         <input type="text" name="mb_id" value="<?php echo $mb['mb_id'] ?>" id="mb_id" <?php echo $required_mb_id ?> class="frm_input <?php echo $required_mb_id_class ?>" size="15" maxlength="20">
-                        <?php if ($w == 'u') { ?><a href="./boardgroupmember_form.php?mb_id=<?php echo $mb['mb_id'] ?>" class="btn_frmline">접근가능그룹보기</a><?php } ?>
+                        <?php if ($w == 'u') { ?><a href="./boardgroupmember_form.php?mb_id=<?php echo $mb['mb_id'] ?>" class="btn btn_04">접근가능그룹보기</a><?php } ?>
                     </td>
                     <th scope="row"><label for="mb_password">비밀번호<?php echo $sound_only ?></label></th>
                     <td>
@@ -321,7 +321,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <td colspan="3" class="td_addr_line">
                         <label for="mb_zip" class="sound_only">우편번호</label>
                         <input type="text" name="mb_zip" value="<?php echo $mb['mb_zip1'] . $mb['mb_zip2']; ?>" id="mb_zip" class="frm_input readonly" size="5" maxlength="6">
-                        <button type="button" class="btn_frmline" onclick="win_zip('fmember', 'mb_zip', 'mb_addr1', 'mb_addr2', 'mb_addr3', 'mb_addr_jibeon');">주소 검색</button><br>
+                        <button type="button" class="btn btn_04" onclick="win_zip('fmember', 'mb_zip', 'mb_addr1', 'mb_addr2', 'mb_addr3', 'mb_addr_jibeon');">주소 검색</button><br>
                         <input type="text" name="mb_addr1" value="<?php echo $mb['mb_addr1'] ?>" id="mb_addr1" class="frm_input readonly" size="60">
                         <label for="mb_addr1">기본주소</label><br>
                         <input type="text" name="mb_addr2" value="<?php echo $mb['mb_addr2'] ?>" id="mb_addr2" class="frm_input" size="60">
@@ -634,8 +634,8 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     </div>
 
     <div class="btn_fixed_top">
-        <a href="./member_list.php?<?php echo $qstr ?>" class="btn btn_02">목록</a>
-        <input type="submit" value="확인" class="btn_submit btn" accesskey='s'>
+        <a href="./member_list.php?<?php echo $qstr ?>" class="btn btn_05">목록</a>
+        <input type="submit" value="확인" class="btn btn_04" accesskey='s'>
     </div>
 </form>
 

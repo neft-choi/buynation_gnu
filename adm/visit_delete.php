@@ -55,7 +55,7 @@ if (!$min_year) {
     <div class="visit_del_bt">
         <label for="pass">관리자 비밀번호<strong class="sound_only"> 필수</strong></label>
         <input type="password" name="pass" id="pass" class="frm_input required">
-        <input type="submit" value="확인" class="btn_submit">
+        <input type="submit" value="확인" class="btn btn_04">
     </div>
 </form>
 

@@ -60,7 +60,7 @@ $result = sql_query($sql);
 $qstr1 = 'ev_id='.$ev_id.'&amp;sel_ca_id='.$sel_ca_id.'&amp;sel_field='.$sel_field.'&amp;search='.$search;
 $qstr  = $qstr1.'&amp;sort1='.$sort1.'&amp;sort2='.$sort2.'&amp;page='.$page;
 
-$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="ov_listall">전체목록</a>';
+$listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목록</a>';
 
 // 이벤트제목
 if($ev_id) {
@@ -88,7 +88,7 @@ if($ev_id) {
     echo $event_option;
     ?>
 </select>
-<input type="submit" value="이동" class="btn_submit">
+<input type="submit" value="이동" class="btn btn_04">
 
 </form>
 
@@ -122,7 +122,7 @@ if($ev_id) {
 
 <label for="search" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="search" value="<?php echo $search; ?>" id="search" required class="frm_input required">
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 
 </form>
 
@@ -193,7 +193,7 @@ if($ev_id) {
     </p>
 </div>
 <div class="btn_fixed_top">
-    <input type="submit" value="일괄수정" class="btn_submit btn" accesskey="s">
+    <input type="submit" value="일괄수정" class="btn btn_04" accesskey="s">
 </div>
 
 </form>

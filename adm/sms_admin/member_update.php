@@ -27,7 +27,7 @@ include_once(G5_ADMIN_PATH.'/admin.head.php');
     </div>
 
     <div class="btn_fixed_top">
-        <input type="submit" value="실행" class="btn_submit btn">
+        <input type="submit" value="실행" class="btn btn_04">
     </div>
     </form>
 </div>

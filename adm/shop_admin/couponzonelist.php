@@ -49,7 +49,7 @@ $colspan = 9;
 
 <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-<input type="submit" class="btn_submit" value="검색">
+<input type="submit" class="btn btn_04" value="검색">
 </form>
 
 
@@ -132,7 +132,7 @@ $colspan = 9;
         <td class="td_num"><?php echo number_format($row['cz_download']); ?></td>
         <td class="td_datetime"><?php echo substr($row['cz_start'], 2, 8); ?> ~ <?php echo substr($row['cz_end'], 2, 8); ?></td>
         <td class="td_mng td_mng_s">
-            <a href="./couponzoneform.php?w=u&amp;cz_id=<?php echo $row['cz_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03"><span class="sound_only"><?php echo get_text($row['cz_subject']); ?> </span>수정</a>
+            <a href="./couponzoneform.php?w=u&amp;cz_id=<?php echo $row['cz_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_04"><span class="sound_only"><?php echo get_text($row['cz_subject']); ?> </span>수정</a>
         </td>
     </tr>
 
@@ -147,8 +147,8 @@ $colspan = 9;
 </div>
 
 <div class="btn_fixed_top">
-     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
-   <a href="./couponzoneform.php" id="coupon_add" class="btn btn_01">쿠폰 추가</a>
+     <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
+   <a href="./couponzoneform.php" id="coupon_add" class="btn btn_04">쿠폰 추가</a>
 </div>
 
 </form>

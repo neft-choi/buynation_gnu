@@ -208,12 +208,12 @@ $g5['title'] = $html_title;
 require_once './admin.head.php';
 
 $pg_anchor = '<ul class="anchor">
-    <li><a href="#anc_bo_basic">기본 설정</a></li>
-    <li><a href="#anc_bo_auth">권한 설정</a></li>
-    <li><a href="#anc_bo_function">기능 설정</a></li>
-    <li><a href="#anc_bo_design">디자인/양식</a></li>
-    <li><a href="#anc_bo_point">포인트 설정</a></li>
-    <li><a href="#anc_bo_extra">여분필드</a></li>
+    <li><a href="#anc_bo_basic" data-tab-target="anc_bo_basic">기본 설정</a></li>
+    <li><a href="#anc_bo_auth" data-tab-target="anc_bo_auth">권한 설정</a></li>
+    <li><a href="#anc_bo_function" data-tab-target="anc_bo_function">기능 설정</a></li>
+    <li><a href="#anc_bo_design" data-tab-target="anc_bo_design">디자인/양식</a></li>
+    <li><a href="#anc_bo_point" data-tab-target="anc_bo_point">포인트 설정</a></li>
+    <li><a href="#anc_bo_extra" data-tab-target="anc_bo_extra">여분필드</a></li>
 </ul>';
 
 ?>
@@ -226,13 +226,13 @@ $pg_anchor = '<ul class="anchor">
 <input type="hidden" name="sod" value="<?php echo $sod ?>">
 <input type="hidden" name="page" value="<?php echo $page ?>">
 <input type="hidden" name="token" value="">
+<?php echo $pg_anchor ?>
 
 <section id="anc_bo_basic">
     <h2 class="h2_frm">게시판 기본 설정</h2>
-    <?php echo $pg_anchor ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>게시판 기본 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -247,8 +247,8 @@ $pg_anchor = '<ul class="anchor">
                 <?php if ($w == '') { ?>
                     영문자, 숫자, _ 만 가능 (공백없이 20자 이내)
                 <?php } else { ?>
-                    <a href="<?php echo get_pretty_url($board['bo_table']) ?>" class="btn_frmline">게시판 바로가기</a>
-                    <a href="./board_list.php?<?php echo $qstr;?>" class="btn_frmline">목록으로</a>
+                    <a href="<?php echo get_pretty_url($board['bo_table']) ?>" class="btn btn_04">게시판 바로가기</a>
+                    <a href="./board_list.php?<?php echo $qstr;?>" class="btn btn_04">목록으로</a>
                 <?php } ?>
             </td>
         </tr>
@@ -257,7 +257,7 @@ $pg_anchor = '<ul class="anchor">
             <td colspan="2">
                 <?php echo get_group_select('gr_id', $board['gr_id'], 'required'); ?>
                 <?php if ($w=='u') { ?>
-                    <a href="javascript:document.location.href='./board_list.php?sfl=a.gr_id&stx='+document.fboardform.gr_id.value;" class="btn_frmline">동일그룹 게시판목록</a>
+                    <a href="javascript:document.location.href='./board_list.php?sfl=a.gr_id&stx='+document.fboardform.gr_id.value;" class="btn btn_04">동일그룹 게시판목록</a>
                 <?php } ?>
             </td>
         </tr>
@@ -324,10 +324,9 @@ $pg_anchor = '<ul class="anchor">
 
 <section id="anc_bo_auth">
     <h2 class="h2_frm">게시판 권한 설정</h2>
-    <?php echo $pg_anchor ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>게시판 권한 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -465,10 +464,9 @@ $pg_anchor = '<ul class="anchor">
 
 <section id="anc_bo_function">
     <h2 class="h2_frm">게시판 기능 설정</h2>
-    <?php echo $pg_anchor ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>게시판 기능 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -875,10 +873,9 @@ $pg_anchor = '<ul class="anchor">
 
 <section id="anc_bo_design">
     <h2 class="h2_frm">게시판 디자인/양식</h2>
-    <?php echo $pg_anchor ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>게시판 디자인/양식</caption>
         <colgroup>
             <col class="grid_4">
@@ -1226,17 +1223,16 @@ $pg_anchor = '<ul class="anchor">
         </tbody>
         </table>
     </div>
-    <button type="button" class="get_theme_galc btn btn_02" >테마 이미지설정 가져오기</button>
+    <button type="button" class="get_theme_galc btn btn_05" >테마 이미지설정 가져오기</button>
 
 </section>
 
 
 <section id="anc_bo_point">
     <h2 class="h2_frm">게시판 포인트 설정</h2>
-    <?php echo $pg_anchor ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>게시판 포인트 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -1306,10 +1302,9 @@ $pg_anchor = '<ul class="anchor">
 
 <section id="anc_bo_extra">
     <h2 class="h2_frm">게시판 여분필드 설정</h2>
-    <?php echo $pg_anchor ?>
 
     <div class="tbl_frm01 tbl_wrap">
-        <table>
+        <table class="md:m-[-16px] m-0">
         <caption>게시판 여분필드 설정</caption>
         <colgroup>
             <col class="grid_4">
@@ -1342,11 +1337,11 @@ $pg_anchor = '<ul class="anchor">
 
 <div class="btn_fixed_top">
     <?php if ($bo_table && $w) { ?>
-        <a href="./board_copy.php?bo_table=<?php echo $board['bo_table']; ?>" id="board_copy" target="win_board_copy" class=" btn_02 btn">게시판복사</a>
-        <a href="<?php echo get_pretty_url($board['bo_table']); ?>" class=" btn_02 btn">게시판 바로가기</a>
-        <a href="./board_thumbnail_delete.php?bo_table=<?php echo $board['bo_table'].'&amp;'.$qstr;?>" onclick="return delete_confirm2('게시판 썸네일 파일을 삭제하시겠습니까?');" class="btn_02 btn">게시판 썸네일 삭제</a>
+        <a href="./board_copy.php?bo_table=<?php echo $board['bo_table']; ?>" id="board_copy" target="win_board_copy" class=" btn btn_04">게시판복사</a>
+        <a href="<?php echo get_pretty_url($board['bo_table']); ?>" class=" btn btn_04">게시판 바로가기</a>
+        <a href="./board_thumbnail_delete.php?bo_table=<?php echo $board['bo_table'].'&amp;'.$qstr;?>" onclick="return delete_confirm2('게시판 썸네일 파일을 삭제하시겠습니까?');" class="btn btn_04">게시판 썸네일 삭제</a>
     <?php } ?>
-    <input type="submit" value="확인" class="btn_submi btn btn_01" accesskey="s">
+    <input type="submit" value="확인" class="btn_submi btn btn_04" accesskey="s">
 </div>
 
 </form>
@@ -1388,6 +1383,115 @@ $(function(){
             }
         });
     });
+
+    // Anchor tab show/hide controller (board_form.php)
+    const tabIds = Object.freeze([
+        "anc_bo_basic",
+        "anc_bo_auth",
+        "anc_bo_function",
+        "anc_bo_design",
+        "anc_bo_point",
+        "anc_bo_extra"
+    ]);
+
+    const isValidTabId = (tabId) => tabIds.indexOf(tabId) > -1;
+
+    const getTabPanels = () =>
+        tabIds
+            .map((id) => document.getElementById(id))
+            .filter((panel) => panel !== null);
+
+    const getTabLinks = () =>
+        Array.from(document.querySelectorAll(".anchor a[data-tab-target]"));
+
+    const getHashTabId = () => window.location.hash.replace("#", "");
+
+    const getInitialTabId = () => {
+        const hashTabId = getHashTabId();
+
+        if (isValidTabId(hashTabId)) {
+            return hashTabId;
+        }
+
+        const firstLink = getTabLinks()[0];
+        const firstTargetId = firstLink ? (firstLink.getAttribute("data-tab-target") || "") : "";
+        return isValidTabId(firstTargetId) ? firstTargetId : tabIds[0];
+    };
+
+    const renderTab = (activeId) => {
+        const panels = getTabPanels();
+        const links = getTabLinks();
+
+        panels.forEach((panel) => {
+            const isActive = panel.id === activeId;
+            if (isActive) {
+                panel.style.visibility = "visible";
+                panel.style.position = "";
+                panel.style.height = "";
+                panel.style.overflow = "";
+                panel.style.pointerEvents = "";
+            } else {
+                panel.style.visibility = "hidden";
+                panel.style.position = "absolute";
+                panel.style.height = "0";
+                panel.style.overflow = "hidden";
+                panel.style.pointerEvents = "none";
+            }
+            panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+        });
+
+        links.forEach((link) => {
+            const targetId = link.getAttribute("data-tab-target") || "";
+            const isActive = targetId === activeId;
+            link.setAttribute("aria-selected", isActive ? "true" : "false");
+            link.classList.toggle("tab-active", isActive);
+        });
+    };
+
+    const activateTab = (tabId, syncHash = true) => {
+        if (!isValidTabId(tabId)) {
+            return;
+        }
+
+        renderTab(tabId);
+
+        if (syncHash && window.location.hash !== "#" + tabId) {
+            history.replaceState(null, "", "#" + tabId);
+        }
+    };
+
+    const bindTabEvents = () => {
+        const links = getTabLinks();
+
+        links.forEach((link) => {
+            link.addEventListener("click", (event) => {
+                const tabId = link.getAttribute("data-tab-target") || "";
+
+                if (!isValidTabId(tabId)) {
+                    return;
+                }
+
+                event.preventDefault();
+                activateTab(tabId);
+                window.scrollTo(0, 0);
+            });
+        });
+
+        window.addEventListener("hashchange", () => {
+            const hashTabId = getHashTabId();
+
+            if (isValidTabId(hashTabId)) {
+                renderTab(hashTabId);
+            }
+        });
+    };
+
+    const initTabs = () => {
+        bindTabEvents();
+        activateTab(getInitialTabId(), false);
+    };
+
+    initTabs();
 });
 
 function board_copy(bo_table) {

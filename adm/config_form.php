@@ -457,19 +457,19 @@ $g5['title'] = '환경설정';
 require_once './admin.head.php';
 
 $pg_anchor = '<ul class="anchor">
-    <li><a href="#anc_cf_basic">기본환경</a></li>
-    <li><a href="#anc_cf_board">게시판기본</a></li>
-    <li><a href="#anc_cf_join">회원가입</a></li>
-    <li><a href="#anc_cf_cert">본인확인</a></li>
-    <li><a href="#anc_cf_url">짧은주소</a></li>
-    <li><a href="#anc_cf_mail">기본메일환경</a></li>
-    <li><a href="#anc_cf_article_mail">글작성메일</a></li>
-    <li><a href="#anc_cf_join_mail">가입메일</a></li>
-    <li><a href="#anc_cf_vote_mail">투표메일</a></li>
-    <li><a href="#anc_cf_sns">SNS</a></li>
-    <li><a href="#anc_cf_lay">레이아웃 추가설정</a></li>
-    <li><a href="#anc_cf_sms">SMS</a></li>
-    <li><a href="#anc_cf_extra">여분필드</a></li>
+    <li><a href="#anc_cf_basic" data-tab-target="anc_cf_basic">기본환경</a></li>
+    <li><a href="#anc_cf_board" data-tab-target="anc_cf_board">게시판기본</a></li>
+    <li><a href="#anc_cf_join" data-tab-target="anc_cf_join">회원가입</a></li>
+    <li><a href="#anc_cf_cert" data-tab-target="anc_cf_cert">본인확인</a></li>
+    <li><a href="#anc_cf_url" data-tab-target="anc_cf_url">짧은주소</a></li>
+    <li><a href="#anc_cf_mail" data-tab-target="anc_cf_mail">기본메일환경</a></li>
+    <li><a href="#anc_cf_article_mail" data-tab-target="anc_cf_article_mail">글작성메일</a></li>
+    <li><a href="#anc_cf_join_mail" data-tab-target="anc_cf_join_mail">가입메일</a></li>
+    <li><a href="#anc_cf_vote_mail" data-tab-target="anc_cf_vote_mail">투표메일</a></li>
+    <li><a href="#anc_cf_sns" data-tab-target="anc_cf_sns">SNS</a></li>
+    <li><a href="#anc_cf_lay" data-tab-target="anc_cf_lay">레이아웃 추가설정</a></li>
+    <li><a href="#anc_cf_sms" data-tab-target="anc_cf_sms">SMS</a></li>
+    <li><a href="#anc_cf_extra" data-tab-target="anc_cf_extra">여분필드</a></li>
 </ul>';
 
 
@@ -488,13 +488,13 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
 <form name="fconfigform" id="fconfigform" method="post" onsubmit="return fconfigform_submit(this);">
     <input type="hidden" name="token" value="" id="token">
+    <?php echo $pg_anchor ?>
 
     <section id="anc_cf_basic">
         <h2 class="h2_frm">홈페이지 기본환경 설정</h2>
-        <?php echo $pg_anchor ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>홈페이지 기본환경 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -699,7 +699,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                         <th scope="row"><label for="cf_recaptcha_site_key">구글 reCAPTCHA Site key</label></th>
                         <td colspan="3">
                             <?php echo help('reCAPTCHA V2와 Invisible reCAPTCHA 캡챠의 sitekey 와 secret 키는 동일하지 않고, 서로 발급받는 키가 다릅니다.') ?>
-                            <input type="text" name="cf_recaptcha_site_key" value="<?php echo get_sanitize_input($config['cf_recaptcha_site_key']); ?>" id="cf_recaptcha_site_key" class="frm_input" size="52"> <a href="https://www.google.com/recaptcha/admin" target="_blank" class="btn_frmline">reCAPTCHA 등록하기</a>
+                            <input type="text" name="cf_recaptcha_site_key" value="<?php echo get_sanitize_input($config['cf_recaptcha_site_key']); ?>" id="cf_recaptcha_site_key" class="frm_input" size="52"> <a href="https://www.google.com/recaptcha/admin" target="_blank" class="btn btn_04">reCAPTCHA 등록하기</a>
                         </td>
                     </tr>
                     <tr>
@@ -768,18 +768,17 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                 </tbody>
             </table>
         </div>
+        <button type="button" class="get_theme_confc btn btn_04" data-type="conf_skin">테마 스킨설정 가져오기</button>
     </section>
-    <button type="button" class="get_theme_confc btn_02 btn" data-type="conf_skin">테마 스킨설정 가져오기</button>
 
     <section id="anc_cf_board">
         <h2 class="h2_frm">게시판 기본 설정</h2>
-        <?php echo $pg_anchor ?>
         <div class="local_desc02 local_desc">
             <p>각 게시판 관리에서 개별적으로 설정 가능합니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>게시판 기본 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -853,13 +852,12 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_join">
         <h2 class="h2_frm">회원가입 설정</h2>
-        <?php echo $pg_anchor ?>
         <div class="local_desc02 local_desc">
             <p>회원가입 시 사용할 스킨과 입력 받을 정보 등을 설정할 수 있습니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>회원가입 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1001,13 +999,12 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                 </tbody>
             </table>
         </div>
-        <button type="button" class="get_theme_confc btn btn_02" data-type="conf_member">테마 회원스킨설정 가져오기</button>
+        <button type="button" class="get_theme_confc btn btn_04" data-type="conf_member">테마 회원스킨설정 가져오기</button>
     </section>
 
 
     <section id="anc_cf_cert">
         <h2 class="h2_frm">본인확인 설정</h2>
-        <?php echo $pg_anchor ?>
         <div class="local_desc02 local_desc">
             <p>
                 회원가입 시 본인확인 수단을 설정합니다.<br>
@@ -1017,7 +1014,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>본인확인 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1085,7 +1082,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                         <td class="cf_cert_service">
                             <span class="sitecode">SRA</span>
                             <input type="text" name="cf_cert_kg_mid" value="<?php echo get_sanitize_input($config['cf_cert_kg_mid']); ?>" id="cf_cert_kg_mid" class="frm_input" size="10" minlength="7" maxlength="7">
-                            <a href="http://sir.kr/main/service/inicis_cert_form.php" target="_blank" class="btn_frmline">KG이니시스 통합인증(간편인증) 신청페이지</a>
+                            <a href="http://sir.kr/main/service/inicis_cert_form.php" target="_blank" class="btn btn_04">KG이니시스 통합인증(간편인증) 신청페이지</a>
                         </td>
                     </tr>
                     <tr>
@@ -1106,14 +1103,14 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                         <td class="cf_cert_service">
                             <?php echo help('SM으로 시작하는 5자리 사이트 코드중 뒤의 3자리만 입력해 주십시오.<br>서비스에 가입되어 있지 않다면, 본인확인 서비스 신청페이지에서 서비스 신청 후 사이트코드를 발급 받으실 수 있습니다.') ?>
                             <span class="sitecode">SM</span>
-                            <input type="text" name="cf_cert_kcp_cd" value="<?php echo get_sanitize_input($config['cf_cert_kcp_cd']); ?>" id="cf_cert_kcp_cd" class="frm_input" size="3"> <a href="http://sir.kr/main/service/p_cert.php" target="_blank" class="btn_frmline">NHN KCP 휴대폰 본인확인 서비스 신청페이지</a>
+                            <input type="text" name="cf_cert_kcp_cd" value="<?php echo get_sanitize_input($config['cf_cert_kcp_cd']); ?>" id="cf_cert_kcp_cd" class="frm_input" size="3"> <a href="http://sir.kr/main/service/p_cert.php" target="_blank" class="btn btn_04">NHN KCP 휴대폰 본인확인 서비스 신청페이지</a>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row" class="cf_cert_service"><label for="cf_cert_kcp_enckey">NHN KCP 가맹점 인증키</label></th>
                         <td class="cf_cert_service">
                             <?php echo help('(선택사항, 추후 NHN_KCP 상점관리자에서 인증키 발급 메뉴 오픈일정 이후부터 적용되는 내용입니다.)<br>NHN_KCP 상점관리자 > 기술관리센터 > 인증센터 > 가맹점 인증키관리 에서 인증키 발급 후에 인증키 정보를 입력') ?>
-                            <input type="text" name="cf_cert_kcp_enckey" value="<?php echo get_sanitize_input($config['cf_cert_kcp_enckey']); ?>" id="cf_cert_kcp_enckey" class="frm_input" maxlength="100" size="40"> <a href="https://partner.kcp.co.kr" target="_blank" class="btn_frmline">NHN KCP 상점관리자</a>
+                            <input type="text" name="cf_cert_kcp_enckey" value="<?php echo get_sanitize_input($config['cf_cert_kcp_enckey']); ?>" id="cf_cert_kcp_enckey" class="frm_input" maxlength="100" size="40"> <a href="https://partner.kcp.co.kr" target="_blank" class="btn btn_04">NHN KCP 상점관리자</a>
                         </td>
                     </tr>
                     <tr>
@@ -1141,10 +1138,9 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_mail">
         <h2 class="h2_frm">기본 메일 환경 설정</h2>
-        <?php echo $pg_anchor ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>기본 메일 환경 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1181,10 +1177,9 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_article_mail">
         <h2 class="h2_frm">게시판 글 작성 시 메일 설정</h2>
-        <?php echo $pg_anchor ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>게시판 글 작성 시 메일 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1234,10 +1229,9 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_join_mail">
         <h2 class="h2_frm">회원가입 시 메일 설정</h2>
-        <?php echo $pg_anchor ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>회원가입 시 메일 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1266,10 +1260,9 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_vote_mail">
         <h2 class="h2_frm">투표 기타의견 작성 시 메일 설정</h2>
-        <?php echo $pg_anchor ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>투표 기타의견 작성 시 메일 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1291,10 +1284,9 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_sns">
         <h2 class="h2_frm">소셜네트워크서비스(SNS : Social Network Service)</h2>
-        <?php echo $pg_anchor ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>소셜네트워크서비스 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1306,7 +1298,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                     <tr>
                         <th scope="row"><label for="cf_social_login_use">소셜로그인설정</label></th>
                         <td colspan="3">
-                            <?php echo help('소셜로그인을 사용합니다. <a href="https://sir.kr/manual/g5/276" class="btn btn_03" target="_blank" style="margin-left:10px" >설정 관련 메뉴얼 보기</a> ') ?>
+                            <?php echo help('소셜로그인을 사용합니다. <a href="https://sir.kr/manual/g5/276" class="btn btn_04" target="_blank" style="margin-left:10px" >설정 관련 메뉴얼 보기</a> ') ?>
                             <input type="checkbox" name="cf_social_login_use" value="1" id="cf_social_login_use" <?php echo (!empty($config['cf_social_login_use'])) ? 'checked' : ''; ?>> 사용
                         </td>
                     </tr>
@@ -1366,7 +1358,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                     <tr>
                         <th scope="row"><label for="cf_naver_clientid">네이버 Client ID</label></th>
                         <td>
-                            <input type="text" name="cf_naver_clientid" value="<?php echo get_sanitize_input($config['cf_naver_clientid']); ?>" id="cf_naver_clientid" class="frm_input" size="40"> <a href="https://developers.naver.com/apps/#/register" target="_blank" class="btn_frmline">앱 등록하기</a>
+                            <input type="text" name="cf_naver_clientid" value="<?php echo get_sanitize_input($config['cf_naver_clientid']); ?>" id="cf_naver_clientid" class="frm_input" size="40"> <a href="https://developers.naver.com/apps/#/register" target="_blank" class="btn btn_04">앱 등록하기</a>
                         </td>
                         <th scope="row"><label for="cf_naver_secret">네이버 Client Secret</label></th>
                         <td>
@@ -1376,7 +1368,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                     <tr>
                         <th scope="row"><label for="cf_facebook_appid">페이스북 앱 ID</label></th>
                         <td>
-                            <input type="text" name="cf_facebook_appid" value="<?php echo get_sanitize_input($config['cf_facebook_appid']); ?>" id="cf_facebook_appid" class="frm_input" size="40"> <a href="https://developers.facebook.com/apps" target="_blank" class="btn_frmline">앱 등록하기</a>
+                            <input type="text" name="cf_facebook_appid" value="<?php echo get_sanitize_input($config['cf_facebook_appid']); ?>" id="cf_facebook_appid" class="frm_input" size="40"> <a href="https://developers.facebook.com/apps" target="_blank" class="btn btn_04">앱 등록하기</a>
                         </td>
                         <th scope="row"><label for="cf_facebook_secret">페이스북 앱 Secret</label></th>
                         <td>
@@ -1386,7 +1378,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                     <tr>
                         <th scope="row"><label for="cf_twitter_key">트위터 컨슈머 Key</label></th>
                         <td>
-                            <input type="text" name="cf_twitter_key" value="<?php echo get_sanitize_input($config['cf_twitter_key']); ?>" id="cf_twitter_key" class="frm_input" size="40"> <a href="https://developer.twitter.com/en/apps" target="_blank" class="btn_frmline">앱 등록하기</a>
+                            <input type="text" name="cf_twitter_key" value="<?php echo get_sanitize_input($config['cf_twitter_key']); ?>" id="cf_twitter_key" class="frm_input" size="40"> <a href="https://developer.twitter.com/en/apps" target="_blank" class="btn btn_04">앱 등록하기</a>
                         </td>
                         <th scope="row"><label for="cf_twitter_secret">트위터 컨슈머 Secret</label></th>
                         <td>
@@ -1396,7 +1388,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                     <tr>
                         <th scope="row"><label for="cf_google_clientid">구글 Client ID</label></th>
                         <td>
-                            <input type="text" name="cf_google_clientid" value="<?php echo get_sanitize_input($config['cf_google_clientid']); ?>" id="cf_google_clientid" class="frm_input" size="40"> <a href="https://console.developers.google.com" target="_blank" class="btn_frmline">앱 등록하기</a>
+                            <input type="text" name="cf_google_clientid" value="<?php echo get_sanitize_input($config['cf_google_clientid']); ?>" id="cf_google_clientid" class="frm_input" size="40"> <a href="https://console.developers.google.com" target="_blank" class="btn btn_04">앱 등록하기</a>
                         </td>
                         <th scope="row"><label for="cf_google_secret">구글 Client Secret</label></th>
                         <td>
@@ -1406,13 +1398,13 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                     <tr>
                         <th scope="row"><label for="cf_googl_shorturl_apikey">구글 짧은주소 API Key</label></th>
                         <td colspan="3">
-                            <input type="text" name="cf_googl_shorturl_apikey" value="<?php echo get_sanitize_input($config['cf_googl_shorturl_apikey']); ?>" id="cf_googl_shorturl_apikey" class="frm_input" size="40"> <a href="http://code.google.com/apis/console/" target="_blank" class="btn_frmline">API Key 등록하기</a>
+                            <input type="text" name="cf_googl_shorturl_apikey" value="<?php echo get_sanitize_input($config['cf_googl_shorturl_apikey']); ?>" id="cf_googl_shorturl_apikey" class="frm_input" size="40"> <a href="http://code.google.com/apis/console/" target="_blank" class="btn btn_04">API Key 등록하기</a>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row"><label for="cf_kakao_rest_key">카카오 REST API 키</label></th>
                         <td>
-                            <input type="text" name="cf_kakao_rest_key" value="<?php echo get_sanitize_input($config['cf_kakao_rest_key']); ?>" id="cf_kakao_rest_key" class="frm_input" size="40"> <a href="https://developers.kakao.com/product/kakaoLogin" target="_blank" class="btn_frmline">앱 등록하기</a>
+                            <input type="text" name="cf_kakao_rest_key" value="<?php echo get_sanitize_input($config['cf_kakao_rest_key']); ?>" id="cf_kakao_rest_key" class="frm_input" size="40"> <a href="https://developers.kakao.com/product/kakaoLogin" target="_blank" class="btn btn_04">앱 등록하기</a>
                         </td>
                         <th scope="row"><label for="cf_kakao_client_secret">카카오 Client Secret</label></th>
                         <td>
@@ -1428,7 +1420,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                     <tr>
                         <th scope="row"><label for="cf_payco_clientid">페이코 Client ID</label></th>
                         <td>
-                            <input type="text" name="cf_payco_clientid" value="<?php echo get_sanitize_input($config['cf_payco_clientid']); ?>" id="cf_payco_clientid" class="frm_input" size="40"> <a href="https://developers.payco.com/guide" target="_blank" class="btn_frmline">앱 등록하기</a>
+                            <input type="text" name="cf_payco_clientid" value="<?php echo get_sanitize_input($config['cf_payco_clientid']); ?>" id="cf_payco_clientid" class="frm_input" size="40"> <a href="https://developers.payco.com/guide" target="_blank" class="btn btn_04">앱 등록하기</a>
                         </td>
                         <th scope="row"><label for="cf_payco_secret">페이코 Secret</label></th>
                         <td>
@@ -1443,13 +1435,12 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_lay">
         <h2 class="h2_frm">레이아웃 추가설정</h2>
-        <?php echo $pg_anchor; ?>
         <div class="local_desc02 local_desc">
             <p>기본 설정된 파일 경로 및 script, css 를 추가하거나 변경할 수 있습니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>레이아웃 추가설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1471,10 +1462,9 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_sms">
         <h2 class="h2_frm">SMS</h2>
-        <?php echo $pg_anchor ?>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>SMS 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1537,7 +1527,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                             <th scope="row">충전 잔액<br>(구버전)</th>
                             <td>
                                 <?php echo number_format($userinfo['coin']); ?> 원.
-                                <a href="http://www.icodekorea.com/smsbiz/credit_card_amt.php?icode_id=<?php echo get_text($config['cf_icode_id']); ?>&amp;icode_passwd=<?php echo get_text($config['cf_icode_pw']); ?>" target="_blank" class="btn_frmline">충전하기</a>
+                                <a href="http://www.icodekorea.com/smsbiz/credit_card_amt.php?icode_id=<?php echo get_text($config['cf_icode_id']); ?>&amp;icode_passwd=<?php echo get_text($config['cf_icode_pw']); ?>" target="_blank" class="btn btn_04">충전하기</a>
                             </td>
                         </tr>
                     <?php } ?>
@@ -1554,7 +1544,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                     <tr>
                         <th scope="row">아이코드 SMS 신청<br>회원가입</th>
                         <td>
-                            <a href="http://icodekorea.com/res/join_company_fix_a.php?sellid=sir2" target="_blank" class="btn_frmline">아이코드 회원가입</a>
+                            <a href="http://icodekorea.com/res/join_company_fix_a.php?sellid=sir2" target="_blank" class="btn btn_04">아이코드 회원가입</a>
                         </td>
                     </tr>
                 </tbody>
@@ -1564,13 +1554,12 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
     <section id="anc_cf_extra">
         <h2 class="h2_frm">여분필드 기본 설정</h2>
-        <?php echo $pg_anchor ?>
         <div class="local_desc02 local_desc">
             <p>각 게시판 관리에서 개별적으로 설정 가능합니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
                 <caption>여분필드 기본 설정</caption>
                 <colgroup>
                     <col class="grid_4">
@@ -1604,7 +1593,7 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
     </div>
     
     <div class="btn_fixed_top btn_confirm">
-        <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+        <input type="submit" value="확인" class="btn btn_04" accesskey="s">
     </div>
 
 </form>
@@ -1672,6 +1661,135 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
                 }
             });
         });
+
+        // 탭으로 제어할 section id 목록(허용 목록). 다른 페이지 적용 시 이 배열만 교체하면 됩니다.
+        const tabIds = Object.freeze([
+            "anc_cf_basic",
+            "anc_cf_board",
+            "anc_cf_join",
+            "anc_cf_cert",
+            "anc_cf_url",
+            "anc_cf_mail",
+            "anc_cf_article_mail",
+            "anc_cf_join_mail",
+            "anc_cf_vote_mail",
+            "anc_cf_sns",
+            "anc_cf_lay",
+            "anc_cf_sms",
+            "anc_cf_extra"
+        ]);
+
+        // tabIds를 실제 DOM section 배열로 변환합니다. 없는 id는 null이므로 filter로 제거합니다.
+        const getTabPanels = () =>
+            tabIds
+                .map((id) => document.getElementById(id))
+                .filter((panel) => panel !== null);
+
+        // 탭 클릭 트리거(anchor) 목록을 배열로 반환합니다.
+        const getTabLinks = () =>
+            Array.from(document.querySelectorAll('.anchor a[data-tab-target]'));
+
+        // 전달받은 id가 탭 허용 목록(tabIds)에 존재하는지 검사합니다.
+        // indexOf 결과가 -1보다 크면(0 이상이면) 배열에 존재한다는 의미입니다.
+        const isValidTabId = (tabId) => tabIds.indexOf(tabId) > -1;
+
+        // URL hash 값에서 #을 제거해 순수 탭 id 문자열로 반환합니다.
+        const getHashTabId = () => window.location.hash.replace("#", "");
+
+        // 최초 진입 시 활성 탭 id를 결정합니다.
+        // hash가 유효하면 해당 탭을 사용하고, 아니면 첫 번째 탭을 기본값으로 사용합니다.
+        const getInitialTabId = () => {
+            const hashTabId = getHashTabId();
+
+            if (isValidTabId(hashTabId)) {
+                return hashTabId;
+            }
+
+            return tabIds[0];
+        };
+
+        // 활성 탭 id를 기준으로 section 표시 상태와 앵커 선택 상태를 동기화합니다.
+        const renderTab = (activeId) => {
+            const panels = getTabPanels();
+            const links = getTabLinks();
+
+            // section은 활성 탭 1개만 노출하고 나머지는 hidden 처리합니다.
+            panels.forEach((panel) => {
+                const isActive = panel.id === activeId;
+                if (isActive) {
+                    panel.style.visibility = "visible";
+                    panel.style.position = "";
+                    panel.style.height = "";
+                    panel.style.overflow = "";
+                    panel.style.pointerEvents = "";
+                } else {
+                    panel.style.visibility = "hidden";
+                    panel.style.position = "absolute";
+                    panel.style.height = "0";
+                    panel.style.overflow = "hidden";
+                    panel.style.pointerEvents = "none";
+                }
+                panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+            });
+
+            // 앵커는 data-tab-target 값과 activeId를 비교해 선택 상태를 맞춥니다.
+            links.forEach((link) => {
+                const targetId = link.getAttribute("data-tab-target") || "";
+                const isActive = targetId === activeId;
+
+                link.setAttribute("aria-selected", isActive ? "true" : "false");
+                link.classList.toggle("tab-active", isActive);
+            });
+        };
+
+        // 유효한 탭 id인지 확인 후 화면 렌더링과 URL hash 동기화를 수행합니다.
+        const activateTab = (tabId, syncHash = true) => {
+            if (!isValidTabId(tabId)) {
+                return;
+            }
+
+            renderTab(tabId);
+
+            if (syncHash && window.location.hash !== "#" + tabId) {
+                history.replaceState(null, "", "#" + tabId);
+            }
+        };
+
+        // 탭 앵커 클릭과 hashchange 이벤트를 연결합니다.
+        const bindTabEvents = () => {
+            const links = getTabLinks();
+
+            links.forEach((link) => {
+                link.addEventListener("click", (event) => {
+                    const tabId = link.getAttribute("data-tab-target") || "";
+
+                    if (!isValidTabId(tabId)) {
+                        return;
+                    }
+
+                    event.preventDefault();
+                    activateTab(tabId);
+                    window.scrollTo(0, 0);
+                });
+            });
+
+            // 주소 hash가 바뀐 경우(직접 변경, 뒤로가기 등) 화면 상태를 동기화합니다.
+            window.addEventListener("hashchange", () => {
+                const hashTabId = getHashTabId();
+
+                if (isValidTabId(hashTabId)) {
+                    renderTab(hashTabId);
+                }
+            });
+        };
+
+        // 이벤트 연결 후 초기 활성 탭을 반영합니다.
+        const initTabs = () => {
+            bindTabEvents();
+            activateTab(getInitialTabId(), false);
+        };
+
+        initTabs();
     });
 
     // 각 요소의 초기값 저장

@@ -226,8 +226,8 @@ $colspan = 14;
             </div>
 
             <div class="sch_btn">
-                <button type="button" id="btnExcelDownload">엑셀파일 다운로드</button>
-                <button type="button" class="btn_reset" onclick="location.href='?'">초기화</button>
+                <button type="button" id="btnExcelDownload" class="btn btn_04">엑셀파일 다운로드</button>
+                <button type="button" class="btn_reset btn btn_05" onclick="location.href='?'">초기화</button>
             </div>
         </div>
     </fieldset>
@@ -429,13 +429,13 @@ function handleProgressUpdate() {
 
             if (zipFile) {
                 const url = `${filePath}/${zipFile}`;
-                html += `<a href="${url}" class="btn btn_03" download>압축파일 다운로드</a>`;
+                html += `<a href="${url}" class="btn btn_04" download>압축파일 다운로드</a>`;
                 downloadBoxEl.innerHTML = html;
                 triggerAutoDownload(url, zipFile);
             } else if (files?.length) {
                 files.forEach((file, index) => {
                     const url = `${filePath}/${file}`;
-                    html += `<a class="btn btn_03" href="${url}" download>엑셀파일 다운로드 ${index + 1}</a>`;
+                    html += `<a class="btn btn_04" href="${url}" download>엑셀파일 다운로드 ${index + 1}</a>`;
                 });
                 downloadBoxEl.innerHTML = html;
 

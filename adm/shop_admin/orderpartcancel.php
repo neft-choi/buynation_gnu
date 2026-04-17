@@ -64,7 +64,7 @@ $od_misu = abs($od['od_misu']);
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="확인" class="btn_submit" accesskey="s">
+        <input type="submit" value="확인" class="btn btn_04" accesskey="s">
         <button type="button" onclick="self.close();">닫기</button>
     </div>
 </div>

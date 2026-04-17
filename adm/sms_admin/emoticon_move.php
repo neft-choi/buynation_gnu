@@ -55,7 +55,7 @@ for ($i=0; $row=sql_fetch_array($result); $i++)
     </div>
 
     <div class="win_btn">
-        <input type="submit" value="이동" id="btn_submit" class="btn_submit">
+        <input type="submit" value="이동" id="btn_submit" class="btn btn_04">
         <button type="button" class="btn_cancel">창닫기</button>
     </div>
     </form>

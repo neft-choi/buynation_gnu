@@ -177,7 +177,7 @@ if ($config['cf_sms_use'] == 'icode') { // 아이코드 사용
         </div>
 
         <div class="btn_confirm01 btn_confirm">
-            <input type="submit" value="전송" class="btn_submit">
+            <input type="submit" value="전송" class="btn btn_04">
             <!-- <input type="submit" value="전송" onclick="send()"> -->
         </div>
         </form>
@@ -186,9 +186,9 @@ if ($config['cf_sms_use'] == 'icode') { // 아이코드 사용
     <div id="send_book">
         <h2>휴대폰번호 목록</h2>
         <div id="book_tab">
-            <a href="#book_group" id="book_group" class="btn btn_02">그룹</a>
-            <a href="#book_person" id="book_person" class="btn btn_02">개인</a>
-            <a href="#book_level" id="book_level" class="btn btn_02">권한</a>
+            <a href="#book_group" id="book_group" class="btn btn_05">그룹</a>
+            <a href="#book_person" id="book_person" class="btn btn_05">개인</a>
+            <a href="#book_level" id="book_level" class="btn btn_05">권한</a>
         </div>
 
         <div id="num_book"></div>
@@ -827,7 +827,7 @@ var sms_obj={
     <div class="local_desc01 local_desc">
         <p>
             SMS 를 사용하지 않고 있기 때문에, 문자 전송을 할 수 없습니다.<br>
-            SMS 사용 설정은 <a href="../config_form.php#anc_cf_sms" class="btn_frmline">환경설정 &gt; 기본환경설정 &gt; SMS설정</a> 에서 SMS 사용을 아이코드로 변경해 주셔야 사용하실수 있습니다.
+            SMS 사용 설정은 <a href="../config_form.php#anc_cf_sms" class="btn btn_04">환경설정 &gt; 기본환경설정 &gt; SMS설정</a> 에서 SMS 사용을 아이코드로 변경해 주셔야 사용하실수 있습니다.
         </p>
     </div>
 </section>

@@ -54,7 +54,7 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
 $sql = " select * {$sql_common} {$sql_search} {$sql_order} limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="ov_listall">처음</a>';
+$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">처음</a>';
 
 $g5['title'] = '게시판그룹설정';
 require_once './admin.head.php';
@@ -76,7 +76,7 @@ $colspan = 10;
     </select>
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
     <input type="text" name="stx" id="stx" value="<?php echo $stx ?>" required class="required frm_input">
-    <input type="submit" value="검색" class="btn_submit">
+    <input type="submit" value="검색" class="btn btn_04">
 </form>
 
 
@@ -119,7 +119,7 @@ $colspan = 10;
                     $sql2 = " select count(*) as cnt from {$g5['board_table']} where gr_id = '{$row['gr_id']}' ";
                     $row2 = sql_fetch($sql2);
 
-                    $s_upd = '<a href="./boardgroup_form.php?' . $qstr . '&amp;w=u&amp;gr_id=' . $row['gr_id'] . '" class="btn_03 btn">수정</a>';
+                    $s_upd = '<a href="./boardgroup_form.php?' . $qstr . '&amp;w=u&amp;gr_id=' . $row['gr_id'] . '" class="btn btn_04">수정</a>';
 
                     $bg = 'bg' . ($i % 2);
                 ?>
@@ -173,9 +173,9 @@ $colspan = 10;
     </div>
 
     <div class="btn_fixed_top">
-        <input type="submit" name="act_button" onclick="document.pressed=this.value" value="선택수정" class="btn btn_02">
-        <input type="submit" name="act_button" onclick="document.pressed=this.value" value="선택삭제" class="btn btn_02">
-        <a href="./boardgroup_form.php" class="btn btn_01">게시판그룹 추가</a>
+        <input type="submit" name="act_button" onclick="document.pressed=this.value" value="선택수정" class="btn btn_05">
+        <input type="submit" name="act_button" onclick="document.pressed=this.value" value="선택삭제" class="btn btn_05">
+        <a href="./boardgroup_form.php" class="btn btn_04">게시판그룹 추가</a>
     </div>
 </form>
 

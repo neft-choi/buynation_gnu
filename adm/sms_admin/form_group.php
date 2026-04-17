@@ -72,7 +72,7 @@ function grouplist_submit(f)
 <div>
     <label for="fg_name">그룹명<strong class="sound_only"> 필수</strong></label>
     <input type="text" id="fg_name" name="fg_name" required class="required frm_input">
-    <input type="submit" value="추가" class="btn_submit">
+    <input type="submit" value="추가" class="btn btn_04">
 </div>
 <div class="sch_last">
     <span class="count_add01">건수 : <?php echo $total_count ?></span>
@@ -120,7 +120,7 @@ function grouplist_submit(f)
             </select>
         </td>
         <td class="td_mng td_mng_s">
-            <a href="./form_list.php?fg_no=0" class="btn btn_03">보기</a>
+            <a href="./form_list.php?fg_no=0" class="btn btn_04">보기</a>
             <!-- <button type="button" onclick="empty('no');">비우기</button> -->
         </td>
     </tr>
@@ -155,7 +155,7 @@ function grouplist_submit(f)
             </select>
         </td>
         <td class="td_mng td_mng_s">
-            <a href="./form_list.php?fg_no=<?php echo $group[$i]['fg_no']?>" class="btn btn_03">보기</a>
+            <a href="./form_list.php?fg_no=<?php echo $group[$i]['fg_no']?>" class="btn btn_04">보기</a>
         </td>
     </tr>
     <?php } ?>
@@ -165,9 +165,9 @@ function grouplist_submit(f)
 </div>
 
 <div class="btn_fixed_top">
-    <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_02">
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
-    <input type="submit" name="act_button" value="선택비우기" onclick="document.pressed=this.value" class="btn btn_02">
+    <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_05">
+    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
+    <input type="submit" name="act_button" value="선택비우기" onclick="document.pressed=this.value" class="btn btn_05">
 </div>
 
 </form>

@@ -46,7 +46,7 @@ $sql = " select *
             limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="ov_listall btn_ov02">전체목록</a>';
+$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체목록</a>';
 
 $g5['title'] = "관리권한설정";
 require_once './admin.head.php';
@@ -65,7 +65,7 @@ $colspan = 5;
     <div class="flex_gap">
         <label for="stx" class="sound_only">회원아이디<strong class="sound_only"> 필수</strong></label>
         <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-        <input type="submit" value="검색" id="fsearch_submit" class="btn_submit">
+        <input type="submit" value="검색" id="fsearch_submit" class="btn btn_04">
     </div>
 </form>
 
@@ -147,7 +147,7 @@ $colspan = 5;
     </div>
 
     <div class="btn_list01 btn_list">
-        <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+        <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
     </div>
 
     <?php
@@ -243,7 +243,7 @@ echo $pagelist;
         </div>
 
         <div class="btn_confirm01 btn_confirm">
-            <input type="submit" value="추가" class="btn_submit btn">
+            <input type="submit" value="추가" class="btn btn_04">
         </div>
     </section>
 

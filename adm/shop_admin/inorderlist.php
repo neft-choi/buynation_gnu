@@ -61,7 +61,7 @@ $colspan = 10;
     </select>
     <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
     <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-    <input type="submit" class="btn_submit" value="검색">
+    <input type="submit" class="btn btn_04" value="검색">
 </form>
 
 <form name="finorderlist" id="finorderlist" method="post" action="./inorderlistdelete.php" onsubmit="return finorderlist_submit(this);">
@@ -130,8 +130,8 @@ $colspan = 10;
         <td class="td_center"><?php echo $data['od_settle_case']; ?></td>
         <td class="td_time"><?php echo $row['dt_time']; ?></td>
         <td class="td_mng td_mng_m">
-            <a href="./inorderform.php?od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_03"><span class="sound_only"><?php echo $row['od_id']; ?> </span>보기</a>
-            <a href="./inorderformupdate.php?w=d&amp;od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" onclick="return delete_confirm(this);" class="btn btn_02"><span class="sound_only"><?php echo $row['od_id']; ?> </span>삭제</a>
+            <a href="./inorderform.php?od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_04"><span class="sound_only"><?php echo $row['od_id']; ?> </span>보기</a>
+            <a href="./inorderformupdate.php?w=d&amp;od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" onclick="return delete_confirm(this);" class="btn btn_05"><span class="sound_only"><?php echo $row['od_id']; ?> </span>삭제</a>
         </td>
     </tr>
 
@@ -146,7 +146,7 @@ $colspan = 10;
 </div>
 
 <div class="btn_fixed_top">
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
+    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
 </div>
 
 </form>

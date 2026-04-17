@@ -73,14 +73,14 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
             <option value="end" <?php echo get_selected($bn_time, 'end'); ?>>종료된 배너</option>
         </select>
 
-        <input type="submit" value="검색" class="btn_submit">
+        <input type="submit" value="검색" class="btn btn_04">
 
     </form>
 
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./bannerform.php" class="btn_01 btn">배너추가</a>
+    <a href="./bannerform.php" class="btn btn_04">배너추가</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -153,14 +153,14 @@ $from_record = ($page - 1) * $rows; // 시작 열을 구함
                     <td headers="th_odr" class="td_num"><?php echo $row['bn_order']; ?></td>
                     <td headers="th_hit" class="td_num"><?php echo $row['bn_hit']; ?></td>
                     <td headers="th_mng" class="td_mng td_mns_m">
-                        <a href="./bannerform.php?w=u&amp;bn_id=<?php echo $row['bn_id']; ?>" class="btn btn_03">수정</a>
-                        <a href="./bannerformupdate.php?w=d&amp;bn_id=<?php echo $row['bn_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02">삭제</a>
+                        <a href="./bannerform.php?w=u&amp;bn_id=<?php echo $row['bn_id']; ?>" class="btn btn_04">수정</a>
+                        <a href="./bannerformupdate.php?w=d&amp;bn_id=<?php echo $row['bn_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_05">삭제</a>
                     </td>
                 </tr>
                 <tr class="<?php echo $bg; ?>">
                     <td headers="th_img" colspan="7" class="td_img_view sbn_img">
                         <div class="sbn_image"><?php echo $bn_img; ?></div>
-                        <button type="button" class="sbn_img_view btn_frmline">이미지확인</button>
+                        <button type="button" class="sbn_img_view btn btn_04">이미지확인</button>
                     </td>
                 </tr>
 

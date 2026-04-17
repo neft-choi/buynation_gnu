@@ -872,14 +872,14 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="결제/배송내역 수정" class="btn_submit btn">
+        <input type="submit" value="결제/배송내역 수정" class="btn btn_04">
         <?php if($od['od_status'] == '주문' && $od['od_misu'] > 0) { ?>
-        <a href="./personalpayform.php?popup=yes&amp;od_id=<?php echo $od_id; ?>" id="personalpay_add" class="btn btn_02">개인결제추가</a>
+        <a href="./personalpayform.php?popup=yes&amp;od_id=<?php echo $od_id; ?>" id="personalpay_add" class="btn btn_05">개인결제추가</a>
         <?php } ?>
         <?php if($od['od_misu'] < 0 && ($od['od_receipt_price'] - $od['od_refund_price']) > 0 && ($od['od_settle_case'] == '신용카드' || $od['od_settle_case'] == '계좌이체' || $od['od_settle_case'] == 'KAKAOPAY')) { ?>
-        <a href="./orderpartcancel.php?od_id=<?php echo $od_id; ?>" id="orderpartcancel" class="btn btn_02"><?php echo $od['od_settle_case']; ?> 부분취소</a>
+        <a href="./orderpartcancel.php?od_id=<?php echo $od_id; ?>" id="orderpartcancel" class="btn btn_05"><?php echo $od['od_settle_case']; ?> 부분취소</a>
         <?php } ?>
-        <a href="./orderlist.php?<?php echo $qstr; ?>" class="btn btn_02">목록</a>
+        <a href="./orderlist.php?<?php echo $qstr; ?>" class="btn btn_05">목록</a>
     </div>
     </form>
 </section>
@@ -909,7 +909,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="메모 수정" class="btn_submit btn">
+        <input type="submit" value="메모 수정" class="btn btn_04">
     </div>
 
     </form>
@@ -958,7 +958,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <td>
                         <label for="od_zip" class="sound_only">우편번호</label>
                         <input type="text" name="od_zip" value="<?php echo get_text($od['od_zip1']).get_text($od['od_zip2']); ?>" id="od_zip" required class="frm_input required" size="5">
-                        <button type="button" class="btn_frmline" onclick="win_zip('frmorderform3', 'od_zip', 'od_addr1', 'od_addr2', 'od_addr3', 'od_addr_jibeon');">주소 검색</button><br>
+                        <button type="button" class="btn btn_04" onclick="win_zip('frmorderform3', 'od_zip', 'od_addr1', 'od_addr2', 'od_addr3', 'od_addr_jibeon');">주소 검색</button><br>
                         <span id="od_win_zip" style="display:block"></span>
                         <input type="text" name="od_addr1" value="<?php echo get_text($od['od_addr1']); ?>" id="od_addr1" required class="frm_input required" size="35">
                         <label for="od_addr1">기본주소</label><br>
@@ -1011,7 +1011,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <td>
                         <label for="od_b_zip" class="sound_only">우편번호</label>
                         <input type="text" name="od_b_zip" value="<?php echo get_text($od['od_b_zip1']).get_text($od['od_b_zip2']); ?>" id="od_b_zip" required class="frm_input required" size="5">
-                        <button type="button" class="btn_frmline" onclick="win_zip('frmorderform3', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소 검색</button><br>
+                        <button type="button" class="btn btn_04" onclick="win_zip('frmorderform3', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소 검색</button><br>
                         <input type="text" name="od_b_addr1" value="<?php echo get_text($od['od_b_addr1']); ?>" id="od_b_addr1" required class="frm_input required" size="35">
                         <label for="od_b_addr1">기본주소</label>
                         <input type="text" name="od_b_addr2" value="<?php echo get_text($od['od_b_addr2']); ?>" id="od_b_addr2" class="frm_input" size="35">
@@ -1043,8 +1043,8 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     </div>
 
     <div class="btn_confirm01 btn_confirm">
-        <input type="submit" value="주문자/배송지 정보 수정" class="btn_submit btn ">
-        <a href="./orderlist.php?<?php echo $qstr; ?>" class="btn">목록</a>
+        <input type="submit" value="주문자/배송지 정보 수정" class="btn btn ">
+        <a href="./orderlist.php?<?php echo $qstr; ?>" class="btn btn_04">목록</a>
     </div>
 
     </form>

@@ -163,7 +163,7 @@ switch ($day) {
     <option value="bar" <?php echo ($graph == 'bar' ? 'selected="selected"' : ''); ?>>막대그래프</option>
     </select>
 
-    <input type="submit" class="btn_submit" value="확인">
+    <input type="submit" class="btn btn_04" value="확인">
     </form>
     <ul id="grp_color">
         <li><span></span>글 수</li>

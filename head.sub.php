@@ -56,6 +56,10 @@ if($config['cf_add_meta'])
 if (defined('G5_IS_ADMIN')) {
     if(!defined('_THEME_PREVIEW_'))
         echo '<link rel="stylesheet" href="'.run_replace('head_css_url', G5_ADMIN_URL.'/css/admin.css?ver='.G5_CSS_VER, G5_URL).'">'.PHP_EOL;
+
+    if (defined('G5_THEME_CSS_URL') && defined('G5_THEME_PATH') && is_file(G5_THEME_PATH.'/css/tailwind.build.css')) {
+        add_stylesheet('<link rel="stylesheet" href="'.G5_THEME_CSS_URL.'/tailwind.build.css">', 50);
+    }
 } else {
     $shop_css = '';
     if (defined('_SHOP_')) $shop_css = '_shop';

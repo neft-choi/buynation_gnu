@@ -102,7 +102,7 @@ if ($config['cf_sms_use'] == 'icode') { // 아이코드 사용
         <th scope="row">충전 잔액<br>(구버전)</th>
         <td>
             <?php echo number_format($userinfo['coin'])?> 원
-            <a href="http://www.icodekorea.com/smsbiz/credit_card_amt.php?icode_id=<?php echo $config['cf_icode_id']; ?>&amp;icode_passwd=<?php echo $config['cf_icode_pw']; ?>" target="_blank" class="btn_frmline">충전하기</a>
+            <a href="http://www.icodekorea.com/smsbiz/credit_card_amt.php?icode_id=<?php echo $config['cf_icode_id']; ?>&amp;icode_passwd=<?php echo $config['cf_icode_pw']; ?>" target="_blank" class="btn btn_04">충전하기</a>
         </td>
     </tr>
     <?php } ?>
@@ -128,7 +128,7 @@ if ($config['cf_sms_use'] == 'icode') { // 아이코드 사용
 </div>
 
 <div class="btn_fixed_top">
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+    <input type="submit" value="확인" class="btn btn_04" accesskey="s">
 </div>
 </form>
 
@@ -139,7 +139,7 @@ if ($config['cf_sms_use'] == 'icode') { // 아이코드 사용
     <div class="local_desc01 local_desc">
         <p>
             SMS 를 사용하지 않고 있기 때문에, 문자 전송을 할 수 없습니다.<br>
-            SMS 사용 설정은 <a href="../config_form.php#anc_cf_sms" class="btn_frmline">환경설정 &gt; 기본환경설정 &gt; SMS설정</a> 에서 SMS 사용을 아이코드로 변경해 주셔야 사용하실수 있습니다.
+            SMS 사용 설정은 <a href="../config_form.php#anc_cf_sms" class="btn btn_04">환경설정 &gt; 기본환경설정 &gt; SMS설정</a> 에서 SMS 사용을 아이코드로 변경해 주셔야 사용하실수 있습니다.
         </p>
     </div>
 </section>

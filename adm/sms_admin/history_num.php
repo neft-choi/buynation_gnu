@@ -42,7 +42,7 @@ include_once(G5_ADMIN_PATH.'/admin.head.php');
 </select>
 <label for="sv" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
 <input type="text" name="sv" value="<?php echo $sv; ?>" id="sv" required class="required frm_input">
-<input type="submit" value="검색" class="btn_submit">
+<input type="submit" value="검색" class="btn btn_04">
 </form>
 
 <div class="tbl_head01 tbl_wrap">
@@ -98,7 +98,7 @@ include_once(G5_ADMIN_PATH.'/admin.head.php');
         <td class="td_boolean"><?php echo $res['hs_flag']?'성공':'실패'?></td>
         <td class="td_left"><span title="<?php echo $write['wr_message']?>"><?php echo $write['wr_message']?></span></td>
         <td class="td_mng td_mng_s">
-            <a href="./history_view.php?page=<?php echo $page; ?>&amp;st=<?php echo $st; ?>&amp;sv=<?php echo $sv; ?>&amp;wr_no=<?php echo $res['wr_no']; ?>" class="btn btn_03">수정</a>
+            <a href="./history_view.php?page=<?php echo $page; ?>&amp;st=<?php echo $st; ?>&amp;sv=<?php echo $sv; ?>&amp;wr_no=<?php echo $res['wr_no']; ?>" class="btn btn_04">수정</a>
         </td>
     </tr>
     <?php } ?>

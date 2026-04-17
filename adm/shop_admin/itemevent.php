@@ -24,7 +24,7 @@ $result = sql_query($sql);
 
 
 <div class="btn_fixed_top">
-    <a href="./itemeventform.php" class="btn btn_01">이벤트 추가</a>
+    <a href="./itemeventform.php" class="btn btn_04">이벤트 추가</a>
 </div>
 
 <div class="tbl_head01 tbl_wrap">
@@ -61,9 +61,9 @@ $result = sql_query($sql);
         <td class="td_num"><?php echo $href; ?><?php echo $ev['cnt']; ?><?php echo $href_close; ?></td>
         <td class="td_boolean"><?php echo $row['ev_use'] ? '<span class="txt_true">예</span>' : '<span class="txt_false">아니오</span>'; ?></td>
         <td class="td_mng td_mng_l">
-            <a href="./itemeventform.php?w=u&amp;ev_id=<?php echo $row['ev_id']; ?>" class="btn btn_03">수정</a>
-            <a href="<?php echo G5_SHOP_URL; ?>/event.php?ev_id=<?php echo $row['ev_id']; ?>" class="btn btn_02">보기</a>
-            <a href="./itemeventformupdate.php?w=d&amp;ev_id=<?php echo $row['ev_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02">삭제</a>
+            <a href="./itemeventform.php?w=u&amp;ev_id=<?php echo $row['ev_id']; ?>" class="btn btn_04">수정</a>
+            <a href="<?php echo G5_SHOP_URL; ?>/event.php?ev_id=<?php echo $row['ev_id']; ?>" class="btn btn_05">보기</a>
+            <a href="./itemeventformupdate.php?w=d&amp;ev_id=<?php echo $row['ev_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_05">삭제</a>
         </td>
     </tr>
 

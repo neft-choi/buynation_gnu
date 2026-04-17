@@ -46,7 +46,7 @@ $qstr1 = 'mb_name='.urlencode($mb_name);
     <div id="scp_list_find">
         <label for="mb_name">회원이름</label>
         <input type="text" name="mb_name" id="mb_name" value="<?php echo get_text($mb_name); ?>" class="frm_input" size="20">
-        <input type="submit" value="검색" class="btn_frmline">
+        <input type="submit" value="검색" class="btn btn_04">
     </div>
     <div class="tbl_head01 tbl_wrap new_win_con">
         <table>
@@ -65,7 +65,7 @@ $qstr1 = 'mb_name='.urlencode($mb_name);
         <tr>
             <td class="td_mbname"><?php echo get_text($row['mb_name']); ?></td>
             <td class="td_left"><?php echo $row['mb_id']; ?></td>
-            <td class="scp_find_select td_mng td_mng_s"><button type="button" class="btn btn_03" onclick="sel_member_id('<?php echo $row['mb_id']; ?>');">선택</button></td>
+            <td class="scp_find_select td_mng td_mng_s"><button type="button" class="btn btn_04" onclick="sel_member_id('<?php echo $row['mb_id']; ?>');">선택</button></td>
         </tr>
         <?php
         }

@@ -59,7 +59,7 @@ $sql = " select *
             limit {$from_record}, {$rows} ";
 $result = sql_query($sql);
 
-$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="ov_listall">전체목록</a>';
+$listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체목록</a>';
 
 $g5['title'] = '인기검색어관리';
 require_once './admin.head.php';
@@ -86,7 +86,7 @@ $colspan = 4;
         </select>
         <label for="stx" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
         <input type="text" name="stx" value="<?php echo $stx ?>" id="stx" required class="required frm_input">
-        <input type="submit" value="검색" class="btn_submit">
+        <input type="submit" value="검색" class="btn btn_04">
     </div>
 </form>
 
@@ -141,7 +141,7 @@ $colspan = 4;
 
     <?php if ($is_admin == 'super') { ?>
         <div class=" btn_fixed_top">
-            <button type="submit" class="btn btn_02">선택삭제</button>
+            <button type="submit" class="btn btn_05">선택삭제</button>
         </div>
     <?php } ?>
 

@@ -68,7 +68,7 @@ require_once './admin.head.php';
                         if ($w == '') {
                             echo '영문자, 숫자, _ 만 가능 (공백없이)';
                         } else {
-                            echo '<a href="' . G5_BBS_URL . '/group.php?gr_id=' . $group['gr_id'] . '" class="btn_frmline">게시판그룹 바로가기</a>';
+                            echo '<a href="' . G5_BBS_URL . '/group.php?gr_id=' . $group['gr_id'] . '" class="btn btn_04">게시판그룹 바로가기</a>';
                         }
                         ?>
                     </td>
@@ -79,7 +79,7 @@ require_once './admin.head.php';
                         <input type="text" name="gr_subject" value="<?php echo get_text($group['gr_subject']) ?>" id="gr_subject" required class="required frm_input" size="80">
                         <?php
                         if ($w == 'u') {
-                            echo '<a href="./board_form.php?gr_id=' . $gr_id . '" class="btn_frmline">게시판생성</a>';
+                            echo '<a href="./board_form.php?gr_id=' . $gr_id . '" class="btn btn_04">게시판생성</a>';
                         }
                         ?>
                     </td>
@@ -147,8 +147,8 @@ require_once './admin.head.php';
     </div>
 
     <div class="btn_fixed_top">
-        <a href="./boardgroup_list.php?<?php echo $qstr ?>" class="btn btn_02">목록</a>
-        <input type="submit" class="btn_submit btn" accesskey="s" value="확인">
+        <a href="./boardgroup_list.php?<?php echo $qstr ?>" class="btn btn_05">목록</a>
+        <input type="submit" class="btn btn_04" accesskey="s" value="확인">
     </div>
 
 </form>

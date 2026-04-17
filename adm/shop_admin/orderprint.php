@@ -37,7 +37,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         ~
         <label for="to_date" class="sound_only">기간 종료일</label>
         <input type="text" name="to_date" value="<?php echo date("Ymd"); ?>" id="to_date" required class="required frm_input" size="10" maxlength="8">
-        <input type="submit" value="출력 (새창)" class="btn_submit">
+        <input type="submit" value="출력 (새창)" class="btn btn_04">
 
         </form>
     </div>
@@ -69,7 +69,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         ~
         <label for="fr_od_id" class="sound_only">주문번호 구간 종료</label>
         <input type="text" name="to_od_id" id="to_od_id" required class="required frm_input" size="10" maxlength="20">
-        <input type="submit" value="출력 (새창)" class="btn_submit">
+        <input type="submit" value="출력 (새창)" class="btn btn_04">
 
         </form>
     </div>
@@ -77,7 +77,7 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./orderlist.php" class="btn_01 btn ">주문내역</a>
+    <a href="./orderlist.php" class="btn btn_04 ">주문내역</a>
 </div>
 
 <div class="local_desc01 local_desc">

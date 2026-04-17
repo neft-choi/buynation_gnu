@@ -196,7 +196,7 @@ if($po_run) {
 </div>
 
 <div class="btn_list01 btn_list">
-    <input type="button" value="선택삭제" id="sel_option_delete" class="btn btn_02">
+    <input type="button" value="선택삭제" id="sel_option_delete" class="btn btn_05">
 </div>
 
 <fieldset>
@@ -217,7 +217,7 @@ if($po_run) {
         <option value="1">사용함</option>
         <option value="0">사용안함</option>
     </select>
-    <button type="button" id="opt_value_apply" class="btn_frmline">일괄적용</button>
+    <button type="button" id="opt_value_apply" class="btn btn_04">일괄적용</button>
 </fieldset>
 <?php
 }

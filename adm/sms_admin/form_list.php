@@ -133,7 +133,7 @@ function multi_update(sel)
     </select>
     <label for="sv" class="sound_only">검색어<strong class="sound_only"> 필수</strong></label>
     <input type="text" name="sv" value="<?php echo get_text($sv) ;?>" id="sv" required class="frm_input required" >
-    <input type="submit" value="검색" class="btn_submit">
+    <input type="submit" value="검색" class="btn btn_04">
     </form>
 </div>
 
@@ -193,9 +193,9 @@ function multi_update(sel)
 </ul>
 
 <div class="btn_fixed_top" >
-    <input type="submit" name="act_button" value="선택이동" onclick="document.pressed=this.value" class="btn btn_02">
-    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_02">
-    <a href="./form_write.php?page=<?php echo $page?>&amp;fg_no=<?php echo $fg_no?>" class="btn btn_01">이모티콘 추가</a>
+    <input type="submit" name="act_button" value="선택이동" onclick="document.pressed=this.value" class="btn btn_05">
+    <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
+    <a href="./form_write.php?page=<?php echo $page?>&amp;fg_no=<?php echo $fg_no?>" class="btn btn_04">이모티콘 추가</a>
 </div>
 
 </form>

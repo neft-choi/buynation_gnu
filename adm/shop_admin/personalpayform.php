@@ -55,8 +55,8 @@ else { // 현재페이지일 때
     include_once (G5_ADMIN_PATH.'/admin.head.php');
 }
 $pg_anchor = '<ul class="anchor">
-<li><a href="#anc_spp_info">주문 정보</a></li>
-<li><a href="#anc_spp_pay">결제 정보</a></li>
+<li><a href="#anc_spp_info" data-tab-target="anc_spp_info">주문 정보</a></li>
+<li><a href="#anc_spp_pay" data-tab-target="anc_spp_pay">결제 정보</a></li>
 </ul>';
 
 // pg 설정 필드 추가
@@ -94,16 +94,16 @@ if(!sql_query(" select pp_cash from {$g5['g5_shop_personalpay_table']} limit 1 "
 <?php } ?>
 
 <?php echo $wrp_tag_st; ?>
+<?php if($popup != 'yes') echo $pg_anchor; ?>
 
     <section id="anc_spp_info">
         <h2 class="h2_frm">주문 정보</h2>
-        <?php if($popup != 'yes') echo $pg_anchor; ?>
         <div class="local_desc">
             <p>주문 관련 기본 정보입니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
             <caption>주문 정보 목록</caption>
             <colgroup>
                 <col class="grid_4">
@@ -136,13 +136,12 @@ if(!sql_query(" select pp_cash from {$g5['g5_shop_personalpay_table']} limit 1 "
     <?php if($popup != 'yes') { ?>
     <section id="anc_spp_pay" class="cbox">
         <h2 class="h2_frm">결제 정보</h2>
-        <?php echo $pg_anchor; ?>
         <div class="local_desc02 local_desc">
             <p>결제 관련 정보입니다.</p>
         </div>
 
         <div class="tbl_frm01 tbl_wrap">
-            <table>
+            <table class="md:m-[-16px] m-0">
             <caption>결제 정보 목록</caption>
             <colgroup>
                 <col class="grid_4">
@@ -256,14 +255,14 @@ if(!sql_query(" select pp_cash from {$g5['g5_shop_personalpay_table']} limit 1 "
     $btn_class = (isset($popup) && $popup === 'yes') ? 'btn_win' : 'btn_fixed_top';
     ?>
     <div class="<?php echo $btn_class; ?>">
-        <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+        <input type="submit" value="확인" class="btn btn_04" accesskey="s">
         <?php if($popup == 'yes') { ?>
-        <button type="button" onclick="self.close();" class="btn btn_02">닫기</button>
+        <button type="button" onclick="self.close();" class="btn btn_05">닫기</button>
         <?php } else { ?>
-        <a href="./personalpaylist.php?<?php echo $qstr; ?>" class="btn btn_02">목록</a>
+        <a href="./personalpaylist.php?<?php echo $qstr; ?>" class="btn btn_05">목록</a>
         <?php } ?>
         <?php if($w == 'u') { ?>
-        <a href="./personalpayformupdate.php?w=d&amp;pp_id=<?php echo $pp['pp_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_02">삭제</a>
+        <a href="./personalpayformupdate.php?w=d&amp;pp_id=<?php echo $pp['pp_id']; ?>" onclick="return delete_confirm(this);" class="btn btn_05">삭제</a>
         <?php } ?>
     </div>
 
@@ -280,6 +279,116 @@ function form_check(f)
 
     return true;
 }
+
+const tabIds = Object.freeze([
+    "anc_spp_info",
+    "anc_spp_pay"
+]);
+
+const isValidTabId = (tabId) => tabIds.indexOf(tabId) > -1;
+
+const getTabPanels = () =>
+    tabIds
+        .map((id) => document.getElementById(id))
+        .filter((panel) => panel !== null);
+
+const getTabLinks = () =>
+    Array.from(document.querySelectorAll(".anchor a[data-tab-target]"));
+
+const getHashTabId = () => window.location.hash.replace("#", "");
+
+const getInitialTabId = () => {
+    const hashTabId = getHashTabId();
+
+    if (isValidTabId(hashTabId)) {
+        return hashTabId;
+    }
+
+    const firstLink = getTabLinks()[0];
+    const firstTargetId = firstLink ? (firstLink.getAttribute("data-tab-target") || "") : "";
+    return isValidTabId(firstTargetId) ? firstTargetId : tabIds[0];
+};
+
+const renderTab = (activeId) => {
+    const panels = getTabPanels();
+    const links = getTabLinks();
+
+    panels.forEach((panel) => {
+        const isActive = panel.id === activeId;
+        if (isActive) {
+            panel.style.visibility = "visible";
+            panel.style.position = "";
+            panel.style.height = "";
+            panel.style.overflow = "";
+            panel.style.pointerEvents = "";
+        } else {
+            panel.style.visibility = "hidden";
+            panel.style.position = "absolute";
+            panel.style.height = "0";
+            panel.style.overflow = "hidden";
+            panel.style.pointerEvents = "none";
+        }
+        panel.setAttribute("aria-hidden", isActive ? "false" : "true");
+    });
+
+    links.forEach((link) => {
+        const targetId = link.getAttribute("data-tab-target") || "";
+        const isActive = targetId === activeId;
+        link.setAttribute("aria-selected", isActive ? "true" : "false");
+        link.classList.toggle("tab-active", isActive);
+    });
+};
+
+const activateTab = (tabId, syncHash = true) => {
+    if (!isValidTabId(tabId)) {
+        return;
+    }
+
+    renderTab(tabId);
+
+    if (syncHash && window.location.hash !== "#" + tabId) {
+        history.replaceState(null, "", "#" + tabId);
+    }
+};
+
+const bindTabEvents = () => {
+    const links = getTabLinks();
+
+    links.forEach((link) => {
+        link.addEventListener("click", (event) => {
+            const tabId = link.getAttribute("data-tab-target") || "";
+
+            if (!isValidTabId(tabId)) {
+                return;
+            }
+
+            event.preventDefault();
+            activateTab(tabId);
+            window.scrollTo(0, 0);
+        });
+    });
+
+    window.addEventListener("hashchange", () => {
+        const hashTabId = getHashTabId();
+
+        if (isValidTabId(hashTabId)) {
+            renderTab(hashTabId);
+        }
+    });
+};
+
+const initTabs = () => {
+    const links = getTabLinks();
+
+    if (!links.length) {
+        return;
+    }
+
+    bindTabEvents();
+    activateTab(getInitialTabId(), false);
+};
+
+initTabs();
 </script>
 
 <?php

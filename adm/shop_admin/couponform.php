@@ -84,14 +84,14 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
         <th scope="row"><label for="cp_target"><?php echo $cp_target_label; ?></label></th>
         <td>
            <input type="text" name="cp_target" value="<?php echo stripslashes($cp['cp_target']); ?>" id="cp_target" required class="required frm_input">
-           <button type="button" id="sch_target" class="btn_frmline"><?php echo $cp_target_btn; ?></button>
+           <button type="button" id="sch_target" class="btn btn_04"><?php echo $cp_target_btn; ?></button>
         </td>
     </tr>
     <tr>
         <th scope="row"><label for="mb_id">회원아이디</label></th>
         <td>
             <input type="text" name="mb_id" value="<?php echo stripslashes($cp['mb_id']); ?>" id="mb_id" class="frm_input">
-            <button type="button" id="sch_member" class="btn_frmline">회원검색</button>
+            <button type="button" id="sch_member" class="btn btn_04">회원검색</button>
             <input type="checkbox" name="chk_all_mb" id="chk_all_mb" value="1">
             <label for="chk_all_mb">전체회원</label>
         </td>
@@ -165,8 +165,8 @@ include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 </div>
 
 <div class="btn_fixed_top">
-    <a href="./couponlist.php" class="btn btn_02">목록</a>
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s">
+    <a href="./couponlist.php" class="btn btn_05">목록</a>
+    <input type="submit" value="확인" class="btn btn_04" accesskey="s">
 </div>
 
 </form>

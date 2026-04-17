@@ -97,7 +97,7 @@ require_once G5_ADMIN_PATH . '/admin.head.php';
                     <td>
                         <?php echo help('20자 이내의 영문자, 숫자, _ 만 가능합니다.'); ?>
                         <input type="text" value="<?php echo $co['co_id']; ?>" name="co_id" id="co_id" required <?php echo $readonly; ?> class="required <?php echo $readonly; ?> frm_input" size="20" maxlength="20">
-                        <?php if ($w == 'u') { ?><a href="<?php echo get_pretty_url('content', $co_id); ?>" class="btn_frmline">내용확인</a><?php } ?>
+                        <?php if ($w == 'u') { ?><a href="<?php echo get_pretty_url('content', $co_id); ?>" class="btn btn_04">내용확인</a><?php } ?>
                     </td>
                 </tr>
                 <tr>
@@ -223,7 +223,7 @@ require_once G5_ADMIN_PATH . '/admin.head.php';
     </div>
 
     <div class="btn_fixed_top">
-        <a href="./contentlist.php" class="btn btn_02">목록</a>
+        <a href="./contentlist.php" class="btn btn_05">목록</a>
         <input type="submit" value="확인" class="btn btn_submit" accesskey="s">
     </div>
 

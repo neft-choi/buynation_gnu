@@ -88,7 +88,7 @@
 #sms5_send #sms_person_form {margin:0 20px}
 #sms5_send #send_book .btn_submit {padding:0 5px;height:24px}
 #sms5_send #book_desc {margin:0 20px;color:#999;font-size:0.95em;letter-spacing:-0.1em}
-#sms5_send .td_mngsmall button.btn_frmline,#sms5_send .td_mng button.btn_frmline {padding: 0 7px;background: #3f51b5;height:25px;}
+#sms5_send .td_mngsmall button.btn btn_04,#sms5_send .td_mng button.btn btn_04 {padding: 0 7px;background: #3f51b5;height:25px;}
 
 /* 문자전송상세내역 */
 #sms5_sent {}

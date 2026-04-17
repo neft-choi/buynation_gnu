@@ -130,8 +130,8 @@ $sub_menu_info = '';
     </div>
 
     <div class="btn_fixed_top">
-        <button type="button" onclick="return add_menu();" class="btn btn_02">메뉴추가<span class="sound_only"> 새창</span></button>
-        <input type="submit" name="act_button" value="확인" class="btn_submit btn ">
+        <button type="button" onclick="return add_menu();" class="btn btn_05">메뉴추가<span class="sound_only"> 새창</span></button>
+        <input type="submit" name="act_button" value="확인" class="btn btn_04 ">
     </div>
 
 </form>

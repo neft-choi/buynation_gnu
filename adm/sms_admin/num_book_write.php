@@ -141,8 +141,8 @@ include_once(G5_ADMIN_PATH."/admin.head.php");
 </div>
 
 <div class="btn_fixed_top">
-    <input type="submit" value="확인" class="btn_submit btn" accesskey="s" onclick="return book_submit();">
-    <a href="./num_book.php?<?php echo clean_query_string($_SERVER['QUERY_STRING']); ?>" class="btn btn_02">목록</a>
+    <input type="submit" value="확인" class="btn btn_04" accesskey="s" onclick="return book_submit();">
+    <a href="./num_book.php?<?php echo clean_query_string($_SERVER['QUERY_STRING']); ?>" class="btn btn_05">목록</a>
 </div>
 
 </form>
