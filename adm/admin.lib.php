@@ -421,14 +421,15 @@ function get_sanitize_input($s, $is_html = false)
     return $s;
 }
 
-function domain_mail_host($is_at=true){
+function domain_mail_host($is_at = true)
+{
     list($domain_host,) = explode(':', $_SERVER['HTTP_HOST']);
 
     if ('www.' === substr($domain_host, 0, 4)) {
         $domain_host = substr($domain_host, 4);
     }
 
-    return $is_at ? '@'.$domain_host : $domain_host;
+    return $is_at ? '@' . $domain_host : $domain_host;
 }
 
 function check_log_folder($log_path, $is_delete = true)
@@ -491,13 +492,14 @@ function check_admin_token()
     return true;
 }
 
-function admin_csrf_token_key($is_must=0){
+function admin_csrf_token_key($is_must = 0)
+{
     global $member;
 
     $key = '';
 
-    if($is_must || !((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'))){
-        $key = md5((isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '').(defined('G5_TOKEN_ENCRYPTION_KEY') ? G5_TOKEN_ENCRYPTION_KEY : '').$member['mb_id'].$_SERVER['DOCUMENT_ROOT']);
+    if ($is_must || !((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest'))) {
+        $key = md5((isset($_SERVER['SERVER_SOFTWARE']) ? $_SERVER['SERVER_SOFTWARE'] : '') . (defined('G5_TOKEN_ENCRYPTION_KEY') ? G5_TOKEN_ENCRYPTION_KEY : '') . $member['mb_id'] . $_SERVER['DOCUMENT_ROOT']);
     }
 
     return run_replace('admin_csrf_token_key', $key, $is_must);
@@ -555,8 +557,9 @@ function admin_check_xss_params($params)
         if (is_array($value)) {
             admin_check_xss_params($value);
         } else if (
-            (preg_match('/<\s?[^\>]*\/?\s?>/i', $value) && (preg_match('/script.*?\/script/ius', $value) || preg_match('/on[a-z]+=*/ius', $value))) || preg_match('/^(?=.*token\()(?=.*xmlhttprequest\()(?=.*send\().*$/im', $value) || 
-            (preg_match('/(on[a-z]+|focus)=.*/ius', $value) && preg_match('/(eval|atob|fetch|expression|exec|prompt)(\s*)\((.*)\)/ius', $value))) {
+            (preg_match('/<\s?[^\>]*\/?\s?>/i', $value) && (preg_match('/script.*?\/script/ius', $value) || preg_match('/on[a-z]+=*/ius', $value))) || preg_match('/^(?=.*token\()(?=.*xmlhttprequest\()(?=.*send\().*$/im', $value) ||
+            (preg_match('/(on[a-z]+|focus)=.*/ius', $value) && preg_match('/(eval|atob|fetch|expression|exec|prompt)(\s*)\((.*)\)/ius', $value))
+        ) {
             alert('요청 쿼리에 잘못된 스크립트문장이 있습니다.\\nXSS 공격일수도 있습니다.', G5_URL);
             die();
         } else if (preg_match('/atob\s*\(\s*[\'"]?([a-zA-Z0-9+\/=]+)[\'"]?\s*\)/ius', $value, $matches)) {
@@ -698,4 +701,141 @@ if (run_replace('safe_admin_add_script_boolean', false) === false) {
     $config['cf_analytics'] = '';
     $config['cf_add_script'] = '';
     $config['cf_add_meta'] = '';
+}
+
+// compact 기준 상품 카드 렌더링 
+function render_item_card($row, $idx, $opts = array())
+{
+    $defaults = array(
+        'qstr' => '',
+        'show_checkbox' => true,
+        'show_menu' => true,
+        'show_thumb' => true,
+        'show_code' => true,
+        'show_price' => true,
+        'show_stock' => true
+    );
+    $opts = array_merge($defaults, $opts);
+
+    $it_id = isset($row['it_id']) ? $row['it_id'] : '';
+    $it_name = isset($row['it_name']) ? $row['it_name'] : '';
+    $it_price = isset($row['it_price']) ? (int)$row['it_price'] : 0;
+    $it_stock_qty = isset($row['it_stock_qty']) ? (int)$row['it_stock_qty'] : 0;
+    $ca_id = isset($row['ca_id']) ? $row['ca_id'] : '';
+    $qstr = $opts['qstr'];
+    $href = shop_item_url($it_id);
+
+    $name = htmlspecialchars2($it_name);
+    $price = number_format($it_price);
+    $stock = number_format($it_stock_qty);
+
+    ob_start();
+?>
+    <article class="border-b border-gray-200 p-4">
+        <div class="flex items-center justify-between gap-2">
+            <?php if ($opts['show_checkbox']) { ?>
+                <label for="compact_chk_<?php echo $idx; ?>" class="inline-flex min-w-0 items-center gap-2">
+                    <input type="checkbox" name="chk[]" value="<?php echo $idx; ?>" id="compact_chk_<?php echo $idx; ?>">
+                    <span class="font-bold line-clamp-2"><?php echo $name; ?></span>
+                </label>
+            <?php } else { ?>
+                <span class="font-bold line-clamp-2"><?php echo $name; ?></span>
+            <?php } ?>
+
+            <?php if ($opts['show_menu']) { ?>
+                <div class="relative">
+                    <button
+                        type="button"
+                        class="item-menu-btn shrink-0 text-gray-500"
+                        data-it-id="<?php echo $it_id; ?>"
+                        data-ca-id="<?php echo $ca_id; ?>"
+                        aria-label="상품 메뉴">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ellipsis-vertical-icon lucide-ellipsis-vertical h-6 w-6">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </button>
+                    <div class="item-menu-panel hidden absolute right-3 top-full mt-1 z-50">
+                        <div class="rounded border border-gray-200 bg-white shadow-md">
+                            <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="item-menu-edit flex items-center gap-3 p-3 text-gray-400 hover:bg-gray-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen h-3 w-3 shrink-0">
+                                    <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                    <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                                </svg>
+                                <span class="whitespace-nowrap">수정</span>
+                            </a>
+                            <a href="./itemcopy.php?it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>" class="item-menu-copy itemcopy flex items-center gap-3 p-3 text-gray-400 hover:bg-gray-100" target="_blank">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-copy-icon lucide-copy h-3 w-3 shrink-0">
+                                    <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                                    <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+                                </svg>
+                                <span class="whitespace-nowrap">복사</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            <?php } ?>
+        </div>
+
+        <div class="mt-4 flex items-start gap-2">
+            <?php if ($opts['show_thumb']) { ?>
+                <div class="shrink-0">
+                    <a href="<?php echo $href; ?>"><?php echo get_it_image($it_id, 46, 46); ?></a>
+                </div>
+            <?php } ?>
+            <div class="flex flex-col gap-2 text-gray-500 whitespace-nowrap">
+                <?php if ($opts['show_code']) { ?><p>상품코드: <?php echo $it_id; ?></p><?php } ?>
+                <?php if ($opts['show_price']) { ?><p>판매가: <?php echo $price; ?>원</p><?php } ?>
+                <?php if ($opts['show_stock']) { ?><p>재고수량: <?php echo $stock; ?>개</p><?php } ?>
+            </div>
+        </div>
+    </article>
+    <?php
+    return ob_get_clean();
+}
+
+function render_item_card_menu_script($root_selector = '#compact')
+{
+    ob_start();
+    ?>
+    <script>
+        function initItemMenu() {
+            const compactRoot = document.querySelector(<?php echo json_encode($root_selector); ?>);
+            if (!compactRoot) return;
+
+            // 전체 패널 닫기 (패널 1개만 열기 용도)
+            const closeAllMenus = function() {
+                compactRoot.querySelectorAll('.item-menu-panel').forEach((panel) => {
+                    panel.classList.add('hidden');
+                });
+            };
+
+            compactRoot.querySelectorAll('.item-menu-btn').forEach((button) => {
+                button.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    const panel = button.parentElement.querySelector('.item-menu-panel');
+                    if (!panel) return;
+
+                    const isOpen = !panel.classList.contains('hidden');
+                    closeAllMenus();
+                    if (!isOpen) {
+                        panel.classList.remove('hidden');
+                    }
+                });
+            });
+
+            document.addEventListener('click', () => {
+                closeAllMenus();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initItemMenu();
+        });
+    </script>
+<?php
+    return ob_get_clean();
 }
