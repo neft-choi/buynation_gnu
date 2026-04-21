@@ -625,7 +625,36 @@ if (!$member['mb_id']) {
     }
 
     if (!$i) {
-        alert('최고관리자 또는 관리권한이 있는 회원만 접근 가능합니다.', G5_URL);
+        // mb_level 별 전용 관리자 첫 화면
+        $level_admin_routes = array(
+            9 => 'buygent_admin',
+            8 => 'brand_admin',
+            7 => 'buycle_admin',
+        );
+
+        // mb_level 정수로 고정
+        $current_level = (int) $member['mb_level'];
+
+        // 현재 레벨이 전용 라우팅 대상인지 확인
+        $has_level_route = array_key_exists($current_level, $level_admin_routes);
+
+        if ($has_level_route) {
+            $target_admin_file = $level_admin_routes[$current_level];
+            // 현재 실행 파일을 adm 기준 상대경로로 변환
+            $current_admin_file = str_replace('/' . G5_ADMIN_DIR . '/', '', $_SERVER['SCRIPT_NAME']);
+
+            // 전용 페이지로 이미 들어온 경우는 통과,
+            // 그 외 adm 페이지 접근 시 전용 페이지로 강제 이동 시킨아
+            if (
+                $current_admin_file !== $target_admin_file &&
+                $current_admin_file !== $target_admin_file . '/index.php'
+            ) {
+                goto_url(G5_ADMIN_URL . '/' . $target_admin_file . '/');
+            }
+        } else {
+            // 매핑되지 mb_level 회원은 오류 메세지
+            alert('최고관리자 또는 관리권한이 있는 회원만 접근 가능합니다.', G5_URL);
+        }
     }
 }
 
@@ -791,14 +820,14 @@ function render_item_card($row, $idx, $opts = array())
             </div>
         </div>
     </article>
-    <?php
+<?php
     return ob_get_clean();
 }
 
 function render_item_card_menu_script($root_selector = '#compact')
 {
     ob_start();
-    ?>
+?>
     <script>
         function initItemMenu() {
             const compactRoot = document.querySelector(<?php echo json_encode($root_selector); ?>);

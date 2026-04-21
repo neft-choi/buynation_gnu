@@ -232,7 +232,7 @@ $adm_menu_cookie = array(
                     </div>
                 </div>
             </li>
-            
+
             <li class="gnb_li gnb_li_toggle_bottom !mt-auto">
                 <button type="button"
                     class="btn_op js-btn-gnb-toggle h-[50px] w-[50px] border-r border-gray-200 bg-gray-50 text-gray-500 hover:bg-blue-50"
@@ -266,7 +266,7 @@ $adm_menu_cookie = array(
         const menu_cookie_key = 'g5_admin_btn_gnb';
         const mobile_media_query = "(max-width: 768px)";
         const $gnb_toggle_buttons = $(".js-btn-gnb-toggle");
-        
+
         // 사이드바 상태에 맞춰 토글 아이콘 전환
         function syncSidebarToggleIcon() {
             const is_sidebar_open = $("#gnb").hasClass("gnb_small");
@@ -347,122 +347,6 @@ $adm_menu_cookie = array(
         $("#gnb").on("click", "a", function() {
             closeMobileSidebar();
         });
-
-
-
-
-        // const getEditorIdsInPanel = (panel) =>
-        //     Array.from(panel.querySelectorAll("textarea.smarteditoㅣ2[id]"))
-        //     .map((el) => el.id)
-        //     .filter((id) => id !== "");
-
-        // const getEditorIframe = (textarea) => {
-        //     let node = textarea.nextSibling;
-
-        //     while (node && node.nodeType !== 1) {
-        //         node = node.nextSibling;
-        //     }
-
-        //     if (!node || node.tagName !== "IFRAME") {
-        //         return null;
-        //     }
-
-        //     return node;
-        // };
-
-        // const refreshEditorById = (editorId, attempt = 0) => {
-        //     const maxRetry = 12;
-
-        //     if (!window.oEditors || !oEditors.getById || !oEditors.getById[editorId]) {
-        //         if (attempt < maxRetry) {
-        //             setTimeout(() => refreshEditorById(editorId, attempt + 1), 80);
-        //         }
-        //         return;
-        //     }
-
-        //     const editor = oEditors.getById[editorId];
-        //     if (!editor || typeof editor.exec !== "function") {
-        //         return;
-        //     }
-
-        //     editor.exec("MSG_EDITING_AREA_SIZE_CHANGED", []);
-        //     editor.exec("SE_FIT_IFRAME", []);
-        //     editor.exec("HIDE_EDITING_AREA_COVER", []);
-
-        //     const textarea = document.getElementById(editorId);
-        //     if (!textarea) {
-        //         return;
-        //     }
-
-        //     const skinIframe = getEditorIframe(textarea);
-        //     if (!skinIframe) {
-        //         return;
-        //     }
-
-        //     const skinIframeHeight = parseInt(skinIframe.style.height || "0", 10);
-        //     if (!skinIframeHeight) {
-        //         skinIframe.style.height = "300px";
-        //     }
-
-        //     let skinDoc = null;
-        //     try {
-        //         skinDoc = skinIframe.contentWindow.document;
-        //     } catch (e) {
-        //         return;
-        //     }
-
-        //     if (!skinDoc) {
-        //         return;
-        //     }
-
-        //     const editingArea = skinDoc.querySelector(".husky_seditor_editing_area_container");
-        //     const innerIframe = skinDoc.getElementById("se2_iframe");
-
-        //     if (!editingArea || !innerIframe) {
-        //         return;
-        //     }
-
-        //     const targetHeight = editingArea.clientHeight || 300;
-        //     innerIframe.style.height = targetHeight + "px";
-        // };
-
-        // const refreshEditorsInPanel = (panelId) => {
-        //     if (!panelId) {
-        //         return;
-        //     }
-
-        //     const panel = document.getElementById(panelId);
-        //     if (!panel || panel.hidden) {
-        //         return;
-        //     }
-
-        //     const editorIds = getEditorIdsInPanel(panel);
-        //     editorIds.forEach((id) => refreshEditorById(id));
-        // };
-
-        // const scheduleEditorRefresh = (panelId) => {
-        //     requestAnimationFrame(() => {
-        //         requestAnimationFrame(() => {
-        //             refreshEditorsInPanel(panelId);
-        //         });
-        //     });
-        // };
-
-        // $(document).on("click", ".anchor a[data-tab-target]", function() {
-        //     const panelId = this.getAttribute("data-tab-target") || "";
-        //     scheduleEditorRefresh(panelId);
-        // });
-
-        // $(window).on("hashchange", function() {
-        //     const panelId = window.location.hash.replace("#", "");
-        //     scheduleEditorRefresh(panelId);
-        // });
-
-        // const initialPanelId = window.location.hash.replace("#", "");
-        // if (initialPanelId) {
-        //     scheduleEditorRefresh(initialPanelId);
-        // }
-
     });
 </script>
 

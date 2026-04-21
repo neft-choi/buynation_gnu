@@ -42,7 +42,7 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 $colspan = 9;
 ?>
 
-<div class="page_wr">
+
     <div class="local_ov">
         <span class="btn_ov01"><span class="ov_txt">전체 </span><span class="ov_num"> <?php echo number_format($total_count) ?> 개</span></span>
     </div>
@@ -155,7 +155,7 @@ $colspan = 9;
     </form>
 
     <?php echo get_paging(G5_IS_MOBILE ? $config['cf_mobile_pages'] : $config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
-</div>
+
 <script>
     function fcouponzonelist_submit(f) {
         if (!is_checked("chk[]")) {

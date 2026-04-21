@@ -31,7 +31,6 @@ $result = sql_query($sql);
 $g5['title'] = '추가배송비관리';
 include_once(G5_ADMIN_PATH . '/admin.head.php');
 ?>
-<div class="page_wr">
     <section id="scp_list">
         <h2>추가배송비 내역</h2>
 
@@ -131,7 +130,6 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
         </form>
 
     </section>
-</div>
 <script>
     function fsendcost_submit(f) {
         if (!is_checked("chk[]")) {

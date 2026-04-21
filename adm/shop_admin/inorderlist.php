@@ -50,7 +50,6 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 
 $colspan = 10;
 ?>
-<div class="page_wr">
     <div class="local_ov01 local_ov">
         <span class="btn_ov01"><span class="ov_txt">전체 </span><span class="ov_num"> <?php echo number_format($total_count) ?> 건 </span></span>
     </div>
@@ -152,7 +151,6 @@ $colspan = 10;
     </form>
 
     <?php echo get_paging($config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
-</div>
 <script>
     function finorderlist_submit(f) {
         if (!is_checked("chk[]")) {
