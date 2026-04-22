@@ -643,11 +643,14 @@ if (!$member['mb_id']) {
             // 현재 실행 파일을 adm 기준 상대경로로 변환
             $current_admin_file = str_replace('/' . G5_ADMIN_DIR . '/', '', $_SERVER['SCRIPT_NAME']);
 
-            // 전용 페이지로 이미 들어온 경우는 통과,
-            // 그 외 adm 페이지 접근 시 전용 페이지로 강제 이동 시킨아
+            // 현재 mb_level 에 매핑된 전용 폴더 진입 허용 범위 설정
+            // 1) {target_admin_file}
+            // 2) {target_admin_file}/index.php
+            // 3) {target_admin_file}/ 하위 전체 페이지
             if (
                 $current_admin_file !== $target_admin_file &&
-                $current_admin_file !== $target_admin_file . '/index.php'
+                $current_admin_file !== $target_admin_file . '/index.php' &&
+                strpos($current_admin_file, $target_admin_file . '/') !== 0
             ) {
                 goto_url(G5_ADMIN_URL . '/' . $target_admin_file . '/');
             }
