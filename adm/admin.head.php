@@ -364,10 +364,10 @@ $adm_menu_cookie = array(
 
 <div id="wrapper" class="min-h-[480px] w-full max-w-full text-xs font-medium">
 
-    <div id="container" class="<?php echo $adm_menu_cookie['container']; ?> mt-[calc(var(--admin-header-height)+50px)] w-full max-w-full bg-gray-50 pl-[var(--admin-sidebar-width)] md:pb-0 pb-[var(--admin-bottom-nav-height)] pt-4">
+    <div id="container" class="<?php echo $adm_menu_cookie['container']; ?> mt-[calc(var(--admin-header-height)+50px)] w-full max-w-full bg-gray-50 pl-[var(--admin-sidebar-width)] md:pb-0 pb-[var(--admin-bottom-nav-height)] flow-root">
 
         <h1 id="container_title"
             class="fixed left-0 top-[var(--admin-header-height)] z-[99] w-full max-w-full border-b border-gray-200 bg-white px-[20px] pl-[calc(var(--admin-sidebar-width)+16px)] text-sm font-black text-gray-900 h-[50px] flex items-center">
             <?php echo $g5['title'] ?>
         </h1>
-        <div class="container_wr md:mx-4 mx-0 mt-0 mb-4 md:p-4 px-2 bg-white md:border border-y border-gray-200 md:rounded rounded-none">
+        <div class="container_wr md:m-4 mx-0 my-4 md:p-4 px-2 bg-white md:border border-y border-gray-200 md:rounded rounded-none">

@@ -324,15 +324,13 @@ legend {position:absolute;width:0;height:0;font-size:0;line-height:0;text-indent
 /* 폼 안내글 */
 .frm_info {display:block;padding:0 0 5px;color:#5b747e}
 
-/* 목록 바로가기 */
-.anchor {margin-bottom:16px;display:flex;flex-wrap:wrap;justify-content:start;}
+/* 상단 앵커 네비게이션 */
+.anchor {margin-bottom:16px;display:flex;flex-wrap:wrap;justify-content:start;position:sticky;top:calc(var(--admin-header-height) + 50px);z-index:90;background:white;}
+
 @media (max-width: 768px) {
-    .anchor {
-    padding: 16px;
-    margin: 0px;
-    justify-content:center;
-    }
-  }
+.anchor {padding: 16px;margin: 0px;justify-content:center;}
+}
+
 /* .anchor:after {display:block;visibility:hidden;clear:both;content:""} */
 /* .anchor li{float:left;margin-left:-1px;list-style:none} */
 .anchor a {position:relative;display:inline-block;color:#99A1AF;padding:8px 12px;border-bottom:1px solid #99A1AF;text-decoration:none}
