@@ -18,7 +18,7 @@ include_once(G5_THEME_SHOP_PATH . '/shop.head.php');
 <?php if ($default['de_type1_list_use']) { ?>
     <!-- 히트상품 시작 { -->
     <section id="idx_hit" class="sct_wrap idx_product">
-        <header class="flex flex-col gap-2">
+        <header class="flex flex-col gap-2 items-start pc:items-center">
             <p class="text-base text-[var(--color-primary-strong)] font-semibold">BUYNATION BEST ITEM</p>
             <h2>
                 <a href="<?php echo shop_type_url('1'); ?>" class="flex items-center gap-2 justify-between">
@@ -31,15 +31,15 @@ include_once(G5_THEME_SHOP_PATH . '/shop.head.php');
         </header>
         <?php
         $list = new item_list();
-        $list->set_type(1);
+        $list->set_type(1); // 히트 상품
         $list->set_view('it_img', true);
         $list->set_view('it_id', false);
         $list->set_view('it_name', true);
-        $list->set_view('it_basic', true);
-        $list->set_view('it_cust_price', true);
-        $list->set_view('it_price', true);
-        $list->set_view('it_icon', true);
-        $list->set_view('sns', true);
+        $list->set_view('it_basic', false);
+        $list->set_view('it_cust_price', true); // 시중가격, 정가
+        $list->set_view('it_price', true); // 실제 판매가격
+        $list->set_view('it_icon', true); // 뱃지 출력 여부
+        $list->set_view('sns', false);
         $list->set_view('star', true);
         echo $list->run();
         ?>
@@ -50,7 +50,7 @@ include_once(G5_THEME_SHOP_PATH . '/shop.head.php');
 <?php if ($default['de_type2_list_use']) { ?>
     <!-- 추천상품 시작 { -->
     <section id="idx_recommend" class="sct_wrap idx_product">
-        <header class="flex flex-col gap-2">
+        <header class="flex flex-col gap-2 items-start pc:items-center">
             <p class="text-base text-[var(--color-primary-strong)] font-semibold">BUYCLE RECOMMEND</p>
             <h2>
                 <a href="<?php echo shop_type_url('2'); ?>" class="flex items-center gap-2 justify-between">
@@ -85,7 +85,7 @@ include_once(G5_THEME_SHOP_PATH . '/shop.head.php');
 <!-- New 신상품 시작 { -->
 <?php if ($default['de_type3_list_use']) { ?>
     <section id="idx_new" class="sct_wrap idx_product">
-        <header class="flex flex-col gap-2">
+        <header class="flex flex-col gap-2 items-start pc:items-center">
             <h2>
                 <a href="<?php echo shop_type_url('3'); ?>" class="flex items-center gap-2 justify-between">
                     지금 올라온 따끈따끈한 신상
@@ -135,7 +135,7 @@ $promo_banner = array(
 <!-- 가치소비 Pick 시작 { -->
 <?php if ($default['de_type4_list_use']) { ?>
     <section id="idx_value_pick" class="sct_wrap idx_product bg-[#FAFAFA]">
-        <header class="flex flex-col gap-2">
+        <header class="flex flex-col gap-2 items-start pc:items-center">
             <h2>
                 <a href="<?php echo shop_type_url('2'); ?>" class="flex items-center gap-2 justify-between">
                     <div>
@@ -169,7 +169,7 @@ $promo_banner = array(
 
 <!-- 특가 혜택 상품 시작 { -->
 <?php if ($default['de_type5_list_use']) { ?>
-    <section id="idx_timedeal" class="sct_wrap idx_product">
+    <section id="idx_timedeal" class="sct_wrap idx_product pc:flex w-full max-w-[var(--breakpoint-pc)] justify-self-center">
         <header class="flex flex-col gap-2">
             <h2>
                 <a href="<?php echo shop_type_url('5'); ?>">
@@ -212,7 +212,7 @@ $promo_banner = array(
 <!-- 카테고리 별 BEST 상품 시작 { -->
 <?php if ($default['de_type3_list_use']) { ?>
     <section id="idx_category_best" class="sct_wrap idx_product">
-        <header class="flex flex-col gap-2">
+        <header class="flex flex-col gap-2 items-start pc:items-center">
             <h2>
                 <a href="<?php echo shop_type_url('2'); ?>">
                     BEST 상품
@@ -235,6 +235,8 @@ $promo_banner = array(
             $list = new item_list();
             $list->set_type(2);
             $list->set_list_skin(G5_SHOP_SKIN_PATH . '/main.80.skin.php');
+            $list->set_list_mod(5);
+            $list->set_list_row(2);
             $list->set_view('it_id', false);
             $list->set_view('it_name', true);
             $list->set_view('it_basic', true);
@@ -271,7 +273,7 @@ $promo_banner = array(
 <?php if ($default['de_type2_list_use']) { ?>
     <!-- 추천상품 시작 { -->
     <section id="idx_buycle" class="sct_wrap idx_product">
-        <header class="flex flex-col gap-2">
+        <header class="flex flex-col gap-2 items-start pc:items-center">
             <h2>
                 <a href="<?php echo shop_type_url('2'); ?>" class="flex items-center gap-2 justify-between">
                     바이클 추천 상품
@@ -302,22 +304,29 @@ $promo_banner = array(
 
 <script>
     $(function() {
-
         // 상품 슬라이더 생성 및 설정
         function initSectionSlider(sectionSelector) {
             $(sectionSelector).each(function() {
                 var $section = $(this);
                 var $sectionSlider = $section.find('.js-shop-slider');
-                var sliderItems = parseFloat($sectionSlider.attr('data-items'));
                 var sliderMargin = parseInt($sectionSlider.attr('data-margin'), 10);
                 var sliderStagePadding = parseInt($sectionSlider.attr('data-stage-padding'), 10);
+
+                // CSS 변수에서 반응형 breakpoint 값 가져오기
+                const rootStyle = getComputedStyle(document.documentElement);
+                const breakpointPc = rootStyle.getPropertyValue('--breakpoint-pc').trim();
+                const isPc = window.matchMedia(`(min-width: ${breakpointPc})`).matches;
+
+                let sliderItems = parseFloat(
+                    isPc ? $sectionSlider.attr('data-items-pc') : $sectionSlider.attr('data-items-mobile')
+                );
 
                 if (!$sectionSlider.length || $sectionSlider.hasClass('owl-loaded')) {
                     return;
                 }
 
                 if (!sliderItems) {
-                    sliderItems = 2.15;
+                    sliderItems = isPc ? 4 : 2.15;
                 }
                 if (isNaN(sliderMargin)) {
                     sliderMargin = 12;

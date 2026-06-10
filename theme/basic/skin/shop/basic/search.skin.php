@@ -98,7 +98,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
                 </svg>
             </button>
 
-            <div id="sortMenu" class="hidden absolute right-0 mt-1 w-32 border border-zinc-200 rounded bg-white z-20">
+            <div id="sortMenu" class="hidden absolute right-0 mt-1 w-full border border-zinc-200 rounded bg-white z-20">
                 <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_sum_qty', 'desc')">추천순</button>
                 <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_price', 'asc')">낮은가격순</button>
                 <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_price', 'desc')">높은가격순</button>

@@ -434,7 +434,6 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
         echo $list->run();
         ?>
     </section>
-
     <?php
     // 하단 고정 결제 바 기본값
     $floating_send_cost = isset($send_cost) ? (int)$send_cost : 0;

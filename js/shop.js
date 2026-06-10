@@ -55,8 +55,7 @@ $(function () {
       idx = $("select.it_option").index($(this)),
       val = $(this).val(),
       it_id = $("input[name='it_id[]']").val(),
-      post_url =
-        typeof g5_shop_url !== "undefined" ? g5_shop_url + "/itemoption.php" : "./itemoption.php",
+      post_url = typeof g5_shop_url !== "undefined" ? g5_shop_url + "/itemoption.php" : "./itemoption.php",
       $this = $(this),
       op_0_title = $this.find("option:eq(0)").text();
 
@@ -86,27 +85,23 @@ $(function () {
         opt_id = val;
       }
 
-      $.post(
-        post_url,
-        {it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count, op_title: op_0_title},
-        function (data) {
-          $("select.it_option")
-            .eq(idx + 1)
-            .empty()
-            .html(data)
-            .attr("disabled", false);
+      $.post(post_url, { it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count, op_title: op_0_title }, function (data) {
+        $("select.it_option")
+          .eq(idx + 1)
+          .empty()
+          .html(data)
+          .attr("disabled", false);
 
-          // select의 옵션이 변경됐을 경우 하위 옵션 disabled
-          if (idx + 1 < sel_count) {
-            var idx2 = idx + 1;
-            $("select.it_option:gt(" + idx2 + ")")
-              .val("")
-              .attr("disabled", true);
-          }
+        // select의 옵션이 변경됐을 경우 하위 옵션 disabled
+        if (idx + 1 < sel_count) {
+          var idx2 = idx + 1;
+          $("select.it_option:gt(" + idx2 + ")")
+            .val("")
+            .attr("disabled", true);
+        }
 
-          $this.trigger("select_it_option_post", [$this, idx, sel_count, data]);
-        },
-      );
+        $this.trigger("select_it_option_post", [$this, idx, sel_count, data]);
+      });
     } else if (idx + 1 == sel_count) {
       // 선택옵션처리
       if (option_add && val == "") return;
@@ -304,9 +299,7 @@ function sel_option_process(add_exec) {
 
   $("select.it_option").each(function (index) {
     value = $(this).val();
-    item = $(this).closest(".get_item_options").length
-      ? $(this).closest(".get_item_options").find("label[for^=it_option]").text()
-      : "";
+    item = $(this).closest(".get_item_options").length ? $(this).closest(".get_item_options").find("label[for^=it_option]").text() : "";
 
     if (!item) {
       item = $(this).closest("tr").length ? $(this).closest("tr").find("th label").text() : "";
@@ -353,11 +346,9 @@ function sel_option_process(add_exec) {
 
 // 추가옵션 추가처리
 function sel_supply_process($el, add_exec) {
-  if ($el.triggerHandler("shop_sel_supply_process", {add_exec: add_exec}) !== false) {
+  if ($el.triggerHandler("shop_sel_supply_process", { add_exec: add_exec }) !== false) {
     var val = $el.val();
-    var item = $el.closest(".get_item_supply").length
-      ? $el.closest(".get_item_supply").find("label[for^=it_supply]").text()
-      : "";
+    var item = $el.closest(".get_item_supply").length ? $el.closest(".get_item_supply").find("label[for^=it_supply]").text() : "";
 
     if (!item) {
       item = $el.closest("tr").length ? $el.closest("tr").find("th label").text() : "";
@@ -414,13 +405,12 @@ function add_sel_option(type, id, option, price, stock) {
   opt += '<input type="hidden" class="io_stock" value="' + stock + '">';
   opt += '<span class="sit_opt_subj">' + option + "</span>";
   opt += '<span class="sit_opt_prc">' + opt_prc + "</span>";
-  opt +=
-    '<div><input type="text" name="ct_qty[' +
-    item_code +
-    '][]" value="1" class="frm_input" size="5">';
+  opt += '<div class="flex items-center">';
   opt += '<button type="button" class="sit_qty_plus btn_frmline">증가</button>';
+  opt += '<input type="text" name="ct_qty[' + item_code + '][]" value="1" class="frm_input" size="5">';
   opt += '<button type="button" class="sit_qty_minus btn_frmline">감소</button>';
-  opt += '<button type="button" class="sit_opt_del btn_frmline">삭제</button></div>';
+  opt += '<button type="button" class="sit_opt_del btn_frmline">삭제</button>';
+  opt += '</div>';
   opt += "</li>";
 
   if ($("#sit_sel_option > ul").length < 1) {

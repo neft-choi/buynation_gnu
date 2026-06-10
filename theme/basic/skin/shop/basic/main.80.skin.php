@@ -18,7 +18,7 @@ foreach ((array) $list as $row) {
         if ($this->css) {
             echo '<ul class="' . $this->css . '">' . "\n";
         } else {
-            echo "<ul class=\"py-4 space-y-4\">\n";
+            echo "<ul class=\"py-4 space-y-4 grid grid-cols-1 pc:grid-cols-5 pc:gap-5 w-full max-w-[var(--breakpoint-pc)] justify-self-center\">\n";
         }
     }
 
@@ -35,10 +35,10 @@ foreach ((array) $list as $row) {
         $discount_percent = (int) round((($it_cust_price - $it_price) / $it_cust_price) * 100);
     }
 ?>
-    <li class="sct_li flex items-start gap-2">
+    <li class="sct_li flex pc:flex-col items-start gap-2">
         <div class="w-10 shrink-0 pt-1 text-center text-4xl font-extrabold leading-none"><?php echo $i; ?></div>
 
-        <div class="w-[132px] shrink-0">
+        <div class="w-[132px] pc:w-full shrink-0">
             <div class="relative overflow-hidden rounded-md">
                 <a class="block" href="<?php echo $item_link_href; ?>">
                     <?php echo get_it_image($row['it_id'], $this->img_width, $this->img_height, '', '', stripslashes($row['it_name'])); ?>

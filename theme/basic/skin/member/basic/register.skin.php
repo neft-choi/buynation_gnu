@@ -6,7 +6,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 ?>
 
 <!-- 회원가입약관 동의 시작 { -->
-<div class="register w-full max-w-full bg-white p-4">
+<div class="register w-full max-w-[460px] bg-white p-4">
 
     <div class="flex items-center justify-between">
         <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
@@ -24,8 +24,9 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
     </div>
 
     <form name="fregister" id="fregister_custom" action="<?php echo $register_action_url ?>" onsubmit="return fregister_submit(this);" method="POST" autocomplete="off" class="my-8 space-y-4">
-        <div class="space-y-1">
-            <h2 class="text-2xl font-bold text-zinc-900">약관동의</h2>
+        <h2 class="text-2xl font-bold text-zinc-900 mb-1 pc:justify-self-center">약관동의</h2>
+
+        <div class="space-y-1 block pc:flex pc:gap-1 pc:justify-self-center">
             <p class="text-sm text-zinc-500">바이네이션 회원 서비스 이용을 위해</p>
             <p class="text-sm text-zinc-500">아래 약관 동의가 필요합니다.</p>
         </div>
@@ -58,7 +59,8 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                     </span>
                     바이네이션 이용약관 <span class="text-zinc-500">(필수)</span>
                 </label>
-                <button type="button" class="text-zinc-400" data-modal-target="termsModal" aria-label="회원가입약관 보기">
+                <button type="button" class="inline-flex items-center text-sm text-zinc-400" data-modal-target="termsModal" aria-label="회원가입약관 보기">
+                    <span>보기</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="m9 18 6-6-6-6"></path>
                     </svg>
@@ -75,7 +77,8 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                     </span>
                     전자금융서비스 이용약관 동의 <span class="text-zinc-500">(필수)</span>
                 </label>
-                <button type="button" class="text-zinc-400" data-modal-target="financeModal" aria-label="전자금융서비스 약관 보기">
+                <button type="button" class="inline-flex items-center text-sm text-zinc-400" data-modal-target="financeModal" aria-label="전자금융서비스 약관 보기">
+                    <span>보기</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="m9 18 6-6-6-6"></path>
                     </svg>
@@ -92,7 +95,8 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                     </span>
                     개인정보 수집 및 이용동의 <span class="text-zinc-500">(필수)</span>
                 </label>
-                <button type="button" class="text-zinc-400" data-modal-target="privacyModal" aria-label="개인정보 처리방침 보기">
+                <button type="button" class="inline-flex items-center text-sm text-zinc-400" data-modal-target="privacyModal" aria-label="개인정보 처리방침 보기">
+                    <span>보기</span>
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path d="m9 18 6-6-6-6"></path>
                     </svg>
@@ -127,7 +131,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
         </div>
 
         <div class="mt-8 grid grid-cols-2 gap-3">
-            <a href="<?php echo G5_URL ?>" class="inline-flex h-12 items-center justify-center rounded border border-zinc-300 text-base font-semibold text-zinc-700">처음으로</a>
+            <a href="<?php echo G5_BBS_URL ?>/register.php" class="inline-flex h-12 items-center justify-center rounded border border-zinc-300 text-base font-semibold text-zinc-700">처음으로</a>
             <button type="submit" data-variant="primary" class="h-12 !text-base">가입하기</button>
         </div>
 

@@ -21,7 +21,7 @@ include_once(G5_LIB_PATH.'/latest.lib.php');
     } ?>
 
     <div id="hd_wr">
-        <div id="logo"><a href="<?php echo G5_SHOP_URL; ?>/"><img src="<?php echo G5_DATA_URL; ?>/common/mobile_logo_img" alt="<?php echo $config['cf_title']; ?> 메인"></a></div>
+        <div id="logo"><a href="<?php echo G5_SHOP_URL; ?>/"><img sㅇrc="<?php echo G5_DATA_URL; ?>/common/mobile_logo_img" alt="<?php echo $config['cf_title']; ?> 메인"></a></div>
         <div id="hd_btn">
             <button type="button" id="btn_hdcate"><i class="fa fa-bars"></i><span class="sound_only">분류</span></button>
             <button type="button" id="btn_hdsch"><i class="fa fa-search"></i><span class="sound_only">검색열기</span></button>

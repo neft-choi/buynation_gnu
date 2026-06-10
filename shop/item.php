@@ -42,22 +42,50 @@ if (!$is_admin) {
 
 // 오늘 본 상품 저장 시작
 // tv 는 today view 약자
-$saved = false;
+// $saved = false;
 $tv_idx = (int)get_session("ss_tv_idx");
+$tv_items = array();
+
+// if ($tv_idx > 0) {
+//     for ($i = 1; $i <= $tv_idx; $i++) {
+//         if (get_session("ss_tv[$i]") == $it_id) {
+//             $saved = true;
+//             break;
+//         }
+//     }
+// }
+
+// if (!$saved) {
+//     $tv_idx++;
+//     set_session("ss_tv_idx", $tv_idx);
+//     set_session("ss_tv[$tv_idx]", $it_id);
+// }
+
 if ($tv_idx > 0) {
     for ($i = 1; $i <= $tv_idx; $i++) {
-        if (get_session("ss_tv[$i]") == $it_id) {
-            $saved = true;
-            break;
+        $saved_it_id = get_session("ss_tv[$i]");
+
+        if (!$saved_it_id) {
+            continue;
         }
+
+        if ($saved_it_id === $it_id) {
+            continue;
+        }
+
+        $tv_items[] = $saved_it_id;
     }
 }
 
-if (!$saved) {
-    $tv_idx++;
-    set_session("ss_tv_idx", $tv_idx);
-    set_session("ss_tv[$tv_idx]", $it_id);
+$tv_items[] = $it_id;
+
+$tv_idx = count($tv_items);
+set_session("ss_tv_idx", $tv_idx);
+
+for ($i = 1; $i <= $tv_idx; $i++) {
+    set_session("ss_tv[$i]", $tv_items[$i - 1]);
 }
+
 // 오늘 본 상품 저장 끝
 
 // 조회수 증가

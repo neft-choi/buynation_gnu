@@ -158,8 +158,8 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
                     <span class="inline-flex rounded bg-[#F4F4F4] px-2 py-1 text-xs text-[#6F6F6F]">색상 - 화면과 같아요</span>
                 </div> -->
 
-                <div class="flex items-center justify-between">
-                    <p class="text-sm text-gray-400"><?php echo $is_time_dot; ?></p>
+                <!-- <div class="flex items-center justify-between">
+                    <p class="text-sm text-gray-400"><?php // echo $is_time_dot; ?></p>
                     <button type="button" class="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 text-sm text-[#6F6F6F]">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M7 10v12"></path>
@@ -167,7 +167,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
                         </svg>
                         <span>도움돼요 6</span>
                     </button>
-                </div>
+                </div> -->
 
                 <?php if ($is_admin || $row['mb_id'] == $member['mb_id']) { ?>
                     <div class="sit_use_cmd flex items-center gap-1">

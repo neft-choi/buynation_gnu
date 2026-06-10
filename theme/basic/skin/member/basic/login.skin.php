@@ -6,13 +6,13 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 ?>
 
 <!-- 로그인 시작 { -->
-<div id="mb_login" class="w-full max-w-full mx-auto pt-12 p-4">
+<div id="mb_login" class="w-full max-w-[460px] mx-auto pt-12 p-4">
     <div class="mbskin_box space-y-8">
         <h1 class="sound_only"><?php echo $g5['title'] ?></h1>
 
         <div class="text-center space-y-2">
             <p class="text-base text-zinc-500">새로운 가치 소비 생태계</p>
-            <a href="/shop" class="text-lg font-semibold tracking-tight text-gray-900">BUYNATION</a>
+            <a href="/shop" class="text-4xl font-semibold tracking-tight text-gray-900">Buynation</a>
         </div>
 
         <form name="flogin" action="<?php echo $login_action_url ?>" onsubmit="return flogin_submit(this);" method="post">
@@ -55,7 +55,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                 <div class="flex items-center justify-center my-2 gap-3 text-sm text-zinc-600">
                     <a href="<?php echo G5_BBS_URL ?>/password_lost.php">아이디/비밀번호 찾기</a>
                     <span class="text-zinc-300">|</span>
-                    <a href="<?php echo G5_BBS_URL ?>/register.php" class="font-bold">회원가입</a>
+                    <a href="<?php echo G5_BBS_URL ?>/register_type.php" class="font-bold">회원가입</a>
                 </div>
             </fieldset>
         </form>

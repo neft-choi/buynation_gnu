@@ -7,7 +7,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 
 <script src="<?php echo G5_JS_URL; ?>/viewimageresize.js"></script>
 
-<?php if (/*$default['de_rel_list_use']*/false) { ?>
+<?php if ($default['de_rel_list_use']) { ?>
 	<!-- 관련상품 시작 { -->
 	<section id="sit_rel">
 		<h2>관련상품</h2>
@@ -63,7 +63,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			<!-- } 상품문의 끝 -->
 
 			<!-- 상세정보 시작 { -->
-			<li id="sit_dex">
+			<li id="sit_dex" class="px-4 py-6">
 
 				<?php
 				// 상품 필수 정보

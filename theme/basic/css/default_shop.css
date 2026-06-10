@@ -907,7 +907,7 @@ border:1px solid #558ab7;
 }
 #container .shop-content {
   position: relative;
-  padding: 1px 0;
+  /* padding: 1px 0; */
 }
 #container .is_index {
   margin-left: 285px;
@@ -3084,10 +3084,10 @@ textarea.required {
   clear: both;
   content: "";
 }
-#sit_opt_added li .opt_name {
+/* #sit_opt_added li .opt_name {
   line-height: 28px;
   font-weight: bold;
-}
+} */
 #sit_opt_added li .opt_count {
 /* }
 #sit_opt_added button {

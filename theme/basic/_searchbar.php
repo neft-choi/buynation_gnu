@@ -27,7 +27,7 @@ if ($is_community_mode && isset($stx)) {
 }
 ?>
 
-<div>
+<div id="shop-searchbar-root">
     <form
         name="frmsearch_modern"
         class="flex items-center gap-2 w-full px-4 py-2 border-2 border-[var(--color-primary)] rounded-full bg-white"

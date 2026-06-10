@@ -2973,6 +2973,13 @@ function get_notification()
 {
     global $member;
 
+    $latest_viewed_item = null;
+    $today_view_items = get_view_today_items(true);
+
+    if (!empty($today_view_items)) {
+        $latest_viewed_item = reset($today_view_items);
+    }
+
     // 전체 알림 수 가져오기
 
 
@@ -2988,6 +2995,15 @@ function get_notification()
 
     ob_start();
 ?>
+    <a href="<?php echo G5_SHOP_URL; ?>/mypage.php"
+        class="hidden pc:inline-flex items-center justify-center text-gray-800"
+        aria-label="마이페이지">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user w-6 h-6">
+            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+    </a>
+
     <a href="<?= G5_BBS_URL ?>/notification.php" class="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-700" aria-label="알림">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
             <path d="M10.268 21a2 2 0 0 0 3.464 0" />
@@ -2997,6 +3013,7 @@ function get_notification()
             <!-- <?= $total_noti ?> -->
         </span>
     </a>
+
     <a href="<?php echo G5_SHOP_URL; ?>/cart.php"
         class="relative inline-flex h-9 w-9 items-center justify-center text-gray-800"
         aria-label="장바구니">
@@ -3009,6 +3026,22 @@ function get_notification()
             <?php echo get_boxcart_datas_count(); ?>
         </span>
     </a>
+
+    <button type="button"
+        id="recent-viewed-open"
+        class="inline-flex flex-col items-center justify-center gap-[1px] text-gray-800 ml-2"
+        aria-label="최근 본 상품 열기">
+        <?php if (!empty($latest_viewed_item['it_id'])) { ?>
+            <div class="w-6 h-6 overflow-hidden rounded border border-zinc-300">
+                <?php echo get_it_image($latest_viewed_item['it_id'], 24, 24, false, '', get_text($latest_viewed_item['it_name']), true); ?>
+            </div>
+            <div class="w-4 border rounded border-zinc-300"></div>
+        <?php } else { ?>
+            <div class="w-6 h-6 border-2 rounded"></div>
+            <div class="w-4 border rounded"></div>
+        <?php } ?>
+    </button>
+
     <script>
         const userId = "<?= $member['mb_id'] ?>"; // PHP에서 로그인한 유저 ID
         const storageKey = "readNoti_" + userId;

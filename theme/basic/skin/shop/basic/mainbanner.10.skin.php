@@ -63,9 +63,9 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
 
             }
 
-            #main_bn .pager-prev {
+            /* #main_bn .pager-prev {
                 display: none;
-            }
+            } */
         </style>
 
         <div id="main_bn" class="!mt-0">
@@ -88,7 +88,8 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
         if ($i > 0) {
                 ?>
                 </div>
-                <div class="main_bn_controls absolute right-4 bottom-4 z-10 flex items-center gap-1">
+
+                <div class="main_bn_controls pc:hidden absolute right-4 bottom-4 z-10 flex items-center gap-1">
                     <button type="button" class="main_bn_pause inline-flex h-9 w-9 items-center justify-center rounded-full bg-black/50 text-white/80" aria-label="배너 일시정지">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" class="pause-icon lucide lucide-pause">
                             <rect x="14" y="4" width="4" height="16" rx="1"></rect>
@@ -98,13 +99,30 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
                             <polygon points="6 3 20 12 6 21 6 3"></polygon>
                         </svg>
                     </button>
-                    <div class="btn_wr !static !inline-flex !p-2 items-center text-sm text-white/80"><a href="#" class="pager-prev"><i class="fa fa-angle-left"></i></a>
-                        <div id="slide-counter" class="!p-0"></div><a href="#" class="pager-next !p-0"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
+                    <div class="btn_wr !static !inline-flex !p-2 items-center text-sm text-white/80">
+
+                        <div id="slide-counter" class="!p-0"></div>
+                        <a href="#" class="pager-next !p-0">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
                                 <path d="m9 18 6-6-6-6" />
-                            </svg></a>
+                            </svg>
+                        </a>
                     </div>
                 </div>
+
+                <button type="button" class="main_bn_prev hidden pc:inline-flex absolute top-1/2 -translate-y-1/2 left-4 z-10 text-white bg-black/30 rounded-full w-8 h-8 items-center justify-center cursor-pointer" aria-label="이전 배너">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
+                        <path d="m15 18-6-6 6-6" />
+                    </svg>
+                </button>
+
+                <button type="button" class="main_bn_next hidden pc:inline-flex absolute top-1/2 -translate-y-1/2 right-4 z-10 text-white bg-black/30 rounded-full w-8 h-8 items-center justify-center cursor-pointer" aria-label="다음 배너">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right w-6 h-6">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </button>
             </div>
+
             <div class="main_owl_pager !hidden">
                 <div class="owl_pager">
                     <ul class="carousel-custom-dots owl-dots">
@@ -121,6 +139,7 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
                     </ul>
                 </div>
             </div>
+
         </div>
 
         <script>
@@ -154,6 +173,14 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
                     owl.trigger('play.owl.autoplay', [autoplayTimeout]);
                 }
 
+                // 반응형 판단
+                const breakpointPc = parseInt(
+                    getComputedStyle(document.documentElement)
+                    .getPropertyValue('--breakpoint-pc')
+                    .trim(),
+                    10
+                ) || 1200;
+
                 const owl = $('.main_banner_owl').owlCarousel({
                     items: 1,
                     loop: is_loop,
@@ -169,6 +196,12 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
                     },
                     onChanged: function(event) {
                         owl_show_page(event);
+                    },
+                    responsive: {
+                        [breakpointPc]: {
+                            items: 3,
+                            margin: 28
+                        }
                     },
                 });
 
@@ -213,6 +246,19 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
                     }
 
                     is_autoplay = !is_autoplay;
+                });
+
+                // PC 화면 슬라이더 버튼 기능
+                $(document).on("click", ".main_bn_prev", function(e) {
+                    e.preventDefault();
+                    owl.trigger('prev.owl.carousel');
+                    restartAutoplayTimer();
+                });
+
+                $(document).on("click", ".main_bn_next", function(e) {
+                    e.preventDefault();
+                    owl.trigger('next.owl.carousel');
+                    restartAutoplayTimer();
                 });
             });
         </script>

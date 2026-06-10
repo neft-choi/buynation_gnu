@@ -36,7 +36,7 @@ foreach ((array) $list as $row) {
             <?php
         } else {
             ?>
-                <ul class="sct owl-carousel js-shop-slider" data-items="1.22" data-margin="12" data-stage-padding="12">
+                <ul class="sct owl-carousel js-shop-slider max-w-[calc(var(--breakpoint-pc)-200px)] justify-self-center px-5" data-items-pc="3" data-items-mobile="1.22" data-margin="12" data-stage-padding="12">
             <?php
         }
     }

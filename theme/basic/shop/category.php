@@ -220,7 +220,90 @@ $mshop_categories = get_shop_category_array(true);
         <?php } ?>
     </div>
 </div>
+
+<div id="pc-category-modal" class="fixed left-0 top-[132px] z-[60] w-full" style="display:none;">
+    <div class="pc-category-backdrop fixed top-[132px] inset-0 bg-black/20"></div>
+
+    <div class="pc-category-panel relative bg-white">
+
+
+        <div class="pc-category-body mx-auto flex w-full max-w-[var(--breakpoint-pc)] gap-5 px-4 py-10">
+            <div class="pc-category-primary w-[220px] shrink-0 border-r border-gray-200 pr-6">
+                <div class="flex flex-col gap-1">
+                    <?php
+                    $pc_primary_index = 0;
+                    foreach ($mshop_categories as $cate1) {
+                        if (empty($cate1) || empty($cate1['text'])) continue;
+                        $mshop_ca_row1 = $cate1['text'];
+                        $is_active = ($pc_primary_index === 0) ? ' text-[var(--color-primary)] font-semibold' : ' text-gray-700';
+                    ?>
+                        <button
+                            type="button"
+                            class="pc-category-primary-button flex w-full items-center gap-3 p-2 text-left text-base<?php echo $is_active; ?>"
+                            data-target="pc-category-panel-<?php echo $pc_primary_index; ?>">
+                            <span><?php echo get_text($mshop_ca_row1['ca_name']); ?></span>
+                        </button>
+                    <?php
+                        $pc_primary_index++;
+                    }
+                    ?>
+                </div>
+            </div>
+
+            <div class="pc-category-secondary min-w-0 flex-1">
+                <?php
+                $pc_panel_index = 0;
+                foreach ($mshop_categories as $cate1) {
+                    if (empty($cate1) || empty($cate1['text'])) continue;
+                    $mshop_ca_row1 = $cate1['text'];
+                    $panel_hidden = ($pc_panel_index === 0) ? '' : ' hidden';
+                ?>
+                    <div
+                        id="pc-category-panel-<?php echo $pc_panel_index; ?>"
+                        class="pc-category-secondary-panel<?php echo $panel_hidden; ?>">
+                        <div class="grid grid-cols-4 gap-8">
+                            <div>
+                                <a href="<?php echo $mshop_ca_row1['url']; ?>" class="mb-4 inline-flex text-base font-semibold text-[var(--color-primary)]">
+                                    <?php echo get_text($mshop_ca_row1['ca_name']); ?> 전체
+                                </a>
+                            </div>
+
+                            <?php
+                            foreach ($cate1 as $key => $cate2) {
+                                if (empty($cate2) || $key === 'text' || empty($cate2['text'])) continue;
+                                $mshop_ca_row2 = $cate2['text'];
+                            ?>
+                                <div class="min-w-0 border-l border-gray-200 pl-5 [&:nth-child(4n+1)]:border-l-0 [&:nth-child(4n+1)]:pl-0">
+                                    <a href="<?php echo $mshop_ca_row2['url']; ?>" class="mb-4 inline-flex text-base font-semibold text-gray-900">
+                                        <?php echo get_text($mshop_ca_row2['ca_name']); ?>
+                                    </a>
+
+                                    <div class="flex flex-col gap-3">
+                                        <?php
+                                        foreach ($cate2 as $sub_key => $cate3) {
+                                            if (empty($cate3) || $sub_key === 'text' || empty($cate3['text'])) continue;
+                                            $mshop_ca_row3 = $cate3['text'];
+                                        ?>
+                                            <a href="<?php echo $mshop_ca_row3['url']; ?>" class="text-[15px] text-gray-700">
+                                                <?php echo get_text($mshop_ca_row3['ca_name']); ?>
+                                            </a>
+                                        <?php } ?>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </div>
+                    </div>
+                <?php
+                    $pc_panel_index++;
+                }
+                ?>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div id="category_all_bg"></div>
+
 <script>
     $(function() {
         var $category = $("#category");
@@ -270,5 +353,74 @@ $mshop_categories = get_shop_category_array(true);
             $("#category .cate2-panel").removeClass("is-active");
             $("#" + target).addClass("is-active");
         });
+        var $pcCategoryModal = $("#pc-category-modal");
+
+        // PC 카테고리 모달이 열리면 배경 스크롤을 막습니다.
+        function lockPcCategoryScroll() {
+            $("body").css("overflow", "scroll");
+            $("html").css("overflow", "hidden");
+        }
+
+        // PC 카테고리 모달이 닫히면 배경 스크롤을 원래대로 돌립니다.
+        function unlockPcCategoryScroll() {
+            $("html, body").css("overflow", "");
+        }
+
+        // PC 카테고리 버튼 토글
+        $("#category_open").on("click", function(e) {
+            e.preventDefault();
+
+            if ($pcCategoryModal.is(":visible")) {
+                $("#category_open_icon").removeClass("bg-[var(--color-primary)]");
+                $pcCategoryModal.css("display", "none");
+                unlockPcCategoryScroll();
+                return;
+            }
+
+            $("#category_open_icon").addClass("bg-[var(--color-primary)]");
+            $pcCategoryModal.css("display", "block");
+            lockPcCategoryScroll();
+        });
+
+        $("#pc-category-modal .pc-category-close, #pc-category-modal .pc-category-backdrop").on("click", function(e) {
+            e.preventDefault();
+            $pcCategoryModal.css("display", "none");
+            unlockPcCategoryScroll();
+        });
+
+    });
+
+    $("#pc-category-modal").on("click", ".pc-category-primary-button", function() {
+        var target = $(this).data("target");
+        if (!target) return;
+
+        $("#pc-category-modal .pc-category-primary-button").removeClass("text-[var(--color-primary)] font-semibold").addClass("text-gray-700");
+
+
+        $(this).removeClass("text-gray-700").addClass("text-[var(--color-primary)] font-semibold");
+
+
+        $("#pc-category-modal .pc-category-secondary-panel").addClass("hidden");
+        $("#" + target).removeClass("hidden");
+    });
+
+    // 바깥 클릭 닫기 로직
+    $(document).mouseup(function(e) {
+        const $pcCategoryModal = $("#pc-category-modal");
+        const container = $("#pc-category-modal .pc-category-panel");
+        const $categoryOpen = $("#category_open");
+
+        if (!$pcCategoryModal.is(":visible")) {
+            return;
+        }
+
+        if ($categoryOpen.is(e.target) || $categoryOpen.has(e.target).length > 0) {
+            return;
+        }
+
+        if (container.has(e.target).length === 0 && !container.is(e.target)) {
+            $pcCategoryModal.css("display", "none");
+            unlockPcCategoryScroll();
+        }
     });
 </script>

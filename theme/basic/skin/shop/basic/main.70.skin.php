@@ -34,7 +34,7 @@ foreach ((array) $list as $row) {
             <?php
         } else {
             ?>
-                <ul class="sct space-y-8 !px-4">
+                <ul class="sct space-y-8 !px-4 flex flex-col pc:flex-row gap-2 !ml-auto">
             <?php
         }
     }
