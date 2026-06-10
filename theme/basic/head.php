@@ -95,7 +95,7 @@ foreach ($header_hide_path_suffixes as $suffix) {
             <div id="hd_wrapper">
                 <div class="space-y-4 w-full p-4">
                     <div class="flex items-center justify-between">
-                        <a href="<?php echo G5_URL ?>" aria-label="메인으로 이동" class="text-lg font-semibold tracking-tight text-gray-900">BUYNATION</a>
+                        <a href="<?php echo G5_URL ?>" aria-label="메인으로 이동" class="text-lg font-semibold tracking-tight text-gray-900"><img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>"></a>
 
                         <div class="flex items-center gap-2 text-2xl">
                             <?= get_notification() ?>

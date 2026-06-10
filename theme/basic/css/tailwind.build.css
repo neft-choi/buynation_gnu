@@ -2863,6 +2863,11 @@
       border-color: var(--color-gray-900);
     }
   }
+  .pc\:fixed {
+    @media (width >= 1200px) {
+      position: fixed;
+    }
+  }
   .pc\:\!m-0 {
     @media (width >= 1200px) {
       margin: calc(var(--spacing) * 0) !important;

@@ -413,7 +413,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		</div>
 		<!-- } 다른 상품 보기 끝 -->
 		<?php if ($is_orderable) { ?>
-			<div id="sit_bottom_fab" class="fixed inset-x-0 bottom-0 z-[60] border-t border-gray-200 bg-white/95 px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur">
+			<div id="sit_bottom_fab" class="pc:hidden fixed inset-x-0 bottom-0 z-[60] border-t border-gray-200 bg-white/95 px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur">
 				<div class="mx-auto grid w-full max-w-full grid-cols-[48px_48px_1fr] gap-2">
 					<button type="button"
 						class="btn_wish flex h-12 w-12 items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
