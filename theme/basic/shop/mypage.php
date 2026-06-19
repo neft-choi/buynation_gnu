@@ -26,10 +26,14 @@ for ($k = 0; $cp = sql_fetch_array($res); $k++) {
 </style>
 
 <!-- 마이페이지 시작 { -->
-<div id="smb_my" class="bg-[#F4F4F4] !m-0">
+<div id="smb_my" class="bg-[#F4F4F4] pc:bg-white !m-0">
 
-    <section class="p-4 mb-4 bg-white">
-        <h2 class="sound_only">회원 정보</h2>
+    <!-- 마이페이지 회원 요약 정보 (PC) -->
+    <?php include_once(G5_THEME_SHOP_PATH . '/_mypage_summary_pc.php'); ?>
+
+    <!-- 마이페이지 회원 요약 정보 (Mobile) -->
+    <section id="mypage-summary-mobile" class="block pc:hidden p-4 mb-4 bg-white">
+        <h2 class="sound_only">회원 요약 정보</h2>
 
         <div class="flex flex-col gap-2">
             <h3 class="mypage-user-name text-2xl font-bold"><?php echo $member['mb_name']; ?>님</h3>
@@ -119,350 +123,371 @@ for ($k = 0; $cp = sql_fetch_array($res); $k++) {
         </div>
     </section>
 
-    <section id="mypage-menu-sections" class="p-4 bg-white">
-        <h2 class="sound_only">마이페이지 메뉴</h2>
+    <div class="block pc:flex gap-6 pc:px-5 pc:py-12">
+        <!-- 마이페이지 메뉴 (PC) -->
+        <?php include_once(G5_THEME_SHOP_PATH . '/_mypage_menu_pc.php'); ?>
 
-        <div class="space-y-4">
-            <section class="border-b border-zinc-200">
-                <h3 class="text-lg font-bold">주문관리</h3>
-                <div class="grid gap-4 py-4 text-sm">
-                    <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck-icon lucide-truck">
-                            <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
-                            <path d="M15 18H9" />
-                            <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
-                            <circle cx="17" cy="18" r="2" />
-                            <circle cx="7" cy="18" r="2" />
-                        </svg>
-                        <span>주문/배송 조회</span>
-                    </a>
-                    <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" class="flex items-center gap-2">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M20 5C20 4.44772 19.5523 4 19 4H5C4.44772 4 4 4.44772 4 5V19C4 19.5523 4.44772 20 5 20H19C19.5523 20 20 19.5523 20 19V5ZM22 19C22 20.6569 20.6569 22 19 22H5C3.34315 22 2 20.6569 2 19V5C2 3.34315 3.34315 2 5 2H19C20.6569 2 22 3.34315 22 5V19Z" fill="#262626" />
-                            <path d="M16 7C16.5523 7 17 7.44772 17 8C17 8.55228 16.5523 9 16 9H8C7.44772 9 7 8.55228 7 8C7 7.44772 7.44772 7 8 7H16Z" fill="#262626" />
-                            <path d="M16 11C16.5523 11 17 11.4477 17 12C17 12.5523 16.5523 13 16 13H8C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11H16Z" fill="#262626" />
-                            <path d="M13 15C13.5523 15 14 15.4477 14 16C14 16.5523 13.5523 17 13 17H8C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15H13Z" fill="#262626" />
-                        </svg>
-                        <span>주문내역</span>
-                    </a>
-                    <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive-restore-icon lucide-archive-restore">
-                            <rect width="20" height="5" x="2" y="3" rx="1" />
-                            <path d="M4 8v11a2 2 0 0 0 2 2h2" />
-                            <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
-                            <path d="m9 15 3-3 3 3" />
-                            <path d="M12 12v9" />
-                        </svg>
-                        <span>취소/교환/반품 내역</span>
-                    </a>
-                    <a href="<?php echo G5_SHOP_URL; ?>/wishlist.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag-icon lucide-shopping-bag">
-                            <path d="M16 10a4 4 0 0 1-8 0" />
-                            <path d="M3.103 6.034h17.794" />
-                            <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z" />
-                        </svg>
-                        <span>자주구매 상품</span>
-                    </a>
-                </div>
+        <!-- 마이페이지 본문 (PC) -->
+        <section id="mypage-content-pc" class="hidden pc:block pc:flex-1 pc:min-w-0">
+            <!-- 마이페이지 본문 주문내역 -->
+            <section id="mypage-panel-orderinquiry">
+                <?php
+                define("_ORDERINQUIRY_", true);
+
+                $limit = " limit 0, 5 ";
+
+                $is_mypage = true;
+
+                include G5_SHOP_PATH . '/orderinquiry.sub.php';
+                ?>
             </section>
+        </section>
 
-            <section class="border-b border-zinc-200">
-                <h3 class="text-lg font-bold">나의 활동 관리</h3>
-                <div class="grid gap-4 py-4 text-sm">
-                    <a href="#" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-heart-icon lucide-message-square-heart">
-                            <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
-                            <path d="M7.5 9.5c0 .687.265 1.383.697 1.844l3.009 3.264a1.14 1.14 0 0 0 .407.314 1 1 0 0 0 .783-.004 1.14 1.14 0 0 0 .398-.31l3.008-3.264A2.77 2.77 0 0 0 16.5 9.5 2.5 2.5 0 0 0 12 8a2.5 2.5 0 0 0-4.5 1.5" />
-                        </svg>
-                        <span>상품 리뷰</span>
-                    </a>
-                    <a href="<?php echo G5_SHOP_URL; ?>/wishlist.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
-                            <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
-                        </svg>
-                        <span>위시리스트</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-party-popper-icon lucide-party-popper">
-                            <path d="M5.8 11.3 2 22l10.7-3.79" />
-                            <path d="M4 3h.01" />
-                            <path d="M22 8h.01" />
-                            <path d="M15 2h.01" />
-                            <path d="M22 20h.01" />
-                            <path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10" />
-                            <path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17" />
-                            <path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7" />
-                            <path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z" />
-                        </svg>
-                        <span>이벤트 참여 내역</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-plus-icon lucide-bell-plus">
-                            <path d="M10.268 21a2 2 0 0 0 3.464 0" />
-                            <path d="M15 8h6" />
-                            <path d="M18 5v6" />
-                            <path d="M20.002 14.464a9 9 0 0 0 .738.863A1 1 0 0 1 20 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 8.75-5.332" />
-                        </svg>
-                        <span>입고알림 내역</span>
-                    </a>
-                </div>
-            </section>
+        <!-- 마이페이지 메뉴 (Mobile) -->
+        <section id="mypage-menu-mobile" class="block pc:hidden p-4 bg-white">
+            <h2 class="sound_only">마이페이지 메뉴</h2>
 
-            <section class="border-b border-zinc-200">
-                <h3 class="text-lg font-bold">나의 혜택 관리</h3>
-                <div class="grid gap-4 py-4 text-sm">
-                    <a href="<?php echo G5_SHOP_URL; ?>/coupon.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-percent-icon lucide-ticket-percent">
-                            <path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
-                            <path d="M9 9h.01" />
-                            <path d="m15 9-6 6" />
-                            <path d="M15 15h.01" />
-                        </svg>
-                        <span>쿠폰</span>
-                    </a>
-                    <a href="<?php echo G5_BBS_URL; ?>/point.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-parking-icon lucide-circle-parking">
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
-                        </svg>
-                        <span>바이네이션 포인트</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-handshake-icon lucide-heart-handshake">
-                            <path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762" />
-                        </svg>
-                        <span>기부 포인트</span>
-                    </a>
-                </div>
-            </section>
+            <div class="space-y-4">
+                <section class="border-b border-zinc-200">
+                    <h3 class="text-lg font-bold">주문관리</h3>
+                    <div class="grid gap-4 py-4 text-sm">
+                        <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-truck-icon lucide-truck">
+                                <path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2" />
+                                <path d="M15 18H9" />
+                                <path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-3.48-4.35A1 1 0 0 0 17.52 8H14" />
+                                <circle cx="17" cy="18" r="2" />
+                                <circle cx="7" cy="18" r="2" />
+                            </svg>
+                            <span>주문/배송 조회</span>
+                        </a>
+                        <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" class="flex items-center gap-2">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M20 5C20 4.44772 19.5523 4 19 4H5C4.44772 4 4 4.44772 4 5V19C4 19.5523 4.44772 20 5 20H19C19.5523 20 20 19.5523 20 19V5ZM22 19C22 20.6569 20.6569 22 19 22H5C3.34315 22 2 20.6569 2 19V5C2 3.34315 3.34315 2 5 2H19C20.6569 2 22 3.34315 22 5V19Z" fill="#262626" />
+                                <path d="M16 7C16.5523 7 17 7.44772 17 8C17 8.55228 16.5523 9 16 9H8C7.44772 9 7 8.55228 7 8C7 7.44772 7.44772 7 8 7H16Z" fill="#262626" />
+                                <path d="M16 11C16.5523 11 17 11.4477 17 12C17 12.5523 16.5523 13 16 13H8C7.44772 13 7 12.5523 7 12C7 11.4477 7.44772 11 8 11H16Z" fill="#262626" />
+                                <path d="M13 15C13.5523 15 14 15.4477 14 16C14 16.5523 13.5523 17 13 17H8C7.44772 17 7 16.5523 7 16C7 15.4477 7.44772 15 8 15H13Z" fill="#262626" />
+                            </svg>
+                            <span>주문내역</span>
+                        </a>
+                        <a href="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-archive-restore-icon lucide-archive-restore">
+                                <rect width="20" height="5" x="2" y="3" rx="1" />
+                                <path d="M4 8v11a2 2 0 0 0 2 2h2" />
+                                <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
+                                <path d="m9 15 3-3 3 3" />
+                                <path d="M12 12v9" />
+                            </svg>
+                            <span>취소/교환/반품 내역</span>
+                        </a>
+                        <a href="<?php echo G5_SHOP_URL; ?>/wishlist.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag-icon lucide-shopping-bag">
+                                <path d="M16 10a4 4 0 0 1-8 0" />
+                                <path d="M3.103 6.034h17.794" />
+                                <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z" />
+                            </svg>
+                            <span>자주구매 상품</span>
+                        </a>
+                    </div>
+                </section>
 
-            <section class="border-b border-zinc-200">
-                <h3 class="text-lg font-bold">나의 정보 관리</h3>
-                <div class="grid gap-4 py-4 text-sm">
-                    <a href="<?php echo G5_BBS_URL; ?>/member_confirm.php?url=register_form.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
-                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                        </svg>
-                        <span>회원정보 설정</span>
-                    </a>
-                    <a href="<?php echo G5_SHOP_URL; ?>/orderaddress.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
-                            <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-                            <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        <span>배송지 관리</span>
-                    </a>
-                    <a href="#" target="_blank" class="win_memo flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-dot-icon lucide-bell-dot">
-                            <path d="M10.268 21a2 2 0 0 0 3.464 0" />
-                            <path d="M11.68 2.009A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673c-.824-.85-1.678-1.731-2.21-3.348" />
-                            <circle cx="18" cy="5" r="3" />
-                        </svg>
-                        <span>알림 목록</span>
-                    </a>
-                    <a href="<?php echo G5_BBS_URL; ?>/member_confirm.php?url=member_leave.php" class="flex items-center gap-2" onclick="return member_leave();">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x-icon lucide-user-x">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <line x1="17" x2="22" y1="8" y2="13" />
-                            <line x1="22" x2="17" y1="8" y2="13" />
-                        </svg>
-                        <span>회원 탈퇴</span>
-                    </a>
-                </div>
-            </section>
+                <section class="border-b border-zinc-200">
+                    <h3 class="text-lg font-bold">나의 활동 관리</h3>
+                    <div class="grid gap-4 py-4 text-sm">
+                        <a href="#" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-heart-icon lucide-message-square-heart">
+                                <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
+                                <path d="M7.5 9.5c0 .687.265 1.383.697 1.844l3.009 3.264a1.14 1.14 0 0 0 .407.314 1 1 0 0 0 .783-.004 1.14 1.14 0 0 0 .398-.31l3.008-3.264A2.77 2.77 0 0 0 16.5 9.5 2.5 2.5 0 0 0 12 8a2.5 2.5 0 0 0-4.5 1.5" />
+                            </svg>
+                            <span>상품 리뷰</span>
+                        </a>
+                        <a href="<?php echo G5_SHOP_URL; ?>/wishlist.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
+                                <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                            </svg>
+                            <span>위시리스트</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-party-popper-icon lucide-party-popper">
+                                <path d="M5.8 11.3 2 22l10.7-3.79" />
+                                <path d="M4 3h.01" />
+                                <path d="M22 8h.01" />
+                                <path d="M15 2h.01" />
+                                <path d="M22 20h.01" />
+                                <path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10" />
+                                <path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17" />
+                                <path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7" />
+                                <path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z" />
+                            </svg>
+                            <span>이벤트 참여 내역</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-plus-icon lucide-bell-plus">
+                                <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+                                <path d="M15 8h6" />
+                                <path d="M18 5v6" />
+                                <path d="M20.002 14.464a9 9 0 0 0 .738.863A1 1 0 0 1 20 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 8.75-5.332" />
+                            </svg>
+                            <span>입고알림 내역</span>
+                        </a>
+                    </div>
+                </section>
 
-            <section class="border-b border-zinc-200">
-                <h3 class="text-lg font-bold">고객센터</h3>
-                <div class="grid gap-4 py-4 text-sm">
-                    <a href="<?php echo G5_BBS_URL; ?>/faq.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-warning-icon lucide-message-square-warning">
-                            <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
-                            <path d="M12 15h.01" />
-                            <path d="M12 7v4" />
-                        </svg>
-                        <span>FAQ</span>
-                    </a>
-                    <a href="<?php echo G5_BBS_URL; ?>/qalist.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-check-icon lucide-list-check">
-                            <path d="M16 5H3" />
-                            <path d="M16 12H3" />
-                            <path d="M11 19H3" />
-                            <path d="m15 18 2 2 4-4" />
-                        </svg>
-                        <span>문의내역</span>
-                    </a>
-                    <a href="<?php echo G5_BBS_URL; ?>/qawrite.php" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen">
-                            <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                            <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
-                        </svg>
-                        <span>문의하기</span>
-                    </a>
-                    <a href="#" class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-megaphone-icon lucide-megaphone">
-                            <path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
-                            <path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14" />
-                            <path d="M8 6v8" />
-                        </svg>
-                        <span>공지사항</span>
-                    </a>
-                </div>
-            </section>
+                <section class="border-b border-zinc-200">
+                    <h3 class="text-lg font-bold">나의 혜택 관리</h3>
+                    <div class="grid gap-4 py-4 text-sm">
+                        <a href="<?php echo G5_SHOP_URL; ?>/coupon.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-ticket-percent-icon lucide-ticket-percent">
+                                <path d="M2 9a3 3 0 1 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 1 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" />
+                                <path d="M9 9h.01" />
+                                <path d="m15 9-6 6" />
+                                <path d="M15 15h.01" />
+                            </svg>
+                            <span>쿠폰</span>
+                        </a>
+                        <a href="<?php echo G5_BBS_URL; ?>/point.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-parking-icon lucide-circle-parking">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
+                            </svg>
+                            <span>바이네이션 포인트</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-handshake-icon lucide-heart-handshake">
+                                <path d="M19.414 14.414C21 12.828 22 11.5 22 9.5a5.5 5.5 0 0 0-9.591-3.676.6.6 0 0 1-.818.001A5.5 5.5 0 0 0 2 9.5c0 2.3 1.5 4 3 5.5l5.535 5.362a2 2 0 0 0 2.879.052 2.12 2.12 0 0 0-.004-3 2.124 2.124 0 1 0 3-3 2.124 2.124 0 0 0 3.004 0 2 2 0 0 0 0-2.828l-1.881-1.882a2.41 2.41 0 0 0-3.409 0l-1.71 1.71a2 2 0 0 1-2.828 0 2 2 0 0 1 0-2.828l2.823-2.762" />
+                            </svg>
+                            <span>기부 포인트</span>
+                        </a>
+                    </div>
+                </section>
 
-            <section class="py-2">
-                <a href="<?php echo G5_BBS_URL; ?>/logout.php?url=shop" class="text-sm text-zinc-500">로그아웃</a>
-            </section>
-        </div>
-    </section>
+                <section class="border-b border-zinc-200">
+                    <h3 class="text-lg font-bold">나의 정보 관리</h3>
+                    <div class="grid gap-4 py-4 text-sm">
+                        <a href="<?php echo G5_BBS_URL; ?>/member_confirm.php?url=register_form.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
+                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                            <span>회원정보 설정</span>
+                        </a>
+                        <a href="<?php echo G5_SHOP_URL; ?>/orderaddress.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
+                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                                <circle cx="12" cy="10" r="3" />
+                            </svg>
+                            <span>배송지 관리</span>
+                        </a>
+                        <a href="#" target="_blank" class="win_memo flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-dot-icon lucide-bell-dot">
+                                <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+                                <path d="M11.68 2.009A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673c-.824-.85-1.678-1.731-2.21-3.348" />
+                                <circle cx="18" cy="5" r="3" />
+                            </svg>
+                            <span>알림 목록</span>
+                        </a>
+                        <a href="<?php echo G5_BBS_URL; ?>/member_confirm.php?url=member_leave.php" class="flex items-center gap-2" onclick="return member_leave();">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-x-icon lucide-user-x">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <line x1="17" x2="22" y1="8" y2="13" />
+                                <line x1="22" x2="17" y1="8" y2="13" />
+                            </svg>
+                            <span>회원 탈퇴</span>
+                        </a>
+                    </div>
+                </section>
 
+                <section class="border-b border-zinc-200">
+                    <h3 class="text-lg font-bold">고객센터</h3>
+                    <div class="grid gap-4 py-4 text-sm">
+                        <a href="<?php echo G5_BBS_URL; ?>/faq.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-square-warning-icon lucide-message-square-warning">
+                                <path d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
+                                <path d="M12 15h.01" />
+                                <path d="M12 7v4" />
+                            </svg>
+                            <span>FAQ</span>
+                        </a>
+                        <a href="<?php echo G5_BBS_URL; ?>/qalist.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-check-icon lucide-list-check">
+                                <path d="M16 5H3" />
+                                <path d="M16 12H3" />
+                                <path d="M11 19H3" />
+                                <path d="m15 18 2 2 4-4" />
+                            </svg>
+                            <span>문의내역</span>
+                        </a>
+                        <a href="<?php echo G5_BBS_URL; ?>/qawrite.php" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-pen-icon lucide-square-pen">
+                                <path d="M12 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                <path d="M18.375 2.625a1 1 0 0 1 3 3l-9.013 9.014a2 2 0 0 1-.853.505l-2.873.84a.5.5 0 0 1-.62-.62l.84-2.873a2 2 0 0 1 .506-.852z" />
+                            </svg>
+                            <span>문의하기</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-megaphone-icon lucide-megaphone">
+                                <path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z" />
+                                <path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14" />
+                                <path d="M8 6v8" />
+                            </svg>
+                            <span>공지사항</span>
+                        </a>
+                    </div>
+                </section>
 
-
-    <!-- 회원정보 개요 시작 { -->
-    <section id="smb_my_ov" class="!hidden">
-        <h2>회원정보 개요</h2>
-
-        <div class="smb_me">
-            <strong class="my_ov_name"><?php echo get_member_profile_img($member['mb_id']); ?><br><?php echo $member['mb_name']; ?></strong><br>
-            <a href="<?php echo G5_BBS_URL ?>/member_confirm.php?url=register_form.php" class="smb_info">정보수정</a>
-            <a href="<?php echo G5_BBS_URL ?>/logout.php?url=shop">로그아웃</a>
-        </div>
-
-        <ul id="smb_private">
-            <li>
-                <a href="<?php echo G5_BBS_URL ?>/point.php" class="win_point">
-                    <i class="fa fa-database" aria-hidden="true"></i>포인트
-                    <strong><?php echo number_format($member['mb_point']); ?></strong>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo G5_SHOP_URL ?>/coupon.php" target="_blank" class="win_coupon">
-                    <i class="fa fa-ticket" aria-hidden="true"></i>쿠폰
-                    <strong><?php echo number_format($cp_count); ?></strong>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo G5_BBS_URL ?>/memo.php" target="_blank" class="win_memo">
-                    <i class="fa fa-envelope-o" aria-hidden="true"></i><span class="sound_only">안 읽은 </span>쪽지
-                    <strong><?php echo $memo_not_read ?></strong>
-                </a>
-            </li>
-            <li>
-                <a href="<?php echo G5_BBS_URL ?>/scrap.php" target="_blank" class="win_scrap">
-                    <i class="fa fa-thumb-tack" aria-hidden="true"></i>스크랩
-                    <strong class="scrap"><?php echo number_format($member['mb_scrap_cnt']); ?></strong>
-                </a>
-            </li>
-        </ul>
-
-        <h3>내정보</h3>
-        <dl class="op_area">
-            <dt>연락처</dt>
-            <dd><?php echo ($member['mb_tel'] ? $member['mb_tel'] : '미등록'); ?></dd>
-            <dt>E-Mail</dt>
-            <dd><?php echo ($member['mb_email'] ? $member['mb_email'] : '미등록'); ?></dd>
-            <dt>최종접속일시</dt>
-            <dd><?php echo $member['mb_today_login']; ?></dd>
-            <dt>회원가입일시</dt>
-            <dd><?php echo $member['mb_datetime']; ?></dd>
-            <dt id="smb_my_ovaddt">주소</dt>
-            <dd id="smb_my_ovaddd"><?php echo sprintf("(%s%s)", $member['mb_zip1'], $member['mb_zip2']) . ' ' . print_address($member['mb_addr1'], $member['mb_addr2'], $member['mb_addr3'], $member['mb_addr_jibeon']); ?></dd>
-        </dl>
-
-        <a href="<?php echo G5_BBS_URL; ?>/member_confirm.php?url=member_leave.php" onclick="return member_leave();" class="withdrawal">회원탈퇴</a>
-    </section>
-    <!-- } 회원정보 개요 끝 -->
-
-    <div id="smb_my_list" class="!hidden">
-        <!-- 최근 주문내역 시작 { -->
-        <section id="smb_my_od">
-            <h2>주문내역조회</h2>
-            <?php
-            // 최근 주문내역
-            define("_ORDERINQUIRY_", true);
-
-            $limit = " limit 0, 5 ";
-            include G5_SHOP_PATH . '/orderinquiry.sub.php';
-            ?>
-
-            <div class="smb_my_more">
-                <a href="./orderinquiry.php">더보기</a>
+                <section class="py-2">
+                    <a href="<?php echo G5_BBS_URL; ?>/logout.php?url=shop" class="text-sm text-zinc-500">로그아웃</a>
+                </section>
             </div>
         </section>
-        <!-- } 최근 주문내역 끝 -->
 
-        <!-- 최근 위시리스트 시작 { -->
-        <section id="smb_my_wish">
-            <h2>최근 위시리스트</h2>
-            <form name="fwishlist" method="post" action="./cartupdate.php">
-                <input type="hidden" name="act" value="multi">
-                <input type="hidden" name="sw_direct" value="">
-                <input type="hidden" name="prog" value="wish">
-                <ul>
-                    <?php
-                    $sql = " select *
+
+
+        <!-- 회원정보 개요 시작 { -->
+        <section id="smb_my_ov" class="!hidden">
+            <h2>회원정보 개요</h2>
+
+            <div class="smb_me">
+                <strong class="my_ov_name"><?php echo get_member_profile_img($member['mb_id']); ?><br><?php echo $member['mb_name']; ?></strong><br>
+                <a href="<?php echo G5_BBS_URL ?>/member_confirm.php?url=register_form.php" class="smb_info">정보수정</a>
+                <a href="<?php echo G5_BBS_URL ?>/logout.php?url=shop">로그아웃</a>
+            </div>
+
+            <ul id="smb_private">
+                <li>
+                    <a href="<?php echo G5_BBS_URL ?>/point.php" class="win_point">
+                        <i class="fa fa-database" aria-hidden="true"></i>포인트
+                        <strong><?php echo number_format($member['mb_point']); ?></strong>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo G5_SHOP_URL ?>/coupon.php" target="_blank" class="win_coupon">
+                        <i class="fa fa-ticket" aria-hidden="true"></i>쿠폰
+                        <strong><?php echo number_format($cp_count); ?></strong>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo G5_BBS_URL ?>/memo.php" target="_blank" class="win_memo">
+                        <i class="fa fa-envelope-o" aria-hidden="true"></i><span class="sound_only">안 읽은 </span>쪽지
+                        <strong><?php echo $memo_not_read ?></strong>
+                    </a>
+                </li>
+                <li>
+                    <a href="<?php echo G5_BBS_URL ?>/scrap.php" target="_blank" class="win_scrap">
+                        <i class="fa fa-thumb-tack" aria-hidden="true"></i>스크랩
+                        <strong class="scrap"><?php echo number_format($member['mb_scrap_cnt']); ?></strong>
+                    </a>
+                </li>
+            </ul>
+
+            <h3>내정보</h3>
+            <dl class="op_area">
+                <dt>연락처</dt>
+                <dd><?php echo ($member['mb_tel'] ? $member['mb_tel'] : '미등록'); ?></dd>
+                <dt>E-Mail</dt>
+                <dd><?php echo ($member['mb_email'] ? $member['mb_email'] : '미등록'); ?></dd>
+                <dt>최종접속일시</dt>
+                <dd><?php echo $member['mb_today_login']; ?></dd>
+                <dt>회원가입일시</dt>
+                <dd><?php echo $member['mb_datetime']; ?></dd>
+                <dt id="smb_my_ovaddt">주소</dt>
+                <dd id="smb_my_ovaddd"><?php echo sprintf("(%s%s)", $member['mb_zip1'], $member['mb_zip2']) . ' ' . print_address($member['mb_addr1'], $member['mb_addr2'], $member['mb_addr3'], $member['mb_addr_jibeon']); ?></dd>
+            </dl>
+
+            <a href="<?php echo G5_BBS_URL; ?>/member_confirm.php?url=member_leave.php" onclick="return member_leave();" class="withdrawal">회원탈퇴</a>
+        </section>
+        <!-- } 회원정보 개요 끝 -->
+
+        <div id="smb_my_list" class="!hidden">
+            <!-- 최근 주문내역 시작 { -->
+            <section id="smb_my_od">
+                <h2>주문내역조회</h2>
+                <?php
+                // 최근 주문내역
+                define("_ORDERINQUIRY_", true);
+
+                $limit = " limit 0, 5 ";
+                include G5_SHOP_PATH . '/orderinquiry.sub.php';
+                ?>
+
+                <div class="smb_my_more">
+                    <a href="./orderinquiry.php">더보기</a>
+                </div>
+            </section>
+            <!-- } 최근 주문내역 끝 -->
+
+            <!-- 최근 위시리스트 시작 { -->
+            <section id="smb_my_wish">
+                <h2>최근 위시리스트</h2>
+                <form name="fwishlist" method="post" action="./cartupdate.php">
+                    <input type="hidden" name="act" value="multi">
+                    <input type="hidden" name="sw_direct" value="">
+                    <input type="hidden" name="prog" value="wish">
+                    <ul>
+                        <?php
+                        $sql = " select *
                            from {$g5['g5_shop_wish_table']} a,
                                 {$g5['g5_shop_item_table']} b
                           where a.mb_id = '{$member['mb_id']}'
                             and a.it_id  = b.it_id
                           order by a.wi_id desc
                           limit 0, 8 ";
-                    $result = sql_query($sql);
-                    for ($i = 0; $row = sql_fetch_array($result); $i++) {
-                        $image = get_it_image($row['it_id'], 100, 100, true);
+                        $result = sql_query($sql);
+                        for ($i = 0; $row = sql_fetch_array($result); $i++) {
+                            $image = get_it_image($row['it_id'], 100, 100, true);
 
-                        $sql = " select count(*) as cnt from {$g5['g5_shop_item_option_table']} where it_id = '{$row['it_id']}' and io_type = '0' ";
-                        $tmp = sql_fetch($sql);
-                        $out_cd = (isset($tmp['cnt']) && $tmp['cnt']) ? 'no' : '';
-                    ?>
+                            $sql = " select count(*) as cnt from {$g5['g5_shop_item_option_table']} where it_id = '{$row['it_id']}' and io_type = '0' ";
+                            $tmp = sql_fetch($sql);
+                            $out_cd = (isset($tmp['cnt']) && $tmp['cnt']) ? 'no' : '';
+                        ?>
 
-                        <li>
-                            <div class="smb_my_chk">
-                                <?php if (is_soldout($row['it_id'])) { //품절검사 
-                                ?> 품절
-                                <?php } else { //품절이 아니면 체크할수 있도록한다 
-                                ?>
-                                    <div class="chk_box">
-                                        <input type="checkbox" name="chk_it_id[<?php echo $i; ?>]" value="1" id="chk_it_id_<?php echo $i; ?>" onclick="out_cd_check(this, '<?php echo $out_cd; ?>');" class="selec_chk">
-                                        <label for="chk_it_id_<?php echo $i; ?>"><span></span><b class="sound_only"><?php echo $row['it_name']; ?></b></label>
-                                    </div>
-                                <?php } ?>
-                                <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
-                                <input type="hidden" name="io_type[<?php echo $row['it_id']; ?>][0]" value="0">
-                                <input type="hidden" name="io_id[<?php echo $row['it_id']; ?>][0]" value="">
-                                <input type="hidden" name="io_value[<?php echo $row['it_id']; ?>][0]" value="<?php echo $row['it_name']; ?>">
-                                <input type="hidden" name="ct_qty[<?php echo $row['it_id']; ?>][0]" value="1">
-                            </div>
-                            <div class="smb_my_img"><?php echo $image; ?></div>
-                            <div class="smb_my_tit"><a href="<?php echo shop_item_url($row['it_id']); ?>"><?php echo stripslashes($row['it_name']); ?></a></div>
-                            <div class="smb_my_price"><?php echo display_price(get_price($row), $row['it_tel_inq']); ?></div>
-                            <div class="smb_my_date"><?php echo $row['wi_time']; ?></div>
-                            <a href="./wishupdate.php?w=d&amp;wi_id=<?php echo $row['wi_id']; ?>" class="wish_del"><i class="fa fa-trash" aria-hidden="true"></i><span class="sound_only">삭제</span></a>
-                        </li>
+                            <li>
+                                <div class="smb_my_chk">
+                                    <?php if (is_soldout($row['it_id'])) { //품절검사 
+                                    ?> 품절
+                                    <?php } else { //품절이 아니면 체크할수 있도록한다 
+                                    ?>
+                                        <div class="chk_box">
+                                            <input type="checkbox" name="chk_it_id[<?php echo $i; ?>]" value="1" id="chk_it_id_<?php echo $i; ?>" onclick="out_cd_check(this, '<?php echo $out_cd; ?>');" class="selec_chk">
+                                            <label for="chk_it_id_<?php echo $i; ?>"><span></span><b class="sound_only"><?php echo $row['it_name']; ?></b></label>
+                                        </div>
+                                    <?php } ?>
+                                    <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
+                                    <input type="hidden" name="io_type[<?php echo $row['it_id']; ?>][0]" value="0">
+                                    <input type="hidden" name="io_id[<?php echo $row['it_id']; ?>][0]" value="">
+                                    <input type="hidden" name="io_value[<?php echo $row['it_id']; ?>][0]" value="<?php echo $row['it_name']; ?>">
+                                    <input type="hidden" name="ct_qty[<?php echo $row['it_id']; ?>][0]" value="1">
+                                </div>
+                                <div class="smb_my_img"><?php echo $image; ?></div>
+                                <div class="smb_my_tit"><a href="<?php echo shop_item_url($row['it_id']); ?>"><?php echo stripslashes($row['it_name']); ?></a></div>
+                                <div class="smb_my_price"><?php echo display_price(get_price($row), $row['it_tel_inq']); ?></div>
+                                <div class="smb_my_date"><?php echo $row['wi_time']; ?></div>
+                                <a href="./wishupdate.php?w=d&amp;wi_id=<?php echo $row['wi_id']; ?>" class="wish_del"><i class="fa fa-trash" aria-hidden="true"></i><span class="sound_only">삭제</span></a>
+                            </li>
 
-                    <?php
-                    }
+                        <?php
+                        }
 
-                    if ($i == 0)
-                        echo '<li class="empty_li">보관 내역이 없습니다.</li>';
-                    ?>
-                </ul>
+                        if ($i == 0)
+                            echo '<li class="empty_li">보관 내역이 없습니다.</li>';
+                        ?>
+                    </ul>
 
-                <div class="smb_my_more">
-                    <a href="./wishlist.php">더보기</a>
-                </div>
+                    <div class="smb_my_more">
+                        <a href="./wishlist.php">더보기</a>
+                    </div>
 
-                <div id="smb_ws_act">
-                    <button type="submit" class="btn01" onclick="return fwishlist_check(document.fwishlist,'');">장바구니</button>
-                    <button type="submit" class="btn02" onclick="return fwishlist_check(document.fwishlist,'direct_buy');">주문하기</button>
-                </div>
-            </form>
-        </section>
-        <!-- } 최근 위시리스트 끝 -->
+                    <div id="smb_ws_act">
+                        <button type="submit" class="btn01" onclick="return fwishlist_check(document.fwishlist,'');">장바구니</button>
+                        <button type="submit" class="btn02" onclick="return fwishlist_check(document.fwishlist,'direct_buy');">주문하기</button>
+                    </div>
+                </form>
+            </section>
+            <!-- } 최근 위시리스트 끝 -->
+        </div>
     </div>
 </div>
-
 <script>
     function member_leave() {
         return confirm('정말 회원에서 탈퇴 하시겠습니까?')

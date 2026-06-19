@@ -33,12 +33,12 @@ if ($is_kakaopay_use) {
         display: none;
     }
 
-    #sod_frm section h2 {
+    /* #sod_frm section h2 {
         font-size: 18px;
         font-weight: bold;
         border: none;
         padding: 0;
-    }
+    } */
 
     .sod_left,
     .sod_right {
@@ -76,8 +76,38 @@ if ($is_kakaopay_use) {
         display: none;
     }
 </style>
+<div id="order_page_heading" class="hidden pc:flex max-w-[var(--breakpoint-pc)] items-center justify-between bg-white px-5 py-7 mx-auto">
+    <h1 class="text-4xl font-bold">주문하기</h1>
+    <nav>
+        <ul class="flex items-center gap-2">
+            <li>
+                <span class="font-semibold">장바구니</span>
+            </li>
+            <li>
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right w-4 h-4">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </span>
+            </li>
+            <li>
+                <span class="font-semibold">주문결제</span>
+            </li>
+            <li>
+                <span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right w-4 h-4">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </span>
+            </li>
+            <li>
+                <span class="text-gray-300">주문완료</span>
+            </li>
+        </ul>
+    </nav>
+</div>
 
-<form name="forderform" id="forderform" method="post" action="<?php echo $order_action_url; ?>" autocomplete="off">
+<form name="forderform" id="forderform" method="post" action="<?php echo $order_action_url; ?>" autocomplete="off" class="pc:flex pc:items-start pc:pb-10">
     <?php
     $sql = " select count(distinct it_id) as cnt
                 from {$g5['g5_shop_cart_table']}
@@ -91,9 +121,9 @@ if ($is_kakaopay_use) {
         <div class="flex flex-col-reverse">
             <!-- 주문상품 시작 -->
             <section id="sod_order_products" class="space-y-4 p-4 mb-3">
-                <div class="flex items-center justify-between">
+                <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
                     <div class="flex items-center gap-4">
-                        <h2>주문상품</h2>
+                        <h2 class="text-lg pc:text-2xl font-bold">주문상품</h2>
                         <span class="text-sm text-[#8D8D8D]">내일 11/10(월) 도착예정</span>
                     </div>
                     <div class="flex items-center gap-2">
@@ -106,7 +136,7 @@ if ($is_kakaopay_use) {
                     </div>
                 </div>
 
-                <div id="sod_order_products_body" class="pt-4 border-t border-[#e5e5e5] space-y-4">
+                <div id="sod_order_products_body" class="pt-4 pc:pt-0 border-t pc:border-0 border-[#e5e5e5] space-y-4">
                     <ul id="sod_list" class="space-y-4">
                         <?php
                         $tot_point = 0;
@@ -363,10 +393,10 @@ if ($is_kakaopay_use) {
                 ?>
 
                 <!-- 주문자 정보 시작 -->
-                <section id="sod_frm_orderer" class="!border-none p-4 !mb-3">
-                    <div class="flex items-center justify-between">
-                        <h2>주문자 정보</h2>
-                        <button type="button" id="orderer_accordion_btn" class="inline-flex h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_frm_orderer_body">
+                <section id="sod_frm_orderer" class="p-4 !mb-3">
+                    <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
+                        <h2 class="text-lg pc:text-2xl font-bold">주문자 정보</h2>
+                        <button type="button" id="orderer_accordion_btn" class="inline-flex pc:hidden h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_frm_orderer_body">
                             <svg class="accordion-chevron h-5 w-5 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m18 15-6-6-6 6" />
                             </svg>
@@ -375,47 +405,61 @@ if ($is_kakaopay_use) {
 
                     <div id="sod_frm_orderer_body" class="mt-4">
                         <div class="flex flex-col gap-2 text-sm">
-                            <div class="text-sm text-[#666]"><label for="od_name">보내는 분<strong class="sound_only"> 필수</strong></label></div>
-                            <div><input type="text" name="od_name" value="<?php echo isset($member['mb_name']) ? get_text($member['mb_name']) : ''; ?>" id="od_name" required class="required !w-full" maxlength="20"></div>
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]"><label for="od_name">이름<strong class="sound_only"> 필수</strong></label></div>
+                                <div><input type="text" name="od_name" value="<?php echo isset($member['mb_name']) ? get_text($member['mb_name']) : ''; ?>" id="od_name" required class="required !w-full" maxlength="20"></div>
+                            </div>
 
                             <?php if (!$is_member) { // 비회원이면 
                             ?>
-                                <div class="text-sm text-[#666]"><label for="od_pwd">비밀번호</label></div>
-                                <div>
-                                    <span class="frm_info">영,숫자 3~20자 (주문서 조회시 필요)</span>
-                                    <input type="password" name="od_pwd" id="od_pwd" required class="frm_input required mt-1 !w-full !h-8" maxlength="20">
+                                <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                    <div class="text-sm text-[#666]"><label for="od_pwd">비밀번호</label></div>
+                                    <div>
+                                        <span class="frm_info">영,숫자 3~20자 (주문서 조회시 필요)</span>
+                                        <input type="password" name="od_pwd" id="od_pwd" required class="frm_input required mt-1 !w-full !h-8" maxlength="20">
+                                    </div>
                                 </div>
                             <?php } ?>
 
-                            <div class="text-sm text-[#666]"><label for="od_tel">전화번호<strong class="sound_only"> 필수</strong></label></div>
-                            <div><input type="text" name="od_tel" value="<?php echo get_text($member['mb_tel']); ?>" id="od_tel" required class="required !w-full" maxlength="20"></div>
-
-                            <div class="text-sm text-[#666]"><label for="od_hp">핸드폰</label></div>
-                            <div><input type="text" name="od_hp" value="<?php echo get_text($member['mb_hp']); ?>" id="od_hp" class="!w-full" maxlength="20"></div>
-
-                            <div class="self-start pt-2 text-sm text-[#666]">주소</div>
-                            <div class="space-y-1">
-                                <label for="od_zip" class="sound_only">우편번호<strong class="sound_only"> 필수</strong></label>
-                                <div class="flex items-center gap-2">
-                                    <input type="text" name="od_zip" value="<?php echo $member['mb_zip1'] . $member['mb_zip2']; ?>" id="od_zip" required class="required !w-full" size="8" maxlength="6" placeholder="우편번호">
-                                    <button type="button" class="btn_address shrink-0" onclick="win_zip('forderform', 'od_zip', 'od_addr1', 'od_addr2', 'od_addr3', 'od_addr_jibeon');">주소 검색</button>
-                                </div>
-                                <input type="text" name="od_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" id="od_addr1" required class="required !w-full" size="60" placeholder="기본주소">
-                                <label for="od_addr1" class="sound_only">기본주소<strong class="sound_only"> 필수</strong></label>
-                                <input type="text" name="od_addr2" value="<?php echo get_text($member['mb_addr2']) ?>" id="od_addr2" class="!w-full" size="60" placeholder="상세주소">
-                                <label for="od_addr2" class="sound_only">상세주소</label>
-                                <input type="text" name="od_addr3" value="<?php echo get_text($member['mb_addr3']) ?>" id="od_addr3" class="!w-full" size="60" readonly="readonly" placeholder="참고항목">
-                                <label for="od_addr3" class="sound_only">참고항목</label>
-                                <input type="hidden" name="od_addr_jibeon" value="<?php echo get_text($member['mb_addr_jibeon']); ?>">
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]"><label for="od_tel">전화번호<strong class="sound_only"> 필수</strong></label></div>
+                                <div><input type="text" name="od_tel" value="<?php echo get_text($member['mb_tel']); ?>" id="od_tel" required class="required !w-full" maxlength="20"></div>
                             </div>
 
-                            <div class="text-sm text-[#666]"><label for="od_email">E-mail<strong class="sound_only"> 필수</strong></label></div>
-                            <div><input type="text" name="od_email" value="<?php echo $member['mb_email']; ?>" id="od_email" required class="required !w-full" size="35" maxlength="100"></div>
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]"><label for="od_hp">핸드폰</label></div>
+                                <div><input type="text" name="od_hp" value="<?php echo get_text($member['mb_hp']); ?>" id="od_hp" class="!w-full" maxlength="20"></div>
+                            </div>
+
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4 text-sm text-[#666]">
+                                <span>주소</span>
+                                <div class="space-y-1">
+                                    <label for="od_zip" class="sound_only">우편번호<strong class="sound_only"> 필수</strong></label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" name="od_zip" value="<?php echo $member['mb_zip1'] . $member['mb_zip2']; ?>" id="od_zip" required class="required !w-full" size="8" maxlength="6" placeholder="우편번호">
+                                        <button type="button" class="btn_address shrink-0" onclick="win_zip('forderform', 'od_zip', 'od_addr1', 'od_addr2', 'od_addr3', 'od_addr_jibeon');">주소 검색</button>
+                                    </div>
+                                    <input type="text" name="od_addr1" value="<?php echo get_text($member['mb_addr1']) ?>" id="od_addr1" required class="required !w-full" size="60" placeholder="기본주소">
+                                    <label for="od_addr1" class="sound_only">기본주소<strong class="sound_only"> 필수</strong></label>
+                                    <input type="text" name="od_addr2" value="<?php echo get_text($member['mb_addr2']) ?>" id="od_addr2" class="!w-full" size="60" placeholder="상세주소">
+                                    <label for="od_addr2" class="sound_only">상세주소</label>
+                                    <input type="text" name="od_addr3" value="<?php echo get_text($member['mb_addr3']) ?>" id="od_addr3" class="!w-full" size="60" readonly="readonly" placeholder="참고항목">
+                                    <label for="od_addr3" class="sound_only">참고항목</label>
+                                    <input type="hidden" name="od_addr_jibeon" value="<?php echo get_text($member['mb_addr_jibeon']); ?>">
+                                </div>
+                            </div>
+
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]"><label for="od_email">E-mail<strong class="sound_only"> 필수</strong></label></div>
+                                <div><input type="text" name="od_email" value="<?php echo $member['mb_email']; ?>" id="od_email" required class="required !w-full" size="35" maxlength="100"></div>
+                            </div>
 
                             <?php if ($default['de_hope_date_use']) { // 배송희망일 사용 
                             ?>
-                                <div class="text-sm text-[#666]"><label for="od_hope_date">희망배송일</label></div>
-                                <div><input type="text" name="od_hope_date" value="" id="od_hope_date" required class="frm_input required inline-block w-auto max-w-full !h-8" size="11" maxlength="10" readonly="readonly"> 이후로 배송 바랍니다.</div>
+                                <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                    <div class="text-sm text-[#666]"><label for="od_hope_date">희망배송일</label></div>
+                                    <div><input type="text" name="od_hope_date" value="" id="od_hope_date" required class="frm_input required inline-block w-auto max-w-full !h-8" size="11" maxlength="10" readonly="readonly"> 이후로 배송 바랍니다.</div>
+                                </div>
                             <?php } ?>
                         </div>
                     </div>
@@ -424,8 +468,8 @@ if ($is_kakaopay_use) {
 
                 <!-- 배송지 시작 -->
                 <section id="sod_frm_taker" class="!border-none p-4 space-y-4 !mb-3">
-                    <div class="flex items-center justify-between">
-                        <h2>배송지</h2>
+                    <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
+                        <h2 class="text-lg pc:text-2xl font-bold">배송지</h2>
                         <?php if ($is_member) { ?>
                             <a href="<?php echo G5_SHOP_URL; ?>/orderaddress.php" id="order_address" class="flex items-center gap-1 border border-gray-400 rounded-full px-2 py-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-left-icon lucide-arrow-right-left">
@@ -486,47 +530,61 @@ if ($is_kakaopay_use) {
                         ?>
 
                         <div class="flex flex-col gap-2 text-sm">
-                            <div class="text-sm text-[#666]">배송지선택</div>
-                            <div>
-                                <div class="order_choice_place py-2"><?php echo $addr_list; ?></div>
-                            </div>
-
-                            <?php if ($is_member) { ?>
-                                <div class="text-sm text-[#666]"><label for="ad_subject">배송지명</label></div>
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]">배송지선택</div>
                                 <div>
-                                    <input type="text" name="ad_subject" id="ad_subject" class="!w-full" maxlength="20">
-                                    <input type="checkbox" name="ad_default" id="ad_default" value="1">
-                                    <label for="ad_default">기본배송지로 설정</label>
+                                    <div class="order_choice_place py-2"><?php echo $addr_list; ?></div>
                                 </div>
-                            <?php } ?>
-
-                            <div class="text-sm text-[#666]"><label for="od_b_name">이름<strong class="sound_only"> 필수</strong></label></div>
-                            <div><input type="text" name="od_b_name" id="od_b_name" required class="required !w-full" maxlength="20"></div>
-
-                            <div class="text-sm text-[#666]"><label for="od_b_tel">전화번호<strong class="sound_only"> 필수</strong></label></div>
-                            <div><input type="text" name="od_b_tel" id="od_b_tel" required class="required !w-full" maxlength="20"></div>
-
-                            <div class="text-sm text-[#666]"><label for="od_b_hp">핸드폰</label></div>
-                            <div><input type="text" name="od_b_hp" id="od_b_hp" class="!w-full" maxlength="20"></div>
-
-                            <div class="self-start pt-2 text-sm text-[#666]">주소</div>
-                            <div id="sod_frm_addr" class="space-y-1">
-                                <label for="od_b_zip" class="sound_only">우편번호<strong class="sound_only"> 필수</strong></label>
-                                <div class="flex items-center gap-2">
-                                    <input type="text" name="od_b_zip" id="od_b_zip" required class="required !w-full" size="8" maxlength="6" placeholder="우편번호">
-                                    <button type="button" class="btn_address shrink-0" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소 검색</button>
-                                </div>
-                                <input type="text" name="od_b_addr1" id="od_b_addr1" required class="required !w-full" size="60" placeholder="기본주소">
-                                <label for="od_b_addr1" class="sound_only">기본주소<strong> 필수</strong></label>
-                                <input type="text" name="od_b_addr2" id="od_b_addr2" class="!w-full" size="60" placeholder="상세주소">
-                                <label for="od_b_addr2" class="sound_only">상세주소</label>
-                                <input type="text" name="od_b_addr3" id="od_b_addr3" readonly="readonly" class="!w-full" size="60" placeholder="참고항목">
-                                <label for="od_b_addr3" class="sound_only">참고항목</label>
-                                <input type="hidden" name="od_b_addr_jibeon" value="">
                             </div>
 
-                            <div class="text-sm text-[#666]"><label for="od_memo">배송요청사항</label></div>
-                            <div><textarea name="od_memo" id="od_memo"></textarea></div>
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <?php if ($is_member) { ?>
+                                    <div class="text-sm text-[#666]"><label for="ad_subject">배송지명</label></div>
+                                    <div>
+                                        <input type="text" name="ad_subject" id="ad_subject" class="!w-full" maxlength="20">
+                                        <input type="checkbox" name="ad_default" id="ad_default" value="1">
+                                        <label for="ad_default">기본배송지로 설정</label>
+                                    </div>
+                                <?php } ?>
+                            </div>
+
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]"><label for="od_b_name">이름<strong class="sound_only"> 필수</strong></label></div>
+                                <div><input type="text" name="od_b_name" id="od_b_name" required class="required !w-full" maxlength="20"></div>
+                            </div>
+
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]"><label for="od_b_tel">전화번호<strong class="sound_only"> 필수</strong></label></div>
+                                <div><input type="text" name="od_b_tel" id="od_b_tel" required class="required !w-full" maxlength="20"></div>
+                            </div>
+
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]"><label for="od_b_hp">핸드폰</label></div>
+                                <div><input type="text" name="od_b_hp" id="od_b_hp" class="!w-full" maxlength="20"></div>
+                            </div>
+
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="self-start pt-2 text-sm text-[#666]">주소</div>
+                                <div id="sod_frm_addr" class="space-y-1">
+                                    <label for="od_b_zip" class="sound_only">우편번호<strong class="sound_only"> 필수</strong></label>
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" name="od_b_zip" id="od_b_zip" required class="required !w-full" size="8" maxlength="6" placeholder="우편번호">
+                                        <button type="button" class="btn_address shrink-0" onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소 검색</button>
+                                    </div>
+                                    <input type="text" name="od_b_addr1" id="od_b_addr1" required class="required !w-full" size="60" placeholder="기본주소">
+                                    <label for="od_b_addr1" class="sound_only">기본주소<strong> 필수</strong></label>
+                                    <input type="text" name="od_b_addr2" id="od_b_addr2" class="!w-full" size="60" placeholder="상세주소">
+                                    <label for="od_b_addr2" class="sound_only">상세주소</label>
+                                    <input type="text" name="od_b_addr3" id="od_b_addr3" readonly="readonly" class="!w-full" size="60" placeholder="참고항목">
+                                    <label for="od_b_addr3" class="sound_only">참고항목</label>
+                                    <input type="hidden" name="od_b_addr_jibeon" value="">
+                                </div>
+                            </div>
+
+                            <div class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
+                                <div class="text-sm text-[#666]"><label for="od_memo">배송요청사항</label></div>
+                                <div><textarea name="od_memo" id="od_memo"></textarea></div>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -603,15 +661,15 @@ if ($is_kakaopay_use) {
         }
         ?>
 
-        <div class="sod_right bg-[#F4F4F4] pt-4">
+        <div class="sod_right bg-[#F4F4F4] pc:bg-white pt-4">
 
             <!-- 쿠폰 적용 섹션 시작 -->
             <section id="sod_coupon_apply" class="space-y-4 p-4 mb-3 bg-white">
-                <div class="flex items-center justify-between ">
-                    <h2 class="!m-0 !p-0 text-lg font-bold">쿠폰 적용</h2>
+                <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
+                    <h2 class="text-lg pc:text-2xl font-bold">쿠폰 적용</h2>
                     <div class="flex items-center gap-2 font-semibold">
                         <span>보유 <?php echo number_format($coupon_total_count); ?>개</span>
-                        <button type="button" id="coupon_accordion_btn" class="inline-flex h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_coupon_apply_body">
+                        <button type="button" id="coupon_accordion_btn" class="inline-flex pc:hidden h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_coupon_apply_body">
                             <svg class="accordion-chevron h-5 w-5 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m18 15-6-6-6 6" />
                             </svg>
@@ -650,9 +708,9 @@ if ($is_kakaopay_use) {
 
             <!-- 포인트 섹션 시작 -->
             <section id="sod_point_apply" class="space-y-4 p-4 mb-3 bg-white">
-                <div class="flex items-center justify-between">
-                    <h2 class="!m-0 !p-0 text-lg font-bold">포인트</h2>
-                    <button type="button" id="point_accordion_btn" class="inline-flex h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_point_apply_body">
+                <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
+                    <h2 class="text-lg pc:text-2xl font-bold">포인트</h2>
+                    <button type="button" id="point_accordion_btn" class="inline-flex pc:hidden h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_point_apply_body">
                         <svg class="accordion-chevron h-5 w-5 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m18 15-6-6-6 6" />
                         </svg>
@@ -690,13 +748,14 @@ if ($is_kakaopay_use) {
                 </div>
             </section>
             <!-- 포인트 섹션 끝 -->
+
             <!-- 기여할 바이클 선택 섹션 -->
             <section id="sod_buycle_apply" class="space-y-4 p-4 mb-3 bg-white">
-                <div class="flex items-center justify-between ">
-                    <h2 class="!m-0 !p-0 text-lg font-bold">기여할 바이클</h2>
+                <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
+                    <h2 class="text-lg pc:text-2xl font-bold">기여할 바이클</h2>
                     <div class="flex items-center gap-2 font-semibold">
                         <span>구독한 바이클 <?php echo number_format(count($buycle_arr)); ?>개</span>
-                        <button type="button" id="buycle_accordion_btn" class="inline-flex h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_buycle_apply_body">
+                        <button type="button" id="buycle_accordion_btn" class="inline-flex pc:hidden h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_buycle_apply_body">
                             <svg class="accordion-chevron h-5 w-5 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m18 15-6-6-6 6" />
                             </svg>
@@ -740,86 +799,309 @@ if ($is_kakaopay_use) {
                 </div>
             </section>
             <!-- 기여할 바이클 선택 섹션 -->
+
             <!-- 결제수단 섹션 시작 -->
             <section id="sod_settle_ui" class="space-y-4 p-4 mb-3 bg-white">
-                <h2>결제수단</h2>
-
-                <div id="sod_settle_tabs" class="grid grid-cols-4 gap-2">
-                    <button type="button" data-settle-tab="cash" class="settle-tab-btn h-12 rounded-md border border-gray-300 bg-white text-sm text-gray-900">현금결제</button>
-                    <button type="button" data-settle-tab="easy" class="settle-tab-btn h-12 rounded-md border border-gray-800 bg-gray-800 text-sm text-white">간편결제</button>
-                    <button type="button" data-settle-tab="card" class="settle-tab-btn h-12 rounded-md border border-gray-300 bg-white text-sm text-gray-900">카드결제</button>
-                    <button type="button" data-settle-tab="gift" class="settle-tab-btn h-12 rounded-md border border-gray-300 bg-white text-sm text-gray-900">문화상품권</button>
+                <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
+                    <h2 class="text-lg pc:text-2xl font-bold">결제수단</h2>
+                    <label class="hidden pc:flex items-center gap-2 text-sm text-[#555]">
+                        <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#3b3b3b] text-xs text-white">✓</span>
+                        <span>이 결제 수단 다음에도 사용</span>
+                    </label>
                 </div>
 
-                <div id="sod_cash_pay_ui" class="hidden grid grid-cols-3 gap-2">
-                    <button type="button" class="settle-cash-btn h-12 rounded-md border border-gray-300 bg-white px-2 text-sm text-gray-900" data-settle-target="#od_settle_bank">무통장입금</button>
-                    <button type="button" class="settle-cash-btn h-12 rounded-md border border-gray-300 bg-white px-2 text-sm text-gray-900" data-settle-target="#od_settle_iche">계좌이체</button>
-                    <button type="button" class="settle-cash-btn h-12 rounded-md border border-gray-300 bg-white px-2 text-sm text-gray-900" data-settle-target="#od_settle_vbank">가상계좌</button>
+                <div id="sod_settle_pc_panel" class="hidden pc:block">
+                    <div id="sod_settle_pc_cards" class="grid grid-cols-4 gap-3">
+                        <?php if ($default['de_easy_pay_use'] && in_array($default['de_pg_service'], array('lg', 'toss'))) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_easy_pay">
+                                <div class="mb-2 text-base font-semibold text-gray-900">토스페이먼츠</div>
+                                <div class="text-sm text-gray-500">간편결제</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($is_kakaopay_use) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_kakaopay">
+                                <div class="mb-2 text-base font-semibold text-gray-900">카카오페이</div>
+                                <div class="text-sm text-gray-500">간편결제</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($default['de_bank_use']) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_bank">
+                                <div class="mb-2 text-base font-semibold text-gray-900">무통장입금</div>
+                                <div class="text-sm text-gray-500">입금 계좌 직접 선택</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($default['de_vbank_use']) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_vbank">
+                                <div class="mb-2 text-base font-semibold text-gray-900">가상계좌입금</div>
+                                <div class="text-sm text-gray-500">가상계좌 발급 결제</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($default['de_iche_use']) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_iche">
+                                <div class="mb-2 text-base font-semibold text-gray-900">계좌이체</div>
+                                <div class="text-sm text-gray-500">실시간 계좌 이체</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($default['de_card_use']) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_card">
+                                <div class="mb-2 text-base font-semibold text-gray-900">신용카드</div>
+                                <div class="text-sm text-gray-500">일반 카드 결제</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($default['de_hp_use']) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_hp">
+                                <div class="mb-2 text-base font-semibold text-gray-900">휴대폰 결제</div>
+                                <div class="text-sm text-gray-500">휴대폰 소액 결제</div>
+                            </button>
+                        <?php } ?>
+
+
+                        <?php if ($default['de_easy_pay_use'] && $default['de_pg_service'] === 'kcp' && isset($default['de_easy_pay_services'])) { ?>
+                            <?php if (in_array('nhnkcp_payco', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nhnkcp_payco">
+                                    <div>PAYCO</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nhnkcp_naverpay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nhnkcp_naverpay">
+                                    <div>네이버페이</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nhnkcp_kakaopay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nhnkcp_kakaopay">
+                                    <div>카카오페이</div>
+                                </button>
+                            <?php } ?>
+                        <?php } ?>
+
+                        <?php if ($default['de_easy_pay_use'] && $default['de_pg_service'] === 'nicepay' && isset($default['de_easy_pay_services'])) { ?>
+                            <?php if (in_array('nicepay_samsungpay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nicepay_samsungpay">
+                                    <div>삼성페이</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nicepay_naverpay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nicepay_naverpay">
+                                    <div>네이버페이</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nicepay_kakaopay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nicepay_kakaopay">
+                                    <div>카카오페이</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nicepay_paycopay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nicepay_paycopay">
+                                    <div>페이코</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nicepay_skpay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nicepay_skpay">
+                                    <div>SK페이</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nicepay_ssgpay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nicepay_ssgpay">
+                                    <div>SSG페이</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nicepay_lpay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_nicepay_lpay">
+                                    <div>LPAY</div>
+                                </button>
+                            <?php } ?>
+                        <?php } ?>
+
+                        <?php if ($default['de_inicis_lpay_use']) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_inicislpay">
+                                <div>L.pay</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if (isset($default['de_inicis_kakaopay_use']) && $default['de_inicis_kakaopay_use']) { ?>
+                            <button type="button" class="settle-pc-card rounded-md border border-gray-300 bg-white p-4 text-center" data-settle-target="#od_settle_inicis_kakaopay">
+                                <div>카카오페이</div>
+                            </button>
+                        <?php } ?>
+                    </div>
                 </div>
 
-                <div id="sod_cash_bank_ui" class="hidden space-y-3 rounded-md border border-gray-200 bg-gray-50 p-3">
-                    <div class="space-y-2">
-                        <label for="ui_od_bank_account" class="block text-sm text-gray-700">입금 계좌</label>
-                        <select id="ui_od_bank_account" class="h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900">
-                            <?php
-                            if ($default['de_bank_use']) {
-                                $ui_bank_accounts = array_map('trim', explode("\n", trim($default['de_bank_account'])));
-                                $ui_bank_accounts = array_filter($ui_bank_accounts, 'strlen');
-                                if (empty($ui_bank_accounts)) {
-                                    echo '<option value="">등록된 계좌가 없습니다.</option>';
-                                } else {
-                                    foreach ($ui_bank_accounts as $ui_bank_account) {
-                                        echo '<option value="' . $ui_bank_account . '">' . $ui_bank_account . '</option>' . PHP_EOL;
+                <div id="sod_settle_mobile_panels" class="block pc:hidden">
+                    <div id="sod_settle_tabs" class="grid pc:hidden grid-cols-4 gap-2 pb-2">
+                        <button type="button" data-settle-tab="easy" class="settle-tab-btn h-12 rounded-md border border-gray-300 bg-white text-sm text-gray-900">간편결제</button>
+                        <button type="button" data-settle-tab="cash" class="settle-tab-btn h-12 rounded-md border border-gray-300 bg-white text-sm text-gray-900">현금결제</button>
+                        <button type="button" data-settle-tab="card" class="settle-tab-btn h-12 rounded-md border border-gray-300 bg-white text-sm text-gray-900">카드결제</button>
+                        <button type="button" data-settle-tab="etc" class="settle-tab-btn h-12 rounded-md border border-gray-300 bg-white text-sm text-gray-900">기타</button>
+                    </div>
+
+                    <div id="sod_easy_pay_ui" class="grid grid-cols-3 gap-2">
+                        <?php if ($default['de_easy_pay_use'] && in_array($default['de_pg_service'], array('lg', 'toss'))) { ?>
+                            <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_easy_pay">
+                                <div class="mb-2 text-xl font-semibold leading-none text-[#1f57c3]">toss pay</div>
+                                <div class="text-sm">토스페이먼츠</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($default['de_easy_pay_use'] && $default['de_pg_service'] === 'kcp' && isset($default['de_easy_pay_services'])) { ?>
+                            <?php if (in_array('nhnkcp_payco', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_nhnkcp_payco">
+                                    <div class="mb-2 text-xl font-semibold leading-none text-[#f33446]">PAYCO</div>
+                                    <div class="text-sm">페이코</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nhnkcp_naverpay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_nhnkcp_naverpay">
+                                    <div class="mb-2 text-xl font-semibold leading-none text-[#16c15f]">N pay</div>
+                                    <div class="text-sm">네이버페이</div>
+                                </button>
+                            <?php } ?>
+
+                            <?php if (in_array('nhnkcp_kakaopay', explode(',', $default['de_easy_pay_services']))) { ?>
+                                <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_nhnkcp_kakaopay">
+                                    <div class="mx-auto mb-2 flex h-7 w-14 items-center justify-center rounded-full bg-[#f2da00] text-sm font-bold leading-none">pay</div>
+                                    <div class="text-sm">카카오페이</div>
+                                </button>
+                            <?php } ?>
+                        <?php } ?>
+                    </div>
+
+                    <div id="sod_cash_pay_ui" class="hidden grid grid-cols-3 gap-2">
+                        <?php if ($default['de_bank_use']) { ?>
+                            <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_bank">
+                                <div class="mb-2 text-base font-semibold leading-none text-gray-900">무통장입금</div>
+                                <div class="text-sm text-gray-500">입금 계좌 직접 선택</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($default['de_iche_use']) { ?>
+                            <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_iche">
+                                <div class="mb-2 text-base font-semibold leading-none text-gray-900">계좌이체</div>
+                                <div class="text-sm text-gray-500">실시간 계좌 이체</div>
+                            </button>
+                        <?php } ?>
+
+                        <?php if ($default['de_vbank_use']) { ?>
+                            <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_vbank">
+                                <div class="mb-2 text-base font-semibold leading-none text-gray-900">가상계좌입금</div>
+                                <div class="text-sm text-gray-500">가상계좌 발급 결제</div>
+                            </button>
+                        <?php } ?>
+                    </div>
+
+                    <div id="sod_card_pay_ui" class="hidden grid grid-cols-3 gap-2">
+                        <?php if ($default['de_card_use']) { ?>
+                            <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_card">
+                                <div class="mb-2 text-base font-semibold leading-none text-gray-900">신용카드</div>
+                                <div class="text-sm text-gray-500">일반 카드 결제</div>
+                            </button>
+                        <?php } ?>
+                    </div>
+
+                    <div id="sod_etc_pay_ui" class="hidden grid grid-cols-3 gap-2">
+                        <?php if ($default['de_hp_use']) { ?>
+                            <button type="button" class="settle-mobile-card rounded-md border border-gray-300 bg-white p-3 text-center" data-settle-target="#od_settle_hp">
+                                <div class="mb-2 text-base font-semibold leading-none text-gray-900">휴대폰 결제</div>
+                                <div class="text-sm text-gray-500">휴대폰 소액 결제</div>
+                            </button>
+                        <?php } ?>
+                    </div>
+                </div>
+
+                <div id="sod_settle_extra_ui">
+                    <div id="sod_bank_extra_ui" class="hidden space-y-3 rounded-md border border-gray-200 bg-gray-50 p-3">
+                        <div class="space-y-2">
+                            <label for="ui_od_bank_account" class="block text-sm text-gray-700">입금 계좌</label>
+                            <select id="ui_od_bank_account" class="h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900">
+                                <?php
+                                if ($default['de_bank_use']) {
+                                    $ui_bank_accounts = array_map('trim', explode("\n", trim($default['de_bank_account'])));
+                                    $ui_bank_accounts = array_filter($ui_bank_accounts, 'strlen');
+                                    if (empty($ui_bank_accounts)) {
+                                        echo '<option value="">등록된 계좌가 없습니다.</option>';
+                                    } else {
+                                        foreach ($ui_bank_accounts as $ui_bank_account) {
+                                            echo '<option value="' . $ui_bank_account . '">' . $ui_bank_account . '</option>' . PHP_EOL;
+                                        }
                                     }
+                                } else {
+                                    echo '<option value="">무통장입금 비활성화</option>';
                                 }
-                            } else {
-                                echo '<option value="">무통장입금 비활성화</option>';
-                            }
-                            ?>
-                        </select>
-                    </div>
-                    <div class="space-y-2">
-                        <label for="ui_od_deposit_name" class="block text-sm text-gray-700">입금자명</label>
-                        <input type="text" id="ui_od_deposit_name" class="h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900" maxlength="20" placeholder="입금자명을 입력해 주세요">
+                                ?>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="ui_od_deposit_name" class="block text-sm text-gray-700">입금자명</label>
+                            <input type="text" id="ui_od_deposit_name" class="h-11 w-full rounded-md border border-gray-300 bg-white px-3 text-sm text-gray-900" maxlength="20" placeholder="입금자명을 입력해 주세요">
+                        </div>
                     </div>
                 </div>
 
-                <div id="sod_easy_pay_ui" class="grid grid-cols-3 gap-2">
-                    <button type="button" class="rounded-md border border-[#2f3134] bg-white p-3 text-center">
-                        <div class="mb-2 text-xl font-semibold leading-none text-[#1f57c3]">toss pay</div>
-                        <div class="text-sm">토스페이</div>
-                    </button>
-                    <button type="button" class="rounded-md border border-[#dfdfdf] bg-white p-3 text-center">
-                        <div class="mb-2 text-xl font-semibold leading-none text-[#16c15f]">N pay</div>
-                        <div class="text-sm">네이버페이</div>
-                    </button>
-                    <button type="button" class="rounded-md border border-[#dfdfdf] bg-white p-3 text-center">
-                        <div class="mx-auto mb-2 flex h-7 w-14 items-center justify-center rounded-full bg-[#f2da00] text-sm font-bold leading-none">pay</div>
-                        <div class="text-sm">카카오페이</div>
-                    </button>
-                    <button type="button" class="rounded-md border border-[#dfdfdf] bg-white p-3 text-center">
-                        <div class="mb-2 text-xl font-semibold leading-none text-[#f33446]">PAYCO</div>
-                        <div class="text-sm">페이코</div>
-                    </button>
-                    <button type="button" class="rounded-md border border-[#dfdfdf] bg-white p-3 text-center">
-                        <div class="mb-2 text-xl font-semibold leading-none text-[#2455c4]">SAMSUNG pay</div>
-                        <div class="text-sm">삼성페이</div>
-                    </button>
-                    <button type="button" class="rounded-md border border-[#dfdfdf] bg-white p-3 text-center">
-                        <div class="mb-2 text-xl font-semibold leading-none text-black">Pay</div>
-                        <div class="text-sm">애플페이</div>
-                    </button>
-                </div>
-
-                <label class="flex items-center gap-2 text-sm text-[#555]">
+                <label class="flex pc:hidden items-center gap-2 text-sm text-[#555]">
                     <span class="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#3b3b3b] text-xs text-white">✓</span>
                     <span>이 결제 수단 다음에도 사용</span>
                 </label>
+
+                <script>
+                    $(document).on("click", ".settle-pc-card", function() {
+                        var $card = $(this);
+                        var targetSelector = $card.data("settle-target");
+                        var $target = $(targetSelector);
+
+                        if (!$target.length) {
+                            return;
+                        }
+
+                        $(".settle-pc-card")
+                            .removeClass("border-gray-800 bg-gray-50")
+                            .addClass("border-gray-300 bg-white");
+
+                        $card
+                            .removeClass("border-gray-300 bg-white")
+                            .addClass("border-gray-800 bg-gray-50");
+
+                        $target.prop("checked", true).trigger("click");
+                    });
+
+                    $(document).on("click", ".settle-mobile-card", function() {
+                        var $card = $(this);
+                        var targetSelector = $card.data("settle-target");
+                        var $target = $(targetSelector);
+
+                        if (!$target.length) {
+                            return;
+                        }
+
+                        $("#sod_settle_mobile_panels .settle-mobile-card")
+                            .removeClass("border-gray-800 bg-gray-50")
+                            .addClass("border-gray-300 bg-white");
+
+                        $card
+                            .removeClass("border-gray-300 bg-white")
+                            .addClass("border-gray-800 bg-gray-50");
+
+                        $target.prop("checked", true).trigger("click");
+                    });
+                </script>
             </section>
             <!-- 결제수단 섹션 끝 -->
 
             <!-- 결제 예정 금액 섹션 시작 -->
-            <section id="sod_expected_price" class="space-y-4 p-4 mb-3 bg-white">
+            <section id="sod_expected_price" class="block pc:hidden space-y-4 p-4 mb-3 bg-white">
                 <div class="flex items-center justify-between">
                     <h2>결제 예정 금액</h2>
                     <button type="button" id="expected_accordion_btn" class="inline-flex h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_expected_price_body">
@@ -868,17 +1150,18 @@ if ($is_kakaopay_use) {
             <!-- 결제 예정 금액 섹션 끝 -->
 
             <!-- 결제 동의 섹션 시작 -->
-            <section id="sod_agree_ui" class="space-y-4 mb-4">
-                <div class="flex items-center justify-between bg-white p-4">
-                    <h2>위 내용을 확인했으며, 결제에 동의합니다.</h2>
-                    <button type="button" id="agree_accordion_btn" class="inline-flex h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_agree_ui_body">
+            <section id="sod_agree_ui" class="mb-4 p-0 pc:p-4 space-y-4 pc:space-y-5">
+                <div class="flex items-center justify-between bg-white pc:border-b border-gray-900 pc:pb-4">
+                    <h2 class="hidden pc:block text-lg pc:text-2xl font-bold">개인정보 및 결제 동의</h2>
+                    <h2 class="block pc:hidden px-4 py-5 text-lg font-semibold">위 내용을 확인했으며, 결제에 동의합니다.</h2>
+                    <button type="button" id="agree_accordion_btn" class="inline-flex pc:hidden h-8 w-8 items-center justify-center text-[#222]" aria-expanded="true" aria-controls="sod_agree_ui_body">
                         <svg class="accordion-chevron h-5 w-5 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="m18 15-6-6-6 6" />
                         </svg>
                     </button>
                 </div>
 
-                <div id="sod_agree_ui_body" class="space-y-4 px-4 text-sm">
+                <div id="sod_agree_ui_body" class="px-4 pc:px-0 space-y-4 text-sm">
                     <div class="flex items-center justify-between">
                         <span>개인정보 수집, 이용 및 처리 동의</span>
                         <button type="button" class="text-[#8a8a8a] underline">보기</button>
@@ -891,12 +1174,13 @@ if ($is_kakaopay_use) {
                         <span>선불전자지급수단 이용약관 동의</span>
                         <button type="button" class="text-[#8a8a8a] underline">보기</button>
                     </div>
+                    <span class="hidden pc:block text-base font-semibold">위 내용을 확인하였으며 결제에 동의합니다.</span>
                 </div>
             </section>
             <!-- 결제 동의 섹션 끝 -->
 
             <!-- 결제 버튼 섹션 시작 -->
-            <section id="sod_pay_button_ui" class="space-y-4 p-4 bg-white">
+            <section id="sod_pay_button_ui" class="block pc:hidden space-y-4 p-4 bg-white">
                 <button type="button" onclick="forderform_check(this.form);" class="h-14 w-full rounded-md bg-[#f4cc3a] text-base font-semibold text-[#1f1f1f]">
                     <span id="pay_btn_amount"><?php echo number_format($tot_price); ?>원</span> 결제하기
                 </button>
@@ -1188,7 +1472,48 @@ if ($is_kakaopay_use) {
         </div>
 
     </div>
+
+    <!-- 결제 정보 섹션 -->
+    <section class="hidden pc:block w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-15">
+        <div class="flex items-center pb-4 border-b border-gray-500">
+            <h2 class="text-[20px] font-semibold">결제정보</h2>
+        </div>
+        <div class="space-y-3 pb-4 border-b border-gray-500">
+            <div class="flex items-center justify-between">
+                <span class="text-[15px] text-gray-500">상품수</span>
+                <span class="text-base font-medium"><?php echo number_format($cart_item_kind_count); ?>개</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-[15px] text-gray-500">상품금액</span>
+                <span id="pc_item_price" class="text-base font-medium"><?php echo number_format($tot_cust_price); ?>원</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-[15px] text-gray-500">배송비</span>
+                <span id="pc_send_price" class="text-base font-medium"><?php echo number_format($send_cost); ?>원</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-[15px] text-gray-500">할인금액</span>
+                <span id="pc_discount_price" class="text-base font-medium">-<?php echo number_format($tot_item_discount); ?>원</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-[15px] text-gray-500">쿠폰 할인금액</span>
+                <span id="pc_coupon_price" class="text-base font-medium">-0원</span>
+            </div>
+            <div class="flex items-center justify-between">
+                <span class="text-[15px] text-gray-500">포인트</span>
+                <span id="pc_point_price" class="text-base font-medium">-0원</span>
+            </div>
+        </div>
+        <div class="flex items-center justify-between pb-4">
+            <span class="text-base font-medium">총 결제 금액</span>
+            <span id="pc_total_price" class="text-2xl font-bold"><?php echo number_format($tot_price); ?>원</span>
+        </div>
+        <button type="button" onclick="forderform_check(this.form);" class="payment_order_button inline-flex w-full items-center justify-center gap-1 py-4 bg-[var(--color-primary)] text-base font-semibold rounded cursor-pointer disabled:bg-gray-200 disabled:text-white" <?php echo $i > 0 ? '' : 'disabled'; ?>><span id="pc_pay_btn_amount"><?php echo number_format($tot_price); ?>원</span> 결제하기</button>
+    </section>
 </form>
+
+
+
 
 <?php
 if ($default['de_inicis_lpay_use'] || $default['de_inicis_kakaopay_use']) {   //이니시스 L.pay 또는 이니시스 카카오페이 사용시
@@ -1223,6 +1548,14 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                 }
             );
         });
+
+        // 주문하기 페이지 전용 헤더 추가
+        const $orderHeading = $("#order_page_heading");
+        const $hdMenu = $("#hd_menu");
+
+        if ($orderHeading.length && $hdMenu.length) {
+            $orderHeading.insertAfter($hdMenu);
+        }
 
         $(document).on("click", ".cp_apply", function() {
             var $el = $(this).closest("tr");
@@ -1488,40 +1821,24 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                 $btn.toggleClass(inactiveClass, !isActive);
             });
 
-            $("#sod_cash_pay_ui").toggleClass("hidden", tabKey !== "cash");
             $("#sod_easy_pay_ui").toggleClass("hidden", tabKey !== "easy");
-        }
-
-        function syncCashSettleUi() {
-            var activeClass = "border-gray-800 bg-gray-800 text-white";
-            var inactiveClass = "border-gray-300 bg-white text-gray-900";
-            var disabledClass = "cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400";
-
-            $(".settle-cash-btn").each(function() {
-                var $btn = $(this);
-                var targetSelector = $btn.data("settle-target");
-                var $target = $(targetSelector);
-                var exists = $target.length > 0;
-                var isChecked = exists && $target.is(":checked");
-
-                $btn.prop("disabled", !exists);
-                $btn.toggleClass(activeClass, isChecked);
-                $btn.toggleClass(inactiveClass, exists && !isChecked);
-                $btn.toggleClass(disabledClass, !exists);
-            });
+            $("#sod_cash_pay_ui").toggleClass("hidden", tabKey !== "cash");
+            $("#sod_card_pay_ui").toggleClass("hidden", tabKey !== "card");
+            $("#sod_etc_pay_ui").toggleClass("hidden", tabKey !== "etc");
         }
 
         function syncCashBankUi() {
             var isBankChecked = $("#od_settle_bank").length && $("#od_settle_bank").is(":checked");
             var isCashTabActive = currentSettleTabKey === "cash";
-            var $uiWrap = $("#sod_cash_bank_ui");
+            var $uiWrap = $("#sod_bank_extra_ui");
             var $uiBankAccount = $("#ui_od_bank_account");
             var $uiDepositName = $("#ui_od_deposit_name");
             var $originBankAccount = $("#od_bank_account");
             var $originDepositName = $("#od_deposit_name");
 
-            $uiWrap.toggleClass("hidden", !(isBankChecked && isCashTabActive));
-            if (!(isBankChecked && isCashTabActive)) {
+            $uiWrap.toggleClass("hidden", !(isBankChecked));
+            if (!(isBankChecked)) {
+
                 return;
             }
 
@@ -1540,6 +1857,21 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             }
         }
 
+        function syncPcSettleUi() {
+            var activeClass = "border-gray-800 bg-gray-50";
+            var inactiveClass = "border-gray-300 bg-white";
+
+            $(".settle-pc-card").each(function() {
+                var $card = $(this);
+                var targetSelector = $card.data("settle-target");
+                var $target = $(targetSelector);
+                var isChecked = $target.length && $target.is(":checked");
+
+                $card.toggleClass(activeClass, isChecked);
+                $card.toggleClass(inactiveClass, !isChecked);
+            });
+        }
+
         function selectFirstAvailableSettle(selectorList) {
             for (var i = 0; i < selectorList.length; i++) {
                 var $target = $(selectorList[i]);
@@ -1552,6 +1884,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             return false;
         }
 
+        // 실제 선택된 결제수단 radio와 모바일 결제수단 탭 UI를 맞춤
         function syncSettleTabByRadio() {
             var $selected = $("input[name='od_settle_case']:checked");
             if (!$selected.length) {
@@ -1562,10 +1895,12 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             var selectedId = $selected.attr("id") || "";
             var tabKey = "easy";
 
-            if (selectedId === "od_settle_card") {
-                tabKey = "card";
-            } else if (selectedId === "od_settle_bank" || selectedId === "od_settle_vbank" || selectedId === "od_settle_iche") {
+            if (selectedId === "od_settle_bank" || selectedId === "od_settle_vbank" || selectedId === "od_settle_iche") {
                 tabKey = "cash";
+            } else if (selectedId === "od_settle_card") {
+                tabKey = "card";
+            } else if (selectedId === "od_settle_hp") {
+                tabKey = "etc";
             }
 
             setSettleTabUi(tabKey);
@@ -1597,27 +1932,19 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                 ]);
             } else if (tabKey === "card") {
                 selectFirstAvailableSettle(["#od_settle_card"]);
+            } else if (tabKey === "etc") {
+                selectFirstAvailableSettle(["#od_settle_hp"]);
             }
 
-            syncCashSettleUi();
+
             syncCashBankUi();
-        });
-
-        $(document).on("click", ".settle-cash-btn", function() {
-            var targetSelector = $(this).data("settle-target");
-            var $target = $(targetSelector);
-
-            if (!$target.length) {
-                return;
-            }
-
-            $target.prop("checked", true).trigger("click");
+            syncPcSettleUi();
         });
 
         $(document).on("change", "input[name='od_settle_case']", function() {
             syncSettleTabByRadio();
-            syncCashSettleUi();
             syncCashBankUi();
+            syncPcSettleUi();
         });
 
         $(document).on("change", "#ui_od_bank_account", function() {
@@ -1629,8 +1956,8 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         });
 
         syncSettleTabByRadio();
-        syncCashSettleUi();
         syncCashBankUi();
+        syncPcSettleUi();
 
         // 배송지선택
         $("input[name=ad_sel_addr]").on("click", function() {
@@ -1804,6 +2131,13 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         $("#exp_point_price").text("-" + number_format(String(temp_point)) + "원");
         $("#exp_total_price").text(number_format(String(total)) + "원");
         $("#pay_btn_amount").text(number_format(String(total)) + "원");
+
+        $("#pc_send_price").text(number_format(String(send_cost + send_cost2)) + "원");
+        $("#pc_coupon_price").text("-" + number_format(String(coupon_total)) + "원");
+        $("#pc_point_price").text("-" + number_format(String(temp_point)) + "원");
+        $("#pc_total_price").text(number_format(String(total)) + "원");
+        $("#pc_pay_btn_amount").text(number_format(String(total)) + "원");
+
         update_coupon_button_ui();
     }
 
@@ -2639,7 +2973,9 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
 
     }
 
-    // 구매자 정보와 동일합니다.
+    // 주문자 정보를 배송지로 복사
+    // 주문자 정보와 배송지 정보가 같을 때 배송지 입력칸을 빠르게 채우기 위한 함수
+    // 주소 복사 후 배송비 재계산까지 같이 호출해서 배송지 변경에 따른 금액도 바로 반영
     function gumae2baesong() {
         var f = document.forderform;
 

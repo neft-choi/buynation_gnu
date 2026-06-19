@@ -1484,19 +1484,19 @@ function item_icon($it)
     $icon = '<span class="sit_icon flex gap-1 overflow-auto flex-wrap">';
 
     if ($it['it_type1'])
-        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md">히트</span>';
+        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md bg-white">히트</span>';
 
     if ($it['it_type2'])
-        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md">추천</span>';
+        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md bg-white">추천</span>';
 
     if ($it['it_type3'])
-        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md">최신</span>';
+        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md bg-white">최신</span>';
 
     if ($it['it_type4'])
-        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md">인기</span>';
+        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md bg-white">인기</span>';
 
     if ($it['it_type5'])
-        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md">할인</span>';
+        $icon .= '<span class="w-fit shrink-0 px-2 py-1 border border-gray-600 rounded-md bg-white">할인</span>';
 
 
     // 쿠폰상품

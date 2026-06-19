@@ -581,6 +581,11 @@ function conv_content($content, $html, $filter = true)
     global $config, $board;
 
     if ($html) {
+        $content = preg_replace(
+            '#https?://(172\.30\.1\.93|43\.203\.109\.181)#',
+            '',
+            $content
+        );
         $source = array();
         $target = array();
 

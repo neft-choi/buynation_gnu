@@ -18,107 +18,11 @@ include_once(G5_LIB_PATH . '/latest.lib.php');
 
 add_javascript('<script src="' . G5_JS_URL . '/owlcarousel/owl.carousel.min.js"></script>', 10);
 add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.carousel.css">', 0);
-
-// 현재 실행 중인 PHP 파일명만 체크
-$current_shop_page = basename($_SERVER['SCRIPT_NAME']);
-
-// 페이지별 헤더 직접 설정 시 사용할 기본값
-$header_defaults = array(
-    'layout' => 'default',
-    'show_back' => false,
-    'show_title' => false,
-    'show_search_button' => false,
-    'show_searchbar' => false,
-    'show_notice' => false,
-    'show_cart' => false,
-    'title' => $g5['title'],
-    'title_class' => 'text-base font-semibold',
-    'back_mode' => 'fallback',
-);
-
-// 페이지에서 전달한 헤더 타입 (미지정 시 default)
-$variant = isset($shop_header_variant) ? (string)$shop_header_variant : 'default';
-
-// 헤더 타입별 표시 옵션 맵
-$header_map = array(
-    'default' => array(
-        'layout' => 'default',
-        'show_back' => false,
-        'show_title' => false,
-        'show_search_button' => false,
-        'show_cart' => false,
-        'title' => $g5['title'],
-        'title_class' => 'text-base font-semibold',
-        'back_mode' => 'fallback',
-    ),
-    'cart.php' => array(
-        'layout' => 'center_title',
-        'show_back' => true,
-        'show_title' => true,
-        'show_search_button' => false,
-        'show_cart' => false,
-        'title' => '장바구니',
-        'title_class' => 'text-center text-xl font-semibold',
-        'back_mode' => 'fallback',
-    ),
-    'orderform.php' => array(
-        'layout' => 'center_title',
-        'show_back' => true,
-        'show_title' => true,
-        'show_search_button' => false,
-        'show_cart' => false,
-        'title' => '주문하기',
-        'title_class' => 'text-center text-xl font-semibold',
-        'back_mode' => 'fallback',
-    ),
-    'couponzone.php' => array(
-        'layout' => 'center_title',
-        'show_back' => true,
-        'show_title' => true,
-        'title' => '쿠폰존',
-        'title_class' => 'text-center text-lg font-semibold',
-        'back_mode' => 'fallback',
-    ),
-    'recentview.php' => array(
-        'layout' => 'center_title',
-        'show_back' => true,
-        'show_title' => true,
-        'title' => '최근 본 상품',
-        'title_class' => 'text-center text-lg font-semibold',
-        'back_mode' => 'fallback',
-    ),
-);
-
-// 별도 커스텀 variant를 주지 않았으면 현재 페이지 파일명으로 직접 조회
-if ($variant === 'default' && isset($header_map[$current_shop_page])) {
-    $variant = $current_shop_page;
-}
-
-// 기존 variant 값(cart/orderform/item/list)도 파일명 키(cart.php ...)로 호환
-if (!isset($header_map[$variant]) && isset($header_map[$variant . '.php'])) {
-    $variant = $variant . '.php';
-}
-
-// 페이지에서 $shop_header를 직접 전달하면 해당 값을 우선 사용
-if (isset($shop_header) && is_array($shop_header)) {
-    $header = array_merge($header_defaults, $shop_header);
-    $is_custom_header = ($header['layout'] !== 'default');
-} else {
-    // 현재 타입에 맞는 설정 선택 (없으면 default)
-    $header = isset($header_map[$variant]) ? $header_map[$variant] : $header_map['default'];
-    $header = array_merge($header_defaults, $header);
-    $is_custom_header = ($variant !== 'default' && isset($header_map[$variant]));
-}
-
-$shop_home_url = G5_SHOP_URL . '/';
-$back_onclick_with_fallback = "if (history.length > 1) { history.back(); } else { location.href='" . $shop_home_url . "'; }";
-$custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' : $back_onclick_with_fallback;
 ?>
-
 
 <div id="app-shell" class="app-shell">
     <!-- 상단 시작 -->
-    <header id="hd" class="!bg-white">
+    <header id="hd" class="sticky pc:static top-0 left-0 z-50 !bg-white">
         <h1 id="hd_h1"><?php echo $g5['title'] ?></h1>
         <div id="skip_to_container"><a href="#container">본문 바로가기</a></div>
 
@@ -126,279 +30,178 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
             include G5_BBS_PATH . '/newwin.inc.php'; // 팝업레이어
         } ?>
 
-        <!-- 커스텀 헤더 시작 -->
-        <?php if ($is_custom_header) { ?>
-            <div id="hd_wrapper">
-                <div id="shop-header" class="<?php echo ($header['layout'] === 'center_title') ? 'w-full max-w min-h-14 grid grid-cols-[36px_1fr_36px] items-center px-2 bg-white' : 'w-full min-h-14 flex items-center justify-between pl-2 pr-4 bg-white'; ?>">
-                    <?php if ($header['layout'] === 'center_title') { ?>
-                        <?php if ($header['show_back']) { ?>
-                            <button type="button"
-                                class="inline-flex h-9 w-9 items-center justify-center text-gray-800"
-                                onclick="<?php echo $custom_back_onclick; ?>"
-                                aria-label="뒤로가기">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="m15 18-6-6 6-6" />
-                                </svg>
-                            </button>
-                        <?php } else { ?>
-                            <span aria-hidden="true" class="inline-flex h-9 w-9"></span>
-                        <?php } ?>
+        <!-- 기본 헤더 본문 (로고/아이콘/검색) -->
+        <div id="hd_wrapper">
+            <div class="header-inner mx-auto w-full max-w-[var(--breakpoint-pc)] p-4 pb-0 space-y-4">
+                <div id="shop-header" class="flex items-center justify-between">
+                    <div class="inline-flex items-center gap-10">
+                        <a href="<?php echo G5_SHOP_URL; ?>/" id="shop-logo-link" class="block">
+                            <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>">
+                        </a>
 
-                        <?php if ($header['show_title']) { ?>
-                            <div class="<?php echo $header['title_class']; ?>"><?php echo $header['title']; ?></div>
-                        <?php } else { ?>
-                            <span aria-hidden="true"></span>
-                        <?php } ?>
+                        <div id="shop-searchbar-desktop-slot"></div>
+                    </div>
 
-                        <span aria-hidden="true" class="inline-flex h-9 w-9"></span>
-                    <?php } else { ?>
-                        <div class="flex items-center gap-2">
-                            <?php if ($header['show_back']) { ?>
-                                <button type="button"
-                                    class="inline-flex h-9 w-9 items-center justify-center text-gray-800"
-                                    onclick="<?php echo $custom_back_onclick; ?>"
-                                    aria-label="뒤로가기">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                        <path d="m15 18-6-6 6-6" />
-                                    </svg>
-                                </button>
-                            <?php } ?>
-
-                            <?php if ($header['show_title']) { ?>
-                                <div class="<?php echo $header['title_class']; ?>"><?php echo $header['title']; ?></div>
-                            <?php } ?>
-                        </div>
-
-                        <div class="flex items-center gap-2">
-                            <?php if ($header['show_search_button']) { ?>
-                                <span class="inline-flex h-9 w-9 items-center justify-center text-gray-800" aria-label="검색">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                        <circle cx="11" cy="11" r="8" />
-                                        <path d="m21 21-4.3-4.3" />
-                                    </svg>
-                                </span>
-                            <?php } ?>
-
-                            <?php if ($header['show_notice']) { ?>
-                                <button type="button"
-                                    class="inline-flex h-9 w-9 items-center justify-center text-gray-800"
-                                    aria-label="알림"
-                                    aria-expanded="false"
-                                    aria-controls="notice-panel">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-icon lucide-bell">
-                                        <path d="M10.268 21a2 2 0 0 0 3.464 0" />
-                                        <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
-                                    </svg>
-                                </button>
-                            <?php } ?>
-
-                            <?php if ($header['show_cart']) { ?>
-                                <a href="<?php echo G5_SHOP_URL; ?>/cart.php"
-                                    class="relative inline-flex h-9 w-9 items-center justify-center text-gray-800"
-                                    aria-label="장바구니">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
-                                        <circle cx="8" cy="21" r="1" />
-                                        <circle cx="19" cy="21" r="1" />
-                                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                                    </svg>
-                                    <span class="absolute -top-1 -right-1 inline-flex min-w-4 h-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
-                                        <?php echo get_boxcart_datas_count(); ?>
-                                    </span>
-                                </a>
-                            <?php } ?>
-                        </div>
-                    <?php } ?>
+                    <div class="flex items-center gap-2 text-2xl">
+                        <?= get_notification() ?>
+                    </div>
                 </div>
-            </div>
 
-            <?php if ($header['show_searchbar']) { ?>
-                <?php include_once(G5_THEME_SHOP_PATH . '/searchbar.modern.php'); ?>
-            <?php } ?>
-            <!-- 상품 커스텀 헤더 끝 -->
+                <!-- 최근 본 상품 -->
+                <div id="recent-viewed-backdrop" class="hidden fixed inset-0 z-40 bg-black/40"></div>
 
-        <?php } else { ?>
+                <div id="recent-viewed-panel" class="fixed top-0 right-0 z-50 flex flex-col h-full w-full max-w-[440px] translate-x-full bg-white">
+                    <div class="flex items-center justify-between border-b border-zinc-200 px-5 py-6">
+                        <p class="text-lg font-semibold text-gray-900">최근 본 상품</p>
 
-            <!-- 기본 헤더 본문 (로고/아이콘/검색) -->
-            <div id="hd_wrapper">
-                <div class="header-inner mx-auto w-full max-w-[var(--breakpoint-pc)] p-4 pb-0 space-y-4">
-                    <div id="shop-header" class="flex items-center justify-between">
-                        <div class="inline-flex items-center gap-10">
-                            <a href="<?php echo G5_SHOP_URL; ?>/" id="shop-logo-link" class="block">
-                                <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>">
-                            </a>
-
-                            <div id="shop-searchbar-desktop-slot"></div>
-                        </div>
-
-                        <div class="flex items-center gap-2 text-2xl">
-                            <?= get_notification() ?>
-                        </div>
+                        <button type="button"
+                            id="recent-viewed-close"
+                            class="inline-flex items-center justify-center w-9 h-9 rounded text-gray-700 hover:bg-gray-300 cursor-pointer"
+                            aria-label="최근 본 상품 닫기">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-6 h-6">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <!-- 최근 본 상품 -->
-                    <div id="recent-viewed-backdrop" class="hidden fixed inset-0 z-40 bg-black/40"></div>
-
-                    <div id="recent-viewed-panel" class="fixed top-0 right-0 z-50 flex flex-col h-full w-full max-w-[440px] translate-x-full bg-white">
-                        <div class="flex items-center justify-between border-b border-zinc-200 px-5 py-6">
-                            <p class="text-lg font-semibold text-gray-900">최근 본 상품</p>
-
-                            <button type="button"
-                                id="recent-viewed-close"
-                                class="inline-flex items-center justify-center w-9 h-9 rounded text-gray-700 hover:bg-gray-300 cursor-pointer"
-                                aria-label="최근 본 상품 닫기">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-6 h-6">
-                                    <path d="M18 6 6 18" />
-                                    <path d="m6 6 12 12" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div id="recent-viewed-list" class="min-h-0 flex-1 overflow-y-auto px-5 py-6">
-                            <?php include(G5_SHOP_SKIN_PATH . '/boxtodayview.skin.php'); // 최근 본 상품 
-                            ?>
-                        </div>
-                    </div>
-
-                    <script>
-                        $(function() {
-                            $(document).on('click', '#recent-viewed-open', function() {
-                                $('#recent-viewed-backdrop').removeClass('hidden');
-                                $('#recent-viewed-panel').removeClass('translate-x-full');
-                                $('html, body').addClass('!overflow-hidden');
-                            });
-
-                            $(document).on('click', '#recent-viewed-close, #recent-viewed-backdrop', function() {
-                                $('#recent-viewed-backdrop').addClass('hidden');
-                                $('#recent-viewed-panel').addClass('translate-x-full');
-                                $('html, body').removeClass('!overflow-hidden');
-                            });
-                        });
-                    </script>
-
-                    <!-- 검색 바 -->
-                    <div id="shop-searchbar-default-slot">
-                        <?php
-                        $searchbar_mode = 'shop';
-                        include_once(G5_THEME_PATH . '/_searchbar.php');
+                    <div id="recent-viewed-list" class="min-h-0 flex-1 overflow-y-auto px-5 py-6">
+                        <?php include(G5_SHOP_SKIN_PATH . '/boxtodayview.skin.php'); // 최근 본 상품 
                         ?>
                     </div>
-                    <script>
-                        // PC 반응형
-                        syncWithPcBreakpoint(function(isPc) {
-                            const searchbarRoot = document.getElementById('shop-searchbar-root');
-                            const desktopSlot = document.getElementById('shop-searchbar-desktop-slot');
-                            const defaultSlot = document.getElementById('shop-searchbar-default-slot');
-                            const logoText = document.getElementById('shop-logo-text');
-
-                            // 검색 바 위치 변경
-                            if (searchbarRoot && desktopSlot && defaultSlot) {
-                                if (isPc) {
-                                    desktopSlot.appendChild(searchbarRoot);
-                                } else {
-                                    defaultSlot.appendChild(searchbarRoot);
-                                }
-                            }
-
-                            // 로고 텍스트 변경
-                            if (logoText) {
-                                if (isPc) {
-                                    logoText.textContent = 'Buynation';
-                                } else {
-                                    logoText.textContent = 'BUYNATION';
-                                }
-                            }
-                        });
-                    </script>
-                    <!-- 검색 바 끝 -->
-
-                    <ul class="hd_login !hidden">
-                        <?php if ($is_member) {  ?>
-                            <li class="shop_login">
-                                <?php echo outlogin('theme/shop_basic'); // 아웃로그인 
-                                ?>
-                            </li>
-                            <li class="shop_cart"><a href="<?php echo G5_SHOP_URL; ?>/cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="sound_only">장바구니</span><span class="count"><?php echo get_boxcart_datas_count(); ?></span></a></li>
-                        <?php } else { ?>
-                            <li class="login"><a href="<?php echo G5_BBS_URL ?>/login.php?url=<?php echo $urlencode; ?>">로그인</a></li>
-                        <?php }  ?>
-                    </ul>
                 </div>
+
+                <script>
+                    // 최근 본 상품 패널 열기/닫기 제어
+                    $(function() {
+                        $(document).on('click', '#recent-viewed-open', function() {
+                            $('#recent-viewed-backdrop').removeClass('hidden');
+                            $('#recent-viewed-panel').removeClass('translate-x-full');
+                            $('html, body').addClass('!overflow-hidden');
+                        });
+
+                        $(document).on('click', '#recent-viewed-close, #recent-viewed-backdrop', function() {
+                            $('#recent-viewed-backdrop').addClass('hidden');
+                            $('#recent-viewed-panel').addClass('translate-x-full');
+                            $('html, body').removeClass('!overflow-hidden');
+                        });
+                    });
+                </script>
+
+                <!-- 검색 바 -->
+                <div id="shop-searchbar-default-slot">
+                    <?php
+                    $searchbar_mode = 'shop';
+                    include_once(G5_THEME_PATH . '/_searchbar.php');
+                    ?>
+                </div>
+                <script>
+                    // PC 반응형 분기
+                    syncWithPcBreakpoint(function(isPc) {
+                        const searchbarRoot = document.getElementById('shop-searchbar-root');
+                        const desktopSlot = document.getElementById('shop-searchbar-desktop-slot');
+                        const defaultSlot = document.getElementById('shop-searchbar-default-slot');
+
+                        // 검색 바 위치 변경
+                        if (searchbarRoot && desktopSlot && defaultSlot) {
+                            if (isPc) {
+                                desktopSlot.appendChild(searchbarRoot);
+                            } else {
+                                defaultSlot.appendChild(searchbarRoot);
+                            }
+                        }
+                    });
+                </script>
+                <!-- 검색 바 끝 -->
+
+                <ul class="hd_login !hidden">
+                    <?php if ($is_member) {  ?>
+                        <li class="shop_login">
+                            <?php echo outlogin('theme/shop_basic'); // 아웃로그인 
+                            ?>
+                        </li>
+                        <li class="shop_cart"><a href="<?php echo G5_SHOP_URL; ?>/cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="sound_only">장바구니</span><span class="count"><?php echo get_boxcart_datas_count(); ?></span></a></li>
+                    <?php } else { ?>
+                        <li class="login"><a href="<?php echo G5_BBS_URL ?>/login.php?url=<?php echo $urlencode; ?>">로그인</a></li>
+                    <?php }  ?>
+                </ul>
             </div>
+        </div>
 
-            <?php
-            $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
-            $current_type = isset($_GET['type']) ? (string) $_GET['type'] : '';
+        <?php
+        $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+        $current_type = isset($_GET['type']) ? (string) $_GET['type'] : '';
 
-            // rewrite URL(/shop/type-1) 대비 fallback
-            if ($current_type === '' && preg_match('~/shop/type-([0-9]+)~', $request_uri, $m)) {
-                $current_type = $m[1];
-            }
+        // rewrite URL(/shop/type-1) 대비 fallback
+        if ($current_type === '' && preg_match('~/shop/type-([0-9]+)~', $request_uri, $m)) {
+            $current_type = $m[1];
+        }
 
-            $is_home = defined('_INDEX_') || preg_match('~/shop/?$~', parse_url($request_uri, PHP_URL_PATH));
-            $is_new = ($current_type === '1');
-            $is_best = ($current_type === '2');
-            $is_pick = ($current_type === '3');
-            $is_benefit = ($current_type === '4');
-            ?>
+        $is_home = defined('_INDEX_') || preg_match('~/shop/?$~', parse_url($request_uri, PHP_URL_PATH));
+        $is_new = ($current_type === '1');
+        $is_best = ($current_type === '2');
+        $is_pick = ($current_type === '3');
+        $is_benefit = ($current_type === '4');
+        ?>
 
-            <nav id="hd_menu" class="!w-full max-w-[var(--breakpoint-pc)] !bg-white py-2">
-                <button type="button" id="menu_open" class="!hidden"><i class="fa fa-bars" aria-hidden="true"></i> 카테고리</button>
-                <ul class="shop-nav scrollbar-hidden flex items-center gap-8 overflow-x-auto overflow-y-hidden whitespace-nowrap text-base text-gray-600 pc:text-[#111] font-medium px-4">
-                    <li class="hidden pc:block">
-                        <button type="button" class="flex items-center gap-2 cursor-pointer" id="category_open" aria-label="카테고리 열기">
-                            <span id="category_open_icon" class="inline-flex items-center justify-center h-7 w-7 rounded-full">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu h-5 w-5">
-                                    <path d="M4 5h16" />
-                                    <path d="M4 12h16" />
-                                    <path d="M4 19h16" />
-                                </svg>
-                            </span>
-                            <span>카테고리</span>
-                        </button>
-                    </li>
+        <nav id="hd_menu" class="!w-full max-w-[var(--breakpoint-pc)] !bg-white py-2">
+            <button type="button" id="menu_open" class="!hidden"><i class="fa fa-bars" aria-hidden="true"></i> 카테고리</button>
+            <ul class="shop-nav scrollbar-hidden flex items-center gap-8 overflow-x-auto overflow-y-hidden whitespace-nowrap text-base text-gray-600 pc:text-[#111] font-medium px-4">
+                <li class="hidden pc:block">
+                    <button type="button" class="flex items-center gap-2 cursor-pointer" id="category_open" aria-label="카테고리 열기">
+                        <span id="category_open_icon" class="inline-flex items-center justify-center h-7 w-7 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu h-5 w-5">
+                                <path d="M4 5h16" />
+                                <path d="M4 12h16" />
+                                <path d="M4 19h16" />
+                            </svg>
+                        </span>
+                        <span>카테고리</span>
+                    </button>
+                </li>
 
-                    <li class="pc:hidden <?php echo $is_home ? 'is-active' : ''; ?>">
-                        <a href="/shop" <?php echo $is_home ? 'aria-current="page"' : ''; ?>>홈</a>
-                    </li>
+                <li class="pc:hidden <?php echo $is_home ? 'is-active' : ''; ?>">
+                    <a href="/shop" <?php echo $is_home ? 'aria-current="page"' : ''; ?>>홈</a>
+                </li>
 
-                    <li class="<?php echo $is_new ? 'is-active' : ''; ?>">
-                        <a href="<?php echo shop_type_url(1); ?>" <?php echo $is_new ? 'aria-current="page"' : ''; ?>>히트상품</a>
-                    </li>
+                <li class="<?php echo $is_new ? 'is-active' : ''; ?>">
+                    <a href="<?php echo shop_type_url(1); ?>" <?php echo $is_new ? 'aria-current="page"' : ''; ?>>히트상품</a>
+                </li>
 
-                    <li class="<?php echo $is_best ? 'is-active' : ''; ?>">
-                        <a href="<?php echo shop_type_url(2); ?>" <?php echo $is_best ? 'aria-current="page"' : ''; ?>>추천상품</a>
-                    </li>
+                <li class="<?php echo $is_best ? 'is-active' : ''; ?>">
+                    <a href="<?php echo shop_type_url(2); ?>" <?php echo $is_best ? 'aria-current="page"' : ''; ?>>추천상품</a>
+                </li>
 
-                    <li class="<?php echo $is_pick ? 'is-active' : ''; ?>">
-                        <a href="<?php echo shop_type_url(3); ?>" <?php echo $is_pick ? 'aria-current="page"' : ''; ?>>
-                            <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="var(--color-primary)" stroke="var(--color-primary)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkle-icon lucide-sparkle">
+                <li class="<?php echo $is_pick ? 'is-active' : ''; ?>">
+                    <a href="<?php echo shop_type_url(3); ?>" <?php echo $is_pick ? 'aria-current="page"' : ''; ?>>
+                        <!-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="var(--color-primary)" stroke="var(--color-primary)" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkle-icon lucide-sparkle">
                                 <path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
                             </svg> -->
-                            <span>신상품</span>
-                        </a>
-                    </li>
+                        <span>신상품</span>
+                    </a>
+                </li>
 
-                    <li class="<?php echo $is_benefit ? 'is-active' : ''; ?>">
-                        <a href="<?php echo shop_type_url(4); ?>" <?php echo $is_benefit ? 'aria-current="page"' : ''; ?>>베스트상품</a>
-                    </li>
+                <li class="<?php echo $is_benefit ? 'is-active' : ''; ?>">
+                    <a href="<?php echo shop_type_url(4); ?>" <?php echo $is_benefit ? 'aria-current="page"' : ''; ?>>베스트상품</a>
+                </li>
 
 
-                    <li class="hidden pc:block ml-auto">
-                        <a href="<?php echo G5_URL; ?>/index.php" class="inline-flex items-center justify-center gap-1 px-4 py-2 text-white bg-[var(--color-primary-strong)] rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="var(--color-primary-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-more-icon lucide-message-circle-more w-5 h-5">
-                                <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
-                                <path d="M8 12h.01" />
-                                <path d="M12 12h.01" />
-                                <path d="M16 12h.01" />
-                            </svg>
-                            <span>커뮤니티</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
+                <li class="hidden pc:block ml-auto">
+                    <a href="<?php echo G5_URL; ?>/index.php" class="inline-flex items-center justify-center gap-1 px-4 py-2 text-white bg-[var(--color-primary-strong)] rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="var(--color-primary-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-more-icon lucide-message-circle-more w-5 h-5">
+                            <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
+                            <path d="M8 12h.01" />
+                            <path d="M12 12h.01" />
+                            <path d="M16 12h.01" />
+                        </svg>
+                        <span>커뮤니티</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
 
-            <?php if ($is_best) { ?>
-                <!-- <section id="best-category-bar" class="px-4 py-2 bg-white" aria-label="베스트 카테고리 필터">
+        <?php if ($is_best) { ?>
+            <!-- <section id="best-category-bar" class="px-4 py-2 bg-white" aria-label="베스트 카테고리 필터">
                     <div class="relative">
                         <div class="scrollbar-hidden overflow-x-auto whitespace-nowrap pr-12">
                             <div class="inline-flex items-center gap-3">
@@ -428,9 +231,9 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
                         </button>
                     </div>
                 </section> -->
-            <?php } ?>
-
         <?php } ?>
+
+
     </header>
     <!-- } 상단 끝 -->
 
@@ -600,7 +403,7 @@ $custom_back_onclick = ($header['back_mode'] === 'history') ? 'history.back();' 
             ?>
             <!-- .shop-content 시작 { -->
             <div class="<?php echo implode(' ', $content_class); ?> !p-0 !ml-0">
-                <?php if ((!$bo_table || $w == 's') && !defined('_INDEX_') && $current_shop_page !== 'listtype.php') { ?><div id="wrapper_title"><?php echo $g5['title'] ?></div><?php } ?>
+                <?php if ((!$bo_table || $w == 's') && !defined('_INDEX_') && basename($_SERVER['SCRIPT_NAME']) !== 'listtype.php') { ?><div id="wrapper_title"><?php echo $g5['title'] ?></div><?php } ?>
                 <!-- 글자크기 조정 display:none 되어 있음 시작 { -->
                 <div id="text_size">
                     <button class="no_text_resize" onclick="font_resize('container', 'decrease');">작게</button>

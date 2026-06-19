@@ -116,7 +116,7 @@ if ($show_bottom_nav) {
             </li>
             <li>
                 <a href="<?php echo G5_SHOP_URL; ?>" class="flex mx-auto -mt-[calc(var(--bottom-nav-icon)-var(--bottom-nav-height))] h-[var(--bottom-nav-icon)] w-[var(--bottom-nav-icon)] items-center justify-center rounded-full bg-yellow-400 text-4xl font-bold text-black">
-                    B
+                    D
                 </a>
             </li>
             <li>

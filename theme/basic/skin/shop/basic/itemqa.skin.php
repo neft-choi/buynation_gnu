@@ -12,7 +12,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 ?>
 
 <!-- 상품문의 목록 시작 { -->
-<section id="sit_qa_list">
+<section id="sit_qa_list" class="px-4 pc:px-5 py-6">
     <div class="flex items-center gap-2 justify-between mb-4">
         <h3 class="text-lg font-bold">상품 문의</h3>
         <a href="<?php echo $itemqa_form; ?>" class="itemqa_form text-white bg-gray-900 px-4 py-2 rounded text-sm">문의하기<span class="sound_only">새 창</span></a>

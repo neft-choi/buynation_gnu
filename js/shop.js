@@ -397,24 +397,48 @@ function add_sel_option(type, id, option, price, stock) {
   if (parseInt(price) >= 0) opt_prc = "(+" + number_format(String(price)) + "원)";
   else opt_prc = "(" + number_format(String(price)) + "원)";
 
-  opt += '<li class="' + li_class + '">';
-  opt += '<input type="hidden" name="io_type[' + item_code + '][]" value="' + type + '">';
-  opt += '<input type="hidden" name="io_id[' + item_code + '][]" value="' + id + '">';
-  opt += '<input type="hidden" name="io_value[' + item_code + '][]" value="' + option + '">';
-  opt += '<input type="hidden" class="io_price" value="' + price + '">';
-  opt += '<input type="hidden" class="io_stock" value="' + stock + '">';
-  opt += '<span class="sit_opt_subj">' + option + "</span>";
-  opt += '<span class="sit_opt_prc">' + opt_prc + "</span>";
-  opt += '<div class="flex items-center">';
-  opt += '<button type="button" class="sit_qty_plus btn_frmline">증가</button>';
-  opt += '<input type="text" name="ct_qty[' + item_code + '][]" value="1" class="frm_input" size="5">';
-  opt += '<button type="button" class="sit_qty_minus btn_frmline">감소</button>';
-  opt += '<button type="button" class="sit_opt_del btn_frmline">삭제</button>';
-  opt += '</div>';
-  opt += "</li>";
+  var opt = `
+    <li class="${li_class}">
+      <input type="hidden" name="io_type[${item_code}][]" value="${type}" />
+      <input type="hidden" name="io_id[${item_code}][]" value="${id}" />
+      <input type="hidden" name="io_value[${item_code}][]" value="${option}" />
+      <input type="hidden" class="io_price" value="${price}" />
+      <input type="hidden" class="io_stock" value="${stock}" />
+
+      <div class="flex items-center justify-between">
+        <span class="sit_opt_subj text-[15px] text-gray-700">${option}</span>
+        <button type="button" class="sit_opt_del inline-flex items-center justify-center text-gray-700">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-5 h-5">
+            <path d="M18 6 6 18" />
+            <path d="m6 6 12 12" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex items-center justify-between gap-2 mt-2">
+        <div class="flex items-center border border-gray-300">
+          <button type="button" class="sit_qty_minus inline-flex h-8 w-8 items-center justify-center bg-white text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">
+              <path d="M5 12h14" />
+            </svg>
+            <span class="sound_only">감소</span>
+          </button>
+          <input type="text" name="ct_qty[${item_code}][]" value="1" class="!p-0 !w-fit !rounded-none !border-0 text-center" size="1" readonly />
+          <button type="button" class="sit_qty_plus inline-flex w-8 h-8 items-center justify-center bg-white text-gray-700">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus w-4 h-4">
+              <path d="M5 12h14" />
+              <path d="M12 5v14" />
+            </svg>
+            <span class="sound_only">증가</span>
+          </button>
+        </div>
+        <span class="sit_opt_prc">${opt_prc}</span>
+      </div>
+    </li>
+  `;
 
   if ($("#sit_sel_option > ul").length < 1) {
-    $("#sit_sel_option").html('<ul id="sit_opt_added"></ul>');
+    $("#sit_sel_option").html('<ul id="sit_opt_added" class="space-y-3"></ul>');
     $("#sit_sel_option > ul").html(opt);
   } else {
     if (type) {
@@ -490,7 +514,7 @@ function price_calculate() {
 
   $("#sit_tot_price")
     .empty()
-    .html("<span>총 금액 :</span><strong>" + number_format(String(total)) + "</strong> 원");
+    .html(`<div class="flex items-center justify-end gap-2"><span>합계</span><span class="text-[28px] font-bold">${number_format(String(total))}원</span></div>`);
 
   $("#sit_tot_price").trigger("price_calculate", [total]);
 }

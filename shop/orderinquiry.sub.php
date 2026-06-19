@@ -106,14 +106,27 @@ if (!empty($order_ids)) {
 }
 ?>
 
-<style>
-    #wrapper_title {
-        display: none;
-    }
-</style>
+<!-- 모바일 헤더 -->
+<div class="flex pc:hidden items-center justify-between p-4">
+    <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
+            <path d="m15 18-6-6 6-6" />
+        </svg>
+    </button>
+    <h1 class="text-lg font-semibold text-zinc-900 leading-0">주문내역</h1>
+    <div class="w-6 h-6" aria-hidden="true"></div>
+</div>
 
 <!-- 주문 내역 시작 -->
 <div class="mx-auto w-full max-w-full">
+
+    <!-- PC 너비 타이틀 -->
+    <div class="hidden pc:block px-4">
+        <h2 class="text-2xl font-bold pb-4 border-b-2 border-gray-900">
+            <?php echo (isset($is_mypage) && $is_mypage) ? '주문내역조회' : $g5['title']; ?>
+        </h2>
+    </div>
+
     <div id="order-filter-tabs" class="p-4">
         <div class="grid grid-flow-col auto-cols-max justify-start gap-2">
             <button
@@ -565,4 +578,13 @@ if (!empty($order_ids)) {
             });
         }
     })();
+
+    // 반응형 쇼핑몰 헤더 숨기기
+    syncWithPcBreakpoint(function(isPc) {
+        if (isPc) {
+            $('#hd').css('display', '');
+        } else {
+            $('#hd').css('display', 'none');
+        }
+    });
 </script>

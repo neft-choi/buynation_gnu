@@ -36,9 +36,15 @@ if (!$is_all_faq) {
     $g5['title'] = 'FAQ';
 }
 
-$skin_file = $faq_skin_path.'/list.skin.php';
+// bbs 페이지를 쇼핑몰 페이지로 사용하게 만드는 상수
+if (!defined('_SHOP_')) {
+    define('_SHOP_', true);
+}
 
-include_once('./_head.php');
+// include_once('./_head.php');
+include_once(G5_SHOP_PATH . '/_head.php');
+
+$skin_file = $faq_skin_path.'/list.skin.php';
 
 if(is_file($skin_file)) {
     $admin_href = '';
@@ -111,4 +117,5 @@ if(is_file($skin_file)) {
     echo '<p>'.str_replace(G5_PATH.'/', '', $skin_file).'이 존재하지 않습니다.</p>';
 }
 
-include_once('./_tail.php');
+// include_once('./_tail.php');
+include_once(G5_SHOP_PATH . '/_tail.php');

@@ -20,9 +20,9 @@ if ($is_guest)
     alert_close('회원만 조회하실 수 있습니다.');
 
 $g5['title'] = $member['mb_nick'] . ' 님의 쿠폰 내역';
-include_once(G5_PATH . '/head.sub.php');
+include_once(G5_SHOP_PATH . '/_head.php');
 
-$sql = " select cp_id, cp_subject, cp_method, cp_target, cp_start, cp_end, cp_type, cp_price
+$sql = " select cp_id, cp_subject, cp_method, cp_target, cp_start, cp_end, cp_type, cp_price, cp_minimum
             from {$g5['g5_shop_coupon_table']}
             where mb_id IN ( '{$member['mb_id']}', '전체회원' )
               and cp_start <= '" . G5_TIME_YMD . "'
@@ -79,6 +79,7 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
         'cp_subject' => $row['cp_subject'],
         'cp_price' => $cp_price,
         'cp_target' => $cp_target,
+        'cp_minimum' => number_format($row['cp_minimum']) . '원 이상',
         'expire_label' => $expire_label,
         'dday_label' => $dday_label
     );
@@ -87,56 +88,86 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
 $cp_count = count($coupon_list);
 ?>
 
-<!-- 쿠폰 시작 { -->
-<div id="coupon" class="mx-auto w-full max-w-full p-4">
-    <div class="flex items-center justify-between">
-        <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left">
-                <path d="m15 18-6-6 6-6" />
-            </svg>
-        </button>
-        <h1 id="win_title_custom" class="text-lg font-semibold text-zinc-900">쿠폰</h1>
-        <div class="h-8 w-8" aria-hidden="true"></div>
-    </div>
-
-    <div class="mt-6 flex items-center">
-        <p class="text-base font-medium text-zinc-900">전체 <span class="text-orange-500"><?php echo number_format($cp_count); ?>개</span></p>
-    </div>
-
-    <ul class="mt-4 space-y-3">
-        <?php
-        for ($i = 0; $i < count($coupon_list); $i++) {
-            $row = $coupon_list[$i];
-        ?>
-            <li class="!p-0 !border-none">
-                <div class="grid grid-cols-[1fr_68px]">
-                    <div class="px-6 py-5 border border-yellow-400 bg-white rounded-r-xl">
-                        <p class="text-lg font-bold text-zinc-900"><?php echo $row['cp_subject']; ?></p>
-                        <p class="mt-1 text-base text-zinc-800"><?php echo $row['cp_price']; ?> 쿠폰</p>
-                        <p class="mt-1 text-sm text-zinc-500"><?php echo $row['cp_target']; ?></p>
-
-                        <div class="mt-5 flex items-center justify-between gap-2">
-                            <ul class="flex items-center gap-2">
-                                <?php if ($row['dday_label']) { ?>
-                                    <li class="rounded-lg bg-orange-500 !px-2 !py-1 text-xs font-semibold text-white whitespace-nowrap"><?php echo $row['dday_label']; ?></li>
-                                <?php } ?>
-                            </ul>
-                            <p class="text-sm text-zinc-500"><?php echo $row['expire_label']; ?></p>
-                        </div>
-                    </div>
-                    <div class="flex items-center justify-center border-l-4 border-dashed border-yellow-500 rounded-l-xl bg-yellow-400 text-base font-bold text-zinc-900">
-                        1장
-                    </div>
-                </div>
-            </li>
-        <?php
-        }
-
-        if (!$cp_count)
-            echo '<li class="rounded-2xl bg-white px-4 py-6 text-center text-xs text-zinc-500">사용할 수 있는 쿠폰이 없습니다.</li>';
-        ?>
-    </ul>
+<!-- 모바일 헤더 -->
+<div class="flex pc:hidden items-center justify-between p-4">
+    <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
+            <path d="m15 18-6-6 6-6" />
+        </svg>
+    </button>
+    <h1 class="text-lg font-semibold text-zinc-900 leading-0">쿠폰</h1>
+    <div class="w-6 h-6" aria-hidden="true"></div>
 </div>
 
+<!-- 회원 요약 정보 (PC) -->
+<?php include_once(G5_THEME_SHOP_PATH . '/_mypage_summary_pc.php'); ?>
+
+<div class="block pc:flex gap-6 pc:px-5 pc:py-12">
+    <!-- 마이페이지 메뉴 (PC) -->
+    <?php
+    include_once(G5_THEME_SHOP_PATH . '/_mypage_menu_pc.php');
+    ?>
+
+    <!-- 쿠폰 시작 { -->
+    <div id="coupon" class="mx-auto w-full max-w-full px-4 py-4 pc:py-0">
+
+        <!-- PC 너비 타이틀 -->
+        <div class="hidden pc:flex items-center justify-between pb-4 border-b-2 border-gray-900">
+            <h2 class="text-2xl font-bold">쿠폰</h2>
+            <button type="button" class="text-sm">+ 쿠폰 등록(임시)</button>
+        </div>
+
+        <div class="pc:mt-6 flex items-center">
+            <p class="text-base font-medium text-zinc-900">전체 <span class="text-orange-500"><?php echo number_format($cp_count); ?>개</span></p>
+        </div>
+
+        <ul class="grid grid-cols-1 pc:grid-cols-2 pc:gap-5 mt-4 space-y-3">
+            <?php
+            for ($i = 0; $i < count($coupon_list); $i++) {
+                $row = $coupon_list[$i];
+            ?>
+                <li class="!p-0 !border-none">
+                    <div class="grid grid-cols-[1fr_68px]">
+                        <div class="px-6 py-5 border border-yellow-400 bg-white rounded-r-xl">
+                            <p class="text-lg font-bold text-zinc-900"><?php echo $row['cp_subject']; ?></p>
+                            <p class="mt-1 text-base text-zinc-800"><?php echo $row['cp_price']; ?> 쿠폰</p>
+                            <p class="mt-1 text-sm text-zinc-500"><?php echo $row['cp_target']; ?></p>
+                            <p class="mt-1 text-sm text-zinc-500">최소사용금액 <?php echo $row['cp_minimum']; ?></p>
+
+                            <div class="mt-5 flex items-center justify-between gap-2">
+                                <ul class="flex items-center gap-2">
+                                    <?php if ($row['dday_label']) { ?>
+                                        <li class="rounded-lg bg-orange-500 !px-2 !py-1 text-xs font-semibold text-white whitespace-nowrap"><?php echo $row['dday_label']; ?></li>
+                                    <?php } ?>
+                                </ul>
+                                <p class="text-sm text-zinc-500"><?php echo $row['expire_label']; ?></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center border-l-4 border-dashed border-yellow-500 rounded-l-xl bg-yellow-400 text-base font-bold text-zinc-900">
+                            1장
+                        </div>
+                    </div>
+                </li>
+            <?php
+            }
+
+            if (!$cp_count)
+                echo '<li class="rounded-2xl bg-white px-4 py-6 text-center text-xs text-zinc-500">사용할 수 있는 쿠폰이 없습니다.</li>';
+            ?>
+        </ul>
+    </div>
+</div>
+
+<script>
+    // 반응형 쇼핑몰 헤더 숨기기
+    syncWithPcBreakpoint(function(isPc) {
+        if (isPc) {
+            $('#hd').css('display', '');
+        } else {
+            $('#hd').css('display', 'none');
+        }
+    });
+</script>
+
 <?php
-include_once(G5_PATH . '/tail.sub.php');
+include_once(G5_SHOP_PATH . '/_tail.php');

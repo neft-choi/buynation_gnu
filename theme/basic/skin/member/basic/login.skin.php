@@ -12,7 +12,9 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 
         <div class="text-center space-y-2">
             <p class="text-base text-zinc-500">새로운 가치 소비 생태계</p>
-            <a href="/shop" class="text-4xl font-semibold tracking-tight text-gray-900">Buynation</a>
+            <a href="<?php echo G5_SHOP_URL; ?>/" class="flex items-center justify-center">
+                <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>">
+            </a>
         </div>
 
         <form name="flogin" action="<?php echo $login_action_url ?>" onsubmit="return flogin_submit(this);" method="post">
@@ -20,7 +22,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 
             <fieldset id="login_fs" class="!p-0 space-y-2">
                 <label for="login_id" class="sound_only">회원아이디<strong class="sound_only"> 필수</strong></label>
-                <input type="text" name="mb_id" id="login_id" required class="w-full rounded border border-zinc-300 bg-white p-4 text-base text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none" size="20" maxLength="20" placeholder="아이디를 입력해주세요">
+                <input type="text" name="mb_id" id="login_id" value="<?php echo get_cookie('ck_mb_id'); ?>" required class="w-full rounded border border-zinc-300 bg-white p-4 text-base text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none" size="20" maxLength="20" placeholder="아이디를 입력해주세요">
                 <label for="login_pw" class="sound_only">비밀번호<strong class="sound_only"> 필수</strong></label>
                 <input type="password" name="mb_password" id="login_pw" required class="w-full rounded border border-zinc-300 bg-white p-4 text-base text-zinc-900 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none" size="20" maxLength="20" placeholder="비밀번호를 입력해주세요">
 
@@ -33,7 +35,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 
                 <div class="text-base text-zinc-700">
                     <label for="remember_id_ui" class="inline-flex cursor-pointer items-center gap-2">
-                        <input type="checkbox" id="remember_id_ui" class="peer sr-only">
+                        <input type="checkbox" name="remember_id" id="remember_id_ui" value="1" class="peer sr-only" <?php echo get_cookie('ck_mb_id') ? 'checked' : ''; ?>>
                         <span class="peer-checked:hidden text-zinc-300">
                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-check-icon lucide-circle-check">
                                 <circle cx="12" cy="12" r="10" />

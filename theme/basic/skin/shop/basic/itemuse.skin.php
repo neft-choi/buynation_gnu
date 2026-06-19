@@ -14,7 +14,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 </style>
 
 <!-- 상품 사용후기 시작 { -->
-<section id="sit_use_list" class="space-y-4">
+<section id="sit_use_list" class="space-y-4 px-4 pc:px-5 py-6">
     <h3>리뷰</h3>
     <?php
     $review_avg = isset($it['it_use_avg']) ? number_format((float) $it['it_use_avg'], 1) : '0.0';

@@ -17,13 +17,6 @@ $star_avg = isset($it['it_use_avg']) ? number_format((float) $it['it_use_avg'], 
 $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cnt'];
 ?>
 
-<style>
-	#sit_tot_price strong {
-		font-size: 16px;
-		font-weight: 600;
-		margin-left: 16px;
-	}
-</style>
 <div id="sit_ov_from">
 	<form name="fitem" method="post" action="<?php echo $action_url; ?>" onsubmit="return fitem_submit(this);">
 		<input type="hidden" name="it_id[]" value="<?php echo $it_id; ?>">
@@ -33,7 +26,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 		<div id="sit_ov_wrap" class="pc:flex w-full gap-25 mt-10">
 			<!-- 상품이미지 미리보기 시작 { -->
-			<div id="sit_pvi" class="flex flex-col pc:flex-row-reverse h-fit">
+			<div id="sit_pvi" class="hidden pc:flex flex-col pc:flex-row-reverse h-fit px-4 pc:px-0">
 				<div id="sit_pvi_big">
 					<?php
 					$big_img_count = 0;
@@ -48,9 +41,15 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 							// 썸네일
 							$thumb = get_it_thumbnail($it['it_img' . $i], 80, 80);
 							$thumbnails[] = $thumb;
+
+							$img_class = 'popup_item_image w-[470px]';
+							if ($big_img_count === 0) {
+								$img_class .= ' visible';
+							}
+
 							$big_img_count++;
 
-							echo '<a href="' . G5_SHOP_URL . '/largeimage.php?it_id=' . $it['it_id'] . '&amp;no=' . $i . '" target="_blank" class="popup_item_image w-[470px]">' . $img . '</a>';
+							echo '<a href="' . G5_SHOP_URL . '/largeimage.php?it_id=' . $it['it_id'] . '&amp;no=' . $i . '" target="_blank" class="popup_item_image pc:w-[470px] ' . $img_class . '">' . $img . '</a>';
 						}
 					}
 
@@ -78,8 +77,81 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 				}
 				?>
 			</div>
+
+			<!-- 모바일 상품 이미지 슬라이더 -->
+			<div class="block pc:hidden">
+				<?php
+				// 이미지(중) 썸네일
+				$thumb_img = '';
+				$thumb_img_w = 600; // 넓이
+				$thumb_img_h = 600; // 높이
+				for ($i = 1; $i <= 10; $i++) {
+					if (!$it['it_img' . $i])
+						continue;
+
+					$thumb = get_it_thumbnail($it['it_img' . $i], $thumb_img_w, $thumb_img_h);
+
+					if (!$thumb)
+						continue;
+
+					$thumb_img .= '<li>';
+					$thumb_img .= '<a href="' . G5_SHOP_URL . '/largeimage.php?it_id=' . $it['it_id'] . '&amp;no=' . $i . '" class="popup_item_image slide_img" target="_blank">' . $thumb . '</a>';
+					$thumb_img .= '</li>' . PHP_EOL;
+				}
+				if ($thumb_img) {
+					echo '<div id="sit_pvi_slider">' . PHP_EOL;
+					echo '<ul id="sit_pvi_slide" class="owl-carousel">' . PHP_EOL;
+					echo $thumb_img;
+					echo '</ul>' . PHP_EOL;
+					echo '</div>';
+				}
+				?>
+			</div>
 			<!-- } 상품이미지 미리보기 끝 -->
 
+			<style>
+				#sit_pvi_slider {
+					position: relative;
+				}
+
+				#sit_pvi_slider .owl-dots {
+					position: absolute;
+					left: 50%;
+					bottom: 16px;
+					transform: translateX(-50%);
+					z-index: 2;
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					gap: 6px;
+					margin-top: 0;
+				}
+
+				#sit_pvi_slider .owl-dot {
+					width: 8px;
+					height: 8px;
+					border-radius: 50%;
+					background: #d1d5db;
+				}
+
+				#sit_pvi_slider .owl-dot.active {
+					background: #111;
+				}
+
+				#sit_pvi_slider .owl-dot span {
+					display: none;
+				}
+			</style>
+
+			<script>
+				$("#sit_pvi_slide").owlCarousel({
+					items: 1,
+					nav: false,
+					dots: true,
+					loop: true,
+					autoplay: false
+				});
+			</script>
 			<!-- 상품 요약정보 및 구매 시작 { -->
 			<section id="sit_ov" class="relative w-full !h-auto p-4 pc:p-0x">
 				<p class="flex items-center gap-1 text-sm text-zinc-500 font-semibold">
@@ -241,7 +313,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					</div>
 				</div>
 
-				<div>
+				<div id="sit_option_area">
 					<?php
 					if ($option_item) {
 					?>
@@ -298,7 +370,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 												<span class="sound_only">감소</span>
 											</button>
 
-											<input type="text" name="ct_qty[<?php echo $it_id; ?>][]" value="<?php echo $it['it_buy_min_qty'] ? $it['it_buy_min_qty'] : 1; ?>" id="ct_qty_<?php echo $i; ?>" class="num_input !p-0 !w-fit !rounded-none !border-0 text-center" size="5" readonly>
+											<input type="text" name="ct_qty[<?php echo $it_id; ?>][]" value="<?php echo $it['it_buy_min_qty'] ? $it['it_buy_min_qty'] : 1; ?>" id="ct_qty_<?php echo $i; ?>" class="num_input !p-0 !w-fit !rounded-none !border-0 text-center" size="1" readonly />
 
 											<button type="button" class="sit_qty_plus inline-flex w-8 h-8 items-center justify-center bg-white text-gray-700">
 												<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus w-4 h-4">
@@ -325,19 +397,47 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					<div id="sit_tot_price"></div>
 				</div>
 
-
 				<script>
-					
-
-					// 반응형 제이쿼리 (추후 추가)
+					// 상품 옵션 관련 반응형 처리
 					$(function() {
-						const pcBreakpoint = getComputedStyle(document.documentElement)
+						const pcBreakpoint = parseInt(
+							getComputedStyle(document.documentElement)
 							.getPropertyValue('--breakpoint-pc')
-							.trim();
-					})
+							.trim(),
+							10
+						);
+
+						const $optionArea = $("#sit_option_area");
+						const $drawerOptionArea = $("#sit_drawer_option_area");
+
+						// 옵션 영역의 부모 요소와 형제 요소를 찾아 저장 후 추후 원래 자리에 넣을 때 이용
+						const $originalParent = $optionArea.parent();
+						const $originalNext = $optionArea.next();
+
+						function moveOptionAreaByViewport() {
+							if (!$optionArea.length || !$drawerOptionArea.length || !$originalParent.length) {
+								return;
+							}
+
+							// --breakpoint-pc 보다 브라우저 창 너비가 작다면
+							// appendTo로  drawer에 옵션 선택 영역 이동
+							if (window.innerWidth < pcBreakpoint) {
+								$optionArea.appendTo($drawerOptionArea);
+							} else {
+								if ($originalNext.length) {
+									$optionArea.insertBefore($originalNext);
+								} else {
+									$optionArea.appendTo($originalParent);
+								}
+							}
+						}
+
+						moveOptionAreaByViewport();
+						$(window).on("resize", moveOptionAreaByViewport);
+					});
 				</script>
 
-				<div class="flex gap-3 mt-6">
+				<div class="hidden pc:flex gap-3 mt-6">
 					<button type="button"
 						class="flex h-14 w-14 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
 						aria-label="위시리스트">
@@ -346,13 +446,24 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						</svg>
 					</button>
 
-					<button type="submit"
-						data-variant="primary"
-						onclick="document.pressed=this.value;"
-						value="장바구니"
-						class="h-14 flex-1 cursor-pointer">
-						장바구니 담기
-					</button>
+					<?php if (!$is_orderable) { ?>
+						<?php if ($is_soldout) { ?>
+							<button type="button"
+								data-variant="primary"
+								class="h-14 flex-1 cursor-not-allowed opacity-50"
+								disabled>
+								품절
+							</button>
+						<?php } ?>
+					<?php } else { ?>
+						<button type="submit"
+							data-variant="primary"
+							onclick="document.pressed=this.value;"
+							value="장바구니"
+							class="h-14 flex-1 cursor-pointer">
+							장바구니 담기
+						</button>
+					<?php } ?>
 				</div>
 
 				<?php if (!$is_orderable) { ?>
@@ -360,7 +471,6 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						<p id="sit_ov_soldout">상품의 재고가 부족하여 구매할 수 없습니다.</p>
 					<?php } ?>
 					<div id="sit_ov_btn">
-						<a href="javascript:item_wish(document.fitem, '<?php echo $it['it_id']; ?>');" class="sit_btn_wish"><i class="fa fa-heart-o" aria-hidden="true"></i><span class="sound_only">위시리스트</span></a>
 						<?php if ($it['it_soldout'] && $it['it_stock_sms']) { ?>
 							<a href="javascript:popup_stocksms('<?php echo $it['it_id']; ?>');" id="sit_btn_alm">재입고알림</a>
 						<?php } ?>
@@ -460,8 +570,9 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						</button>
 					</div>
 
+					<div id="sit_drawer_option_area" class="px-4"></div>
 
-					<div id="sit_ov_btn" class="gap-2 items-center">
+					<div id="sit_ov_btn" class="gap-2 items-center px-4 pt-5 pb-2">
 						<button type="submit" data-variant="secondary" onclick="document.pressed=this.value;" value="장바구니" class="h-12">장바구니</button>
 
 						<button type="submit" data-variant="primary" onclick="document.pressed=this.value;" value="바로구매" class="h-12">바로구매</button>

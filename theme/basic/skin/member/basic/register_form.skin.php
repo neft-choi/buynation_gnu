@@ -269,8 +269,8 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							</li>
 						<?php } ?>
 
-						<?php if (isset($member['mb_open_date']) && $member['mb_open_date'] <= date("Y-m-d", G5_SERVER_TIME - ($config['cf_open_modify'] * 86400)) || empty($member['mb_open_date'])) { // 정보공개 수정일이 지났다면 수정가능 
-						?>
+						<!-- <?php if (isset($member['mb_open_date']) && $member['mb_open_date'] <= date("Y-m-d", G5_SERVER_TIME - ($config['cf_open_modify'] * 86400)) || empty($member['mb_open_date'])) { // 정보공개 수정일이 지났다면 수정가능 
+								?>
 							<li class="chk_box flex gap-2 py-4">
 								<input type="checkbox" name="mb_open" value="1" id="reg_mb_open" <?php echo ($w == '' || $member['mb_open']) ? 'checked' : ''; ?> class="selec_chk">
 
@@ -304,7 +304,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								</span>
 
 							</li>
-						<?php }  ?>
+						<?php }  ?> -->
 
 						<?php
 						//회원정보 수정인 경우 소셜 계정 출력
@@ -424,15 +424,15 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 					</div>
 				<?php } ?>
 
-				<div>
+				<!-- <div>
 					<h2 class="text-base font-semibold text-zinc-900">자동등록방지</h2>
 					<ul class="mt-2">
 						<li class="is_captcha_use rounded-md border border-zinc-200 bg-white px-3 py-3 text-sm text-zinc-700">
 							<div class="mb-2">자동등록방지</div>
-							<?php echo captcha_html(); ?>
+							<!-?php echo captcha_html(); ?>
 						</li>
 					</ul>
-				</div>
+				</div> -->
 			</div>
 			<div class="mt-8 grid grid-cols-2 gap-3">
 				<a href="<?php echo G5_BBS_URL ?>/register.php" class="inline-flex h-14 items-center justify-center rounded-md border border-zinc-300 bg-zinc-100 text-lg font-semibold text-zinc-900">처음으로</a>
