@@ -19,6 +19,56 @@ for ($k = 0; $cp = sql_fetch_array($res); $k++) {
 }
 ?>
 
+<?php
+// 마이페이지 메뉴 배열
+$mypage_menu_groups = array(
+    array(
+        'title' => '주문관리',
+        'items' => array(
+            array('label' => '주문/배송 조회', 'href' => G5_SHOP_URL . '/orderinquiry.php'),
+            array('label' => '주문내역', 'href' => G5_SHOP_URL . '/orderinquiry.php'),
+            array('label' => '취소/교환/반품 내역', 'href' => G5_SHOP_URL . '/orderinquiry.php'),
+            array('label' => '자주구매 상품', 'href' => G5_SHOP_URL . '/wishlist.php'),
+        ),
+    ),
+    array(
+        'title' => '나의 활동 관리',
+        'items' => array(
+            array('label' => '상품 리뷰', 'href' => '#'),
+            array('label' => '위시리스트', 'href' => G5_SHOP_URL . '/wishlist.php'),
+            array('label' => '이벤트 참여 내역', 'href' => '#'),
+            array('label' => '입고알림 내역', 'href' => '#'),
+        ),
+    ),
+    array(
+        'title' => '나의 혜택 관리',
+        'items' => array(
+            array('label' => '쿠폰', 'href' => G5_SHOP_URL . '/coupon.php'),
+            array('label' => '바이네이션 포인트', 'href' => G5_BBS_URL . '/point.php'),
+            array('label' => '기부 포인트', 'href' => '#'),
+        ),
+    ),
+    array(
+        'title' => '나의 정보 관리',
+        'items' => array(
+            array('label' => '회원정보 설정', 'href' => G5_BBS_URL . '/member_confirm.php?url=register_form.php'),
+            array('label' => '배송지 관리', 'href' => G5_SHOP_URL . '/orderaddress.php'),
+            array('label' => '알림 목록', 'href' => '#'),
+            array('label' => '회원 탈퇴', 'href' => G5_BBS_URL . '/member_confirm.php?url=member_leave.php'),
+        ),
+    ),
+    array(
+        'title' => '고객센터',
+        'items' => array(
+            array('label' => 'FAQ', 'href' => G5_BBS_URL . '/faq.php'),
+            array('label' => '문의내역', 'href' => G5_BBS_URL . '/qalist.php'),
+            array('label' => '문의하기', 'href' => G5_BBS_URL . '/qawrite.php'),
+            array('label' => '공지사항', 'href' => '#'),
+        ),
+    ),
+);
+?>
+
 <style>
     #wrapper_title {
         display: none;

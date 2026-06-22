@@ -83,7 +83,10 @@
   --color-primary-20: rgb(var(--brand-rgb) / 0.2);
   --color-primary-10: rgb(var(--brand-rgb) / 0.1);
   --color-primary-strong: color-mix(in srgb, rgb(var(--brand-rgb)) 80%, black);
-
+  
+  /* 모바일 상단 헤더 높이 */
+  --mobile-header-height: 56px;
+  
   /* 하단 네비게이션 바 높이 */
   --bottom-nav-height: 60px;
 

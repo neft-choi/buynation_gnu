@@ -13,7 +13,7 @@
 #bo_list tbody .even td {background:#fbfbfb}
 
 /* 쓰기 테이블 */
-#bo_w h2 {position:absolute;font-size:0;line-height:0;overflow:hidden}
+/* #bo_w h2 {position:absolute;font-size:0;line-height:0;overflow:hidden} */
 
 /* ### 기본 스타일 커스터마이징 끝 ### */
 
@@ -309,7 +309,7 @@ html.no-overflowscrolling #autosave_pop {height:auto;max-height:10000px !importa
 
 .selec_chk {position:absolute;top:0;left:0;width:0;height:0;opacity:0;outline:0;z-index:-1;overflow:hidden}
 .chk_box {position:relative}
-.chk_box input[type="checkbox"] + label {position:relative;padding-left:10px;color:#676e70}
+.chk_box input[type="checkbox"] + label {position:relative;padding-left:25px;color:#676e70}
 .chk_box input[type="checkbox"] + label:hover{color:#2172f8}
 .chk_box input[type="checkbox"] + label span {position:absolute;top:0;left:0;width:17px;height:17px;display:block;background:#fff;border:1px solid #d0d4df;border-radius:3px}
 .chk_box input[type="checkbox"]:checked + label {color:#000}

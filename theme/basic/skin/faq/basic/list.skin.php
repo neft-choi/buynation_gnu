@@ -126,7 +126,7 @@ foreach ($faq_master_list as $v) {
                 </nav>
             <?php } ?>
 
-            <div class="mt-6 h-3 bg-zinc-100"></div>
+            <div class="mt-6 h-3 bg-zinc-100 pc:bg-white"></div>
 
             <div class="faq_<?php echo $fm_id; ?>">
                 <?php // FAQ 내용
@@ -143,20 +143,27 @@ foreach ($faq_master_list as $v) {
                             ?>
                                 <li class="border-b border-zinc-200 bg-white">
                                     <h3 class="flex items-start justify-between gap-3 px-4 py-5">
-                                        <a href="#none" onclick="return faq_open(this);" class="block flex-1">
-                                            <span class="block text-base font-semibold text-zinc-900">[<?php echo $faq_category; ?>]</span>
-                                            <span class="mt-2 block text-sm text-zinc-900"><?php echo conv_content($v['fa_subject'], 1); ?></span>
+                                        <a href="#none" onclick="return faq_open(this);" class="block pc:flex flex-1 items-center">
+                                            <span class="block text-base font-semibold text-zinc-900 pc:w-50">[<?php echo $faq_category; ?>]</span>
+                                            <span class="mt-2 pc:mt-0 block text-sm pc:text-base text-zinc-900"><?php echo conv_content($v['fa_subject'], 1); ?></span>
                                         </a>
-                                        <button class="tit_btn mt-1 text-zinc-500" onclick="return faq_open(this);" aria-label="열기">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+
+                                        <button type="button" class="tit_btn mt-1 text-zinc-500" onclick="return faq_open(this);" aria-label="열기">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                                 <path d="m6 9 6 6 6-6"></path>
                                             </svg>
                                             <span class="sound_only">열기</span>
                                         </button>
                                     </h3>
-                                    <div class="con_inner px-4 pb-5">
-                                        <div class="rounded bg-zinc-100 p-4 text-sm text-zinc-700">
+
+                                    <div class="con_inner px-4 pb-4 pc:pb-6">
+                                        <div class="bg-zinc-100 text-[15px] pc:text-base text-zinc-700 px-6 py-7 pc:px-10 pc:py-10">
                                             <?php echo conv_content($v['fa_content'], 1); ?>
+
+                                            <div class="flex flex-col items-center justify-center pt-10">
+                                                <span class="text-[15px] text-gray-400">찾으시는 내용이 없나요?</span>
+                                                <a href="<?php echo G5_BBS_URL; ?>/qawrite.php" class="text-base text-gray-900 underline">1:1 문의 바로가기</a>
+                                            </div>
                                         </div>
                                         <button type="button" class="closer_btn sound_only"><span class="sound_only">닫기</span></button>
                                     </div>
@@ -166,28 +173,23 @@ foreach ($faq_master_list as $v) {
                             ?>
                         </ol>
                     </section>
-                <?php
+                    <?php
 
                 } else {
                     if ($stx) {
                         echo '<p class="empty_list px-4 py-8 text-center text-sm text-zinc-500">검색된 게시물이 없습니다.</p>';
                     } else {
-                        echo '<div class="empty_list px-4 py-8 text-center text-sm text-zinc-500">등록된 FAQ가 없습니다.';
-                        if ($is_admin)
-                            echo '<br><a href="' . G5_ADMIN_URL . '/faqmasterlist.php">FAQ를 새로 등록하시려면 FAQ관리</a> 메뉴를 이용하십시오.';
-                        echo '</div>';
-                    }
-                }
-                ?>
-            </div>
-
-            <div class="pt-4">
-                <button type="button" class="flex h-12 w-full items-center justify-center gap-2 rounded border border-zinc-300 bg-white text-sm font-semibold text-zinc-700">
-                    더보기
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="m6 9 6 6 6-6"></path>
-                    </svg>
-                </button>
+                    ?>
+                        <div class="flex flex-col items-center justify-center gap-3 text-gray-400 min-h-[calc(100dvh-var(--mobile-header-height)-var(--bottom-nav-height))] pc:min-h-0 pc:h-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search w-12 h-12">
+                                <path d="m21 21-4.34-4.34" />
+                                <circle cx="11" cy="11" r="8" />
+                            </svg>
+                            <span>찾으시는 내용이 없나요?</span>
+                            <a href="<?php echo G5_BBS_URL; ?>/qawrite.php" class="text-sm font-semibold px-4 py-2 mt-3 bg-gray-800 text-white rounded">1:1 문의 바로가기</a>
+                        </div>
+                    <?php } ?>
+                <?php } ?>
             </div>
 
             <div class="sound_only">
@@ -215,7 +217,7 @@ foreach ($faq_master_list as $v) {
 <script>
     jQuery(function() {
         $(".closer_btn").on("click", function() {
-            $(this).closest(".con_inner").slideToggle('slow', function() {
+            $(this).closest(".con_inner").stop(true, true).slideToggle(200, function() {
                 var $h3 = $(this).closest("li").find("h3");
 
                 $("#faq_con li h3").removeClass("faq_li_open");
@@ -227,24 +229,23 @@ foreach ($faq_master_list as $v) {
     });
 
     function faq_open(el) {
-        var $con = $(el).closest("li").find(".con_inner"),
-            $h3 = $(el).closest("li").find("h3");
+        var $li = $(el).closest("li"),
+            $con = $li.children(".con_inner"),
+            $h3 = $li.children("h3"),
+            $opened = $("#faq_con .con_inner:visible").not($con);
 
         if ($con.is(":visible")) {
-            $con.slideUp();
+            $con.stop(true, true).slideUp(200);
             $h3.removeClass("faq_li_open");
         } else {
-            $("#faq_con .con_inner:visible").css("display", "none");
+            $opened.stop(true, true).slideUp(200);
+            $("#faq_con li h3").not($h3).removeClass("faq_li_open");
 
-            $con.slideDown(
-                function() {
-                    // 이미지 리사이즈
-                    $con.viewimageresize2();
-                    $("#faq_con li h3").removeClass("faq_li_open");
-
-                    $h3.addClass("faq_li_open");
-                }
-            );
+            $con.stop(true, true).slideDown(200, function() {
+                // 이미지 리사이즈
+                $con.viewimageresize2();
+                $h3.addClass("faq_li_open");
+            });
         }
 
         return false;

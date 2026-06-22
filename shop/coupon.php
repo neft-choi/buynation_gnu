@@ -112,9 +112,8 @@ $cp_count = count($coupon_list);
     <div id="coupon" class="mx-auto w-full max-w-full px-4 py-4 pc:py-0">
 
         <!-- PC 너비 타이틀 -->
-        <div class="hidden pc:flex items-center justify-between pb-4 border-b-2 border-gray-900">
+        <div class="hidden pc:flex items-center pb-4 border-b-2 border-gray-900">
             <h2 class="text-2xl font-bold">쿠폰</h2>
-            <button type="button" class="text-sm">+ 쿠폰 등록(임시)</button>
         </div>
 
         <div class="pc:mt-6 flex items-center">
@@ -148,12 +147,20 @@ $cp_count = count($coupon_list);
                         </div>
                     </div>
                 </li>
-            <?php
-            }
+            <?php } ?>
 
-            if (!$cp_count)
-                echo '<li class="rounded-2xl bg-white px-4 py-6 text-center text-xs text-zinc-500">사용할 수 있는 쿠폰이 없습니다.</li>';
-            ?>
+            <?php
+            // 쿠폰이 없을 때
+            if (!$cp_count) { ?>
+                <li class="col-span-2">
+                    <div class="flex flex-col items-center justify-center gap-3 text-gray-400 min-h-[calc(100dvh-var(--mobile-header-height)-var(--bottom-nav-height))] pc:min-h-0 pc:h-100">
+                        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M18 18H18.02M30 18L18 30M30 30H30.02M4 18C5.5913 18 7.11742 18.6321 8.24264 19.7574C9.36786 20.8826 10 22.4087 10 24C10 25.5913 9.36786 27.1174 8.24264 28.2426C7.11742 29.3679 5.5913 30 4 30V34C4 35.0609 4.42143 36.0783 5.17157 36.8284C5.92172 37.5786 6.93913 38 8 38H40C41.0609 38 42.0783 37.5786 42.8284 36.8284C43.5786 36.0783 44 35.0609 44 34V30C42.4087 30 40.8826 29.3679 39.7574 28.2426C38.6321 27.1174 38 25.5913 38 24C38 22.4087 38.6321 20.8826 39.7574 19.7574C40.8826 18.6321 42.4087 18 44 18V14C44 12.9391 43.5786 11.9217 42.8284 11.1716C42.0783 10.4214 41.0609 10 40 10H8C6.93913 10 5.92172 10.4214 5.17157 11.1716C4.42143 11.9217 4 12.9391 4 14V18Z" stroke="#393939" stroke-opacity="0.35" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                        <span>사용할 수 있는 쿠폰이 없습니다</span>
+                    </div>
+                </li>
+            <?php } ?>
         </ul>
     </div>
 </div>

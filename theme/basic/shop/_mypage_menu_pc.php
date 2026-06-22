@@ -141,7 +141,7 @@ $link_active_class = 'font-bold !text-red-500';
                     <span>문의내역(임시)</span>
                 </a>
                 <a href="<?php echo G5_BBS_URL; ?>/qawrite.php" class="<?php echo $link_base_class; ?><?php echo $current_menu_path === 'qawrite.php' ? ' ' . $link_active_class : ''; ?>">
-                    <span>문의하기(임시)</span>
+                    <span>문의하기</span>
                 </a>
                 <a href="#" class="block text-zinc-700">
                     <span>공지사항(임시)</span>

@@ -16,6 +16,11 @@ $qaconfig = get_qa_config();
 $token = _token();
 set_session('ss_qa_write_token', $token);
 
+// bbs 페이지를 쇼핑몰 페이지로 사용하게 만드는 상수
+if (!defined('_SHOP_')) {
+    define('_SHOP_', true);
+}
+
 $g5['title'] = $qaconfig['qa_title'];
 include_once('./qahead.php');
 

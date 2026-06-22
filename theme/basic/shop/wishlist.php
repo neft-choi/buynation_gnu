@@ -10,7 +10,7 @@ include_once(G5_SHOP_PATH . '/_head.php');
 <?php add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></script>', 10); ?>
 
 <!-- 모바일 헤더 -->
-<div class="flex pc:hidden items-center justify-between p-4">
+<div class="flex pc:hidden items-center justify-between h-[var(--mobile-header-height)] px-4">
     <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
             <path d="m15 18-6-6 6-6" />
@@ -107,9 +107,32 @@ include_once(G5_SHOP_PATH . '/_head.php');
                                         품절
                                     <?php } else { //품절이 아니면 체크할수 있도록한다 
                                     ?>
-                                        <div class="chk_box">
-                                            <input type="checkbox" name="chk_it_id[<?php echo $i; ?>]" value="1" id="chk_it_id_<?php echo $i; ?>" onclick="out_cd_check(this, '<?php echo $out_cd; ?>');" class="selec_chk" data-wi-id="<?php echo $row['wi_id']; ?>">
-                                            <label for="chk_it_id_<?php echo $i; ?>"><span></span><b class="sound_only"><?php echo $row['it_name']; ?></b></label>
+                                        <div class="wishlist-check-box relative h-6 w-6">
+                                            <input
+                                                type="checkbox"
+                                                name="chk_it_id[<?php echo $i; ?>]"
+                                                value="1"
+                                                id="chk_it_id_<?php echo $i; ?>"
+                                                onclick="out_cd_check(this, '<?php echo $out_cd; ?>');"
+                                                class="wishlist-check-input peer h-full w-full cursor-pointer appearance-none rounded-full border border-gray-300 checked:border-gray-900 checked:bg-gray-900"
+                                                data-wi-id="<?php echo $row['wi_id']; ?>">
+
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                viewBox="0 0 24 24"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                                class="pointer-events-none absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 text-gray-300 peer-checked:text-white"
+                                                aria-hidden="true">
+                                                <path d="M20 6 9 17l-5-5" />
+                                            </svg>
+
+                                            <label for="chk_it_id_<?php echo $i; ?>" class="sound_only">
+                                                <?php echo $row['it_name']; ?>
+                                            </label>
                                         </div>
                                     <?php } ?>
                                     <input type="hidden" name="it_id[<?php echo $i; ?>]" value="<?php echo $row['it_id']; ?>">
@@ -119,7 +142,7 @@ include_once(G5_SHOP_PATH . '/_head.php');
                                     <input type="hidden" name="ct_qty[<?php echo $row['it_id']; ?>][0]" value="1">
                                 </div>
 
-                                <div class="sod_ws_img">
+                                <div class="sod_ws_img pt-3">
                                     <a href="<?php echo shop_item_url($row['it_id']); ?>"><?php echo $image; ?></a>
                                 </div>
 
@@ -167,12 +190,22 @@ include_once(G5_SHOP_PATH . '/_head.php');
                                     </div>
                                 </div>
                             </li>
-                        <?php
-                        }
+                        <?php } ?>
 
-                        if ($i == 0)
-                            echo '<li class="empty_table col-span-2 pc:col-span-4">찜한 상품이 없습니다.</li>';
-                        ?>
+                        <?php
+                        // 위시리스트 목록 없을 때
+                        if ($i == 0) { ?>
+                            <li class="col-span-2 pc:col-span-4">
+                                <div class="flex flex-col items-center justify-center gap-3 text-gray-400 min-h-[calc(100dvh-var(--mobile-header-height)-var(--bottom-nav-height))] pc:min-h-0 pc:h-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart w-12 h-12">
+                                        <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                                    </svg>
+                                    <span>찜한 상품이 없습니다</span>
+                                    <a href="<?php echo G5_SHOP_URL; ?>/" class="text-sm font-semibold px-4 py-2 mt-3 bg-gray-800 text-white rounded">쇼핑하러 가기</a>
+                                </div>
+
+                            </li>
+                        <?php } ?>
                     </ul>
                 </div>
 
@@ -181,6 +214,29 @@ include_once(G5_SHOP_PATH . '/_head.php');
                     <button type="submit" class="btn02" onclick="return fwishlist_check(document.fwishlist,'direct_buy');">주문하기</button>
                 </div>
             </form>
+
+            <?php if ($i == 0) { ?>
+                <section id="wishlist_recommend">
+                    <div class="py-5 flex items-center">
+                        <h3 class="text-xl font-semibold">이런 상품은 어때요?</h3>
+                    </div>
+
+                    <?php
+                    $list = new item_list();
+                    $list->set_type(2);
+                    $list->set_list_skin(G5_SHOP_SKIN_PATH . '/main.10.skin.php');
+                    $list->set_view('it_id', false);
+                    $list->set_view('it_name', true);
+                    $list->set_view('it_basic', true);
+                    $list->set_view('it_cust_price', true);
+                    $list->set_view('it_price', true);
+                    $list->set_view('it_icon', true);
+                    $list->set_view('sns', true);
+                    $list->set_view('star', true);
+                    echo $list->run();
+                    ?>
+                </section>
+            <?php } ?>
         </section>
     </div>
 </div>
@@ -229,15 +285,15 @@ include_once(G5_SHOP_PATH . '/_head.php');
     $(function() {
         $("#wishlist-check-all").on("click", function() {
             const $checkAllButton = $(this);
-            const $wishlistChecks = $("form[name=\"fwishlist\"] .selec_chk");
+            const $wishlistChecks = $("form[name=\"fwishlist\"] .wishlist-check-input");
             const hasUnchecked = $wishlistChecks.filter(":not(:checked)").length > 0;
 
             $wishlistChecks.prop("checked", hasUnchecked);
             $checkAllButton.text(hasUnchecked ? "전체해제" : "전체선택");
         });
 
-        $("form[name=\"fwishlist\"]").on("change", ".selec_chk", function() {
-            const $wishlistChecks = $("form[name=\"fwishlist\"] .selec_chk");
+        $("form[name=\"fwishlist\"]").on("change", ".wishlist-check-input", function() {
+            const $wishlistChecks = $("form[name=\"fwishlist\"] .wishlist-check-input");
             const isAllChecked = $wishlistChecks.length > 0 && $wishlistChecks.filter(":checked").length === $wishlistChecks.length;
 
             $("#wishlist-check-all").text(isAllChecked ? "전체해제" : "전체선택");
@@ -247,7 +303,7 @@ include_once(G5_SHOP_PATH . '/_head.php');
     // 위시리스트 선택 삭제
     $(function() {
         $("#wishlist-delete-selected").on("click", function() {
-            const $checkedItems = $("form[name=\"fwishlist\"] .selec_chk:checked");
+            const $checkedItems = $("form[name=\"fwishlist\"] .wishlist-check-input:checked");
 
             if ($checkedItems.length === 0) {
                 alert("삭제할 상품을 선택해 주세요.");
@@ -356,6 +412,34 @@ include_once(G5_SHOP_PATH . '/_head.php');
                 }
             });
         });
+    });
+
+    // Owl Carousel 초기화
+    $(function() {
+        const $wishlistSlider = $("#wishlist_recommend .js-shop-slider");
+        const isPc = matchesBreakpoint("min-width", "--breakpoint-pc");
+
+        if (
+            $wishlistSlider.length &&
+            $.fn.owlCarousel &&
+            !$wishlistSlider.hasClass("owl-loaded")
+        ) {
+            const sliderItems = parseFloat(
+                isPc ?
+                $wishlistSlider.attr("data-items-pc") :
+                $wishlistSlider.attr("data-items-mobile")
+            ) || 2.15;
+
+            $wishlistSlider.owlCarousel({
+                loop: true,
+                nav: false,
+                autoplay: false,
+                autoplayHoverPause: false,
+                margin: parseInt($wishlistSlider.attr("data-margin"), 10) || 12,
+                stagePadding: 0,
+                items: sliderItems
+            });
+        }
     });
 
     // 반응형 쇼핑몰 헤더 숨기기
