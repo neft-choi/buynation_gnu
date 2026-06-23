@@ -34,6 +34,18 @@ if (!empty($qaconfig['qa_category'])) {
     }
 }
 ?>
+
+<!-- 모바일 헤더 -->
+<div class="flex pc:hidden items-center justify-between h-[var(--mobile-header-height)] px-4">
+    <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
+            <path d="m15 18-6-6 6-6" />
+        </svg>
+    </button>
+    <h1 class="text-lg font-semibold text-zinc-900 leading-0">문의내역</h1>
+    <div class="w-6 h-6" aria-hidden="true"></div>
+</div>
+
 <!-- 회원 요약 정보 (PC) -->
 <?php include_once(G5_THEME_SHOP_PATH . '/_mypage_summary_pc.php'); ?>
 
@@ -42,20 +54,16 @@ if (!empty($qaconfig['qa_category'])) {
     <?php
     include_once(G5_THEME_SHOP_PATH . '/_mypage_menu_pc.php');
     ?>
-    <div id="bo_list" class="w-full max-w-full mx-auto bg-white text-zinc-900">
-        <div class="p-4">
-            <div class="flex items-center justify-between">
-                <button type="button" onclick="history.back();" class="inline-flex items-center justify-center h-8 w-8 text-zinc-700" aria-label="뒤로가기">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                        <path d="m15 18-6-6 6-6"></path>
-                    </svg>
-                </button>
-                <div class="text-lg font-semibold text-zinc-900"><?php echo $qaconfig['qa_title']; ?></div>
-                <div class="h-8 w-8" aria-hidden="true"></div>
-            </div>
+
+    <!-- 문의 내역 -->
+    <div id="bo_list" class="flex-1 min-w-0">
+
+        <!-- PC 너비 타이틀 -->
+        <div class="hidden pc:block px-4">
+            <h2 class="text-2xl font-bold pb-4 border-b-2 border-gray-900">문의내역</h2>
         </div>
 
-        <div class="px-4 pt-4">
+        <div class="mx-auto w-full max-w-full p-4">
             <fieldset class="m-0 p-0">
                 <legend class="sound_only">문의 검색</legend>
                 <form name="fsearch" method="get">
@@ -246,6 +254,15 @@ if (!empty($qaconfig['qa_category'])) {
 
             return true;
         }
+
+        // 반응형 쇼핑몰 헤더 숨기기
+        syncWithPcBreakpoint(function(isPc) {
+            if (isPc) {
+                $('#hd').css('display', '');
+            } else {
+                $('#hd').css('display', 'none');
+            }
+        });
     </script>
 <?php } ?>
 <!-- } 게시판 목록 끝 -->

@@ -2,6 +2,8 @@
 $sub_menu = '810100';
 require_once './_common.php';
 
+$max_limit = 7; // 몇행 출력할 것인지?
+
 $g5['title'] = '브랜드 대시보드';
 require_once '../admin.head.php';
 ?>

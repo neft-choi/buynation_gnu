@@ -4,6 +4,7 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="' . $qa_skin_url . '/style.css">', 0);
 ?>
+
 <!-- 모바일 헤더 -->
 <div class="flex pc:hidden items-center justify-between h-[var(--mobile-header-height)] px-4">
     <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기" onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
@@ -19,11 +20,13 @@ add_stylesheet('<link rel="stylesheet" href="' . $qa_skin_url . '/style.css">', 
 <?php include_once(G5_THEME_SHOP_PATH . '/_mypage_summary_pc.php'); ?>
 
 <div class="block pc:flex gap-6 pc:px-5 pc:py-12">
+
     <!-- 마이페이지 메뉴 (PC) -->
     <?php
     include_once(G5_THEME_SHOP_PATH . '/_mypage_menu_pc.php');
     ?>
 
+    <!-- 문의하기 -->
     <section id="bo_w" class="flex-1 min-w-0">
 
         <!-- PC 너비 타이틀 -->
@@ -65,25 +68,27 @@ add_stylesheet('<link rel="stylesheet" href="' . $qa_skin_url . '/style.css">', 
                         </li>
                     <?php } ?>
 
-                    <?php if ($is_email) { ?>
-                        <li class="bo_w_mail chk_box">
-                            <label for="qa_email" class="sound_only">이메일</label>
-                            <input type="text" name="qa_email" value="<?php echo get_text($write['qa_email']); ?>" id="qa_email" <?php echo $req_email; ?> class="<?php echo $req_email . ' '; ?>frm_input full_input email" size="50" maxlength="100" placeholder="이메일">
-                            <input type="checkbox" name="qa_email_recv" id="qa_email_recv" value="1" <?php if ($write['qa_email_recv']) echo 'checked="checked"'; ?> class="selec_chk">
-                            <label for="qa_email_recv" class="frm_info_custom"><span></span>답변 등록 시 이메일로 알림</label>
-                        </li />
-                    <?php } ?>
+                    <div class="flex items-start gap-4">
+                        <?php if ($is_email) { ?>
+                            <li class="bo_w_mail chk_box w-full">
+                                <label for="qa_email" class="sound_only">이메일</label>
+                                <input type="text" name="qa_email" value="<?php echo get_text($write['qa_email']); ?>" id="qa_email" <?php echo $req_email; ?> class="<?php echo $req_email . ' '; ?>frm_input full_input email" maxlength="100" placeholder="이메일">
+                                <input type="checkbox" name="qa_email_recv" id="qa_email_recv" value="1" <?php if ($write['qa_email_recv']) echo 'checked="checked"'; ?> class="selec_chk">
+                                <label for="qa_email_recv" class="frm_info"><span></span>답변 등록 시 이메일로 알림</label>
+                            </li />
+                        <?php } ?>
 
-                    <?php if ($is_hp) { ?>
-                        <li class="bo_w_hp chk_box">
-                            <label for="qa_hp" class="sound_only">휴대폰</label>
-                            <input type="text" name="qa_hp" value="<?php echo get_text($write['qa_hp']); ?>" id="qa_hp" <?php echo $req_hp; ?> class="<?php echo $req_hp . ' '; ?>frm_input full_input" size="30" placeholder="휴대폰">
-                            <?php if ($qaconfig['qa_use_sms']) { ?>
-                                <input type="checkbox" name="qa_sms_recv" id="qa_sms_recv" value="1" <?php if ($write['qa_sms_recv']) echo 'checked="checked"'; ?> class="selec_chk">
-                                <label for="qa_sms_recv" class="frm_info"><span></span>답변 등록 시 SMS로 알림</label>
-                            <?php } ?>
-                        </li>
-                    <?php } ?>
+                        <?php if ($is_hp) { ?>
+                            <li class="bo_w_hp chk_box w-full">
+                                <label for="qa_hp" class="sound_only">휴대폰</label>
+                                <input type="text" name="qa_hp" value="<?php echo get_text($write['qa_hp']); ?>" id="qa_hp" <?php echo $req_hp; ?> class="<?php echo $req_hp . ' '; ?>frm_input full_input" placeholder="휴대폰">
+                                <?php if ($qaconfig['qa_use_sms']) { ?>
+                                    <input type="checkbox" name="qa_sms_recv" id="qa_sms_recv" value="1" <?php if ($write['qa_sms_recv']) echo 'checked="checked"'; ?> class="selec_chk">
+                                    <label for="qa_sms_recv" class="frm_info"><span></span>답변 등록 시 SMS로 알림</label>
+                                <?php } ?>
+                            </li>
+                        <?php } ?>
+                    </div>
 
                     <li class="bo_w_sbj">
                         <label for="qa_subject" class="sound_only">제목<strong class="sound_only">필수</strong></label>

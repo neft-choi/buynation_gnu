@@ -1910,8 +1910,8 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
     const getTabPanels = () =>
         tabIds
-            .map((id) => document.getElementById(id))
-            .filter((panel) => panel !== null);
+        .map((id) => document.getElementById(id))
+        .filter((panel) => panel !== null);
 
     const getTabLinks = () =>
         Array.from(document.querySelectorAll(".anchor a[data-tab-target]"));
