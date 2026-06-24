@@ -3,6 +3,11 @@ include_once('./_common.php');
 include_once(G5_CAPTCHA_PATH.'/captcha.lib.php');
 include_once(G5_LIB_PATH.'/register.lib.php');
 
+// bbs 페이지를 쇼핑몰 페이지로 사용하게 만드는 상수
+if (!defined('_SHOP_')) {
+    define('_SHOP_', true);
+}
+
 run_event('register_form_before');
 
 // 불법접근을 막도록 토큰생성
@@ -127,7 +132,8 @@ if ($w == "") {
     alert('w 값이 제대로 넘어오지 않았습니다.');
 }
 
-include_once('./_head.php');
+// include_once('./_head.php');
+include_once(G5_SHOP_PATH . '/_head.php');
 
 // 회원아이콘 경로
 $mb_icon_path = G5_DATA_PATH.'/member/'.substr($member['mb_id'],0,2).'/'.get_mb_icon_name($member['mb_id']).'.gif';
@@ -158,4 +164,5 @@ include_once($member_skin_path.'/register_form.skin.php');
 
 run_event('register_form_after', $w, $agree, $agree2);
 
-include_once('./_tail.php');
+// include_once('./_tail.php');
+include_once(G5_SHOP_PATH . '/_tail.php');

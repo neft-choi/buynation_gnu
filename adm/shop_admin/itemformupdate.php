@@ -30,9 +30,9 @@ if ($is_admin != 'super') {     // 최고관리자가 아니면 체크
     }
     $checks = sql_fetch($sql);
 
-    if (! (isset($checks['ca_mb_id']) && $checks['ca_mb_id']) || $checks['ca_mb_id'] !== $member['mb_id']) {
-        alert("해당 분류의 관리회원이 아닙니다.");
-    }
+    // if (! (isset($checks['ca_mb_id']) && $checks['ca_mb_id']) || $checks['ca_mb_id'] !== $member['mb_id']) {
+    //     alert("해당 분류의 관리회원이 아닙니다.");
+    // }
 }
 
 $it_img1 = $it_img2 = $it_img3 = $it_img4 = $it_img5 = $it_img6 = $it_img7 = $it_img8 = $it_img9 = $it_img10 = '';

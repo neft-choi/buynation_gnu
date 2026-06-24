@@ -35,8 +35,12 @@ if (!$sst) {
 $sql_common = "  from {$g5['g5_shop_item_qa_table']} a
                  left join {$g5['g5_shop_item_table']} b on (a.it_id = b.it_id)
                  left join {$g5['member_table']} c on (a.mb_id = c.mb_id) ";
-$sql_common .= $sql_search;
 
+if ($is_admin != 'super') {
+    $sql_search .= " {$where} b.it_brand = '{$member['mb_id']}' ";
+    $where = " and ";
+}
+$sql_common .= $sql_search;
 // 테이블의 전체 레코드수만 얻음
 $sql = " select count(*) as cnt " . $sql_common;
 $row = sql_fetch($sql);

@@ -9,10 +9,17 @@ if ($is_member) {
 // 세션을 지웁니다.
 set_session("ss_mb_reg", "");
 
+// bbs 페이지를 쇼핑몰 페이지로 사용하게 만드는 상수
+if (!defined('_SHOP_')) {
+    define('_SHOP_', true);
+}
+
 $g5['title'] = '회원가입약관';
-include_once('./_head.php');
+// include_once('./_head.php');
+include_once(G5_SHOP_PATH . '/_head.php');
 
 $register_action_url = G5_BBS_URL.'/register_form.php';
 include_once($member_skin_path.'/register.skin.php');
 
-include_once('./_tail.php');
+// include_once('./_tail.php');
+include_once(G5_SHOP_PATH . '/_tail.php');

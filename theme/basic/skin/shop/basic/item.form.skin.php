@@ -155,7 +155,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			<!-- 상품 요약정보 및 구매 시작 { -->
 			<section id="sit_ov" class="relative w-full !h-auto p-4 pc:p-0x">
 				<p class="flex items-center gap-1 text-sm text-zinc-500 font-semibold">
-					<?php echo $it["it_maker"]; ?>
+					<?php echo $it["it_brand"]; ?>
 					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
 						<path d="m9 18 6-6-6-6" />
 					</svg>

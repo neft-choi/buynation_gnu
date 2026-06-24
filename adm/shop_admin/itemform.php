@@ -128,8 +128,8 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 $category_select = '';
 $script = '';
 $sql = " select * from {$g5['g5_shop_category_table']} ";
-if ($is_admin != 'super')
-    $sql .= " where ca_mb_id = '{$member['mb_id']}' ";
+// if ($is_admin != 'super')
+//     $sql .= " where ca_mb_id = '{$member['mb_id']}' ";
 $sql .= " order by ca_order, ca_id ";
 $result = sql_query($sql);
 for ($i = 0; $row = sql_fetch_array($result); $i++) {
@@ -422,8 +422,13 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                     <tr>
                         <th scope="row"><label for="it_brand">브랜드</label></th>
                         <td>
-                            <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
-                            <input type="text" name="it_brand" value="<?php echo get_text($it['it_brand']); ?>" id="it_brand" class="frm_input" size="40">
+                            <?php
+                            $current_user_brand = isset($member['mb_id']) ? get_text($member['mb_id']) : '';
+                            $brand_value = $current_user_brand;
+                            $readonly_attr = 'readonly style="background-color:#f5f5f5; cursor:not-allowed;"';
+                            ?>
+                            <input type="text" name="it_brand" value="<?php echo $brand_value; ?>" id="it_brand" class="frm_input" size="40" <?php echo $readonly_attr; ?>>
+                            <span class="frm_info">현재 접속한 계정의 브랜드 정보가 자동으로 입력되며, 수정할 수 없습니다.</span>
                         </td>
                         <td class="td_grpset">
                             <input type="checkbox" name="chk_ca_it_brand" value="1" id="chk_ca_it_brand">

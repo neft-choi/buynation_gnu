@@ -14,8 +14,8 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 // 분류
 $ca_list  = '<option value="">선택</option>' . PHP_EOL;
 $sql = " select * from {$g5['g5_shop_category_table']} ";
-if ($is_admin != 'super')
-    $sql .= " where ca_mb_id = '{$member['mb_id']}' ";
+// if ($is_admin != 'super')
+//     $sql .= " where ca_mb_id = '{$member['mb_id']}' ";
 $sql .= " order by ca_order, ca_id ";
 $result = sql_query($sql);
 for ($i = 0; $row = sql_fetch_array($result); $i++) {
@@ -48,12 +48,14 @@ if ($sfl == "")  $sfl = "it_name";
 $sql_common = " from {$g5['g5_shop_item_table']} a ,
                      {$g5['g5_shop_category_table']} b
                where (a.ca_id = b.ca_id";
-if ($is_admin != 'super')
-    $sql_common .= " and b.ca_mb_id = '{$member['mb_id']}'";
+
+if ($is_admin != 'super') {
+    $sql_common .= " and a.it_brand = '{$member['mb_id']}'"; 
+    // $sql_common .= " and a.it_brand = '{$brand['brand_id']}'"; 예시
+}
 $sql_common .= ") ";
 $sql_common .= $sql_search;
 
-// 테이블의 전체 레코드수만 얻음
 $sql = " select count(*) as cnt " . $sql_common;
 $row = sql_fetch($sql);
 $total_count = $row['cnt'];
@@ -82,6 +84,7 @@ $result = sql_query($sql);
 $qstr  = $qstr . '&amp;sca=' . $sca . '&amp;page=' . $page . '&amp;save_stx=' . $stx;
 
 $listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체목록</a>';
+$listall .= ' <a href="./itemlist_csv.php?'.$qstr.'" class="btn btn_02" style="background:#1d6f42; color:#fff; border:1px solid #1d6f42;">CSV 다운로드</a>';
 ?>
 
 <div class="md:bg-white bg-gray-50 mt-[-16px]">
@@ -213,7 +216,7 @@ $listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체�
                             <td rowspan="3" class="td_num"><?php echo $row['it_hit']; ?></td>
                             <td rowspan="3" class="td_mng td_mng_s">
                                 <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_04"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'], 250, "")); ?> </span>수정</a>
-                                <a href="./itemcopy.php?it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>" class="itemcopy btn btn_05" target="_blank"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'], 250, "")); ?> </span>복사</a>
+                                <a href="./itemcopy.php?it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>" class="itemcopy btn btn_05"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'], 250, "")); ?> </span>복사</a>
                                 <a href="<?php echo $href; ?>" class="btn btn_05"><span class="sound_only"><?php echo htmlspecialchars2(cut_str($row['it_name'], 250, "")); ?> </span>보기</a>
                             </td>
                         </tr>
@@ -287,9 +290,7 @@ $listall = '<a href="' . $_SERVER['SCRIPT_NAME'] . '" class="btn btn_04">전체�
             <a href="./itemform.php" class="btn btn_04">상품등록</a>
             <a href="./itemexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn btn_05 !hidden">상품일괄등록</a>
             <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_05 !hidden">
-            <?php if ($is_admin == 'super') { ?>
                 <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
-            <?php } ?>
         </div>
         <!-- <div class="btn_confirm01 btn_confirm">
     <input type="submit" value="일괄수정" class="btn btn_04" accesskey="s">

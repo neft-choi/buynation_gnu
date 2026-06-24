@@ -10,7 +10,7 @@ $ca_id = isset($_REQUEST['ca_id']) ? preg_replace('/[^0-9a-z]/i', '', $_REQUEST[
 $it_id = isset($_REQUEST['it_id']) ? safe_replace_regex($_REQUEST['it_id'], 'it_id') : '';
 
 if ($is_admin != "super")
-    alert("최고관리자만 접근 가능합니다.");
+    alert("최고관리자만 접근 가능합니다.상품수정");
 
 if (!trim($it_id))
 	alert("복사할 상품코드가 없습니다.");

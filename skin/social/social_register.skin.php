@@ -19,13 +19,13 @@ add_stylesheet('<link rel="stylesheet" href="'.get_social_skin_url().'/style.css
 ?>
 <div>
 
-    <div class="login-sns sns-wrap-32 sns-wrap-over" id="sns_register">
-        <h2>SNS 계정으로 가입</h2>
+    <div class="login-sns sns-wrap-32 sns-wrap-over flex item-center justify-between gap-2 border border-gray-900 p-4 mt-4" id="sns_register">
+        <h2 class="self-center leading-none">SNS 계정으로 가입</h2>
         <div class="sns-wrap">
             <?php if( social_service_check('naver') ) {     //네이버 로그인을 사용한다면 ?>
             <a href="<?php echo $self_url;?>?provider=naver&amp;url=<?php echo $urlencode;?>" class="sns-icon social_link sns-naver" title="네이버">
                 <span class="ico"></span>
-                <span class="txt">네이버로 회원가입하기</span>
+                <span class="txt sound_only">네이버로 회원가입하기</span>
             </a>
             <?php }     //end if ?>
             <?php if( social_service_check('kakao') ) {     //카카오 로그인을 사용한다면 ?>
