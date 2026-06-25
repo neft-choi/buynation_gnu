@@ -15,6 +15,7 @@ if (G5_IS_MOBILE) {
     return;
 }
 
+// type 분기
 if ($type === 1)      $g5['title'] = '히트상품';
 else if ($type === 2) $g5['title'] = '추천상품';
 else if ($type === 3) $g5['title'] = '최신상품';
@@ -59,6 +60,9 @@ $is_active_price_asc = ($sort === 'it_price' && $sortodr === 'asc');
 $is_active_price_desc = ($sort === 'it_price' && $sortodr === 'desc');
 ?>
 
+<section>
+
+</section>
 <!-- 상품 리스트 정렬, 필터 -->
 <section class="px-4 pt-4">
     <div class="flex items-center justify-between">
@@ -268,12 +272,14 @@ $is_active_price_desc = ($sort === 'it_price' && $sortodr === 'desc');
 <script>
     // 필터 버튼 누르면 Drawer 열림
     $('#filterDrawerOpen').on('click', function() {
+        $('#hd').css('z-index', 4);
         $('#filterDrawer').removeClass('hidden');
     })
 
     // 필터 Drawer 안 X 버튼과 뒷배경 누르면 Drawer hidden 처리
     $('#filterDrawerClose, #filterDrawerBackdrop').on('click', function() {
         $('#filterDrawer').addClass('hidden');
+        $('#hd').css('z-index', '');
     });
 
     function setActiveFilterTab($activeTab) {

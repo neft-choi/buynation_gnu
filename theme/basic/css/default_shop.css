@@ -107,7 +107,6 @@
   background: var(--color-primary-80);
 }
 
-
 :where(button[data-variant="primary"]:disabled),
 :where(button[data-variant="primary"].disabled) {
   background: #e4e4e7;
@@ -1105,11 +1104,11 @@ border:1px solid #558ab7;
   line-height: 1.5em;
 }
 
-#mb_login #sns_login {
+/* #mb_login #sns_login {
   margin-top: 0;
   border-color: #edeaea;
   padding: 25px;
-}
+} */
 #mb_login #sns_login:after {
   display: block;
   visibility: hidden;

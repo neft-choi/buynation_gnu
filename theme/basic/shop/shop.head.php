@@ -22,7 +22,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
 <div id="app-shell" class="app-shell">
     <!-- 상단 시작 -->
-    <header id="hd" class="sticky pc:static top-0 left-0 z-50 !bg-white">
+    <header id="hd" class="sticky pc:static top-0 left-0 z-30 !bg-white">
         <h1 id="hd_h1"><?php echo $g5['title'] ?></h1>
         <div id="skip_to_container"><a href="#container">본문 바로가기</a></div>
 

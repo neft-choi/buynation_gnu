@@ -254,7 +254,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 
             // 만 14세 이상
             if (!f.agree4.checked) {
-                alert("만 14세 이상 여부를 확인해주셔야 회원가입 하실 수 있습니다.");
+                alert("만 14세 이상 여부를 확인하셔야 회원가입 하실 수 있습니다.");
                 f.agree4.focus();
                 return false;
             }

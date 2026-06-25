@@ -65,19 +65,19 @@
 #sns_outlogin .sns-icon .ico {width:30px;height:30px}
 
 /*로그인 */
-#sns_login {border:0;margin-top:15px;border-top:1px solid #edeaea}
-#sns_login h3 {padding:10px 0 0;text-align:left;font-weight:bold}
-#sns_login .sns-icon {position:relative;display:block;height:40px;line-height:40px;width:100%;margin:0 0 5px;padding-left:40px;text-align:left;color:#fff;border-radius:2px}
-#sns_login .sns-naver {background-color:#1fc800;background-position:5px 5px;border-bottom:1px solid #1ea505}
-#sns_login .sns-kakao {background-color:#ffeb00;background-position:5px 5px;border-bottom:1px solid #e2c10a}
-#sns_login .sns-kakao {color:#3c1e1e}
-#sns_login .sns-facebook {background-color:#3b579d;background-position:5px 5px;border-bottom:1px solid #28458f}
-#sns_login .sns-google {background-color:#4285F4;background-position:5px 5px;border-bottom:1px solid #3567c6;letter-spacing:-0.5px}
-#sns_login .sns-google .ico {position:absolute;top:3px;left:3px;width:33px;height:33px;background:url('./img/sns_gp_s.png') no-repeat center center;background-color:#fff;background-size:28px 28px!important;border-radius:2px}
-#sns_login .sns-twitter {background-color:#1ea1f2;background-position:5px 5px;border-bottom:1px solid #1e82c0}
-#sns_login .sns-payco {background-color:#df0b00;background-position:5px 5px;border-bottom:1px solid #9d0800}
-#sns_login .txt {text-align:left;padding-left:10px;border-left:1px solid rgba(0,0,0,0.1);display:block;font-weight:bold}
-#sns_login .txt:hover {background:rgba(0,0,0,0.07)}
+/* #sns_login {border:0;margin-top:15px;border-top:1px solid #edeaea} */
+/* #sns_login h3 {padding:10px 0 0;text-align:left;font-weight:bold} */
+/* #sns_login .sns-icon {position:relative;display:block;height:40px;line-height:40px;width:100%;margin:0 0 5px;padding-left:40px;text-align:left;color:#fff;border-radius:2px} */
+/* #sns_login .sns-naver {background-color:#1fc800;background-position:5px 5px;border-bottom:1px solid #1ea505} */
+/* #sns_login .sns-kakao {background-color:#ffeb00;background-position:5px 5px;border-bottom:1px solid #e2c10a} */
+/* #sns_login .sns-kakao {color:#3c1e1e} */
+/* #sns_login .sns-facebook {background-color:#3b579d;background-position:5px 5px;border-bottom:1px solid #28458f} */
+/* #sns_login .sns-google {background-color:#4285F4;background-position:5px 5px;border-bottom:1px solid #3567c6;letter-spacing:-0.5px} */
+/* #sns_login .sns-google .ico {position:absolute;top:3px;left:3px;width:33px;height:33px;background:url('./img/sns_gp_s.png') no-repeat center center;background-color:#fff;background-size:28px 28px!important;border-radius:2px} */
+/* #sns_login .sns-twitter {background-color:#1ea1f2;background-position:5px 5px;border-bottom:1px solid #1e82c0} */
+/* #sns_login .sns-payco {background-color:#df0b00;background-position:5px 5px;border-bottom:1px solid #9d0800} */
+/* #sns_login .txt {text-align:left;padding-left:10px;border-left:1px solid rgba(0,0,0,0.1);display:block;font-weight:bold} */
+/* #sns_login .txt:hover {background:rgba(0,0,0,0.07)} */
 
 /*회원가입 */
 /* #sns_register {margin:0 0 10px;padding:0;text-align:center;border-radius:3px} */

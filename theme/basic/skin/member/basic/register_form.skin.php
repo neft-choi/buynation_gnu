@@ -33,17 +33,19 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 	</button>
 </header>
 
-<div class="mx-auto min-h-screen w-full max-w-[460px] p-4 pb-40">
+<div class="mx-auto min-h-screen w-full max-w-[460px] pt-8 pc:pt-21">
 
 	<!-- 회원정보 입력/수정 시작 { -->
-	<div class="mt-4">
+	<div class="px-4">
 		<form id="fregisterform" name="fregisterform" action="<?php echo $register_action_url ?>"
 			onsubmit="return fregisterform_submit(this);" method="post" enctype="multipart/form-data"
 			autocomplete="off">
 			<input type="hidden" name="w" value="<?php echo $w ?>">
 			<input type="hidden" name="url" value="<?php echo $urlencode ?>">
 			<input type="hidden" name="agree" value="<?php echo $agree ?>">
+			<input type="hidden" name="agree3" value="<?php echo $agree3 ?>">
 			<input type="hidden" name="agree2" value="<?php echo $agree2 ?>">
+			<input type="hidden" name="agree4" value="<?php echo $agree4 ?>">
 			<input type="hidden" name="cert_type" value="<?php echo $member['mb_certify']; ?>">
 			<input type="hidden" name="cert_no" value="">
 			<?php if (isset($member['mb_sex'])) { ?><input type="hidden" name="mb_sex"
@@ -55,41 +57,42 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 			<?php } ?>
 
 			<div id="register_form_custom" class="space-y-6">
-				<div class="space-y-2">
+				<div class="space-y-2 pc:text-center">
 					<h2 class="text-2xl font-bold text-zinc-900">회원정보</h2>
-					<p class="text-sm text-zinc-500">회원정보를 입력하고 바이네이션 서비스를 이용해보세요.</p>
-					<ul class="grid gap-3">
-						<li class="relative grid gap-2">
-							<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?>
-								class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 !pb-0 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?> <?php echo $readonly ?>"
-								minlength="3" maxlength="20" placeholder=" ">
-							<label for="reg_mb_id"
-								class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">아이디</label>
-							<span id="msg_mb_id"></span>
-						</li>
-						<li class="left_input margin_input relative grid gap-2">
-							<label for="reg_mb_password" class="sound_only">비밀번호 (필수)</label>
-							<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?>
-								class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 !pb-0 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?>"
-								minlength="3" maxlength="20" placeholder=" ">
-							<span
-								class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호</span>
-						</li>
-						<li class="left_input relative grid gap-2">
-							<label for="reg_mb_password_re" class="sound_only">비밀번호 확인 (필수)</label>
-							<input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?>
-								class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 !pb-0 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?>"
-								minlength="3" maxlength="20" placeholder=" ">
-							<span
-								class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호
-								재입력</span>
-						</li>
-					</ul>
+					<p class="text-[15px] text-zinc-500">회원정보를 입력하고 바이네이션 서비스를 이용해보세요.</p>
 				</div>
+
+				<ul class="mt-8 space-y-2">
+					<li class="relative grid gap-2">
+						<input type="text" name="mb_id" value="<?php echo $member['mb_id'] ?>" id="reg_mb_id" <?php echo $required ?> <?php echo $readonly ?>
+							class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 !pb-0 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?> <?php echo $readonly ?>"
+							minlength="3" maxlength="20" placeholder=" ">
+						<label for="reg_mb_id"
+							class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">아이디</label>
+						<span id="msg_mb_id"></span>
+					</li>
+					<li class="relative grid gap-2 mt-4">
+						<label for="reg_mb_password" class="sound_only">비밀번호 (필수)</label>
+						<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?>
+							class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 !pb-0 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?>"
+							minlength="3" maxlength="20" placeholder=" ">
+						<span
+							class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호</span>
+					</li>
+					<li class="relative grid gap-2">
+						<label for="reg_mb_password_re" class="sound_only">비밀번호 확인 (필수)</label>
+						<input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?>
+							class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 !pb-0 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $required ?>"
+							minlength="3" maxlength="20" placeholder=" ">
+						<span
+							class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호
+							재입력</span>
+					</li>
+				</ul>
 
 				<div>
 					<h2 class="sound_only">개인정보 입력</h2>
-					<ul class="grid gap-3">
+					<ul class="space-y-2">
 						<?php
 						$desc_name = '';
 						$desc_phone = '';
@@ -137,7 +140,8 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								<?php } ?>
 							</li>
 						<?php } ?>
-						<li class="relative grid gap-2">
+
+						<li class="relative">
 							<label for="reg_mb_name" class="sound_only">이름 (필수)<?php echo $desc_name ?></label>
 							<input type="text" id="reg_mb_name" name="mb_name"
 								value="<?php echo get_text($member['mb_name']) ?>" <?php echo $required ?> <?php echo $name_readonly; ?>
@@ -146,12 +150,13 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							<span
 								class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">이름</span>
 						</li>
+
 						<?php if ($req_nick) { ?>
-							<li class="relative grid gap-2">
+							<li class="relative">
 								<label for="reg_mb_nick" class="sound_only">
 									닉네임 (필수)
 									<button type="button"
-										class="tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
+										class="!hidden tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
 										aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
 											viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 											stroke-linecap="round" stroke-linejoin="round"
@@ -198,7 +203,10 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							</li>
 						<?php } ?>
 						<li class="relative grid gap-2">
-							<?php if ($config['cf_use_hp'] || ($config["cf_cert_use"] && ($config['cf_cert_hp'] || $config['cf_cert_simple']))) { ?>
+							<?php
+							// if ($config['cf_use_hp'] || ($config["cf_cert_use"] && ($config['cf_cert_hp'] || $config['cf_cert_simple']))) { 
+							if (true) {
+								?>
 								<label for="reg_mb_hp" class="sound_only">휴대폰번호<?php if (!empty($hp_required)) { ?>
 										(필수)<?php } ?><?php echo $desc_phone ?></label>
 
@@ -217,7 +225,6 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 
 						<li class="relative grid gap-2">
 							<label for="reg_mb_email" class="sound_only">E-mail (필수)
-
 								<?php if ($config['cf_use_email_certify']) { ?>
 									<button type="button"
 										class="tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
@@ -284,7 +291,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 					</ul>
 				</div>
 
-				<div>
+				<div class="!hidden">
 					<h2 class="sound_only">기타 개인설정</h2>
 					<ul class="grid gap-4">
 						<?php if ($config['cf_use_signature']) { ?>
@@ -421,7 +428,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 
 				<!-- 회원가입 약관 동의에 광고성 정보 수신 동의 표시 여부가 사용시에만 -->
 				<?php if ($config['cf_use_promotion'] == 1) { ?>
-					<div>
+					<div class="!hidden">
 						<h2 class="text-base font-semibold text-zinc-900">수신설정</h2>
 						<!-- 수신설정만 팝업 및 체크박스 관련 class 적용 -->
 						<ul>
@@ -429,7 +436,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							<li class="chk_box">
 								<div class="consent-line">
 									<input type="checkbox" name="mb_marketing_agree" value="1" id="reg_mb_marketing_agree"
-										aria-describedby="desc_marketing" <?php echo $member['mb_marketing_agree'] ? 'checked' : ''; ?> class="selec_chk marketing-sync">
+										aria-describedby="desc_marketing" <?php echo ($member['mb_marketing_agree'] || $agree5) ? 'checked' : ''; ?> class="selec_chk marketing-sync">
 									<label for="reg_mb_marketing_agree"><span></span><b class="sound_only">(선택) 마케팅 목적의 개인정보
 											수집 및 이용</b></label>
 									<span class="chk_li">(선택) 마케팅 목적의 개인정보 수집 및 이용</span>
@@ -474,7 +481,8 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								<!-- 하위 채널(이메일/SMS) -->
 								<ul class="sub-consents">
 									<li class="chk_box is-inline">
-										<input type="checkbox" name="mb_mailling" value="1" id="reg_mb_mailling" <?php echo $member['mb_mailling'] ? 'checked' : ''; ?> class="selec_chk child-promo">
+										<input type="checkbox" name="mb_mailling" value="1" id="reg_mb_mailling" <?php echo $member['mb_mailling'] || $agree5 ? 'checked' : ''; ?>
+											class="selec_chk child-promo">
 										<label for="reg_mb_mailling"><span></span><b class="sound_only">광고성 이메일 수신
 												동의</b></label>
 										<span class="chk_li">광고성 이메일 수신 동의</span>
@@ -564,12 +572,10 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 					</ul>
 				</div> -->
 			</div>
-			<div class="mt-8 grid grid-cols-2 gap-3">
-				<a href="<?php echo G5_BBS_URL ?>/register.php"
-					class="inline-flex h-14 items-center justify-center rounded-md border border-zinc-300 bg-zinc-100 text-lg font-semibold text-zinc-900">처음으로</a>
-				<button type="submit" id="btn_submit" data-variant="primary"
-					class="h-14 rounded-md  text-lg font-semibold text-zinc-900"
-					accesskey="s">완료</button>
+			<div class="flex items-center gap-3 mt-10 text-base text-gray-900 font-semibold">
+				<a href="<?php echo G5_BBS_URL ?>/register_type.php"
+					class="inline-flex items-center justify-center w-full rounded border border-zinc-300 bg-zinc-100 py-4">처음으로</a>
+				<button type="submit" id="btn_submit" data-variant="primary" class="py-4" accesskey="s">완료</button>
 			</div>
 		</form>
 	</div>

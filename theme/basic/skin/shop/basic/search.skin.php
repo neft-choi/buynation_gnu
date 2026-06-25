@@ -92,19 +92,19 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
         <div class="relative shrink-0">
             <button type="button" id="sortBtn" class="px-2 py-1 border border-zinc-300 bg-white text-sm text-zinc-800 flex items-center gap-1">
-                <span id="sortBtnLabel"><?php echo $sort_label; ?></span>
+                <span id="sortBtnLabel" class="<?php echo $sort_label === '추천순' ? 'pr-4' : ''; ?>"><?php echo $sort_label; ?></span>
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-zinc-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="m6 9 6 6 6-6" />
                 </svg>
             </button>
 
-            <div id="sortMenu" class="hidden absolute right-0 mt-1 w-full border border-zinc-200 rounded bg-white z-20">
-                <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_sum_qty', 'desc')">추천순</button>
-                <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_price', 'asc')">낮은가격순</button>
-                <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_price', 'desc')">높은가격순</button>
-                <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_use_avg', 'desc')">평점높은순</button>
-                <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_use_cnt', 'desc')">후기많은순</button>
-                <button type="button" class="block w-full text-left p-2 text-sm hover:bg-zinc-100" onclick="set_sort('it_update_time', 'desc')">최근등록순</button>
+            <div id="sortMenu" class="hidden absolute right-0 mt-1 min-w-max border border-zinc-200 rounded bg-white z-20">
+                <button type="button" class="block w-full text-left p-2 pr-6 text-sm hover:bg-zinc-100" onclick="set_sort('it_sum_qty', 'desc')">추천순</button>
+                <button type="button" class="block w-full text-left p-2 pr-6 text-sm hover:bg-zinc-100" onclick="set_sort('it_price', 'asc')">낮은가격순</button>
+                <button type="button" class="block w-full text-left p-2 pr-6 text-sm hover:bg-zinc-100" onclick="set_sort('it_price', 'desc')">높은가격순</button>
+                <button type="button" class="block w-full text-left p-2 pr-6 text-sm hover:bg-zinc-100" onclick="set_sort('it_use_avg', 'desc')">평점높은순</button>
+                <button type="button" class="block w-full text-left p-2 pr-6 text-sm hover:bg-zinc-100" onclick="set_sort('it_use_cnt', 'desc')">후기많은순</button>
+                <button type="button" class="block w-full text-left p-2 pr-6 text-sm hover:bg-zinc-100" onclick="set_sort('it_update_time', 'desc')">최근등록순</button>
             </div>
         </div>
     </div>

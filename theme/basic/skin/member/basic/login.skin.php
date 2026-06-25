@@ -2,15 +2,23 @@
 if (!defined('_GNUBOARD_'))
     exit; // 개별 페이지 접근 불가
 
-$self_url = G5_BBS_URL . "/login.php";
-
-if (G5_SOCIAL_USE_POPUP) {
-    $self_url = G5_SOCIAL_LOGIN_URL . '/popup.php';
-}
-
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css">', 0);
 ?>
+
+<!-- 모바일 헤더 -->
+<div class="flex pc:hidden items-center justify-between h-[var(--mobile-header-height)] px-4">
+    <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기"
+        onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
+            <path d="m15 18-6-6 6-6" />
+        </svg>
+    </button>
+    <h1 class="text-lg font-semibold text-zinc-900 leading-0"></h1>
+    <div class="w-6 h-6" aria-hidden="true"></div>
+</div>
 
 <!-- 로그인 시작 { -->
 <div id="mb_login" class="w-full max-w-[460px] mx-auto pt-12 p-4">
@@ -78,31 +86,15 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                 </div>
             </fieldset>
         </form>
-        <?php // @include_once(get_social_skin_path().'/social_login.skin.php'); // 소셜로그인 사용시 소셜로그인 버튼 
-        ?>
 
-        <!-- 소셜 로그인 하드 코딩 (기능 사용 시 제거) -->
-        <section class="space-y-4">
+        <section class="space-y-6 flex flex-col items-center">
             <h2 class="text-center text-sm text-zinc-500">SNS 간편 로그인</h2>
-            <div class="grid grid-cols-3 justify-self-center w-55 gap-4">
-                <a href="<?php echo $self_url; ?>?provider=kakao&amp;url=<?php echo $urlencode; ?>"
-                    class="social_link flex h-15 w-15 items-center justify-center justify-self-center rounded-full border border-zinc-200 bg-zinc-50 text-zinc-900"
-                    aria-label="카카오 로그인">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="currentColor" class="h-6 w-6">
-                        <path
-                            d="M12 3C6.477 3 2 6.548 2 10.926c0 2.752 1.78 5.174 4.49 6.606L5.5 21l3.748-2.054c.896.152 1.82.232 2.752.232 5.523 0 10-3.548 10-7.926S17.523 3 12 3z" />
-                    </svg>
-                </a>
-                <a href="<?php echo $self_url; ?>?provider=naver&amp;url=<?php echo $urlencode; ?>"
-                    class="social_link flex h-15 w-15 items-center justify-center justify-self-center rounded-full border border-zinc-200 bg-zinc-50 text-3xl font-bold text-green-600"
-                    aria-label="네이버 로그인">N</a>
-                <a href="<?php echo $self_url; ?>?provider=google&amp;url=<?php echo $urlencode; ?>"
-                    class="social_link flex h-15 w-15 items-center justify-center justify-self-center rounded-full border border-zinc-200 bg-zinc-50 text-2xl font-semibold text-blue-500"
-                    aria-label="구글 로그인">G</a>
-            </div>
+            <?php
+            // 소셜로그인 사용시 소셜로그인 버튼
+            @include_once(get_social_skin_path() . '/social_login.skin.php');
+            ?>
         </section>
-
+       
         <section class="rounded bg-[#523919] p-6 text-white">
             <div>프로모션 배너</div>
         </section>
