@@ -2,6 +2,18 @@
 $sub_menu = '400650';
 include_once('./_common.php');
 
+$brand_member = false;
+
+$brand = sql_fetch("
+    SELECT brand_id
+    FROM donuts_brand
+    WHERE brand_id = '{$member['mb_id']}'
+");
+
+if ($brand['brand_id']) {
+    $brand_member = true;
+}
+
 auth_check_menu($auth, $sub_menu, "r");
 
 if (isset($sfl) && $sfl && !in_array($sfl, array('it_name', 'a.it_id', 'is_name'))) {
@@ -37,6 +49,12 @@ if (!$sst) {
 $sql_common = "  from {$g5['g5_shop_item_use_table']} a
                  left join {$g5['g5_shop_item_table']} b on (a.it_id = b.it_id)
                  left join {$g5['member_table']} c on (a.mb_id = c.mb_id) ";
+
+if ($brand_member) {
+    $sql_search .= ($sql_search ? " and " : " where ");
+    $sql_search .= " b.it_brand = '{$member['mb_id']}' ";
+}
+
 $sql_common .= $sql_search;
 
 // 테이블의 전체 레코드수만 얻음

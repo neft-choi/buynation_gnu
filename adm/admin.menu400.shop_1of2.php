@@ -1,4 +1,6 @@
 <?php
+// 쇼핑몰 관리 메뉴
+// 쇼핑몰이 미사용이면 메뉴 자체가 만들어지지 않음
 if (!defined('G5_USE_SHOP') || !G5_USE_SHOP) {
     return;
 }

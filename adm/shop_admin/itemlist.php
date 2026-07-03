@@ -2,6 +2,18 @@
 $sub_menu = '400300';
 include_once('./_common.php');
 
+$brand_member = false;
+
+$brand = sql_fetch("
+    SELECT brand_id
+    FROM donuts_brand
+    WHERE brand_id = '{$member['mb_id']}'
+");
+
+if ($brand['brand_id']) {
+    $brand_member = true;
+}
+
 auth_check_menu($auth, $sub_menu, "r");
 
 if (isset($sfl) && $sfl && !in_array($sfl, array('it_name', 'it_id', 'it_maker', 'it_brand', 'it_model', 'it_origin', 'it_sell_email'))) {
@@ -49,9 +61,8 @@ $sql_common = " from {$g5['g5_shop_item_table']} a ,
                      {$g5['g5_shop_category_table']} b
                where (a.ca_id = b.ca_id";
 
-if ($is_admin != 'super') {
+if ($is_admin != 'super' && $brand_member) {
     $sql_common .= " and a.it_brand = '{$member['mb_id']}'"; 
-    // $sql_common .= " and a.it_brand = '{$brand['brand_id']}'"; 예시
 }
 $sql_common .= ") ";
 $sql_common .= $sql_search;

@@ -60,7 +60,8 @@ if (!auth_check_menu($auth, '200100', 'r', true)) {
     <section>
         <h2>신규가입회원 <?php echo $new_member_rows ?>건 목록</h2>
         <div class="local_desc02 local_desc">
-            총회원수 <?php echo number_format($total_count) ?>명 중 차단 <?php echo number_format($intercept_count) ?>명, 탈퇴 : <?php echo number_format($leave_count) ?>명
+            총회원수 <?php echo number_format($total_count) ?>명 중 차단 <?php echo number_format($intercept_count) ?>명, 탈퇴 :
+            <?php echo number_format($leave_count) ?>명
         </div>
 
         <div class="tbl_head01 tbl_wrap">
@@ -114,10 +115,13 @@ if (!auth_check_menu($auth, '200100', 'r', true)) {
                                 <div><?php echo $mb_nick ?></div>
                             </td>
                             <td class="td_num"><?php echo $row['mb_level'] ?></td>
-                            <td><a href="./point_list.php?sfl=mb_id&amp;stx=<?php echo $row['mb_id'] ?>"><?php echo number_format($row['mb_point']) ?></a></td>
+                            <td><a
+                                    href="./point_list.php?sfl=mb_id&amp;stx=<?php echo $row['mb_id'] ?>"><?php echo number_format($row['mb_point']) ?></a>
+                            </td>
                             <td class="td_boolean"><?php echo $row['mb_mailling'] ? '예' : '아니오'; ?></td>
                             <td class="td_boolean"><?php echo $row['mb_open'] ? '예' : '아니오'; ?></td>
-                            <td class="td_boolean"><?php echo preg_match('/[1-9]/', $row['mb_email_certify']) ? '예' : '아니오'; ?></td>
+                            <td class="td_boolean"><?php echo preg_match('/[1-9]/', $row['mb_email_certify']) ? '예' : '아니오'; ?>
+                            </td>
                             <td class="td_boolean"><?php echo $row['mb_intercept_date'] ? '예' : '아니오'; ?></td>
                             <td class="td_category"><?php echo $group ?></td>
                         </tr>
@@ -219,9 +223,15 @@ if (!auth_check_menu($auth, '300100', 'r', true)) {
                         ?>
 
                         <tr>
-                            <td class="td_category"><a href="<?php echo G5_BBS_URL ?>/new.php?gr_id=<?php echo $row['gr_id'] ?>"><?php echo cut_str($row['gr_subject'], 10) ?></a></td>
-                            <td class="td_category"><a href="<?php echo get_pretty_url($row['bo_table']) ?>"><?php echo cut_str($row['bo_subject'], 20) ?></a></td>
-                            <td><a href="<?php echo get_pretty_url($row['bo_table'], $row2['wr_id']); ?><?php echo $comment_link ?>"><?php echo $comment ?><?php echo conv_subject($row2['wr_subject'], 100) ?></a></td>
+                            <td class="td_category"><a
+                                    href="<?php echo G5_BBS_URL ?>/new.php?gr_id=<?php echo $row['gr_id'] ?>"><?php echo cut_str($row['gr_subject'], 10) ?></a>
+                            </td>
+                            <td class="td_category"><a
+                                    href="<?php echo get_pretty_url($row['bo_table']) ?>"><?php echo cut_str($row['bo_subject'], 20) ?></a>
+                            </td>
+                            <td><a
+                                    href="<?php echo get_pretty_url($row['bo_table'], $row2['wr_id']); ?><?php echo $comment_link ?>"><?php echo $comment ?><?php echo conv_subject($row2['wr_subject'], 100) ?></a>
+                            </td>
                             <td class="td_mbname">
                                 <div><?php echo $name ?></div>
                             </td>
@@ -301,7 +311,9 @@ if (!auth_check_menu($auth, '200200', 'r', true)) {
                         ?>
 
                         <tr>
-                            <td class="td_mbid"><a href="./point_list.php?sfl=mb_id&amp;stx=<?php echo $row['mb_id'] ?>"><?php echo $row['mb_id'] ?></a></td>
+                            <td class="td_mbid"><a
+                                    href="./point_list.php?sfl=mb_id&amp;stx=<?php echo $row['mb_id'] ?>"><?php echo $row['mb_id'] ?></a>
+                            </td>
                             <td class="td_mbname"><?php echo get_text($row2['mb_name']); ?></td>
                             <td class="td_name sv_use">
                                 <div><?php echo $mb_nick ?></div>

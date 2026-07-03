@@ -70,10 +70,6 @@ if ($post_act_button == "선택수정") {
 		if( function_exists('shop_seo_title_update') ) shop_seo_title_update($p_it_id, true);
     }
 } else if ($post_act_button == "선택삭제") {
-
-    if ($is_admin != 'super')
-        alert('상품 삭제는 최고관리자만 가능합니다.');
-
     auth_check_menu($auth, $sub_menu, 'd');
 
     // _ITEM_DELETE_ 상수를 선언해야 itemdelete.inc.php 가 정상 작동함
@@ -85,6 +81,23 @@ if ($post_act_button == "선택수정") {
 
         // include 전에 $it_id 값을 반드시 넘겨야 함
         $it_id = isset($_POST['it_id'][$k]) ? preg_replace('/[^a-z0-9_\-]/i', '', $_POST['it_id'][$k]) : '';
+
+        // 브랜드 권한 체크
+        if ($is_admin != "super") {
+
+            $item = sql_fetch("
+                SELECT it_id
+                FROM {$g5['g5_shop_item_table']}
+                WHERE it_id = '{$it_id}'
+                AND it_brand = '{$member['mb_id']}'
+            ");
+
+            if (!$item['it_id']) {
+                continue;
+                // 또는 alert("삭제 권한이 없는 상품입니다.");
+            }
+        }
+        
         include ('./itemdelete.inc.php');
     }
 }

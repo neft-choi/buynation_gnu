@@ -21,12 +21,14 @@ if ($w == 'u' && $is_admin == 'super') {
 //     alert('자동등록방지 숫자가 틀렸습니다.');
 // }
 
-if ($w == 'u')
+if ($w == 'u') {
     $mb_id = isset($_SESSION['ss_mb_id']) ? trim($_SESSION['ss_mb_id']) : '';
-else if ($w == '')
+} else if ($w == '') {
     $mb_id = isset($_POST['mb_id']) ? trim($_POST['mb_id']) : '';
-else
+    $join_type = isset($_POST['join_type']) ? trim($_POST['join_type']) : '';
+} else {
     alert('잘못된 접근입니다', G5_URL);
+}
 
 if (!$mb_id)
     alert('회원아이디 값이 없습니다. 올바른 방법으로 이용해 주십시오.');
@@ -163,6 +165,34 @@ if ($w == '' || $w == 'u') {
     if ($msg = exist_mb_email($mb_email, $mb_id))   alert($msg, "", true, true);
 }
 
+// 추천인 코드 검사
+if ($w == '') {
+
+    $recommend_code = isset($_POST['mb_recommend_code'])
+        ? trim($_POST['mb_recommend_code'])
+        : '';
+
+    if ($recommend_code == '') {
+        alert('추천인 코드를 입력해주세요.');
+    }
+
+    $recommend_member = sql_fetch("
+        SELECT mb_id
+        FROM {$g5['member_table']}
+        WHERE mb_10 = '{$recommend_code}'
+        LIMIT 1
+    ");
+
+    if (!$recommend_member['mb_id']) {
+        alert('존재하지 않는 추천인 코드입니다.');
+    }
+
+    // 자기 자신의 추천코드 사용 방지
+    if ($recommend_member['mb_id'] == $mb_id) {
+        alert('본인의 추천코드는 사용할 수 없습니다.');
+    }
+}
+
 // 사용자 코드 실행
 @include_once($member_skin_path . '/register_form_update.head.skin.php');
 
@@ -293,6 +323,27 @@ if ($w == '') {
     }
 
     sql_query($sql);
+
+    // 브랜드 회원 가입 처리
+    if ($w == '' && isset($join_type) && $join_type == 'brand') {
+
+        $chk = sql_fetch("
+            SELECT COUNT(*) AS cnt
+            FROM donuts_brand
+            WHERE brand_id = '{$mb_id}'
+        ");
+
+        if (!$chk['cnt']) {
+
+            sql_query("
+                INSERT INTO donuts_brand
+                SET
+                    brand_id = '{$mb_id}',
+                    reg_date = NOW()
+            ");
+
+        }
+    }
 
     // 회원가입 포인트 부여
     insert_point($mb_id, $config['cf_register_point'], '회원가입 축하', '@member', $mb_id, '회원가입');
@@ -466,6 +517,53 @@ if ($w == '') {
     }
 }
 
+if ($w == "") {
+
+    $member = get_member($mb_id);
+
+    $recommend_code =
+        'DN'.str_pad($member['mb_no'],6,'0',STR_PAD_LEFT);
+
+    $member_type = '';
+
+    if (isset($_POST['join_type'])) {
+        $member_type = preg_replace('/[^a-zA-Z0-9_\-]/', '', $_POST['join_type']);
+    }
+
+    sql_query("
+        UPDATE {$g5['member_table']}
+        SET
+            mb_10 = '{$recommend_code}',
+            mb_1  = '{$member_type}'
+        WHERE mb_id = '{$mb_id}'
+    ");
+
+    // 추천 기록 저장
+    if ($recommend_code != '') {
+
+        $recommend = sql_fetch("
+            SELECT mb_id
+            FROM {$g5['member_table']}
+            WHERE mb_10='{$recommend_code}'
+            LIMIT 1
+        ");
+
+        if ($recommend['mb_id']) {
+
+            sql_query("
+                INSERT INTO donuts_recommend_history
+                SET
+                    recommender_mb_id = '{$recommend['mb_id']}',
+                    recommender_code  = '{$recommend_code}',
+                    new_mb_id         = '{$mb_id}',
+                    new_mb_no         = '{$member['mb_no']}',
+                    join_type         = '{$member_type}',
+                    reg_datetime      = NOW()
+            ");
+
+        }
+    }
+}
 
 // 회원 아이콘
 $mb_dir = G5_DATA_PATH . '/member/' . substr($mb_id, 0, 2);

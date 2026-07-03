@@ -18,8 +18,17 @@ $g5['title'] = '회원가입약관';
 // include_once('./_head.php');
 include_once(G5_SHOP_PATH . '/_head.php');
 
-$register_action_url = G5_BBS_URL.'/register_form.php';
-include_once($member_skin_path.'/register.skin.php');
+// type 쿼리 스트링 조회
+$type = isset($_GET['type']) ? preg_replace('#[^a-z_]#', '', $_GET['type']) : '';
+
+$register_action_url = G5_BBS_URL . '/register_form.php';
+
+// type 인자 확인해서 붙이기
+if ($type == 'dots' || $type == 'donuts' || $type == 'brand') {
+    $register_action_url .= '?type=' . $type;
+}
+
+include_once($member_skin_path . '/register.skin.php');
 
 // include_once('./_tail.php');
 include_once(G5_SHOP_PATH . '/_tail.php');

@@ -65,6 +65,7 @@ $result = sql_query($sql);
 $itemuselist_skin = G5_SHOP_SKIN_PATH.'/itemuselist.skin.php';
 
 if(!file_exists($itemuselist_skin)) {
+    
     echo str_replace(G5_PATH.'/', '', $itemuselist_skin).' 스킨 파일이 존재하지 않습니다.';
 } else {
     include_once($itemuselist_skin);

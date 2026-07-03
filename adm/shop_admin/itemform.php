@@ -94,13 +94,43 @@ if ($w == "") {
     $html_title .= "수정";
 
     if ($is_admin != 'super') {
-        $sql = " select it_id from {$g5['g5_shop_item_table']} a, {$g5['g5_shop_category_table']} b
-                  where a.it_id = '$it_id'
-                    and a.ca_id = b.ca_id
-                    and b.ca_mb_id = '{$member['mb_id']}' ";
-        $row = sql_fetch($sql);
-        if (!$row['it_id'])
-            alert("\'{$member['mb_id']}\' 님께서 수정 할 권한이 없는 상품입니다.");
+
+        $brand = sql_fetch("
+            SELECT brand_id
+            FROM donuts_brand
+            WHERE brand_id = '{$member['mb_id']}'
+        ");
+
+        // 브랜드 회원인 경우
+        if ($brand['brand_id']) {
+
+            $row = sql_fetch("
+                SELECT it_id
+                FROM {$g5['g5_shop_item_table']}
+                WHERE it_id = '{$it_id}'
+                AND it_brand = '{$member['mb_id']}'
+            ");
+
+            if (!$row['it_id']) {
+                alert("'{$member['mb_id']}' 님께서 수정 할 권한이 없는 상품입니다.");
+            }
+
+        } else {
+
+            // 기존 카테고리 관리자 방식 유지
+            $row = sql_fetch("
+                SELECT a.it_id
+                FROM {$g5['g5_shop_item_table']} a,
+                    {$g5['g5_shop_category_table']} b
+                WHERE a.it_id = '{$it_id}'
+                AND a.ca_id = b.ca_id
+                AND b.ca_mb_id = '{$member['mb_id']}'
+            ");
+
+            if (!$row['it_id']) {
+                alert("'{$member['mb_id']}' 님께서 수정 할 권한이 없는 상품입니다.");
+            }
+        }
     }
 
     $it = get_shop_item($it_id);
@@ -173,10 +203,22 @@ if (!sql_query(" select ec_mall_pid from {$g5['g5_shop_item_table']} limit 1 ", 
     sql_query(" ALTER TABLE `{$g5['g5_shop_item_table']}`
                     ADD `ec_mall_pid` varchar(255) NOT NULL AFTER `it_shop_memo` ", true);
 }
-
+// $pg_anchor = '<ul class="anchor">
+// <li><a href="#anc_sitfrm_cate" data-tab-target="anc_sitfrm_cate">상품분류</a></li>
+// <li><a href="#anc_sitfrm_skin" data-tab-target="anc_sitfrm_skin">스킨설정</a></li>
+// <li><a href="#anc_sitfrm_ini" data-tab-target="anc_sitfrm_ini">기본정보</a></li>
+// <li><a href="#anc_sitfrm_compact" data-tab-target="anc_sitfrm_compact">요약정보</a></li>
+// <li><a href="#anc_sitfrm_cost" data-tab-target="anc_sitfrm_cost">가격 및 재고</a></li>
+// <li><a href="#anc_sitfrm_sendcost" data-tab-target="anc_sitfrm_sendcost">배송비</a></li>
+// <li><a href="#anc_sitfrm_img" data-tab-target="anc_sitfrm_img">상품이미지</a></li>
+// <li><a href="#anc_sitfrm_relation" data-tab-target="anc_sitfrm_relation">관련상품</a></li>
+// <li><a href="#anc_sitfrm_event" data-tab-target="anc_sitfrm_event">관련이벤트</a></li>
+// <li><a href="#anc_sitfrm_optional" data-tab-target="anc_sitfrm_optional">상세설명설정</a></li>
+// <li><a href="#anc_sitfrm_extra" data-tab-target="anc_sitfrm_extra">여분필드</a></li>
+// </ul>
+// '; 원본 -- 최수렬 수정
 $pg_anchor = '<ul class="anchor">
 <li><a href="#anc_sitfrm_cate" data-tab-target="anc_sitfrm_cate">상품분류</a></li>
-<li><a href="#anc_sitfrm_skin" data-tab-target="anc_sitfrm_skin">스킨설정</a></li>
 <li><a href="#anc_sitfrm_ini" data-tab-target="anc_sitfrm_ini">기본정보</a></li>
 <li><a href="#anc_sitfrm_compact" data-tab-target="anc_sitfrm_compact">요약정보</a></li>
 <li><a href="#anc_sitfrm_cost" data-tab-target="anc_sitfrm_cost">가격 및 재고</a></li>
@@ -185,7 +227,6 @@ $pg_anchor = '<ul class="anchor">
 <li><a href="#anc_sitfrm_relation" data-tab-target="anc_sitfrm_relation">관련상품</a></li>
 <li><a href="#anc_sitfrm_event" data-tab-target="anc_sitfrm_event">관련이벤트</a></li>
 <li><a href="#anc_sitfrm_optional" data-tab-target="anc_sitfrm_optional">상세설명설정</a></li>
-<li><a href="#anc_sitfrm_extra" data-tab-target="anc_sitfrm_extra">여분필드</a></li>
 </ul>
 ';
 

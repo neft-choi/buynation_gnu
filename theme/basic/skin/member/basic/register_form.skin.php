@@ -40,6 +40,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 		<form id="fregisterform" name="fregisterform" action="<?php echo $register_action_url ?>"
 			onsubmit="return fregisterform_submit(this);" method="post" enctype="multipart/form-data"
 			autocomplete="off">
+			<input type="hidden" name="join_type" value="<?php echo $type; ?>">
 			<input type="hidden" name="w" value="<?php echo $w ?>">
 			<input type="hidden" name="url" value="<?php echo $urlencode ?>">
 			<input type="hidden" name="agree" value="<?php echo $agree ?>">
@@ -87,6 +88,25 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 						<span
 							class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호
 							재입력</span>
+					</li>
+					<li>
+						<label for="mb_recommend_code">
+							추천인 코드
+							<strong class="sound_only">필수</strong>
+						</label>
+
+						<input
+							type="text"
+							name="mb_recommend_code"
+							id="mb_recommend_code"
+							class="frm_input full_input required"
+							maxlength="20"
+							placeholder="추천인 코드를 입력하세요"
+							required>
+
+						<span class="frm_info">
+							추천인 코드를 입력해야 가입할 수 있습니다.
+						</span>
 					</li>
 				</ul>
 
@@ -156,7 +176,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								<label for="reg_mb_nick" class="sound_only">
 									닉네임 (필수)
 									<button type="button"
-										class="!hidden tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
+										class=" tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
 										aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
 											viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
 											stroke-linecap="round" stroke-linejoin="round"
@@ -291,7 +311,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 					</ul>
 				</div>
 
-				<div class="!hidden">
+				<div class="">
 					<h2 class="sound_only">기타 개인설정</h2>
 					<ul class="grid gap-4">
 						<?php if ($config['cf_use_signature']) { ?>
@@ -428,7 +448,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 
 				<!-- 회원가입 약관 동의에 광고성 정보 수신 동의 표시 여부가 사용시에만 -->
 				<?php if ($config['cf_use_promotion'] == 1) { ?>
-					<div class="!hidden">
+					<div class="">
 						<h2 class="text-base font-semibold text-zinc-900">수신설정</h2>
 						<!-- 수신설정만 팝업 및 체크박스 관련 class 적용 -->
 						<ul>

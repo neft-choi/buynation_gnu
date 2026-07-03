@@ -1,4 +1,9 @@
 <?php
+        $isNeft = $_GET['isNeft'];
+if(!$isNeft == 'true'){
+ include_once('ready/ready.php');
+    exit;
+}
 if (!defined('_INDEX_')) define('_INDEX_', true);
 if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 
@@ -13,10 +18,14 @@ if (G5_COMMUNITY_USE === false) {
 }
 
 include_once(G5_THEME_PATH . '/head.php');
+
 ?>
 
+
+  
 <main class="space-y-6">
     <section aria-label="메인 배너" class="px-4">
+
         <?php echo display_banner('커뮤니티', 'mainbanner.10.skin.php'); ?>
         <!-- <div id="hero-carousel" class="relative overflow-hidden rounded-xl">
             <div class="hero_owl owl-carousel">

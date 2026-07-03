@@ -9,8 +9,31 @@ check_admin_token();
 $ca_id = isset($_REQUEST['ca_id']) ? preg_replace('/[^0-9a-z]/i', '', $_REQUEST['ca_id']) : '';
 $it_id = isset($_REQUEST['it_id']) ? safe_replace_regex($_REQUEST['it_id'], 'it_id') : '';
 
-if ($is_admin != "super")
-    alert("최고관리자만 접근 가능합니다.상품수정");
+if ($is_admin != "super") {
+
+    $brand = sql_fetch("
+        SELECT brand_id
+        FROM donuts_brand
+        WHERE brand_id = '{$member['mb_id']}'
+    ");
+
+    // 브랜드 회원이 아니면 차단
+    if (!$brand['brand_id']) {
+        alert("최고관리자만 접근 가능합니다.상품수정");
+    }
+
+    // 자기 상품인지 확인
+    $item = sql_fetch("
+        SELECT it_id
+        FROM {$g5['g5_shop_item_table']}
+        WHERE it_id = '{$it_id}'
+          AND it_brand = '{$member['mb_id']}'
+    ");
+
+    if (!$item['it_id']) {
+        alert("복사 권한이 없는 상품입니다.");
+    }
+}
 
 if (!trim($it_id))
 	alert("복사할 상품코드가 없습니다.");

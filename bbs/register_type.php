@@ -49,13 +49,13 @@ include_once(G5_SHOP_PATH . '/_head.php');
             </div>
         </div>
 
-        <form action="<?php echo G5_BBS_URL ?>/register.php" method="post" class="space-y-10">
+        <form action="<?php echo G5_BBS_URL ?>/register.php" method="get" class="space-y-10">
             <div class="space-y-2">
                 <!-- 항목 1: 도트(일반 회원) -->
                 <label
                     class="flex items-center justify-between p-4 border border-zinc-200 rounded cursor-pointer hover:bg-zinc-50 hover:border-zinc-400 has-[:checked]:border-gray-900 transition-all group">
                     <div class="flex items-center gap-3">
-                        <input type="radio" name="mb_type" value="dots" checked
+                        <input type="radio" name="type" value="dots" checked
                             class="w-5 h-5 appearance-none border border-zinc-300 rounded-full accent-white checked:border-[6px] checked:border-[var(--color-primary)]">
                         <span class="text-sm font-semibold text-zinc-900">일반회원 가입하기</span>
                     </div>
@@ -65,7 +65,7 @@ include_once(G5_SHOP_PATH . '/_head.php');
                 <label
                     class="flex items-center justify-between p-4 border border-zinc-200 rounded cursor-pointer hover:bg-zinc-50 hover:border-zinc-400 has-[:checked]:border-gray-900 transition-all group">
                     <div class="flex items-center gap-3">
-                        <input type="radio" name="mb_type" value="donuts"
+                        <input type="radio" name="type" value="donuts"
                             class="w-5 h-5 appearance-none border border-zinc-300 rounded-full accent-white checked:border-[6px] checked:border-[var(--color-primary)]">
                         <span class="text-sm font-semibold text-zinc-900">모임 가입하기</span>
                     </div>
@@ -79,7 +79,7 @@ include_once(G5_SHOP_PATH . '/_head.php');
                 <label
                     class="flex items-center justify-between p-4 border border-zinc-200 rounded cursor-pointer hover:bg-zinc-50 hover:border-zinc-400 has-[:checked]:border-gray-900 transition-all group">
                     <div class="flex items-center gap-3">
-                        <input type="radio" name="mb_type" value="supporter"
+                        <input type="radio" name="type" value="brand"
                             class="w-5 h-5 appearance-none border border-zinc-300 rounded-full accent-white checked:border-[6px] checked:border-[var(--color-primary)]">
                         <span class="text-sm font-semibold text-zinc-900">판매회원 가입하기</span>
                     </div>

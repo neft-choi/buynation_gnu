@@ -3998,10 +3998,10 @@
 #ssch {
   margin: 20px 0;
 }
-#ssch h2 {
+/* #ssch h2 {
   font-size: 1.8em;
   line-height: 30px;
-  margin: 10px 0;
+  margin: 10px 0; */
 }
 #ssch h2 .ssch_result_total {
   float: right;

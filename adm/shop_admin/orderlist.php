@@ -106,8 +106,29 @@ if ($fr_date && $to_date) {
     $where[] = " od_time between '$fr_date 00:00:00' and '$to_date 23:59:59' ";
 }
 
+// 브랜드 계정 여부 확인
+$brand = sql_fetch("
+    SELECT brand_id
+    FROM donuts_brand
+    WHERE brand_id = '{$member['mb_id']}'
+");
+
+if ($brand['brand_id']) {
+
+    $where[] = "
+        od_id IN (
+            SELECT DISTINCT c.od_id
+            FROM {$g5['g5_shop_cart_table']} c
+            INNER JOIN {$g5['g5_shop_item_table']} i
+                ON c.it_id = i.it_id
+            WHERE i.it_brand = '{$member['mb_id']}'
+        )
+    ";
+}
+
+// 최종 WHERE 생성
 if ($where) {
-    $sql_search = ' where ' . implode(' and ', $where);
+    $sql_search = ' WHERE ' . implode(' AND ', $where);
 }
 
 if ($sel_field == "")  $sel_field = "od_id";
@@ -133,7 +154,6 @@ $sql  = " select *,
            order by $sort1 $sort2
            limit $from_record, $rows ";
 $result = sql_query($sql);
-
 $qstr1 = "od_status=" . urlencode($od_status) . "&amp;od_settle_case=" . urlencode($od_settle_case) . "&amp;od_misu=$od_misu&amp;od_cancel_price=$od_cancel_price&amp;od_refund_price=$od_refund_price&amp;od_receipt_point=$od_receipt_point&amp;od_coupon=$od_coupon&amp;fr_date=$fr_date&amp;to_date=$to_date&amp;sel_field=$sel_field&amp;search=$search&amp;save_search=$search";
 if ($default['de_escrow_use'])
     $qstr1 .= "&amp;od_escrow=$od_escrow";
@@ -155,6 +175,7 @@ if (function_exists('pg_setting_check')) {
 ?>
 
 <div class="local_ov01 local_ov">
+
     <?php echo $listall; ?>
     <span class="btn_ov01"><span class="ov_txt">전체 주문내역</span><span class="ov_num"> <?php echo number_format($total_count); ?>건</span></span>
     <?php if ($od_status == '준비' && $total_count > 0) { ?>
@@ -164,7 +185,7 @@ if (function_exists('pg_setting_check')) {
 
 <a href="./orderlist_csv.php?<?php echo html_entity_decode($qstr1); ?>&sort1=<?php echo $sort1; ?>&sort2=<?php echo $sort2; ?>"
     class="btn btn_03">
-    CSV 다운로드
+    주문내역 CSV 다운로드
 </a>
 
 <form name="frmorderlist" class="local_sch01 local_sch">

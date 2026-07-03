@@ -2,6 +2,18 @@
 $sub_menu = '400620';
 include_once('./_common.php');
 
+$brand_member = false;
+
+$brand = sql_fetch("
+    SELECT brand_id
+    FROM donuts_brand
+    WHERE brand_id = '{$member['mb_id']}'
+");
+
+if ($brand['brand_id']) {
+    $brand_member = true;
+}
+
 auth_check_menu($auth, $sub_menu, "r");
 
 $doc = isset($_GET['doc']) ? clean_xss_tags($_GET['doc'], 1, 1) : '';
@@ -15,6 +27,10 @@ $g5['title'] = '상품재고관리';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $sql_search = " where 1 ";
+// 브랜드 회원이면 자기 상품만 조회
+if ($is_admin != 'super' && $brand_member) {
+    $sql_search .= " and it_brand = '{$member['mb_id']}' ";
+}
 if ($search != "") {
 	if ($sel_field != "") {
     	$sql_search .= " and $sel_field like '%$search%' ";

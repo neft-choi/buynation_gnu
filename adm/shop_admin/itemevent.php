@@ -4,7 +4,7 @@ include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, "r");
 
-$g5['title'] = '이벤트관리';
+$g5['title'] = '기획전';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $sql_common = " from {$g5['g5_shop_event_table']} ";
@@ -34,7 +34,9 @@ $result = sql_query($sql);
     <tr>
         <th scope="col">이벤트번호</th>
         <th scope="col">제목</th>
+        <th scope="col">추가수수료율</th>
         <th scope="col">연결상품</th>
+        <th scope="col">판매가능대상</th>
         <th scope="col">사용</th>
         <th scope="col">관리</th>
     </tr>
@@ -58,7 +60,9 @@ $result = sql_query($sql);
     <tr>
         <td class="td_num"><?php echo $row['ev_id']; ?></td>
         <td class="td_left"><?php echo $subject; ?></td>
+        <td class="td_num"></td>
         <td class="td_num"><?php echo $href; ?><?php echo $ev['cnt']; ?><?php echo $href_close; ?></td>
+        <td class="td_left"></td>
         <td class="td_boolean"><?php echo $row['ev_use'] ? '<span class="txt_true">예</span>' : '<span class="txt_false">아니오</span>'; ?></td>
         <td class="td_mng td_mng_l">
             <a href="./itemeventform.php?w=u&amp;ev_id=<?php echo $row['ev_id']; ?>" class="btn btn_04">수정</a>
@@ -71,7 +75,7 @@ $result = sql_query($sql);
     }
 
     if ($i == 0) {
-        echo '<tr><td colspan="5" class="empty_table">자료가 없습니다.</td></tr>';
+        echo '<tr><td colspan="7" class="empty_table">자료가 없습니다.</td></tr>';
     }
     ?>
     </tbody>

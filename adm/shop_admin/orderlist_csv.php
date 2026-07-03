@@ -141,6 +141,31 @@ $sql_search = '';
 
 if ($where)
     $sql_search = ' where '.implode(' and ', $where);
+    // 브랜드 계정 체크
+    $brand = sql_fetch("
+        SELECT brand_id
+        FROM donuts_brand
+        WHERE brand_id = '{$member['mb_id']}'
+    ");
+
+    if ($brand['brand_id']) {
+
+        $brand_where = "
+            o.od_id IN (
+                SELECT DISTINCT c.od_id
+                FROM {$g5['g5_shop_cart_table']} c
+                INNER JOIN {$g5['g5_shop_item_table']} i
+                    ON c.it_id = i.it_id
+                WHERE i.it_brand = '{$member['mb_id']}'
+            )
+        ";
+
+        if ($sql_search) {
+            $sql_search .= " AND {$brand_where}";
+        } else {
+            $sql_search = " WHERE {$brand_where}";
+        }
+    }
 
 if (!$sort1)
     $sort1 = 'od_id';
@@ -161,68 +186,171 @@ echo "\xEF\xBB\xBF";
 
 $fp = fopen("php://output", "w");
 
+/*************************************************
+ * CSV 헤더
+ *************************************************/
+
 fputcsv($fp, array(
+    '주문일자',
     '주문번호',
-    '주문일시',
-    '주문상태',
-    '회원ID',
-    '주문자',
-    '주문자전화',
-    '받는분',
-    '결제수단',
-    '상품수',
-    '주문금액',
-    '입금금액',
-    '취소금액',
-    '쿠폰금액',
-    '미수금',
-    '상품명'
+    '주문순번',
+    '쇼핑몰 상품코드',
+    '상품명',
+    '옵션명',
+    '주문수량',
+    '상품별 판매가',
+    '주문 별 판매가',
+    '주문 별 결제가',
+    '공급가',
+    '주문자명',
+    '수취인명',
+    '수취인 연락처',
+    '수취인 주소',
+    '수취인 우편번호',
+    '통관번호',
+    '배송메시지',
+    '배송비',
+    '배송구분',
+    '정산금액',
+    '정산예정일'
 ));
 
+/*************************************************
+ * 주문상품 기준 조회
+ *************************************************/
+
 $sql = "
-select *,
-       (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
-from {$g5['g5_shop_order_table']}
+SELECT
+    o.od_id,
+    o.od_time,
+    o.od_status,
+
+    o.od_name,
+    o.od_b_name,
+    o.od_b_hp,
+    o.od_b_zip1,
+
+    o.od_b_addr1,
+    o.od_b_addr2,
+    o.od_b_addr3,
+
+    o.od_memo,
+
+    c.ct_id,
+    c.it_id,
+    c.it_name,
+    c.ct_option,
+    c.ct_qty,
+    c.ct_price,
+    c.ct_send_cost,
+
+    i.it_brand
+
+FROM {$g5['g5_shop_order_table']} o
+
+INNER JOIN {$g5['g5_shop_cart_table']} c
+    ON o.od_id = c.od_id
+
+LEFT JOIN {$g5['g5_shop_item_table']} i
+    ON c.it_id = i.it_id
+
 {$sql_search}
-order by {$sort1} {$sort2}
+";
+
+/*************************************************
+ * 브랜드 계정 필터
+ *************************************************/
+
+// if (!empty($brand['brand_id'])) {
+
+//     $sql .= "
+//     AND i.it_brand = '{$member['mb_id']}'
+//     ";
+// }
+
+$sql .= "
+ORDER BY o.{$sort1} {$sort2}
 ";
 
 $result = sql_query($sql);
 
-while($row = sql_fetch_array($result)) {
+/*************************************************
+ * CSV 출력
+ *************************************************/
 
-    $items = array();
+while ($row = sql_fetch_array($result))
+{
+    $order_price =
+        $row['ct_price'] * $row['ct_qty'];
 
-    $item_sql = "
-        select it_name
-        from {$g5['g5_shop_cart_table']}
-        where od_id = '{$row['od_id']}'
-    ";
+    $pay_price =
+        $order_price +
+        (int)$row['ct_send_cost'];
 
-    $item_result = sql_query($item_sql);
+    $supply_price =
+        round($order_price / 1.1);
 
-    while($item = sql_fetch_array($item_result)) {
-        $items[] = $item['it_name'];
-    }
+    $settle_price =
+        $pay_price;
 
-    $item_names = implode(' | ', $items);
+    $settle_date =
+        date(
+            'Y-m-d',
+            strtotime($row['od_time'].' +7 days')
+        );
+
+    $receiver_addr =
+        trim(
+            $row['od_b_addr1'].' '.
+            $row['od_b_addr2'].' '.
+            $row['od_b_addr3']
+        );
 
     fputcsv($fp, array(
+
+        substr($row['od_time'], 0, 10),
+
         $row['od_id'],
-        $row['od_time'],
-        $row['od_status'],
-        $row['mb_id'],
+
+        $row['ct_id'],
+
+        $row['it_id'],
+
+        $row['it_name'],
+
+        $row['ct_option'],
+
+        $row['ct_qty'],
+
+        $row['ct_price'],
+
+        $order_price,
+
+        $pay_price,
+
+        $supply_price,
+
         $row['od_name'],
-        $row['od_tel'],
+
         $row['od_b_name'],
-        $row['od_settle_case'],
-        $row['od_cart_count'],
-        $row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2'],
-        $row['od_receipt_price'],
-        $row['od_cancel_price'],
-        $row['couponprice'],
-        $row['od_misu'],
-        $item_names
+
+        $row['od_b_hp'],
+
+        $receiver_addr,
+
+        $row['od_b_zip1'],
+
+        '', // 통관번호
+
+        $row['od_memo'],
+
+        $row['ct_send_cost'],
+
+        ($row['ct_send_cost'] > 0 ? '유료배송' : '무료배송'),
+
+        $settle_price,
+
+        $settle_date
     ));
 }
 
