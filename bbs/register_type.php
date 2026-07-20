@@ -32,21 +32,15 @@ include_once(G5_SHOP_PATH . '/_head.php');
 </header>
 
 <!-- 회원 타입 선택 시작 { -->
-<div class="w-full max-w-[460px] mx-auto pt-12 pc:pt-16 p-4">
+<div class="w-full max-w-[460px] mx-auto px-4 py-12 pc:pt-16">
     <h1 class="sound_only">회원가입</h1>
 
     <div class="space-y-8">
-        <div class="text-center">
+        <div class="text-center space-y-2">
             <p class="text-[15px] text-zinc-500">새로운 가치 소비 생태계</p>
-            <div class="inline-flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 23.999"
-                    aria-hidden="true">
-                    <path
-                        d="M12,40a12,12,0,1,1,3.4-23.512A6.626,6.626,0,0,0,23.512,24.6,12,12,0,0,1,12,40Zm.138-15.448a3.586,3.586,0,1,0,3.586,3.586A3.59,3.59,0,0,0,12.138,24.552Z"
-                        transform="translate(0 -16)" fill="#ffdd56"></path>
-                </svg>
-                <span class="text-black text-[32px] font-black">DONUTS</span>
-            </div>
+            <a href="<?php echo G5_SHOP_URL; ?>/" class="flex items-center justify-center">
+                <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>">
+            </a>
         </div>
 
         <form action="<?php echo G5_BBS_URL ?>/register.php" method="get" class="space-y-10">

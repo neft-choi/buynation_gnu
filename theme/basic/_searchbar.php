@@ -1,5 +1,6 @@
 <?php
-if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
+if (!defined("_GNUBOARD_"))
+    exit; // 개별 페이지 접근 불가
 
 // 검색 바가 커뮤니티에 있는지 쇼핑에 있는지 확인
 $searchbar_mode = isset($searchbar_mode) ? (string) $searchbar_mode : 'shop';
@@ -26,35 +27,52 @@ if ($is_community_mode && isset($stx)) {
     $search_input_value = stripslashes(get_text(get_search_string($q)));
 }
 ?>
-
-<div id="shop-searchbar-root">
-    <form
-        name="frmsearch_modern"
-        class="flex items-center gap-2 w-full px-4 py-2 border-2 border-[var(--color-primary)] rounded-full bg-white"
-        action="<?php echo $search_action; ?>"
-        onsubmit="return searchbar_modern_submit(this, '<?php echo $searchbar_mode; ?>');">
-        <label for="<?php echo $search_input_id; ?>" class="sound_only">검색어<span class="sound_only"> 필수</span></label>
-        <?php if ($is_community_mode) { ?>
+<?php if ($is_community_mode) { ?>
+    <div id="community-searchbar-root">
+        <form name="frmsearch_modern" class="flex items-center gap-3" action="<?php echo $search_action; ?>"
+            onsubmit="return searchbar_modern_submit(this, '<?php echo $searchbar_mode; ?>');">
             <input type="hidden" name="sfl" value="wr_subject||wr_content">
             <input type="hidden" name="sop" value="and">
-        <?php } ?>
-        <input
-            type="search"
-            name="<?php echo $search_input_name; ?>"
-            id="<?php echo $search_input_id; ?>"
-            value="<?php echo $search_input_value; ?>"
-            class="text-sm flex-auto focus-visible:outline-0"
-            required
-            placeholder="검색어를 입력해주세요">
-        <button type="submit" id="shop_searchbar_submit" class="text-[var(--color-primary)]" value="검색">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
-                <path d="m21 21-4.34-4.34" />
-                <circle cx="11" cy="11" r="8" />
-            </svg>
-            <span class="sound_only">검색</span>
-        </button>
-    </form>
-</div>
+
+            <label for="<?php echo $search_input_id; ?>" class="sound_only">검색어<span class="sound_only"> 필수</span></label>
+            <input type="search" name="<?php echo $search_input_name; ?>" id="<?php echo $search_input_id; ?>"
+                value="<?php echo $search_input_value; ?>"
+                class="flex-1 min-w-0 h-[45px] rounded-full bg-white px-4 py-2 text-sm font-medium focus-visible:outline-none" required>
+            <button type="submit" id="community_searchbar_submit" class="shrink-0 inline-flex items-center justify-center w-[45px] h-[45px] rounded-full text-black bg-white cursor-pointer"
+                value="검색">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-search-icon lucide-search w-5 h-5">
+                    <path d="m21 21-4.34-4.34" />
+                    <circle cx="11" cy="11" r="8" />
+                </svg>
+                <span class="sound_only">검색</span>
+            </button>
+        </form>
+    </div>
+<?php } else { ?>
+    <div id="shop-searchbar-root">
+        <form name="frmsearch_modern"
+            class="flex items-center gap-2 w-full px-4 py-2 border-2 border-[var(--color-primary)] rounded-full bg-white"
+            action="<?php echo $search_action; ?>"
+            onsubmit="return searchbar_modern_submit(this, '<?php echo $searchbar_mode; ?>');">
+
+            <label for="<?php echo $search_input_id; ?>" class="sound_only">검색어<span class="sound_only"> 필수</span></label>
+            <input type="search" name="<?php echo $search_input_name; ?>" id="<?php echo $search_input_id; ?>"
+                value="<?php echo $search_input_value; ?>" class="text-sm flex-auto focus-visible:outline-0" required
+                placeholder="검색어를 입력해주세요">
+            <button type="submit" id="shop_searchbar_submit" class="text-[var(--color-primary)]" value="검색">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-search-icon lucide-search">
+                    <path d="m21 21-4.34-4.34" />
+                    <circle cx="11" cy="11" r="8" />
+                </svg>
+                <span class="sound_only">검색</span>
+            </button>
+        </form>
+    </div>
+<?php } ?>
 <script>
     // 제출 검증 함수
     function searchbar_modern_submit(form, mode) {

@@ -1,6 +1,11 @@
 <?php
 include_once('./_common.php');
 
+// bbs 페이지를 쇼핑몰 페이지로 사용하게 만드는 상수
+if (!defined('_SHOP_')) {
+    define('_SHOP_', true);
+}
+
 if ($is_guest)
     alert('로그인 한 회원만 접근하실 수 있습니다.', G5_BBS_URL.'/login.php');
 
@@ -18,7 +23,7 @@ if( function_exists('social_member_comfirm_redirect') && (! $url || $url === 're
 $url = run_replace('member_confirm_next_url', $url);
 
 $g5['title'] = '회원 비밀번호 확인';
-include_once('./_head.sub.php');
+include_once(G5_SHOP_PATH . '/_head.php');
 
 // url 체크
 check_url_host($url, '', G5_URL, true);
@@ -39,4 +44,4 @@ $url = get_text($url);
 
 include_once($member_skin_path.'/member_confirm.skin.php');
 
-include_once('./_tail.sub.php');
+include_once(G5_SHOP_PATH . '/_tail.php');

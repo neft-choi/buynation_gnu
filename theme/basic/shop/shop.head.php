@@ -117,7 +117,9 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 <ul class="hd_login !hidden">
                     <?php if ($is_member) {  ?>
                         <li class="shop_login">
-                            <?php echo outlogin('theme/shop_basic'); // 아웃로그인 
+                            <?php 
+                            // echo outlogin('theme/shop_basic'); 
+                            // 아웃로그인 
                             ?>
                         </li>
                         <li class="shop_cart"><a href="<?php echo G5_SHOP_URL; ?>/cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="sound_only">장바구니</span><span class="count"><?php echo get_boxcart_datas_count(); ?></span></a></li>
@@ -248,7 +250,9 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
         <div id="tabs_con">
             <div class="side_mn_wr1 qk_con">
                 <div class="qk_con_wr">
-                    <?php echo outlogin('theme/shop_side'); // 아웃로그인 
+                    <?php 
+                    // echo outlogin('theme/shop_side'); 
+                    // 아웃로그인 
                     ?>
                     <ul class="side_tnb">
                         <?php if ($is_member) { ?>
@@ -354,7 +358,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
     }
     ?>
     <!-- 전체 콘텐츠 시작 { -->
-    <main id="wrapper" class="!bg-white <?php echo implode(' ', $wrapper_class); ?>">
+    <main id="wrapper" class="relative <?php echo implode(' ', $wrapper_class); ?>">
         <!-- #container 시작 { -->
         <div id="container" class="max-w-[var(--breakpoint-pc)] !w-full !bg-white">
 

@@ -11,7 +11,7 @@ if (!defined('_SHOP_')) {
 }
 
 $g5['title'] = '로그인';
-include_once('./_head.sub.php');
+include_once(G5_SHOP_PATH . '/_head.php');
 
 $od_id = isset($_POST['od_id']) ? safe_replace_regex($_POST['od_id'], 'od_id') : '';
 
@@ -38,4 +38,4 @@ include_once($member_skin_path.'/login.skin.php');
 
 run_event('member_login_tail', $login_url, $login_action_url, $member_skin_path, $url);
 
-include_once('./_tail.sub.php');
+include_once(G5_SHOP_PATH . '/_tail.php');

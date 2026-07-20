@@ -75,9 +75,9 @@ class item_list
     protected $is_mobile = false;
 
     // 기본으로 보여지는 필드들
-    protected $view_it_id    = false;       // 상품코드
-    protected $view_it_img   = true;        // 상품이미지
-    protected $view_it_name  = true;        // 상품명
+    protected $view_it_id = false;       // 상품코드
+    protected $view_it_img = true;        // 상품이미지
+    protected $view_it_name = true;        // 상품명
     protected $view_it_basic = true;        // 기본설명
     protected $view_it_price = true;        // 판매가격
     protected $view_it_cust_price = false;  // 소비자가
@@ -109,10 +109,10 @@ class item_list
     //function __construct($type=0, $list_skin='', $list_mod='', $list_row='', $img_width='', $img_height=0, $ca_id='') {
     function __construct($list_skin = '', $list_mod = '', $list_row = '', $img_width = '', $img_height = 0)
     {
-        $this->list_skin  = $list_skin;
-        $this->list_mod   = $list_mod;
-        $this->list_row   = $list_row;
-        $this->img_width  = $img_width;
+        $this->list_skin = $list_skin;
+        $this->list_mod = $list_mod;
+        $this->list_row = $list_row;
+        $this->img_width = $img_width;
         $this->img_height = $img_height;
         $this->set_href(G5_SHOP_URL . '/item.php?it_id=');
         $this->count++;
@@ -334,7 +334,7 @@ class item_list
         if (isset($result) && $result) {
             while ($row = sql_fetch_array($result)) {
 
-                if (isset($row['it_seo_title']) && ! $row['it_seo_title']) {
+                if (isset($row['it_seo_title']) && !$row['it_seo_title']) {
                     shop_seo_title_update($row['it_id']);
                 }
 
@@ -371,7 +371,7 @@ function get_cart_count($cart_id)
 
     $sql = " select count(ct_id) as cnt from {$g5['g5_shop_cart_table']} where od_id = '$cart_id' ";
     $row = sql_fetch($sql);
-    $cnt = (int)$row['cnt'];
+    $cnt = (int) $row['cnt'];
     return $cnt;
 }
 
@@ -431,7 +431,7 @@ function get_it_image($it_id, $width, $height = 0, $anchor = false, $img_id = ''
         $file = G5_DATA_PATH . '/item/' . $row['it_img' . $i];
         if (is_file($file) && $row['it_img' . $i]) {
             $size = @getimagesize($file);
-            if (! isset($size[2]) || $size[2] < 1 || $size[2] > 3)
+            if (!isset($size[2]) || $size[2] < 1 || $size[2] > 3)
                 continue;
 
             $filename = basename($file);
@@ -485,7 +485,7 @@ function get_it_thumbnail($img, $width, $height = 0, $id = '', $is_crop = false)
     if (is_file($file))
         $size = @getimagesize($file);
 
-    if (! (isset($size) && is_array($size)))
+    if (!(isset($size) && is_array($size)))
         return '';
 
     if ($size[2] < 1 || $size[2] > 3)
@@ -552,7 +552,7 @@ function get_it_stock_qty($it_id)
 
     $sql = " select it_stock_qty from {$g5['g5_shop_item_table']} where it_id = '$it_id' ";
     $row = sql_fetch($sql);
-    $jaego = (int)$row['it_stock_qty'];
+    $jaego = (int) $row['it_stock_qty'];
 
     // 재고에서 빼지 않았고 주문인것만
     $sql = " select SUM(ct_qty) as sum_qty
@@ -562,7 +562,7 @@ function get_it_stock_qty($it_id)
                 and ct_stock_use = 0
                 and ct_status in ('주문', '입금', '준비') ";
     $row = sql_fetch($sql);
-    $daegi = (int)$row['sum_qty'];
+    $daegi = (int) $row['sum_qty'];
 
     return $jaego - $daegi;
 }
@@ -577,7 +577,7 @@ function get_option_stock_qty($it_id, $io_id, $type)
                 from {$g5['g5_shop_item_option_table']}
                 where it_id = '$it_id' and io_id = '$io_id' and io_type = '$type' and io_use = '1' ";
     $row = sql_fetch($sql);
-    $jaego = (int)$row['io_stock_qty'];
+    $jaego = (int) $row['io_stock_qty'];
 
     // 재고에서 빼지 않았고 주문인것만
     $sql = " select SUM(ct_qty) as sum_qty
@@ -588,7 +588,7 @@ function get_option_stock_qty($it_id, $io_id, $type)
                 and ct_stock_use = 0
                 and ct_status in ('주문', '입금', '준비') ";
     $row = sql_fetch($sql);
-    $daegi = (int)$row['sum_qty'];
+    $daegi = (int) $row['sum_qty'];
 
     return $jaego - $daegi;
 }
@@ -600,8 +600,8 @@ function get_large_image($img, $it_id, $btn_image = true)
     global $g5;
 
     if (file_exists(G5_DATA_PATH . '/item/' . $img) && $img != '') {
-        $size   = getimagesize(G5_DATA_PATH . '/item/' . $img);
-        $width  = $size[0];
+        $size = getimagesize(G5_DATA_PATH . '/item/' . $img);
+        $width = $size[0];
         $height = $size[1];
         $str = '<a href="javascript:popup_large_image(\'' . $it_id . '\', \'' . $img . '\', ' . $width . ', ' . $height . ', \'' . G5_SHOP_URL . '\')">';
         if ($btn_image)
@@ -630,11 +630,12 @@ function get_price($it)
 {
     global $member;
 
-    if ($it['it_tel_inq']) return '전화문의';
+    if ($it['it_tel_inq'])
+        return '전화문의';
 
     $price = $it['it_price'];
 
-    return (int)$price;
+    return (int) $price;
 }
 
 
@@ -648,7 +649,7 @@ function display_point($point)
 // 포인트를 구한다
 function get_point($amount, $point)
 {
-    return (int)($amount * $point / 100);
+    return (int) ($amount * $point / 100);
 }
 
 
@@ -712,7 +713,8 @@ function _callback_it_img_upload($matches)
 // 파일을 업로드 함
 function upload_file($srcfile, $destfile, $dir)
 {
-    if ($destfile == "") return false;
+    if ($destfile == "")
+        return false;
     // 업로드 한후 , 퍼미션을 변경함
     @move_uploaded_file($srcfile, $dir . '/' . $destfile);
     @chmod($dir . '/' . $destfile, G5_FILE_PERMISSION);
@@ -766,12 +768,13 @@ function display_type($type, $list_skin = '', $list_mod = '', $list_row = '', $i
 {
     global $member, $g5, $config, $default;
 
-    if (!$default["de_type{$type}_list_use"]) return "";
+    if (!$default["de_type{$type}_list_use"])
+        return "";
 
-    $list_skin  = $list_skin  ? $list_skin  : $default["de_type{$type}_list_skin"];
-    $list_mod   = $list_mod   ? $list_mod   : $default["de_type{$type}_list_mod"];
-    $list_row   = $list_row   ? $list_row   : $default["de_type{$type}_list_row"];
-    $img_width  = $img_width  ? $img_width  : $default["de_type{$type}_img_width"];
+    $list_skin = $list_skin ? $list_skin : $default["de_type{$type}_list_skin"];
+    $list_mod = $list_mod ? $list_mod : $default["de_type{$type}_list_mod"];
+    $list_row = $list_row ? $list_row : $default["de_type{$type}_list_row"];
+    $img_width = $img_width ? $img_width : $default["de_type{$type}_img_width"];
     $img_height = $img_height ? $img_height : $default["de_type{$type}_img_height"];
 
     // 상품수
@@ -780,7 +783,8 @@ function display_type($type, $list_skin = '', $list_mod = '', $list_row = '', $i
     // 1.02.00
     // it_order 추가
     $sql = " select * from {$g5['g5_shop_item_table']} where it_use = '1' and it_type{$type} = '1' ";
-    if ($ca_id) $sql .= " and ca_id like '$ca_id%' ";
+    if ($ca_id)
+        $sql .= " and ca_id like '$ca_id%' ";
     $sql .= " order by it_order, it_id desc limit $items ";
     $result = sql_query($sql);
     /*
@@ -794,7 +798,7 @@ function display_type($type, $list_skin = '', $list_mod = '', $list_row = '', $i
     if (!file_exists($file)) {
         return G5_SHOP_SKIN_URL . '/' . $list_skin . ' 파일을 찾을 수 없습니다.';
     } else {
-        $td_width = (int)(100 / $list_mod);
+        $td_width = (int) (100 / $list_mod);
         ob_start();
         include $file;
         $content = ob_get_contents();
@@ -815,7 +819,8 @@ function mobile_display_type($type, $skin_file, $list_row, $img_width, $img_heig
     // 1.02.00
     // it_order 추가
     $sql = " select * from {$g5['g5_shop_item_table']} where it_use = '1' and it_type{$type} = '1' ";
-    if ($ca_id) $sql .= " and ca_id like '$ca_id%' ";
+    if ($ca_id)
+        $sql .= " and ca_id like '$ca_id%' ";
     $sql .= " order by it_order, it_id desc limit $items ";
     $result = sql_query($sql);
     /*
@@ -856,7 +861,7 @@ function display_category($no, $list_mod, $list_row, $img_width, $img_height, $c
     if (!file_exists($file)) {
         echo $file . ' 파일을 찾을 수 없습니다.';
     } else {
-        $td_width = (int)(100 / $list_mod);
+        $td_width = (int) (100 / $list_mod);
         include $file;
     }
 }
@@ -866,8 +871,10 @@ function display_category($no, $list_mod, $list_row, $img_width, $img_height, $c
 function get_star($score)
 {
     $star = round($score);
-    if ($star > 5) $star = 5;
-    else if ($star < 0) $star = 0;
+    if ($star > 5)
+        $star = 5;
+    else if ($star < 0)
+        $star = 0;
 
     return $star;
 }
@@ -881,7 +888,7 @@ function get_star_image($it_id)
     $sql = "select (SUM(is_score) / COUNT(*)) as score from {$g5['g5_shop_item_use_table']} where it_id = '$it_id' and is_confirm = 1 ";
     $row = sql_fetch($sql);
 
-    return (int)get_star($row['score']);
+    return (int) get_star($row['score']);
 }
 
 
@@ -906,10 +913,10 @@ function email_content($str)
 function gap_time($begin_time, $end_time)
 {
     $gap = $end_time - $begin_time;
-    $time['days']    = (int)($gap / 86400);
-    $time['hours']   = (int)(($gap - ($time['days'] * 86400)) / 3600);
-    $time['minutes'] = (int)(($gap - ($time['days'] * 86400 + $time['hours'] * 3600)) / 60);
-    $time['seconds'] = (int)($gap - ($time['days'] * 86400 + $time['hours'] * 3600 + $time['minutes'] * 60));
+    $time['days'] = (int) ($gap / 86400);
+    $time['hours'] = (int) (($gap - ($time['days'] * 86400)) / 3600);
+    $time['minutes'] = (int) (($gap - ($time['days'] * 86400 + $time['hours'] * 3600)) / 60);
+    $time['seconds'] = (int) ($gap - ($time['days'] * 86400 + $time['hours'] * 3600 + $time['minutes'] * 60));
     return $time;
 }
 
@@ -989,7 +996,7 @@ function get_item_options($it_id, $subject, $is_div = '', $is_first_option_title
             $opt_id = explode(chr(30), $row['io_id']);
 
             for ($k = 0; $k < $subj_count; $k++) {
-                if (! (isset($options[$k]) && is_array($options[$k])))
+                if (!(isset($options[$k]) && is_array($options[$k])))
                     $options[$k] = array();
 
                 if (isset($opt_id[$k]) && $opt_id[$k] && !in_array($opt_id[$k], $options[$k]))
@@ -1199,8 +1206,10 @@ function display_banner($position, $skin = '')
 {
     global $g5;
 
-    if (!$position) $position = '커뮤니티';
-    if (!$skin) $skin = 'boxbanner.skin.php';
+    if (!$position)
+        $position = '커뮤니티';
+    if (!$skin)
+        $skin = 'boxbanner.skin.php';
 
     $skin_path = G5_SHOP_SKIN_PATH . '/' . $skin;
     if (G5_IS_MOBILE)
@@ -1236,7 +1245,8 @@ function display_event($no, $event, $list_mod, $list_row, $img_width, $img_heigh
     // 1.02.00
     // b.it_order 추가
     $sql = " select b.* from {$g5['g5_shop_event_item_table']} a, {$g5['g5_shop_item_table']} b where a.it_id = b.it_id and b.it_use = '1' and a.ev_id = '$event' ";
-    if ($ca_id) $sql .= " and ca_id = '$ca_id' ";
+    if ($ca_id)
+        $sql .= " and ca_id = '$ca_id' ";
     $sql .= " order by b.it_order, a.it_id desc limit $items ";
     $result = sql_query($sql);
     if (!sql_num_rows($result)) {
@@ -1247,7 +1257,7 @@ function display_event($no, $event, $list_mod, $list_row, $img_width, $img_heigh
     if (!file_exists($file)) {
         echo $file . ' 파일을 찾을 수 없습니다.';
     } else {
-        $td_width = (int)(100 / $list_mod);
+        $td_width = (int) (100 / $list_mod);
         include $file;
     }
 }
@@ -1277,7 +1287,7 @@ function get_goods($cart_id)
     $goods['it_id'] = $row['it_id'];
     $goods['full_name'] = $goods['name'] = addslashes($row['it_name']);
     // 특수문자제거
-    $goods['full_name'] = preg_replace("/[ #\&\+\-%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>()\[\]\{\}]/i", "",  $goods['full_name']);
+    $goods['full_name'] = preg_replace("/[ #\&\+\-%@=\/\\\:;,\.'\"\^`~\_|\!\?\*$#<>()\[\]\{\}]/i", "", $goods['full_name']);
 
     // 상품건수
     $row = sql_fetch(" select count(*) as cnt from {$g5['g5_shop_cart_table']} where od_id = '$cart_id' ");
@@ -1324,10 +1334,10 @@ function check_datetime($datetime)
     if ($datetime == "0000-00-00 00:00:00")
         return true;
 
-    $year   = substr($datetime, 0, 4);
-    $month  = substr($datetime, 5, 2);
-    $day    = substr($datetime, 8, 2);
-    $hour   = substr($datetime, 11, 2);
+    $year = substr($datetime, 0, 4);
+    $month = substr($datetime, 5, 2);
+    $day = substr($datetime, 8, 2);
+    $hour = substr($datetime, 11, 2);
     $minute = substr($datetime, 14, 2);
     $second = substr($datetime, 17, 2);
 
@@ -1346,7 +1356,8 @@ function alert_opener($msg = '', $url = '')
 {
     global $g5;
 
-    if (!$msg) $msg = '올바른 방법으로 이용해 주십시오.';
+    if (!$msg)
+        $msg = '올바른 방법으로 이용해 주십시오.';
 
     echo "<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\">";
     echo "<script>";
@@ -1385,7 +1396,7 @@ function get_new_od_id()
     if ($od_id == 0)
         $od_id = 1;
     else {
-        $od_id = (int)substr($od_id, -4);
+        $od_id = (int) substr($od_id, -4);
         $od_id++;
     }
     $od_id = $date . substr("0000" . $od_id, -4);
@@ -1569,7 +1580,7 @@ function get_coupon_id()
     $len = 16;
     $chars = "ABCDEFGHJKLMNPQRSTUVWXYZ123456789";
 
-    srand((float)microtime() * 1000000);
+    srand((float) microtime() * 1000000);
 
     $i = 0;
     $str = '';
@@ -1717,16 +1728,16 @@ function get_order_info($od_id)
     $od_cart_price = $cart_price + $cancel_price;
 
     // 결과처리
-    $info['od_cart_price']      = $od_cart_price;
-    $info['od_send_cost']       = $send_cost;
-    $info['od_coupon']          = $od_coupon;
-    $info['od_send_coupon']     = $od_send_coupon;
-    $info['od_cart_coupon']     = $cart_coupon;
-    $info['od_tax_mny']         = $od_tax_mny;
-    $info['od_vat_mny']         = $od_vat_mny;
-    $info['od_free_mny']        = $od_free_mny;
-    $info['od_cancel_price']    = $cancel_price;
-    $info['od_misu']            = $od_misu;
+    $info['od_cart_price'] = $od_cart_price;
+    $info['od_send_cost'] = $send_cost;
+    $info['od_coupon'] = $od_coupon;
+    $info['od_send_coupon'] = $od_send_coupon;
+    $info['od_cart_coupon'] = $cart_coupon;
+    $info['od_tax_mny'] = $od_tax_mny;
+    $info['od_vat_mny'] = $od_vat_mny;
+    $info['od_free_mny'] = $od_free_mny;
+    $info['od_cancel_price'] = $cancel_price;
+    $info['od_misu'] = $od_misu;
 
     return $info;
 }
@@ -1808,7 +1819,7 @@ function get_sendcost($cart_id, $selected = 1)
     if ($default['de_send_cost_case'] == '차등' && $total_price >= 0 && $diff > 0) {
         // 금액별차등 : 여러단계의 배송비 적용 가능
         $send_cost_limit = explode(";", $default['de_send_cost_limit']);
-        $send_cost_list  = explode(";", $default['de_send_cost_list']);
+        $send_cost_list = explode(";", $default['de_send_cost_list']);
         $send_cost = 0;
         for ($k = 0; $k < count($send_cost_limit); $k++) {
             // 총판매금액이 배송비 상한가 보다 작다면
@@ -1850,8 +1861,8 @@ function get_item_sendcost($it_id, $price, $qty, $cart_id)
             if (!$ct['it_sc_qty'])
                 $ct['it_sc_qty'] = 1;
 
-            $q = ceil((int)$qty / (int)$ct['it_sc_qty']);
-            $sendcost = (int)$ct['it_sc_price'] * $q;
+            $q = ceil((int) $qty / (int) $ct['it_sc_qty']);
+            $sendcost = (int) $ct['it_sc_price'] * $q;
         }
     } else if ($ct['it_sc_type'] == 1) { // 무료배송
         $sendcost = 0;
@@ -1882,7 +1893,7 @@ function get_item_sendcost2($it_id, $price, $qty)
         if ($default['de_send_cost_case'] == '차등') {
             // 금액별차등 : 여러단계의 배송비 적용 가능
             $send_cost_limit = explode(";", $default['de_send_cost_limit']);
-            $send_cost_list  = explode(";", $default['de_send_cost_list']);
+            $send_cost_list = explode(";", $default['de_send_cost_list']);
 
             for ($k = 0; $k < count($send_cost_limit); $k++) {
                 // 총판매금액이 배송비 상한가 보다 작다면
@@ -1908,8 +1919,8 @@ function get_item_sendcost2($it_id, $price, $qty)
                     if (!$it['it_sc_qty'])
                         $it['it_sc_qty'] = 1;
 
-                    $q = ceil((int)$qty / (int)$it['it_sc_qty']);
-                    $sendcost = (int)$it['it_sc_price'] * $q;
+                    $q = ceil((int) $qty / (int) $it['it_sc_qty']);
+                    $sendcost = (int) $it['it_sc_price'] * $q;
                 }
             }
         } else if ($it['it_sc_type'] == 1) { // 무료배송
@@ -2215,7 +2226,7 @@ function get_boxcart_datas($is_cache = false)
         return $cache;
     }
 
-    $sql  = " select * from {$g5['g5_shop_cart_table']} ";
+    $sql = " select * from {$g5['g5_shop_cart_table']} ";
     $sql .= " where od_id = '" . $cart_id . "' group by it_id ";
     $result = sql_query($sql);
     for ($i = 0; $row = sql_fetch_array($result); $i++) {
@@ -2242,7 +2253,8 @@ function get_wishlist_datas($mb_id, $is_cache = false)
     if (!$mb_id) {
         $mb_id = $member['mb_id'];
 
-        if (!$mb_id) return array();
+        if (!$mb_id)
+            return array();
     }
 
     static $cache = array();
@@ -2252,7 +2264,7 @@ function get_wishlist_datas($mb_id, $is_cache = false)
     }
 
     $cache[$mb_id] = array();
-    $sql  = " select a.it_id, b.it_name from {$g5['g5_shop_wish_table']} a, {$g5['g5_shop_item_table']} b ";
+    $sql = " select a.it_id, b.it_name from {$g5['g5_shop_wish_table']} a, {$g5['g5_shop_item_table']} b ";
     $sql .= " where a.mb_id = '" . $mb_id . "' and a.it_id  = b.it_id order by a.wi_id desc ";
     $result = sql_query($sql);
     for ($i = 0; $row = sql_fetch_array($result); $i++) {
@@ -2271,7 +2283,8 @@ function get_wishlist_datas_count($mb_id = '')
     if (!$mb_id) {
         $mb_id = $member['mb_id'];
 
-        if (!$mb_id) return 0;
+        if (!$mb_id)
+            return 0;
     }
 
     $wishlist_datas = get_wishlist_datas($mb_id, true);
@@ -2284,7 +2297,8 @@ function get_wishlist_count_by_item($it_id = '')
 {
     global $g5;
 
-    if (!$it_id) return 0;
+    if (!$it_id)
+        return 0;
 
     $sql = "select count(a.it_id) as num from {$g5['g5_shop_wish_table']} a, {$g5['g5_shop_item_table']} b where a.it_id  = b.it_id and b.it_id = '$it_id'";
 
@@ -2370,7 +2384,7 @@ function save_order_point($ct_status = "완료")
 {
     global $g5, $default;
 
-    $beforedays = date("Y-m-d H:i:s", (time() - (86400 * (int)$default['de_point_days']))); // 86400초는 하루
+    $beforedays = date("Y-m-d H:i:s", (time() - (86400 * (int) $default['de_point_days']))); // 86400초는 하루
     $sql = " select * from {$g5['g5_shop_cart_table']} where ct_status = '$ct_status' and ct_point_use = '0' and ct_time <= '$beforedays' ";
     $result = sql_query($sql);
     for ($i = 0; $row = sql_fetch_array($result); $i++) {
@@ -2394,7 +2408,8 @@ function get_delivery_company($company)
 
     $dlcomp = explode(")", str_replace("(", "", G5_DELIVERY_COMPANY));
     for ($i = 0; $i < count($dlcomp); $i++) {
-        if (trim($dlcomp[$i]) == "") continue;
+        if (trim($dlcomp[$i]) == "")
+            continue;
         list($value, $url, $tel) = explode("^", $dlcomp[$i]);
         $option .= '<option value="' . $value . '" ' . get_selected($company, $value) . '>' . $value . '</option>' . PHP_EOL;
     }
@@ -2485,7 +2500,7 @@ function shop_is_taxsave($od, $is_view_receipt = false)
         }
 
         // 아직 현금영수증 받기전 상태일때만
-        if ($is_view_receipt && ! $od['od_cash'] && in_array($od['od_settle_case'], array('계좌이체', '가상계좌')) && ! strstr($default['de_taxsave_types'], $od_pay_type)) {
+        if ($is_view_receipt && !$od['od_cash'] && in_array($od['od_settle_case'], array('계좌이체', '가상계좌')) && !strstr($default['de_taxsave_types'], $od_pay_type)) {
             return 2;
         }
     }
@@ -2524,7 +2539,8 @@ function before_check_cart_price($s_cart_id, $is_ct_select_condition = false, $i
     $check_need_update = false;
 
     for ($i = 0; $row = sql_fetch_array($result); $i++) {
-        if (! $row['it_id']) continue;
+        if (!$row['it_id'])
+            continue;
 
         $it_id = $row['it_id'];
         $it = get_shop_item($it_id, $is_item_cache);
@@ -2674,7 +2690,8 @@ function add_order_post_log($msg = '', $code = 'error')
 {
     global $g5, $member;
 
-    if (empty($_POST)) return;
+    if (empty($_POST))
+        return;
 
     $post_data = base64_encode(serialize($_POST));
     $od_id = get_session('ss_order_id');
@@ -2762,11 +2779,13 @@ function is_inicis_order_pay($type)
 function get_item_images_info($it, $size = array(), $image_width = 0, $image_height = 0)
 {
 
-    if (!(is_array($it) && $it)) return array();
+    if (!(is_array($it) && $it))
+        return array();
     $images = array();
 
     for ($i = 1; $i <= 10; $i++) {
-        if (!$it['it_img' . $i]) continue;
+        if (!$it['it_img' . $i])
+            continue;
         $file = G5_DATA_PATH . '/item/' . $it['it_img' . $i];
         if ($is_exists = run_replace('is_exists_item_file', is_file($file), $it, $i)) {
             $thumb = get_it_thumbnail($it['it_img' . $i], $image_width, $image_height);
@@ -2790,7 +2809,8 @@ function get_shop_category_path($ca_id, $separator = ' &gt; ')
     static $category_cache = array(); // 카테고리명 캐시
     static $path_cache = array();     // 경로 캐시
 
-    if (!$ca_id) return '';
+    if (!$ca_id)
+        return '';
 
     // 동일한 separator로 이미 조회한 경로가 있으면 캐시에서 반환
     $cache_key = $ca_id . '|' . $separator;
@@ -2834,23 +2854,23 @@ function check_payment_method($od_settle_case)
     $is_block = 0;
 
     if ($od_settle_case === '무통장') {
-        if (! $default['de_bank_use']) {
+        if (!$default['de_bank_use']) {
             $is_block = 1;
         }
     } else if ($od_settle_case === '계좌이체') {
-        if (! $default['de_iche_use']) {
+        if (!$default['de_iche_use']) {
             $is_block = 1;
         }
     } else if ($od_settle_case === '가상계좌') {
-        if (! $default['de_vbank_use']) {
+        if (!$default['de_vbank_use']) {
             $is_block = 1;
         }
     } else if ($od_settle_case === '휴대폰') {
-        if (! $default['de_hp_use']) {
+        if (!$default['de_hp_use']) {
             $is_block = 1;
         }
     } else if ($od_settle_case === '신용카드') {
-        if (! $default['de_card_use']) {
+        if (!$default['de_card_use']) {
             $is_block = 1;
         }
     }
@@ -2969,6 +2989,93 @@ function get_table()
     }
     return $bo_tables;
 }
+
+function get_header_actions($mode)
+{
+    // 현재 로그인 회원 정보 전역 배열
+    global $member;
+
+    if ($mode !== 'community') {
+        return '';
+    }
+
+    // 회원 ID 준비
+    $member_id = isset($member['mb_id']) ? (string) $member['mb_id'] : '';
+    
+    // 알림 수 확인
+    $total_noti = $member_id !== ''
+        ? get_total_noti_count($member, get_table())
+        : 0;
+
+    ob_start();
+    ?>
+    <div id="hd_actions" class="flex items-center gap-2">
+        <a href="<?php echo G5_BBS_URL; ?>/mypage.php" class="inline-flex h-9 w-9 items-center justify-center text-gray-800"
+            aria-label="커뮤니티 마이페이지">
+            <svg width="36" height="30" viewBox="0 0 36 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_5655_202)">
+                    <path
+                        d="M7.05774 17.365H9.78235L12.7267 24.5574H12.8439L15.7882 17.365H18.5128V27.9705H16.3741V21.0271H16.2863L13.5177 27.9265H12.0529L9.2843 20.9978H9.19641V27.9705H7.05774V17.365ZM19.6554 17.365H22.131L24.5773 21.9353H24.6798L27.1115 17.365H29.587L25.7198 24.1912V27.9705H23.5226V24.1912L19.6554 17.365Z"
+                        fill="black" />
+                    <g clip-path="url(#clip1_5655_202)">
+                        <path
+                            d="M-0.269863 16C-1.02709 14.7382 0.03281 13.319 3.65839 13.097C5.38222 12.9928 6.41717 11.5067 7.03228 9.9697C7.16572 8.72037 7.4467 7.56959 7.88064 6.51621C8.37425 5.31106 9.06421 4.23616 9.94945 3.29039C11.9608 1.09642 14.4527 -0.00113485 17.4393 -0.00113511C18.9841 -0.00113525 20.4194 0.293358 21.7461 0.881211C23.0783 1.4634 24.2109 2.27325 25.1439 3.29039C26.0801 4.31544 26.8124 5.54778 27.3483 6.984C27.4785 7.32833 27.5903 7.68285 27.6879 8.04304C27.6879 8.04304 27.6879 8.0487 27.6911 8.0623C27.7454 8.25825 27.7942 8.45759 27.8398 8.66034C27.8398 8.66374 27.8398 8.66714 27.843 8.6694C28.1978 9.77602 29.3173 12.0617 32.676 13.0959C37.1999 14.4947 36.4546 16 36.4546 16L-0.268776 16L-0.269863 16Z"
+                            fill="#FAC740" />
+                        <path
+                            d="M16.5018 8.19144C16.453 8.04533 16.3868 7.91847 16.3022 7.81313C16.2175 7.70893 16.1156 7.62624 15.9952 7.56734C15.8747 7.50731 15.7456 7.47673 15.6057 7.47673C15.3356 7.47673 15.1099 7.58886 14.9277 7.81313C14.7465 8.03287 14.6564 8.32057 14.6564 8.67509C14.6564 9.03414 14.7476 9.32297 14.9277 9.54271C15.1132 9.76358 15.3421 9.87231 15.6122 9.87231C15.8823 9.87231 16.1101 9.76358 16.2967 9.54271C16.4823 9.31391 16.5745 9.02508 16.5745 8.67509C16.5745 8.50066 16.5506 8.33982 16.5018 8.19144Z"
+                            fill="black" />
+                        <path
+                            d="M20.8662 8.19144C20.8174 8.04533 20.7512 7.91847 20.6666 7.81313C20.582 7.70893 20.48 7.62624 20.3596 7.56734C20.2392 7.50731 20.1101 7.47673 19.9701 7.47673C19.7 7.47673 19.4744 7.58886 19.2921 7.81313C19.1109 8.03287 19.0209 8.32057 19.0209 8.67509C19.0209 9.03414 19.1109 9.32297 19.2921 9.54271C19.4776 9.76358 19.7065 9.87231 19.9766 9.87231C20.2468 9.87231 20.4746 9.76358 20.6612 9.54271C20.8467 9.31391 20.9389 9.02508 20.9389 8.67509C20.9389 8.50066 20.915 8.33982 20.8662 8.19144Z"
+                            fill="black" />
+                    </g>
+                </g>
+                <defs>
+                    <clipPath id="clip0_5655_202">
+                        <rect width="36" height="30" fill="white" />
+                    </clipPath>
+                    <clipPath id="clip1_5655_202">
+                        <rect width="37" height="16" fill="white" transform="translate(36.5 16) rotate(180)" />
+                    </clipPath>
+                </defs>
+            </svg>
+
+        </a>
+
+        <a href="<?php echo G5_BBS_URL; ?>/notification.php"
+            class="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-700" aria-label="알림">
+            <svg width="31" height="31" viewBox="0 0 31 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M27.5232 12.2475C27.5232 5.48271 22.0405 0 15.2757 0C8.51086 0 3.03658 5.48271 3.03658 12.2475V15.1407L0 21.2308H30.5851L27.5232 15.166V12.2475Z"
+                    fill="black" />
+                <path
+                    d="M19.6534 25.7588C19.6534 25.1768 19.5438 24.6201 19.3329 24.114H11.2522C11.0414 24.6201 10.9317 25.1768 10.9317 25.7588C10.9317 28.1712 12.8802 30.1197 15.2926 30.1197C17.705 30.1197 19.6534 28.1712 19.6534 25.7588Z"
+                    fill="black" />
+            </svg>
+
+            <span id="community_noti_count"
+                class="absolute top-0 left-6 inline-flex h-3 min-w-3 items-center justify-center border-[1.5px] border-white rounded-full bg-black text-[8px] font-normal leading-[12px] text-white">
+            </span>
+        </a>
+    </div>
+
+    <script>
+        const userId = <?php echo json_encode($member_id); ?>;
+        const storageKey = "readNoti_" + userId;
+        const unreadCount = JSON.parse(localStorage.getItem(storageKey) || "[]");
+        const totalNotificationCount = <?php echo (int) $total_noti; ?>;
+        const notificationBadge = document.getElementById("community_noti_count");
+
+        if (notificationBadge) {
+            notificationBadge.textContent = g5_is_member
+                ? Math.max(0, totalNotificationCount - unreadCount.length)
+                : 0;
+        }
+    </script>
+    <?php
+
+    return ob_get_clean();
+}
+
 function get_notification()
 {
     global $member;
@@ -2994,43 +3101,49 @@ function get_notification()
     // $total_noti = get_total_noti_count($member, get_table());
 
     ob_start();
-?>
-    <a href="<?php echo G5_SHOP_URL; ?>/mypage.php"
-        class="hidden pc:inline-flex items-center justify-center text-gray-800"
+    ?>
+    <a href="<?php echo G5_SHOP_URL; ?>/mypage.php" class="hidden pc:inline-flex items-center justify-center text-gray-800"
         aria-label="마이페이지">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user w-6 h-6">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user w-6 h-6">
             <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
             <circle cx="12" cy="7" r="4"></circle>
         </svg>
     </a>
 
-    <a href="<?= G5_BBS_URL ?>/notification.php" class="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-700" aria-label="알림">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
+    <a href="<?= G5_BBS_URL ?>/notification.php"
+        class="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-700" aria-label="알림">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">
             <path d="M10.268 21a2 2 0 0 0 3.464 0" />
-            <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+            <path
+                d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
         </svg>
-        <span class="absolute -right-0.5 -top-0.5 inline-flex min-w-4 h-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white" id="noti">
+        <span
+            class="absolute -right-0.5 -top-0.5 inline-flex min-w-4 h-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white"
+            id="noti">
             <!-- <?= $total_noti ?> -->
         </span>
     </a>
 
     <a href="<?php echo G5_SHOP_URL; ?>/cart.php"
-        class="relative inline-flex h-9 w-9 items-center justify-center text-gray-800"
-        aria-label="장바구니">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
+        class="relative inline-flex h-9 w-9 items-center justify-center text-gray-800" aria-label="장바구니">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
             <circle cx="8" cy="21" r="1" />
             <circle cx="19" cy="21" r="1" />
             <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
         </svg>
-        <span class="absolute -right-0.5 -top-0.5 inline-flex min-w-4 h-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white" id="cart">
+        <span
+            class="absolute -right-0.5 -top-0.5 inline-flex min-w-4 h-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white"
+            id="cart">
             <?php echo get_boxcart_datas_count(); ?>
         </span>
     </a>
 
-    <button type="button"
-        id="recent-viewed-open"
-        class="inline-flex flex-col items-center justify-center gap-[1px] text-gray-800 ml-2"
-        aria-label="최근 본 상품 열기">
+    <button type="button" id="recent-viewed-open"
+        class="inline-flex flex-col items-center justify-center gap-[1px] text-gray-800 ml-2" aria-label="최근 본 상품 열기">
         <?php if (!empty($latest_viewed_item['it_id'])) { ?>
             <div class="w-6 h-6 overflow-hidden rounded border border-zinc-300">
                 <?php echo get_it_image($latest_viewed_item['it_id'], 24, 24, false, '', get_text($latest_viewed_item['it_name']), true); ?>
@@ -3049,7 +3162,7 @@ function get_notification()
         let noti = document.getElementById('noti')
         noti.innerText = g5_is_member ? "<?= get_total_noti_count($member, get_table()); ?>" - unreadCount.length : 0
     </script>
-<?php
+    <?php
     return ob_get_clean();
 }
 //==============================================================================

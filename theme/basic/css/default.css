@@ -75,6 +75,8 @@
 :root {
   /* 브랜드 색상 */
   --brand-rgb: 255 209 55; /* #ffd137 */
+  --donuts-yellow: #FAC740;
+  --donuts-black: #000000;
 
   /* 시맨틱(브랜드 색상) */
   --color-primary: rgb(var(--brand-rgb));
@@ -169,16 +171,6 @@ input:-webkit-autofill:active {
   -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
   box-shadow: 0 0 0 1000px #fff inset !important;
   transition: background-color 9999s ease-out 0s;
-}
-
-
-/* 사이트 너비와 내부 요소 너비 조절 */
-#app-shell {
-  width: 100%;
-  /* max-width: 375px; */
-  min-height: 100dvh;
-  margin: 0 auto;
-  background: #fff;
 }
 
 /* 사이트 폰트 설정과 스크롤 여부 */
@@ -455,15 +447,15 @@ a {
 }
 
 /* 상단 레이아웃 */
-#hd {
+/* #hd {
   background: #212020;
-}
-#hd_h1 {
+} */
+/* #hd_h1 {
   position: absolute;
   font-size: 0;
   line-height: 0;
   overflow: hidden;
-}
+} */
 
 #tnb {
   border-bottom: 1px solid #383838;
@@ -479,18 +471,18 @@ a {
   margin: 0 auto;
 }
 
-#hd_wrapper {
+/* #hd_wrapper {
   position: relative;
   margin: 0 auto;
   height: 140px;
   zoom: 1;
-}
-#hd_wrapper:after {
+} */
+/* #hd_wrapper:after {
   display: block;
   visibility: hidden;
   clear: both;
   content: "";
-}
+} */
 
 #logo {
   float: left;
@@ -614,24 +606,24 @@ a {
   font-size: 10px;
 }
 
-.hd_login {
+/* .hd_login {
   position: absolute;
   right: 0;
   top: 60px;
-}
-.hd_login li {
+} */
+/* .hd_login li {
   float: left;
   margin: 0 5px;
   border-left: 1px solid #616161;
   padding-left: 10px;
   line-height: 13px;
-}
-.hd_login li:first-child {
+} */
+/* .hd_login li:first-child {
   border-left: 0;
-}
-.hd_login a {
+} */
+/* .hd_login a {
   color: #fff;
-}
+} */
 
 /* 메인메뉴 */
 #gnb {
@@ -851,18 +843,18 @@ a.gnb_2da:hover {
 }
 
 /* 중간 레이아웃 */
-#wrapper {
-}
-#container_wr:after {
+/* #wrapper {
+} */
+/* #container_wr:after {
   display: block;
   visibility: hidden;
   clear: both;
   content: "";
-}
-#container_wr {
+} */
+/* #container_wr {
   margin: 0 auto;
   zoom: 1;
-}
+} */
 #aside {
   float: right;
   width: 235px;
@@ -924,7 +916,7 @@ a.gnb_2da:hover {
 }
 
 /* 하단 레이아웃 */
-#ft {
+/* #ft {
   background: #212020;
   margin: 0 auto;
   text-align: center;
@@ -975,8 +967,8 @@ a.gnb_2da:hover {
 }
 #ft_catch {
   margin: 20px 0 10px;
-}
-#ft_copy {
+} */
+/* #ft_copy {
   text-align: center;
   width: 1200px;
   margin: 0 auto;
@@ -984,7 +976,7 @@ a.gnb_2da:hover {
   color: #5b5b5b;
   font-size: 0.92em;
   border-top: 1px solid #383838;
-}
+} */
 #top_btn {
   position: fixed;
   bottom: 20px;

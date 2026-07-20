@@ -21,12 +21,12 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 </div>
 
 <!-- 로그인 시작 { -->
-<div id="mb_login" class="w-full max-w-[460px] mx-auto pt-12 p-4">
+<div id="mb_login" class="w-full max-w-[460px] mx-auto px-4 py-12 pc:pt-16">
     <div class="mbskin_box space-y-8">
         <h1 class="sound_only"><?php echo $g5['title'] ?></h1>
 
         <div class="text-center space-y-2">
-            <p class="text-base text-zinc-500">새로운 가치 소비 생태계</p>
+            <p class="text-[15px] text-zinc-500">새로운 가치 소비 생태계</p>
             <a href="<?php echo G5_SHOP_URL; ?>/" class="flex items-center justify-center">
                 <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>">
             </a>
@@ -94,7 +94,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
             @include_once(get_social_skin_path() . '/social_login.skin.php');
             ?>
         </section>
-       
+
         <section class="rounded bg-[#523919] p-6 text-white">
             <div>프로모션 배너</div>
         </section>
@@ -189,5 +189,13 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
         }
         return false;
     }
+
+    syncWithPcBreakpoint(function (isPc) {
+        if (isPc) {
+            $('#hd').css('display', '');
+        } else {
+            $('#hd').css('display', 'none');
+        }
+    });
 </script>
 <!-- } 로그인 끝 -->

@@ -1,11 +1,13 @@
 <?php
-        $isNeft = $_GET['isNeft'];
-if(!$isNeft == 'true'){
- include_once('ready/ready.php');
+$isNeft = $_GET['isNeft'];
+if (!$isNeft == 'true') {
+    include_once('ready/ready.php');
     exit;
 }
-if (!defined('_INDEX_')) define('_INDEX_', true);
-if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
+if (!defined('_INDEX_'))
+    define('_INDEX_', true);
+if (!defined('_GNUBOARD_'))
+    exit; // 개별 페이지 접근 불가
 
 if (G5_IS_MOBILE) {
     include_once(G5_THEME_MOBILE_PATH . '/index.php');
@@ -22,8 +24,10 @@ include_once(G5_THEME_PATH . '/head.php');
 ?>
 
 
-  
-<main class="space-y-6">
+
+<main class="space-y-5">
+    <?php include G5_THEME_PATH . '/_quick_nav.php'; ?>
+
     <section aria-label="메인 배너" class="px-4">
 
         <?php echo display_banner('커뮤니티', 'mainbanner.10.skin.php'); ?>
@@ -71,7 +75,7 @@ include_once(G5_THEME_PATH . '/head.php');
         </div> -->
     </section>
     <script>
-        $(function() {
+        $(function () {
             const $heroOwl = $(".hero_owl");
             const $pickOwl = $(".pick_owl");
 
@@ -106,7 +110,7 @@ include_once(G5_THEME_PATH . '/head.php');
                 touchDrag: true
             });
 
-            $("#hero-next").on("click", function(e) {
+            $("#hero-next").on("click", function (e) {
                 e.preventDefault();
                 $heroOwl.trigger("next.owl.carousel");
             });
@@ -126,7 +130,7 @@ include_once(G5_THEME_PATH . '/head.php');
         });
     </script>
 
-    <?php include G5_THEME_PATH . '/_quick_nav.php'; ?>
+
 
     <!-- <section aria-label="프로모션 배너" class="px-4">
         <a href="#" class="flex items-center justify-between w-full h-20 rounded bg-gray-900 px-4 py-2 !text-white">
@@ -156,7 +160,7 @@ include_once(G5_THEME_PATH . '/head.php');
     // - 로그인 회원 레벨로 볼 수 있는 게시판만 노출
     // - mobile 전용 게시판 제외
     // - 추천과 관련된 DB 값 추가 시 수정 필요
-
+    
     $sql_pick_board = " select b.bo_table, b.bo_subject, b.bo_content_head, b.gr_id, g.gr_subject ,b.bo_content_tail
                         from {$g5['board_table']} b
                         left join {$g5['group_table']} g on b.gr_id = g.gr_id
@@ -196,15 +200,13 @@ include_once(G5_THEME_PATH . '/head.php');
 
                     ?>
                     <div class="w-60">
-                        <a href="<?php echo $pick_row_url; ?>" class="block h-71 overflow-hidden rounded-lg border border-gray-100 bg-white">
-                            <div class="relative w-full aspect-[2/1] overflow-hidden rounded-t-lg border border-gray-200 bg-gray-100">
+                        <a href="<?php echo $pick_row_url; ?>"
+                            class="block h-71 overflow-hidden rounded-lg border border-gray-100 bg-white">
+                            <div
+                                class="relative w-full aspect-[2/1] overflow-hidden rounded-t-lg border border-gray-200 bg-gray-100">
                                 <?php if ($pick_row_image) { ?>
-                                    <img
-                                        src="<?php echo $pick_row_image; ?>"
-                                        alt="<?php echo $pick_row_title; ?> 썸네일"
-                                        class="h-full w-full object-cover"
-                                        loading="lazy"
-                                        decoding="async">
+                                    <img src="<?php echo $pick_row_image; ?>" alt="<?php echo $pick_row_title; ?> 썸네일"
+                                        class="h-full w-full object-cover" loading="lazy" decoding="async">
                                 <?php } else { ?>
                                     <div class="flex h-full w-full items-center justify-center">
                                         <p class="text-xs font-medium text-gray-500">사진이 없습니다</p>
@@ -213,20 +215,25 @@ include_once(G5_THEME_PATH . '/head.php');
                             </div>
 
                             <div class="p-4 space-y-2">
-                                <p class="text-base font-semibold text-gray-900 line-clamp-2 leading-normal"><?php echo $pick_row_title; ?></p>
+                                <p class="text-base font-semibold text-gray-900 line-clamp-2 leading-normal">
+                                    <?php echo $pick_row_title; ?></p>
 
                                 <p class="text-sm text-gray-500 line-clamp-1 leading-normal">
                                     <?= $pick_row_desc ?>
                                 </p>
 
                                 <div class="flex items-center gap-1 text-gray-400">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
-                                        <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
+                                        <path
+                                            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                                     </svg>
                                     <span class="text-xs">392</span>
                                 </div>
 
-                                <span class="rounded px-2 py-1 text-xs <?php echo $pick_row_group_badge_class; ?>"><?php echo $pick_row_group; ?></span>
+                                <span
+                                    class="rounded px-2 py-1 text-xs <?php echo $pick_row_group_badge_class; ?>"><?php echo $pick_row_group; ?></span>
                             </div>
                         </a>
                     </div>
@@ -255,13 +262,19 @@ include_once(G5_THEME_PATH . '/head.php');
 
     <section aria-label="오프라인 모임" class="px-4 space-y-4">
         <div>
-            <button type="button" class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-900">
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
-                    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+            <button type="button"
+                class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-4 py-2 text-sm text-gray-900">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-map-pin-icon lucide-map-pin">
+                    <path
+                        d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                     <circle cx="12" cy="10" r="3" />
                 </svg>
                 <span>경기도 성남시 분당구</span>
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down">
+                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-chevron-down">
                     <path d="m6 9 6 6 6-6" />
                 </svg>
             </button>
@@ -284,12 +297,8 @@ include_once(G5_THEME_PATH . '/head.php');
                 <a href="<?php echo $club_card_url; ?>" class="block overflow-hidden bg-white space-y-3">
                     <div class="relative w-full aspect-[2/1] border border-gray-200 overflow-hidden rounded bg-gray-100">
                         <?php if ($club_card_image) { ?>
-                            <img
-                                src="<?php echo $club_card_image; ?>"
-                                alt="<?php echo $club_card_title; ?> 썸네일"
-                                class="h-full w-full object-cover"
-                                loading="lazy"
-                                decoding="async">
+                            <img src="<?php echo $club_card_image; ?>" alt="<?php echo $club_card_title; ?> 썸네일"
+                                class="h-full w-full object-cover" loading="lazy" decoding="async">
                         <?php } else { ?>
                             <div class="flex h-full w-full items-center justify-center">
                                 <p class="text-xs font-medium text-gray-500">사진이 없습니다</p>
@@ -300,19 +309,26 @@ include_once(G5_THEME_PATH . '/head.php');
                     <div class="space-y-1">
                         <p class="text-base font-semibold text-gray-900"><?php echo $club_card_title; ?></p>
 
-                        <p class="text-sm text-gray-500 line-clamp-1"><?php echo $club_card_desc ? $club_card_desc : '설명이 없습니다.'; ?></p>
+                        <p class="text-sm text-gray-500 line-clamp-1">
+                            <?php echo $club_card_desc ? $club_card_desc : '설명이 없습니다.'; ?></p>
 
                         <div class="flex items-center text-xs text-gray-500">
                             <div class="flex items-center gap-2 text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
-                                    <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
+                                    <path
+                                        d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                                 </svg>
                                 <span class="text-xs">92</span>
                             </div>
                             <span class="mx-2">|</span>
                             <div class="flex items-center gap-2 text-gray-400">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="transparent" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
-                                    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                    fill="transparent" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
+                                    <path
+                                        d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                                     <circle cx="12" cy="10" r="3" />
                                 </svg>
                                 <span>경기 성남시 분당구</span>
@@ -413,14 +429,9 @@ include_once(G5_THEME_PATH . '/head.php');
                         $rank_tab_class = 'rounded-full bg-gray-900 px-4 py-2 text-xs text-white';
                     }
                     ?>
-                    <button
-                        type="button"
-                        id="rank-tab-<?php echo $rank_tab_id_suffix; ?>"
-                        class="<?php echo $rank_tab_class; ?>"
-                        data-rank-tab="1"
-                        data-rank-gr-id="<?php echo $rank_tab['gr_id']; ?>"
-                        role="tab"
-                        aria-controls="rank-panel"
+                    <button type="button" id="rank-tab-<?php echo $rank_tab_id_suffix; ?>"
+                        class="<?php echo $rank_tab_class; ?>" data-rank-tab="1"
+                        data-rank-gr-id="<?php echo $rank_tab['gr_id']; ?>" role="tab" aria-controls="rank-panel"
                         aria-selected="<?php echo $rank_tab_is_active ? 'true' : 'false'; ?>"
                         tabindex="<?php echo $rank_tab_is_active ? '0' : '-1'; ?>">
                         <?php echo $rank_tab['gr_subject']; ?>
@@ -430,7 +441,7 @@ include_once(G5_THEME_PATH . '/head.php');
         </div>
 
         <script>
-            document.addEventListener("DOMContentLoaded", function() {
+            document.addEventListener("DOMContentLoaded", function () {
                 const tabs = document.querySelectorAll("[data-rank-tab='1']");
                 const cards = document.querySelectorAll("[data-rank-card='1']");
                 const emptyState = document.getElementById("rank-empty-state");
@@ -505,12 +516,12 @@ include_once(G5_THEME_PATH . '/head.php');
                 filterRank(defaultGrId, false);
 
                 for (let j = 0; j < tabs.length; j++) {
-                    tabs[j].addEventListener("click", function() {
+                    tabs[j].addEventListener("click", function () {
                         const selectedGrId = this.getAttribute("data-rank-gr-id") || "";
                         filterRank(selectedGrId, true);
                     });
 
-                    tabs[j].addEventListener("keydown", function(e) {
+                    tabs[j].addEventListener("keydown", function (e) {
                         let currentIndex = -1;
                         for (let k = 0; k < tabs.length; k++) {
                             if (tabs[k] === this) {
@@ -567,33 +578,44 @@ include_once(G5_THEME_PATH . '/head.php');
                 $rank_no = $r + 1;
                 $rank_no_class = ($rank_no <= 3) ? 'bg-amber-300 text-gray-900' : 'bg-gray-900 text-white';
                 ?>
-                <a href="<?php echo $rank_row_url; ?>" class="grid grid-cols-[132px_1fr] gap-4 bg-white" data-rank-card="1" data-rank-gr-id="<?php echo $rank_row['gr_id']; ?>">
+                <a href="<?php echo $rank_row_url; ?>" class="grid grid-cols-[132px_1fr] gap-4 bg-white" data-rank-card="1"
+                    data-rank-gr-id="<?php echo $rank_row['gr_id']; ?>">
                     <div class="relative h-33 overflow-hidden rounded bg-gray-100">
                         <?php if ($rank_row_image) { ?>
-                            <img src="<?php echo $rank_row_image; ?>" alt="<?php echo $rank_row_title; ?>" class="absolute inset-0 h-full w-full object-cover">
+                            <img src="<?php echo $rank_row_image; ?>" alt="<?php echo $rank_row_title; ?>"
+                                class="absolute inset-0 h-full w-full object-cover">
                         <?php } else { ?>
                             <div class="flex h-full w-full items-center justify-center">
                                 <p class="text-xs font-medium text-gray-500">사진이 없습니다</p>
                             </div>
                         <?php } ?>
-                        <span data-rank-no="1" class="absolute left-0 top-0 flex h-6 w-6 items-center justify-center rounded-tl rounded-br text-xs font-semibold <?php echo $rank_no_class; ?>"><?php echo $rank_no; ?></span>
+                        <span data-rank-no="1"
+                            class="absolute left-0 top-0 flex h-6 w-6 items-center justify-center rounded-tl rounded-br text-xs font-semibold <?php echo $rank_no_class; ?>"><?php echo $rank_no; ?></span>
                     </div>
                     <div class="space-y-1">
                         <p class="line-clamp-1 text-base font-semibold text-gray-900"><?php echo $rank_row_title; ?></p>
-                        <p class="text-sm text-gray-500 line-clamp-1"><?php echo $rank_row_desc ? $rank_row_desc : '게시판 설명이 없습니다.'; ?></p>
+                        <p class="text-sm text-gray-500 line-clamp-1">
+                            <?php echo $rank_row_desc ? $rank_row_desc : '게시판 설명이 없습니다.'; ?></p>
                         <div class="flex items-center gap-1 my-2 text-gray-400">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
-                                <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                fill="currentColor" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
+                                <path
+                                    d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                             </svg>
                             <span class="text-xs">0</span>
                         </div>
-                        <span class="rounded px-2 py-1 text-xs <?php echo $rank_row_badge_class; ?>"><?php echo $rank_row_group; ?></span>
+                        <span
+                            class="rounded px-2 py-1 text-xs <?php echo $rank_row_badge_class; ?>"><?php echo $rank_row_group; ?></span>
                     </div>
                 </a>
             <?php } ?>
-            <div id="rank-empty-state" class="hidden rounded border border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500">표시할 게시판이 없습니다.</div>
+            <div id="rank-empty-state"
+                class="hidden rounded border border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500">표시할 게시판이
+                없습니다.</div>
             <?php if (sql_num_rows($result_rank_board) < 1) { ?>
-                <div class="rounded border border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500">표시할 게시판이 없습니다.</div>
+                <div class="rounded border border-gray-200 bg-gray-50 p-4 text-center text-sm text-gray-500">표시할 게시판이 없습니다.
+                </div>
             <?php } ?>
         </div>
 
@@ -643,8 +665,9 @@ include_once(G5_THEME_PATH . '/head.php');
             $result = sql_query($sql);
             for ($i = 0; $row = sql_fetch_array($result); $i++) {
                 $lt_style = '';
-                if ($i % 3 !== 0) $lt_style = "margin-left:2%";
-            ?>
+                if ($i % 3 !== 0)
+                    $lt_style = "margin-left:2%";
+                ?>
                 <div style="float:left;<?php echo $lt_style ?>" class="lt_wr">
                     <?php
                     // 이 함수가 바로 최신글을 추출하는 역할을 합니다.
@@ -653,7 +676,7 @@ include_once(G5_THEME_PATH . '/head.php');
                     echo latest('theme/basic', $row['bo_table'], 6, 24);
                     ?>
                 </div>
-            <?php
+                <?php
             }
             ?>
             <!-- } 최신글 끝 -->

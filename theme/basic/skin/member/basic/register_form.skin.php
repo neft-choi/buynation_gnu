@@ -60,7 +60,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 			<div id="register_form_custom" class="space-y-6">
 				<div class="space-y-2 pc:text-center">
 					<h2 class="text-2xl font-bold text-zinc-900">회원정보</h2>
-					<p class="text-[15px] text-zinc-500">회원정보를 입력하고 바이네이션 서비스를 이용해보세요.</p>
+					<p class="text-[15px] text-zinc-500">회원정보를 입력하고 도너츠 서비스를 이용해보세요.</p>
 				</div>
 
 				<ul class="mt-8 space-y-2">
@@ -95,14 +95,8 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							<strong class="sound_only">필수</strong>
 						</label>
 
-						<input
-							type="text"
-							name="mb_recommend_code"
-							id="mb_recommend_code"
-							class="frm_input full_input required"
-							maxlength="20"
-							placeholder="추천인 코드를 입력하세요"
-							required>
+						<input type="text" name="mb_recommend_code" id="mb_recommend_code"
+							class="frm_input full_input required" maxlength="20" placeholder="추천인 코드를 입력하세요" required>
 
 						<span class="frm_info">
 							추천인 코드를 입력해야 가입할 수 있습니다.
@@ -110,8 +104,9 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 					</li>
 				</ul>
 
-				<div>
+				<section id="register_personal_info">
 					<h2 class="sound_only">개인정보 입력</h2>
+					
 					<ul class="space-y-2">
 						<?php
 						$desc_name = '';
@@ -124,7 +119,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								$desc_phone = '';
 							}
 							?>
-							<li class="grid gap-2">
+							<li class="flex items-center gap-2">
 								<?php
 								if ($config['cf_cert_simple']) {
 									echo '<button type="button" id="win_sa_kakao_cert" class="btn_frmline win_sa_cert" data-type="">간편인증</button>' . PHP_EOL;
@@ -134,31 +129,38 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								if ($config['cf_cert_ipin'])
 									echo '<button type="button" id="win_ipin_cert" class="btn_frmline">아이핀 본인확인</button>' . PHP_EOL;
 
-								echo '<span class="cert_req">(필수)</span>';
 								echo '<noscript>본인확인을 위해서는 자바스크립트 사용이 가능해야합니다.</noscript>' . PHP_EOL;
 								?>
-								<?php
-								if ($member['mb_certify']) {
-									switch ($member['mb_certify']) {
-										case "simple":
-											$mb_cert = "간편인증";
-											break;
-										case "ipin":
-											$mb_cert = "아이핀";
-											break;
-										case "hp":
-											$mb_cert = "휴대폰";
-											break;
-									}
-									?>
-									<div id="msg_certify"
-										class="rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-700">
-										<span class="font-semibold"><?php echo $mb_cert; ?>
-											본인확인</span><?php if ($member['mb_adult']) { ?> 및 <span
-												class="font-semibold">성인인증</span><?php } ?> 완료
-									</div>
-								<?php } ?>
+
 							</li>
+
+							<?php
+							if ($member['mb_certify']) {
+								switch ($member['mb_certify']) {
+									case "simple":
+										$mb_cert = "간편인증";
+										break;
+									case "ipin":
+										$mb_cert = "아이핀";
+										break;
+									case "hp":
+										$mb_cert = "휴대폰";
+										break;
+								}
+								?>
+
+								<div id="msg_certify"
+									class="rounded-md border border-zinc-300 bg-blue-50 px-3 py-2 text-sm text-zinc-700 text-center">
+									<span class="font-semibold"><?php echo $mb_cert; ?> 본인확인</span>
+
+									<?php if ($member['mb_adult']) { ?>
+										<span> 및 </span>
+										<span class="font-semibold">성인인증</span>
+									<?php } ?>
+
+									<span>완료</span>
+								</div>
+							<?php } ?>
 						<?php } ?>
 
 						<li class="relative">
@@ -309,7 +311,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							</li>
 						<?php } ?>
 					</ul>
-				</div>
+				</section>
 
 				<div class="">
 					<h2 class="sound_only">기타 개인설정</h2>

@@ -35,7 +35,7 @@ for ($k = 0; $cp = sql_fetch_array($res); $k++) {
                     </button>
                 </div>
 
-                <span class="text-gray-500 text-xs mt-auto">바이네이션에서 구매와 기부를 함께해보세요.</span>
+                <span class="text-gray-500 text-xs mt-auto">도너츠에서 구매와 기부를 함께해보세요.</span>
             </div>
 
             <div class="flex flex-col w-full h-53 bg-[#8D8D8D0D] p-8">

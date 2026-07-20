@@ -123,15 +123,16 @@ if (!defined('_GNUBOARD_'))
     // }
     ?>
 
-    <!-- 검색 결과 수 표시 + 정렬 시작 -->
-    <div id="searchResultToolbar" class="flex items-center justify-between gap-3 mb-5">
-        <div>
-            <span class="text-red-500 font-semibold">
-                <?php echo number_format((int) $total_count); ?>
-            </span>
-            <span class="text-zinc-900">개의 상품이 있습니다</span>
-        </div>
-        <!--
+    <?php if ((int) $total_count > 0) { ?>
+        <!-- 검색 결과 수 표시 + 정렬 시작 -->
+        <div id="searchResultToolbar" class="flex items-center justify-between gap-3 mb-5">
+            <div>
+                <span class="text-red-500 font-semibold">
+                    <?php echo number_format((int) $total_count); ?>
+                </span>
+                <span class="text-zinc-900">개의 상품이 있습니다</span>
+            </div>
+            <!--
         <div class="relative shrink-0">
             <button type="button" id="sortBtn"
                 class="px-2 py-1 border border-zinc-300 bg-white text-sm text-zinc-800 flex items-center gap-1">
@@ -160,100 +161,131 @@ if (!defined('_GNUBOARD_'))
             </div>
         </div>
 -->
-        <div class="flex items-center gap-1 text-sm">
-            <?php
-            include G5_THEME_PATH . '/skin/shop/basic/list.sort.skin.php';
-            ?>
+            <div class="flex items-center gap-1 text-sm">
+                <?php
+                include G5_THEME_PATH . '/skin/shop/basic/list.sort.skin.php';
+                ?>
 
-            <button type="button" id="filterDrawerOpen"
-                class="inline-flex pc:hidden items-center gap-1 border border-gray-300 rounded-xs p-2 ml-0.5">
-                <span class="text-nowrap">필터</span>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-list-filter-icon lucide-list-filter w-4 h-4">
-                    <path d="M2 5h20" />
-                    <path d="M6 12h12" />
-                    <path d="M9 19h6" />
-                </svg>
-            </button>
+                <button type="button" id="filterDrawerOpen"
+                    class="inline-flex pc:hidden items-center gap-1 border border-gray-300 rounded-xs p-2 ml-0.5">
+                    <span class="text-nowrap">필터</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-list-filter-icon lucide-list-filter w-4 h-4">
+                        <path d="M2 5h20" />
+                        <path d="M6 12h12" />
+                        <path d="M9 19h6" />
+                    </svg>
+                </button>
+            </div>
         </div>
-    </div>
-    <!-- 검색 결과 수 표시 + 정렬 끝 -->
+        <!-- 검색 결과 수 표시 + 정렬 끝 -->
 
-    <!-- 검색결과 시작 { -->
-    <div>
-        <?php
-        // 리스트 유형별로 출력
-        if (isset($list) && is_object($list) && method_exists($list, 'run')) {
-            $list->set_is_page(true);
-            $list->set_view('it_img', true);
+        <!-- 검색결과 시작 { -->
+        <div>
+            <?php
+            // 리스트 유형별로 출력
+            if (isset($list) && is_object($list) && method_exists($list, 'run')) {
+                $list->set_is_page(true);
+                $list->set_view('it_img', true);
+                $list->set_view('it_name', true);
+                $list->set_view('it_basic', true);
+                $list->set_view('it_cust_price', false);
+                $list->set_view('it_price', true);
+                $list->set_view('it_icon', true);
+                $list->set_view('sns', true);
+                $list->set_view('star', true);
+                echo $list->run();
+            } else {
+                $i = 0;
+                $error = '<p class="sct_nofile">' . $list_file . ' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</p>';
+            }
+
+            if ($i == 0) {
+                echo '<div>' . $error . '</div>';
+            }
+
+            // $query_string = 'qname=' . $qname . '&amp;qexplan=' . $qexplan . '&amp;qid=' . $qid;
+        
+            $query_string = 'qname=' . $qname;
+            $query_string .= '&amp;qexplan=' . $qexplan;
+            $query_string .= '&amp;qid=' . $qid;
+            $query_string .= '&amp;qbasic=' . $qbasic;
+
+            if ($qfrom && $qto)
+                $query_string .= '&amp;qfrom=' . $qfrom . '&amp;qto=' . $qto;
+
+            $query_string .= '&amp;qcaid=' . $qcaid;
+            $query_string .= '&amp;q=' . urlencode($q);
+            $query_string .= '&amp;sort=' . $sort;
+            $query_string .= '&amp;sortodr=' . $sortodr;
+
+            // if ($qfrom && $qto)
+            //     $query_string .= '&amp;qfrom=' . $qfrom . '&amp;qto=' . $qto;
+        
+            // $query_string .= '&amp;qcaid=' . $qcaid . '&amp;q=' . urlencode($q);
+            // $query_string .= '&amp;qsort=' . $qsort . '&amp;qorder=' . $qorder;
+        
+            if ($it_type1)
+                $query_string .= '&amp;it_type1=1';
+
+            if ($it_type2)
+                $query_string .= '&amp;it_type2=1';
+
+            if ($it_type3)
+                $query_string .= '&amp;it_type3=1';
+
+            if ($it_type4)
+                $query_string .= '&amp;it_type4=1';
+
+            if ($price_range)
+                $query_string .= '&amp;price_range=' . urlencode($price_range);
+
+            if ($price_min)
+                $query_string .= '&amp;price_min=' . $price_min;
+
+            if ($price_max)
+                $query_string .= '&amp;price_max=' . $price_max;
+
+            echo get_paging(
+                $config['cf_write_pages'],
+                $page,
+                $total_page,
+                $_SERVER['SCRIPT_NAME'] . '?' . $query_string . '&amp;page='
+            );
+            ?>
+        </div>
+    <?php } else { ?>
+        <section id="searchEmptyState" class="relative py-2 pc:py-0 bg-[#F4F4F4]">
+            <div class="flex flex-col items-center justify-center h-[250px] pc:h-[350px] bg-white">
+                <p class="text-lg text-[#6F6F6F]"><span class="text-black font-bold">'<?php echo get_text($q); ?>'</span> 에
+                    대한 검색결과</p>
+                <p class="text-sm text-[#6F6F6F]">검색어를 다시 확인해보세요</p>
+            </div>
+
+            <hr class="hidden pc:block absolute left-1/2 -translate-x-1/2 bottom-0 w-screen text-[#6F6F6F]/18">
+        </section>
+        <section id="search_recommend" class="pt-6 pc:pt-12 pb-8 px-4 pc:px-5">
+            <div class="flex mb-4 pc:mb-5">
+                <h3 class="text-xl font-bold">지금 인기있는 상품</h3>
+            </div>
+
+            <?php
+            $list = new item_list();
+            $list->set_type(2);
+            $list->set_list_skin(G5_SHOP_SKIN_PATH . '/search.10.skin.php');
+            $list->set_view('it_id', false);
             $list->set_view('it_name', true);
             $list->set_view('it_basic', true);
-            $list->set_view('it_cust_price', false);
+            $list->set_view('it_cust_price', true);
             $list->set_view('it_price', true);
             $list->set_view('it_icon', true);
             $list->set_view('sns', true);
             $list->set_view('star', true);
             echo $list->run();
-        } else {
-            $i = 0;
-            $error = '<p class="sct_nofile">' . $list_file . ' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</p>';
-        }
-
-        if ($i == 0) {
-            echo '<div>' . $error . '</div>';
-        }
-
-        // $query_string = 'qname=' . $qname . '&amp;qexplan=' . $qexplan . '&amp;qid=' . $qid;
-        
-        $query_string = 'qname=' . $qname;
-        $query_string .= '&amp;qexplan=' . $qexplan;
-        $query_string .= '&amp;qid=' . $qid;
-        $query_string .= '&amp;qbasic=' . $qbasic;
-
-        if ($qfrom && $qto)
-            $query_string .= '&amp;qfrom=' . $qfrom . '&amp;qto=' . $qto;
-
-        $query_string .= '&amp;qcaid=' . $qcaid;
-        $query_string .= '&amp;q=' . urlencode($q);
-        $query_string .= '&amp;sort=' . $sort;
-        $query_string .= '&amp;sortodr=' . $sortodr;
-
-        // if ($qfrom && $qto)
-        //     $query_string .= '&amp;qfrom=' . $qfrom . '&amp;qto=' . $qto;
-        
-        // $query_string .= '&amp;qcaid=' . $qcaid . '&amp;q=' . urlencode($q);
-        // $query_string .= '&amp;qsort=' . $qsort . '&amp;qorder=' . $qorder;
-        
-        if ($it_type1)
-            $query_string .= '&amp;it_type1=1';
-
-        if ($it_type2)
-            $query_string .= '&amp;it_type2=1';
-
-        if ($it_type3)
-            $query_string .= '&amp;it_type3=1';
-
-        if ($it_type4)
-            $query_string .= '&amp;it_type4=1';
-
-        if ($price_range)
-            $query_string .= '&amp;price_range=' . urlencode($price_range);
-
-        if ($price_min)
-            $query_string .= '&amp;price_min=' . $price_min;
-
-        if ($price_max)
-            $query_string .= '&amp;price_max=' . $price_max;
-
-        echo get_paging(
-            $config['cf_write_pages'],
-            $page,
-            $total_page,
-            $_SERVER['SCRIPT_NAME'] . '?' . $query_string . '&amp;page='
-        );
-        ?>
-    </div>
+            ?>
+        </section>
+    <?php } ?>
     <!-- } 검색결과 끝 -->
 </div>
 <!-- } 검색 끝 -->

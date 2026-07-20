@@ -37,7 +37,7 @@ for ($k = 0; $cp = sql_fetch_array($res); $k++) {
 
         <div class="flex flex-col gap-2">
             <h3 class="mypage-user-name text-2xl font-bold"><?php echo $member['mb_name']; ?>님</h3>
-            <p class="text-sm text-zinc-500">바이네이션에서 구매와 기부를 함께해보세요.</p>
+            <p class="text-sm text-zinc-500">도너츠에서 구매와 기부를 함께해보세요.</p>
             <div class="grid grid-cols-2 gap-2 mt-2">
                 <div class="w-full p-4 border border-zinc-300 rounded">
                     <div class="flex items-center gap-2">

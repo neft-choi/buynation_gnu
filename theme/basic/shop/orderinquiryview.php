@@ -128,7 +128,7 @@ if ($od['od_pg'] == 'lg') {
             ?>
         </div>
 
-        <div id="sod_sts_wrap" class="mt-4 bg-white p-4">
+        <div id="sod_sts_wrap" class="mt-4 bg-white">
             <span class="sound_only">상품 상태 설명</span>
             <button type="button" id="sod_sts_explan_open" class="btn_frmline inline-flex items-center gap-2 text-xs text-gray-700">상태설명보기</button>
             <div id="sod_sts_explan" class="mt-3" style="display:none;">
@@ -154,7 +154,6 @@ if ($od['od_pg'] == 'lg') {
                         <dd class="col-span-3 text-gray-600">상품 배송이 완료 되었습니다.</dd>
                     </div>
                 </dl>
-                <button type="button" id="sod_sts_explan_close" class="btn_frmline mt-3 rounded-md border border-gray-300 px-3 py-2 text-xs text-gray-700">상태설명닫기</button>
             </div>
         </div>
     </section>
