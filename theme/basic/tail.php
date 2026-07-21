@@ -151,7 +151,7 @@ if ($config['cf_analytics']) {
             </a>
         </li>
         <li>
-            <button type="button" class="w-full h-full text-gray-900">
+            <a href="<?php echo G5_URL; ?>/community.php" class="h-full text-gray-900">
                 <span
                     class="flex flex-col items-center justify-center gap-1 h-[var(--bottom-nav-height)] rounded-full text-center hover:bg-[var(--donuts-yellow)]">
                     <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -170,7 +170,7 @@ if ($config['cf_analytics']) {
                     </svg>
                     <span class="text-[10px] leading-none">커뮤니티</span>
                 </span>
-            </button>
+            </a>
         </li>
         <li>
             <a href="<?php echo G5_SHOP_URL; ?>" class="h-full text-gray-900">
@@ -188,7 +188,7 @@ if ($config['cf_analytics']) {
             </a>
         </li>
         <li>
-            <a href="<?php echo G5_BBS_URL; ?>/group.php" class="h-full text-gray-900">
+            <a href="<?php echo G5_URL; ?>/likes.php" class="h-full text-gray-900">
                 <span
                     class="flex flex-col items-center justify-center gap-1 h-[var(--bottom-nav-height)] rounded-full text-center hover:bg-[var(--donuts-yellow)]">
                     <svg width="25" height="23" viewBox="0 0 25 23" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -73,7 +73,8 @@ include_once(G5_THEME_PATH . '/head.php');
             </div>
         </div>
 
-        <div class="flex items-center justify-between text-xs text-black font-bold bg-white px-3 py-2.5 rounded-full mt-4">
+        <div
+            class="flex items-center justify-between text-xs text-black font-bold bg-white px-3 py-2.5 rounded-full mt-4">
             <p>[공지] 오프라인 모임 신청 폼</p>
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -82,7 +83,484 @@ include_once(G5_THEME_PATH . '/head.php');
             </svg>
         </div>
     </section>
+
+    <section id="community-content" class="mt-5">
+        <nav id="community-tabs">
+            <ul class="grid grid-cols-3 border-b border-black/30">
+                <li>
+                    <button type="button" class="w-full border-b-[3px] border-transparent px-1 py-3 text-xs text-black">
+                        추천상품
+                    </button>
+                </li>
+                <li>
+                    <button type="button"
+                        class="w-full border-b-[3px] border-black px-1 py-3 text-xs font-bold text-black">
+                        커뮤니티 01
+                    </button>
+                </li>
+                <li>
+                    <button type="button" class="w-full border-b-[3px] border-transparent px-1 py-3 text-xs text-black">
+                        커뮤니티 02
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+
+        <div id="panel-recommend" class="hidden px-4 pt-6 bg-white"></div>
+
+        <div id="panel-community-01" class="px-4 pt-6 bg-white">
+            <div class="flex flex-col gap-6 [&>article]:pb-3 ">
+                <article>
+                    <header class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-300"></div>
+                            <div class="flex flex-col">
+                                <span class="text-base font-medium">작성자명</span>
+                                <span class="mt-1 text-xs font-medium">4시간 전</span>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-ellipsis-vertical-icon lucide-ellipsis-vertical w-5 h-5">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </header>
+
+                    <p class="mt-3 text-xs">
+                        오늘 저녁은 불향 가득한 꼬치구이 파티!🍢✨<br>
+                        주말을 맞아 집에서 노릇노릇하게 고기 꼬치를 구워봤어요.<br>
+                        육즙 가득한 닭날개랑 고기 꼬치에 고소한 빵까지 곁들이니까 웬만한 맛집 부럽지 않네요. 시원한 맥주 한잔이 절로 생각나는
+                        비주얼이죠? 🍺<br>
+                        다들 오늘 저녁 맛있는 거 드셨나요? 여러분의 오늘 저녁 메뉴도 댓글로 자랑해 주세요! 👇
+                    </p>
+
+                    <button type="button" class="mt-1 text-xs text-black/50">...더보기</button>
+
+                    <div class="aspect-[345/200] w-full rounded-[25px] bg-gray-300 mt-3"></div>
+
+                    <div class="flex items-center justify-between mt-3 text-xs text-black/30">
+                        <span class="inline-flex items-center gap-1">
+                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.971 5.381H0V15h2.971zM8.983 0H5.98L4.471 5.207v9.76h9.017L15 5.148H8.959z"
+                                    fill="currentColor" />
+                            </svg>
+                            <span>000</span>
+                        </span>
+
+                        <span class="inline-flex items-center gap-1">
+                            <svg width="21" height="15" viewBox="0 0 21 15" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M2.467 3.579A12.3 12.3 0 0 0 0 7.503a12.1 12.1 0 0 0 2.374 3.706c4.467 4.766 11.699 4.766 16.165 0A12.3 12.3 0 0 0 21 7.279a12 12 0 0 0-2.369-3.7c-4.466-4.772-11.698-4.772-16.164 0m8.033 8.016a4.208 4.208 0 1 1 4.207-4.207 4.21 4.21 0 0 1-4.207 4.207" />
+                                <path
+                                    d="M10.5 5.607c-.985 0-1.787.801-1.787 1.787S9.516 9.18 10.5 9.18a1.787 1.787 0 0 0 0-3.573" />
+                            </svg>
+                            <span>000</span>
+                        </span>
+                    </div>
+
+                    <section class="mt-4 border-t border-[#DFDFDF] py-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="inline-flex items-center gap-1 text-sm">
+                                <span class="font-bold">댓글</span>
+                                <span>0개</span>
+                            </h3>
+                            <div class="flex items-center gap-1 text-xs">
+                                <button type="button" class="font-bold">등록순</button>
+                                <span>|</span>
+                                <button type="button">최신순</button>
+                            </div>
+                        </div>
+
+                        <form class="mt-6 flex items-center gap-3">
+                            <input type="text" aria-label="댓글 입력" placeholder="첫 댓글을 남겨보세요."
+                                class="min-w-0 flex-1 rounded-full bg-[#F5F5F5] p-4 text-xs">
+                            <button type="submit" aria-label="댓글 등록"
+                                class="shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-[#A9A9A9] text-white shadow-[0_0_10.7px_0_#0000000D]">
+                                <svg width="15" height="11" viewBox="0 0 15 11" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.74557 9.48532L13.9882 5.24268L9.74557 1.00004" stroke="currentcolor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M13.8311 5.4043H1" stroke="white" stroke-width="2"
+                                        stroke-linecap="round" />
+                                </svg>
+                            </button>
+                        </form>
+                    </section>
+                </article>
+
+                <article>
+                    <header class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-300"></div>
+                            <div class="flex flex-col">
+                                <span class="text-base font-medium">작성자명</span>
+                                <span class="mt-1 text-xs font-medium">4시간 전</span>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-ellipsis-vertical-icon lucide-ellipsis-vertical w-5 h-5">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </header>
+
+                    <p class="mt-3 text-xs">이번 캠핑 하이라이트 요리 대공개! 🔥<br>역시 야외에서 숯불에 구워 먹는 꼬치구이는 치트키네요... <br>제대로 겉바속촉으로
+                        구워져서
+                        순식간에
+                        흡입했습니다. 같이 구운 빵이랑
+                        조합이 아주 미쳤어요 🤤<br>날씨도 좋은데 이번 주말에 캠핑이나 글램핑 계획 있으신 분들, 꼬치구이 메뉴 적극 추천합니다!</p>
+
+                    <button type="button" class="mt-1 text-xs text-black/50">...더보기</button>
+
+                    <div class="aspect-[345/200] w-full rounded-[25px] bg-gray-300 mt-3"></div>
+
+                    <div class="flex items-center justify-between mt-3 text-xs text-black/30">
+                        <span class="inline-flex items-center gap-1">
+                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.971 5.381H0V15h2.971zM8.983 0H5.98L4.471 5.207v9.76h9.017L15 5.148H8.959z"
+                                    fill="currentColor" />
+                            </svg>
+                            <span>000</span>
+                        </span>
+
+                        <span class="inline-flex items-center gap-1">
+                            <svg width="21" height="15" viewBox="0 0 21 15" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M2.467 3.579A12.3 12.3 0 0 0 0 7.503a12.1 12.1 0 0 0 2.374 3.706c4.467 4.766 11.699 4.766 16.165 0A12.3 12.3 0 0 0 21 7.279a12 12 0 0 0-2.369-3.7c-4.466-4.772-11.698-4.772-16.164 0m8.033 8.016a4.208 4.208 0 1 1 4.207-4.207 4.21 4.21 0 0 1-4.207 4.207" />
+                                <path
+                                    d="M10.5 5.607c-.985 0-1.787.801-1.787 1.787S9.516 9.18 10.5 9.18a1.787 1.787 0 0 0 0-3.573" />
+                            </svg>
+                            <span>000</span>
+                        </span>
+                    </div>
+
+                    <section class="mt-4 border-t border-[#DFDFDF] py-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="inline-flex items-center gap-1 text-sm">
+                                <span class="font-bold">댓글</span>
+                                <span>3개</span>
+                            </h3>
+                            <div class="flex items-center gap-1 text-xs">
+                                <button type="button" class="font-bold">등록순</button>
+                                <span>|</span>
+                                <button type="button">최신순</button>
+                            </div>
+                        </div>
+
+                        <ul class="flex flex-col gap-4 divide-y divide-[#DFDFDF] [&>li]:pb-4 mt-3">
+                            <li class="pl-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7.5 h-7.5 rounded-full bg-gray-300"></div>
+                                    <span class="text-sm font-medium">작성자명</span>
+                                </div>
+                                <p class="mt-2 text-xs">댓글 내용입니다.</p>
+                                <div class="mt-2 flex items-center gap-2 text-xs text-black/30">
+                                    <span>5분 전</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-flex items-center gap-1">
+                                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M2.971 5.381H0V15h2.971zM8.983 0H5.98L4.471 5.207v9.76h9.017L15 5.148H8.959z"
+                                                    fill="currentcolor" />
+                                            </svg>
+                                            <span>000</span>
+                                        </span>
+
+                                        <span class="inline-flex items-center gap-1">
+                                            <svg width="15" height="18" viewBox="0 0 15 18" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M15.0049 2V13.0254H10.2559L7.51367 18L4.74414 13.0254H0V2H15.0049ZM7.5 6.2373C6.79154 6.2373 6.21603 6.80941 6.21582 7.51465C6.21582 8.22006 6.79141 8.79297 7.5 8.79297C8.20859 8.79297 8.78418 8.22006 8.78418 7.51465C8.78397 6.80941 8.20846 6.2373 7.5 6.2373ZM11.6777 6.2373C10.9694 6.2374 10.3947 6.80947 10.3945 7.51465C10.3945 8.22 10.9692 8.79287 11.6777 8.79297C12.3863 8.79297 12.9619 8.22006 12.9619 7.51465C12.9617 6.80941 12.3862 6.2373 11.6777 6.2373ZM3.33594 6.23242C2.62735 6.23242 2.05176 6.80533 2.05176 7.51074C2.05192 8.21602 2.62745 8.78809 3.33594 8.78809C4.04441 8.78806 4.61996 8.216 4.62012 7.51074C4.62012 6.80535 4.0445 6.23245 3.33594 6.23242Z"
+                                                    fill="currentcolor" />
+                                            </svg>
+                                            <span>000</span>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <ul
+                                    class="mt-4 flex flex-col gap-4 divide-y divide-[#DFDFDF] [&>li]:pb-4 [&>li:last-child]:pb-0">
+                                    <li class="pl-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-7.5 h-7.5 rounded-full bg-gray-300"></div>
+                                            <span class="text-sm font-medium">작성자명</span>
+                                        </div>
+                                        <p class="mt-2 text-xs">댓글 내용입니다.</p>
+                                        <div class="mt-2 flex items-center gap-2 text-xs text-black/30">
+                                            <span>1분 전</span>
+                                            <div class="flex items-center gap-2">
+                                                <span class="inline-flex items-center gap-1">
+                                                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <g clip-path="url(#clip0_3026_1219)">
+                                                            <path d="M2.97099 5.38147H0V14.9999H2.97099V5.38147Z"
+                                                                fill="black" fill-opacity="0.3" />
+                                                            <path
+                                                                d="M8.98344 0H5.9793L4.47101 5.20671V14.9667H13.4876L15 5.14845H8.95858L8.98344 0Z"
+                                                                fill="currentcolor" />
+                                                        </g>
+                                                        <defs>
+                                                            <clipPath id="clip0_3026_1219">
+                                                                <rect width="15" height="15" fill="white" />
+                                                            </clipPath>
+                                                        </defs>
+                                                    </svg>
+                                                    <span>000</span>
+                                                </span>
+
+                                                <span class="inline-flex items-center gap-1">
+                                                    <svg width="15" height="18" viewBox="0 0 15 18" fill="none"
+                                                        xmlns="http://www.w3.org/2000/svg">
+                                                        <path
+                                                            d="M15.0049 2V13.0254H10.2559L7.51367 18L4.74414 13.0254H0V2H15.0049ZM7.5 6.2373C6.79154 6.2373 6.21603 6.80941 6.21582 7.51465C6.21582 8.22006 6.79141 8.79297 7.5 8.79297C8.20859 8.79297 8.78418 8.22006 8.78418 7.51465C8.78397 6.80941 8.20846 6.2373 7.5 6.2373ZM11.6777 6.2373C10.9694 6.2374 10.3947 6.80947 10.3945 7.51465C10.3945 8.22 10.9692 8.79287 11.6777 8.79297C12.3863 8.79297 12.9619 8.22006 12.9619 7.51465C12.9617 6.80941 12.3862 6.2373 11.6777 6.2373ZM3.33594 6.23242C2.62735 6.23242 2.05176 6.80533 2.05176 7.51074C2.05192 8.21602 2.62745 8.78809 3.33594 8.78809C4.04441 8.78806 4.61996 8.216 4.62012 7.51074C4.62012 6.80535 4.0445 6.23245 3.33594 6.23242Z"
+                                                            fill="currentcolor" />
+                                                    </svg>
+                                                    <span>000</span>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+
+                            <li class="pl-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-7.5 h-7.5 rounded-full bg-gray-300"></div>
+                                    <span class="text-sm font-medium">작성자명</span>
+                                </div>
+                                <p class="mt-2 text-xs">댓글 내용입니다.</p>
+                                <div class="mt-2 flex items-center gap-2 text-xs text-black/30">
+                                    <span>5분 전</span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="inline-flex items-center gap-1">
+                                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M2.971 5.381H0V15h2.971zM8.983 0H5.98L4.471 5.207v9.76h9.017L15 5.148H8.959z"
+                                                    fill="currentcolor" />
+                                            </svg>
+                                            <span>000</span>
+                                        </span>
+
+                                        <span class="inline-flex items-center gap-1">
+                                            <svg width="15" height="18" viewBox="0 0 15 18" fill="none"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <path
+                                                    d="M15.0049 2V13.0254H10.2559L7.51367 18L4.74414 13.0254H0V2H15.0049ZM7.5 6.2373C6.79154 6.2373 6.21603 6.80941 6.21582 7.51465C6.21582 8.22006 6.79141 8.79297 7.5 8.79297C8.20859 8.79297 8.78418 8.22006 8.78418 7.51465C8.78397 6.80941 8.20846 6.2373 7.5 6.2373ZM11.6777 6.2373C10.9694 6.2374 10.3947 6.80947 10.3945 7.51465C10.3945 8.22 10.9692 8.79287 11.6777 8.79297C12.3863 8.79297 12.9619 8.22006 12.9619 7.51465C12.9617 6.80941 12.3862 6.2373 11.6777 6.2373ZM3.33594 6.23242C2.62735 6.23242 2.05176 6.80533 2.05176 7.51074C2.05192 8.21602 2.62745 8.78809 3.33594 8.78809C4.04441 8.78806 4.61996 8.216 4.62012 7.51074C4.62012 6.80535 4.0445 6.23245 3.33594 6.23242Z"
+                                                    fill="currentcolor" />
+                                            </svg>
+                                            <span>000</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <button type="button"
+                            class="flex items-center justify-center w-full border-y border-[#DFDFDF] py-4 text-sm font-bold">
+                            더 보기
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+                                class="w-4 h-4">
+                                <path d="m9 18 6-6-6-6" />
+                            </svg>
+                        </button>
+
+                        <form class="mt-6 flex items-center gap-3">
+                            <input type="text" aria-label="댓글 입력" placeholder="첫 댓글을 남겨보세요."
+                                class="min-w-0 flex-1 rounded-full bg-[#F5F5F5] p-4 text-xs">
+                            <button type="submit" aria-label="댓글 등록"
+                                class="shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-[#A9A9A9] text-white shadow-[0_0_10.7px_0_#0000000D]">
+                                <svg width="15" height="11" viewBox="0 0 15 11" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.74557 9.48532L13.9882 5.24268L9.74557 1.00004" stroke="currentcolor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M13.8311 5.4043H1" stroke="white" stroke-width="2"
+                                        stroke-linecap="round" />
+                                </svg>
+                            </button>
+                        </form>
+                    </section>
+                </article>
+
+                <article>
+                    <header class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <div class="w-12 h-12 rounded-full overflow-hidden bg-gray-300"></div>
+                            <div class="flex flex-col">
+                                <span class="text-base font-medium">작성자명</span>
+                                <span class="mt-1 text-xs font-medium">4시간 전</span>
+                            </div>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-ellipsis-vertical-icon lucide-ellipsis-vertical w-5 h-5">
+                            <circle cx="12" cy="12" r="1" />
+                            <circle cx="12" cy="5" r="1" />
+                            <circle cx="12" cy="19" r="1" />
+                        </svg>
+                    </header>
+
+                    <p class="mt-3 text-xs">
+                        오늘 저녁은 불향 가득한 꼬치구이 파티!🍢✨<br>
+                        주말을 맞아 집에서 노릇노릇하게 고기 꼬치를 구워봤어요.<br>
+                        육즙 가득한 닭날개랑 고기 꼬치에 고소한 빵까지 곁들이니까 웬만한 맛집 부럽지 않네요. 시원한 맥주 한잔이 절로 생각나는
+                        비주얼이죠? 🍺<br>
+                        다들 오늘 저녁 맛있는 거 드셨나요? 여러분의 오늘 저녁 메뉴도 댓글로 자랑해 주세요! 👇
+                    </p>
+
+                    <button type="button" class="mt-1 text-xs text-black/50">...더보기</button>
+
+                    <div class="aspect-[345/200] w-full rounded-[25px] bg-gray-300 mt-3"></div>
+
+                    <div class="flex items-center justify-between mt-3 text-xs text-black/30">
+                        <span class="inline-flex items-center gap-1">
+                            <svg width="15" height="15" viewBox="0 0 15 15" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.971 5.381H0V15h2.971zM8.983 0H5.98L4.471 5.207v9.76h9.017L15 5.148H8.959z"
+                                    fill="currentColor" />
+                            </svg>
+                            <span>000</span>
+                        </span>
+
+                        <span class="inline-flex items-center gap-1">
+                            <svg width="21" height="15" viewBox="0 0 21 15" fill="currentColor"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M2.467 3.579A12.3 12.3 0 0 0 0 7.503a12.1 12.1 0 0 0 2.374 3.706c4.467 4.766 11.699 4.766 16.165 0A12.3 12.3 0 0 0 21 7.279a12 12 0 0 0-2.369-3.7c-4.466-4.772-11.698-4.772-16.164 0m8.033 8.016a4.208 4.208 0 1 1 4.207-4.207 4.21 4.21 0 0 1-4.207 4.207" />
+                                <path
+                                    d="M10.5 5.607c-.985 0-1.787.801-1.787 1.787S9.516 9.18 10.5 9.18a1.787 1.787 0 0 0 0-3.573" />
+                            </svg>
+                            <span>000</span>
+                        </span>
+                    </div>
+
+                    <section class="mt-4 border-t border-[#DFDFDF] py-4">
+                        <div class="flex items-center justify-between">
+                            <h3 class="inline-flex items-center gap-1 text-sm">
+                                <span class="font-bold">댓글</span>
+                                <span>0개</span>
+                            </h3>
+                            <div class="flex items-center gap-1 text-xs">
+                                <button type="button" class="font-bold">등록순</button>
+                                <span>|</span>
+                                <button type="button">최신순</button>
+                            </div>
+                        </div>
+
+                        <form class="mt-6 flex items-center gap-3">
+                            <input type="text" aria-label="댓글 입력" placeholder="첫 댓글을 남겨보세요."
+                                class="min-w-0 flex-1 rounded-full bg-[#F5F5F5] p-4 text-xs">
+                            <button type="submit" aria-label="댓글 등록"
+                                class="shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-[#A9A9A9] text-white shadow-[0_0_10.7px_0_#0000000D]">
+                                <svg width="15" height="11" viewBox="0 0 15 11" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M9.74557 9.48532L13.9882 5.24268L9.74557 1.00004" stroke="currentcolor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                    <path d="M13.8311 5.4043H1" stroke="white" stroke-width="2"
+                                        stroke-linecap="round" />
+                                </svg>
+                            </button>
+                        </form>
+                    </section>
+                </article>
+            </div>
+        </div>
+
+        <div id="panel-community-02" class="hidden px-4 pt-6 bg-white"></div>
+    </section>
 </main>
+
+<button type="button" aria-label="글 작성"
+    class="fixed bottom-28 right-5 z-30 flex items-center justify-center w-15 h-15 rounded-full bg-[#FAC740] shadow-[0_0_11.9px_0_#00000026]">
+    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M23.947 22.2809H0V24.7095H23.947V22.2809Z" fill="black" />
+        <path d="M4.82251 12.5489V19.196L11.9039 19.1561L24 6.38093L17.6472 0L4.82251 12.5489Z" fill="black" />
+    </svg>
+</button>
+
+<div id="community-join-modal" class="fixed inset-0 z-60 flex items-center justify-center bg-black/65 px-5">
+    <div role="dialog" aria-modal="true" aria-labelledby="community-join-modal-title" class="w-full">
+        <div class="relative rounded-[25px] bg-white px-5 pb-4 pt-18">
+            <div class="absolute left-1/2 top-0 w-25 h-25 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gray-300">
+            </div>
+
+            <div class="text-center">
+                <h2 id="community-join-modal-title" class="text-lg font-bold">테니스 커뮤니티</h2>
+                <p class="mt-1.5 text-xs">설명을 적습니다.</p>
+
+                <div class="mt-3 flex items-center justify-center gap-3 text-xs text-black/30">
+                    <span class="inline-flex items-center gap-1">
+                        <svg viewBox="0 0 25 22" fill="none" xmlns="http://www.w3.org/2000/svg"
+                            class="w-4 h-full fill-current">
+                            <path
+                                d="M2.65527 2.65918C4.79228 0.515683 8.21567 0.4497 10.4248 2.45703L10.6348 2.6582L11.7832 3.81348C11.9708 4.00204 12.2262 4.10738 12.4922 4.10742C12.7582 4.10742 13.0135 4.00198 13.2012 3.81348L14.25 2.75781C14.2873 2.72961 14.3245 2.70014 14.3584 2.66602C16.5635 0.447801 20.1386 0.447796 22.3438 2.66602L22.3447 2.66699C24.5509 4.88006 24.5523 8.47524 22.3438 10.6973L21.1953 11.8516L12.5 20.582L3.80371 11.8516L2.65527 10.6973C0.448057 8.47606 0.448251 4.88051 2.65527 2.65918Z"
+                                stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                        </svg>
+                        <span>000</span>
+                    </span>
+                    <span class="inline-flex items-center gap-1">
+                        <svg viewBox="0 0 15 15" fill="currentColor" class="w-4 h-full fill-current"
+                            xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M2.971 13.59A7.45 7.45 0 0 0 7.348 15a7.45 7.45 0 0 0 4.356-1.393A7.516 7.516 0 0 0-.034 8.895a7.5 7.5 0 0 0 3 4.696zM9.33 7.573a8.94 8.94 0 0 1 3.601 4.94 7.45 7.45 0 0 0 1.795-3.602 7.45 7.45 0 0 0-5.397-1.334zM8.28 5.235a3 3 0 0 0 2.065.816 3.023 3.023 0 0 0 3.021-3.025A3.023 3.023 0 0 0 10.345 0a3 3 0 0 0-2.081.833c.373.65.584 1.41.584 2.218s-.207 1.537-.567 2.184m-3.955.816a3.026 3.026 0 1 0 0-6.051 3.026 3.026 0 0 0 0 6.051" />
+                        </svg>
+                        <span>50명</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="mt-6 flex items-center gap-3">
+                <button type="button" aria-label="관심 커뮤니티 등록"
+                    class="flex h-12 w-12 shrink-0 items-center justify-center text-black/50">
+                    <svg width="25" height="22" viewBox="0 0 25 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M2.65527 2.65918C4.79228 0.515683 8.21567 0.4497 10.4248 2.45703L10.6348 2.6582L11.7832 3.81348C11.9708 4.00204 12.2262 4.10738 12.4922 4.10742C12.7582 4.10742 13.0135 4.00198 13.2012 3.81348L14.25 2.75781C14.2873 2.72961 14.3245 2.70014 14.3584 2.66602C16.5635 0.447801 20.1386 0.447796 22.3438 2.66602L22.3447 2.66699C24.5509 4.88006 24.5523 8.47524 22.3438 10.6973L21.1953 11.8516L12.5 20.582L3.80371 11.8516L2.65527 10.6973C0.448057 8.47606 0.448251 4.88051 2.65527 2.65918Z"
+                            stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+                    </svg>
+                </button>
+
+                <button type="button" data-modal-close
+                    class="flex-1 rounded-full bg-black p-4 text-xs text-white font-bold cursor-pointer hover:bg-black/80">
+                    도넛 가입하고 둘러보기
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        const $joinModal = $("#community-join-modal");
+        const $html = $("html");
+
+        if ($joinModal.length && !$joinModal.hasClass("hidden")) {
+            $html.css({
+                overflow: "hidden",
+                "scrollbar-gutter": "stable"
+            });
+        }
+
+        $joinModal.on("click", "[data-modal-close]", function () {
+            $joinModal.addClass("hidden");
+
+            $html.css({
+                overflow: "",
+                "scrollbar-gutter": ""
+            });
+        });
+    });
+</script>
 
 <?php
 include_once(G5_THEME_PATH . '/tail.php');

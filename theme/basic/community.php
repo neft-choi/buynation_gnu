@@ -188,7 +188,7 @@ include_once(G5_THEME_PATH . '/head.php');
         <div class="mt-6">
             <ul class="space-y-7.5">
                 <li>
-                    <a href="#community-feed" class="relative">
+                    <a href="<?php echo G5_URL; ?>/community_detail.php" class="relative">
                         <div class="aspect-[345/200] w-full rounded-[25px] bg-gray-300"></div>
                         <div
                             class="absolute top-4 left-4 inline-flex items-center gap-1 rounded-full border border-white/20 bg-white/50 px-2 py-1">
@@ -202,8 +202,10 @@ include_once(G5_THEME_PATH . '/head.php');
                         </div>
                     </a>
                     <div class="flex flex-col gap-1 mt-2.5">
-                        <h3 class="text-[15px] font-bold">도넛의 시작, 그리고 앞으로</h3>
-                        <p class="text-xs font-normal">도넛이 만들어 갈 큰 가치를 함께 상상해요</p>
+                        <a href="<?php echo G5_URL; ?>/community_detail.php">
+                            <h3 class="text-[15px] font-bold">도넛의 시작, 그리고 앞으로 (임시)</h3>
+                        </a>
+                        <p class="text-xs font-normal">도넛이 만들어 갈 큰 가치를 함께 상상해요 (커뮤니티 상세로 연결)</p>
                         <div class="flex items-center gap-2 text-sm text-black/30">
                             <span class="inline-flex items-center gap-1">
                                 <svg width="9" height="8" viewBox="0 0 9 8" fill="none"
