@@ -1740,9 +1740,9 @@ if ($is_kakaopay_use) {
             <span id="pc_total_price" class="text-2xl font-bold"><?php echo number_format($tot_price); ?>원</span>
         </div>
         <button type="button" onclick="forderform_check(this.form);"
-            class="payment_order_button inline-flex w-full items-center justify-center gap-1 py-4 bg-[var(--color-primary)] text-base font-semibold rounded cursor-pointer disabled:bg-gray-200 disabled:text-white"
-            <?php echo $i > 0 ? '' : 'disabled'; ?>><span
-                id="pc_pay_btn_amount"><?php echo number_format($tot_price); ?>원</span> 결제하기</button>
+            class="payment_order_button inline-flex w-full items-center justify-center gap-1 py-4 bg-[var(--color-primary)] text-base font-semibold rounded cursor-pointer disabled:bg-gray-200 disabled:text-white">
+            <span id="pc_pay_btn_amount"><?php echo number_format($tot_price); ?>원</span>결제하기
+        </button>
     </section>
 </form>
 
