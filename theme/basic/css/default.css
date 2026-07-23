@@ -87,7 +87,7 @@
   --color-primary-strong: color-mix(in srgb, rgb(var(--brand-rgb)) 80%, black);
 
   /* 하단 네비게이션 바 높이 */
-  --bottom-nav-height: 60px;
+  --bottom-nav-height: 64px;
 }
 
 /* 버튼 테마 (priamry) */

@@ -134,17 +134,29 @@ if ($config['cf_analytics']) {
 </script>
 
 <!-- 커뮤니티 하단 고정 네비게이션 -->
+<?php
+$uri = $_SERVER['REQUEST_URI'];
+$path = parse_url($uri, PHP_URL_PATH);
+$page = basename($path);
+
+$is_home = basename($_SERVER['SCRIPT_NAME']) === 'newindex.php';
+$is_community = $page === 'community.php';
+$is_likes = $page === 'likes.php';
+$is_mypage = $page === 'mypage.php';
+$is_shop = strpos($path, '/shop/') !== false;
+$is_shop_active = $is_shop && !$is_mypage;
+?>
 <nav class="fixed bottom-8 left-1/2 z-50 w-full max-w-full -translate-x-1/2 px-6">
     <ul
-        class="h-[var(--bottom-nav-height)] grid grid-cols-5 items-center overflow-hidden rounded-full bg-white/60 backdrop-blur shadow-[0_8px_30px_rgba(0,0,0,0.12)]">
+        class="h-[var(--bottom-nav-height)] grid grid-cols-5 items-center overflow-hidden rounded-full font-semibold bg-white/60 backdrop-blur shadow-[0_8px_30px_0px_rgba(0,0,0,0.12)] p-1">
         <li>
             <a href="<?php echo G5_URL; ?>" class="h-full text-gray-900">
                 <span
-                    class="flex flex-col items-center justify-center gap-1 h-[var(--bottom-nav-height)] rounded-full text-center hover:bg-[var(--donuts-yellow)]">
-                    <svg width="25" height="24" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    class="flex flex-col items-center justify-center rounded-full text-center <?= $is_home ? 'bg-[var(--donuts-yellow)] fill-gray-900' : 'fill-transparent' ?> p-1">
+                    <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="w-9 h-9">
                         <path
-                            d="M0 10.1057V24H25V10.1057L12.474 0L0 10.1057ZM16.3299 13.3383C16.3299 15.4513 14.6137 17.1566 12.5037 17.1566C10.3938 17.1566 8.67756 15.4439 8.67756 13.3383C8.67756 11.2326 10.3938 9.51993 12.5037 9.51993C14.6137 9.51993 16.3299 11.2326 16.3299 13.3383Z"
-                            fill="black" />
+                            d="M8.1748 22.4451V41.1851H41.8248V22.4451L24.9648 8.81506L8.1748 22.4451ZM30.1448 26.8051C30.1448 29.6551 27.8348 31.9551 24.9948 31.9551C22.1548 31.9551 19.8448 29.6451 19.8448 26.8051C19.8448 23.9651 22.1548 21.6551 24.9948 21.6551C27.8348 21.6551 30.1448 23.9651 30.1448 26.8051Z"
+                            stroke="currentColor" stroke-width="3" />
                     </svg>
                     <span class="text-[10px] leading-none">홈</span>
                 </span>
@@ -153,20 +165,20 @@ if ($config['cf_analytics']) {
         <li>
             <a href="<?php echo G5_URL; ?>/community.php" class="h-full text-gray-900">
                 <span
-                    class="flex flex-col items-center justify-center gap-1 h-[var(--bottom-nav-height)] rounded-full text-center hover:bg-[var(--donuts-yellow)]">
-                    <svg width="26" height="25" viewBox="0 0 26 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    class="flex flex-col items-center justify-center rounded-full text-center <?= $is_community ? 'bg-[var(--donuts-yellow)] fill-gray-900' : 'fill-transparent' ?> p-1">
+                    <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="w-9 h-9">
                         <path
-                            d="M5.8863 21.7266C7.88797 23.1574 10.3412 23.9999 13.0034 23.9999C15.6655 23.9999 18.0918 23.1641 20.0867 21.7534C19.3319 17.7818 16.6158 14.499 12.9831 12.9211C11.4802 12.2725 9.82899 11.9048 8.08342 11.9048C5.44148 11.9048 2.99499 12.7405 1.00006 14.1513C1.59315 17.2603 3.38589 19.9481 5.87956 21.7266H5.8863Z"
-                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            d="M14.4449 38.6904C17.4149 40.8134 21.0549 42.0634 25.005 42.0634C28.955 42.0634 32.555 40.8234 35.5151 38.7301C34.3951 32.8373 30.365 27.9663 24.975 25.625C22.745 24.6627 20.2949 24.1171 17.7049 24.1171C13.7849 24.1171 10.1548 25.3571 7.19482 27.4504C8.07483 32.0635 10.7349 36.0515 14.4349 38.6904H14.4449Z"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         <path
-                            d="M22.7095 18.6367C23.8573 17.3003 24.6667 15.6354 24.9999 13.798C23.4289 12.6064 21.5034 11.9048 19.4139 11.9048C18.9696 11.9048 18.5358 11.9382 18.1126 12.005"
-                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            d="M40.3556 34.1056C42.0588 32.1228 43.2597 29.6525 43.7542 26.9261C41.423 25.1581 38.566 24.1171 35.4657 24.1171C34.8064 24.1171 34.1628 24.1666 33.5349 24.2658"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         <path
-                            d="M7.47693 8.47502C9.55764 8.47502 11.2444 6.80168 11.2444 4.73751C11.2444 2.67334 9.55764 1 7.47693 1C5.39622 1 3.70947 2.67334 3.70947 4.73751C3.70947 6.80168 5.39622 8.47502 7.47693 8.47502Z"
-                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            d="M16.8044 19.0279C19.8917 19.0279 22.3945 16.545 22.3945 13.4823C22.3945 10.4195 19.8917 7.93665 16.8044 7.93665C13.7171 7.93665 11.2144 10.4195 11.2144 13.4823C11.2144 16.545 13.7171 19.0279 16.8044 19.0279Z"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         <path
-                            d="M20.0933 8.47502C22.174 8.47502 23.8607 6.80168 23.8607 4.73751C23.8607 2.67334 22.174 1 20.0933 1C18.0126 1 16.3258 2.67334 16.3258 4.73751C16.3258 6.80168 18.0126 8.47502 20.0933 8.47502Z"
-                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            d="M35.5254 19.0279C38.6126 19.0279 41.1154 16.545 41.1154 13.4823C41.1154 10.4195 38.6126 7.93665 35.5254 7.93665C32.4381 7.93665 29.9353 10.4195 29.9353 13.4823C29.9353 16.545 32.4381 19.0279 35.5254 19.0279Z"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span class="text-[10px] leading-none">커뮤니티</span>
                 </span>
@@ -175,13 +187,13 @@ if ($config['cf_analytics']) {
         <li>
             <a href="<?php echo G5_SHOP_URL; ?>" class="h-full text-gray-900">
                 <span
-                    class="flex flex-col items-center justify-center gap-1 h-[var(--bottom-nav-height)] rounded-full text-center hover:bg-[var(--donuts-yellow)]">
-                    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M3.79275 24.0001L1 9.17212L23 9.22645L20.3783 24.0001H3.79275Z" stroke="black"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    class="flex flex-col items-center justify-center rounded-full text-center <?= $is_shop_active ? 'bg-[var(--donuts-yellow)] fill-gray-900' : 'fill-transparent' ?> p-1">
+                    <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="w-9 h-9">
+                        <path d="M12.8348 42.0458L8.69531 20.0671L41.3047 20.1477L37.4186 42.0458H12.8348Z"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         <path
-                            d="M17.8004 6.32803C17.8004 3.38544 15.2545 1 12.1139 1C8.9734 1 6.42749 3.38544 6.42749 6.32803"
-                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            d="M33.5979 15.8517C33.5979 11.49 29.8242 7.95422 25.1692 7.95422C20.5141 7.95422 16.7405 11.49 16.7405 15.8517"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span class="text-[10px] leading-none">쇼핑</span>
                 </span>
@@ -190,11 +202,11 @@ if ($config['cf_analytics']) {
         <li>
             <a href="<?php echo G5_URL; ?>/likes.php" class="h-full text-gray-900">
                 <span
-                    class="flex flex-col items-center justify-center gap-1 h-[var(--bottom-nav-height)] rounded-full text-center hover:bg-[var(--donuts-yellow)]">
-                    <svg width="25" height="23" viewBox="0 0 25 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    class="flex flex-col items-center justify-center rounded-full text-center <?= $is_likes ? 'bg-[var(--donuts-yellow)] fill-gray-900' : 'fill-transparent' ?> p-1">
+                    <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="w-9 h-9">
                         <path
-                            d="M2.6709 2.73145C4.87358 0.421964 8.42556 0.423485 10.6191 2.73047V2.73145L11.7676 3.93848C11.9563 4.13683 12.2184 4.24898 12.4922 4.24902C12.766 4.24902 13.028 4.13683 13.2168 3.93848L14.2695 2.83105C14.3057 2.80235 14.3409 2.77212 14.373 2.73828C16.5749 0.422751 20.1262 0.422906 22.3281 2.73828L22.3291 2.74023C24.556 5.07562 24.5574 8.88672 22.3281 11.2314L21.1797 12.4385L12.5 21.5508L3.82031 12.4385H3.81934L2.67188 11.2314H2.6709C0.44285 8.88743 0.442831 5.07545 2.6709 2.73145Z"
-                            stroke="black" stroke-width="2" stroke-linejoin="round" />
+                            d="M38.77 13.0188C35.38 9.56877 29.88 9.56877 26.49 13.0188L25 14.5488L23.5 13.0188C20.11 9.56877 14.62 9.56877 11.23 13.0188C7.84 16.4788 7.84 22.0788 11.23 25.5388L12.72 27.0588L25 39.5688L37.27 27.0588L38.77 25.5388C42.16 22.0788 42.16 16.4788 38.77 13.0188Z"
+                            stroke="currentColor" stroke-width="3" />
                     </svg>
                     <span class="text-[10px] leading-none">좋아요</span>
                 </span>
@@ -216,14 +228,14 @@ if ($config['cf_analytics']) {
             <?= $is_shop ?>
             <a href="<?= $mypage_url ?>" class="h-full text-gray-900">
                 <span
-                    class="flex flex-col items-center justify-center gap-1 h-[var(--bottom-nav-height)] rounded-full text-center hover:bg-[var(--donuts-yellow)]">
-                    <svg width="25" height="28" viewBox="0 0 25 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    class="flex flex-col items-center justify-center rounded-full text-center <?= $is_mypage ? 'bg-[var(--donuts-yellow)] fill-gray-900' : 'fill-transparent' ?> p-1">
+                    <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="w-9 h-9">
                         <path
-                            d="M12.3626 10.7064C15.1377 10.7064 17.3895 8.53241 17.3895 5.85319C17.3895 3.17396 15.1377 1 12.3626 1C9.58748 1 7.33569 3.17396 7.33569 5.85319C7.33569 8.53241 9.58748 10.7064 12.3626 10.7064Z"
-                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            d="M24.9803 19.6063C28.7796 19.6063 31.8624 16.6301 31.8624 12.962C31.8624 9.29403 28.7796 6.31775 24.9803 6.31775C21.181 6.31775 18.0981 9.29403 18.0981 12.962C18.0981 16.6301 21.181 19.6063 24.9803 19.6063Z"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                         <path
-                            d="M12.3762 26.147C12.3762 26.1488 12.3777 26.1503 12.3796 26.1503C16.7171 26.1494 20.5902 24.4209 23.1299 21.7179C23.96 20.8344 23.9611 19.4722 23.1316 18.5881C20.5957 15.8851 16.7209 14.157 12.3762 14.157C8.03162 14.157 4.16228 15.8804 1.62342 18.5818C0.792769 19.4656 0.792164 20.8288 1.62201 21.7133C4.1602 24.419 8.02883 26.1428 12.3729 26.1437C12.3747 26.1437 12.3762 26.1452 12.3762 26.147Z"
-                            stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            d="M24.9995 42.2116C24.9995 42.2141 25.0016 42.2161 25.0041 42.2161C31.2313 42.2148 36.7593 39.6126 40.2163 35.5984C41.0073 34.6798 41.0084 33.3321 40.2182 32.4128C36.7675 28.3984 31.2372 25.7965 24.9995 25.7965C18.7618 25.7965 13.2397 28.3913 9.78356 32.4041C8.99202 33.3231 8.99143 34.6717 9.78214 35.5914C13.2374 39.6105 18.7583 42.2058 24.9949 42.207C24.9975 42.207 24.9995 42.2091 24.9995 42.2116Z"
+                            stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
                     <span class="text-[10px] leading-none">마이도너츠</span>
                 </span>
@@ -231,6 +243,10 @@ if ($config['cf_analytics']) {
         </li>
     </ul>
 </nav>
+
+<script>
+    $(fuction() {});
+</script>
 
 </div><!-- /#app-shell -->
 

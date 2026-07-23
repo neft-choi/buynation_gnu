@@ -50,7 +50,7 @@ if ($total_count == 0) {
 }
 
 $rows = $config['cf_page_rows'];
-$total_page  = ceil($total_count / $rows);  // 전체 페이지 계산
+$total_page = ceil($total_count / $rows);  // 전체 페이지 계산
 if ($page < 1) {
     $page = 1;
 } // 페이지가 없으면 첫 페이지 (1 페이지)
@@ -88,14 +88,19 @@ include_once('./_head.php');
     <?php
     include_once(G5_THEME_SHOP_PATH . '/_mypage_menu_pc.php');
     ?>
-    
-    <!-- 주문 내역 -->
-    <?php
-    $limit = " limit $from_record, $rows ";
-    include "./orderinquiry.sub.php";
-    ?>
 
-    <?php echo get_paging($config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); ?>
+    <div class="min-w-0 flex-1">
+        <!-- 주문 내역 -->
+        <?php
+        $limit = " limit $from_record, $rows ";
+        include "./orderinquiry.sub.php";
+        ?>
+
+        <?php
+        // 페이지네이션
+        echo get_paging($config['cf_write_pages'], $page, $total_page, "{$_SERVER['SCRIPT_NAME']}?$qstr&amp;page="); 
+        ?>
+    </div>
 </div>
 <!-- } 주문 내역 끝 -->
 

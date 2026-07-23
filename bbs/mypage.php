@@ -1,6 +1,11 @@
 <?php
 include_once('./_common.php');
 
+// 비로그인 상태에서 마이페이지 접속 시 로그인 페이지로 이동
+if ($is_guest) {
+    goto_url(G5_BBS_URL . '/login.php?url=' . login_url($_SERVER['REQUEST_URI']));
+}
+
 $g5['title'] = '내정보';
 
 include_once(G5_THEME_PATH . '/head.php');
@@ -12,35 +17,26 @@ include_once(G5_THEME_PATH . '/head.php');
         <div class="flex flex-col items-center gap-3">
             <div class="relative">
                 <div class="w-25 h-25 overflow-hidden rounded-full bg-gray-300">
-                    <?php if (!$is_guest) { ?>
-                        <?php echo get_member_profile_img($member['mb_id'], 100, 100); ?>
-                    <?php } ?>
+                    <?php echo get_member_profile_img($member['mb_id'], 100, 100); ?>
                 </div>
 
-                <?php if (!$is_guest) { ?>
-                    <button type="button"
-                        class="absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full text-[#757575] bg-white shadow-[2px_2px_4px_0_#0000001A] p-2">
-                        <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M10.3018 3.66504L3.84473 10.4785L0.5 10.4971V7.40137L7.35156 0.703125L10.3018 3.66504Z"
-                                fill="white" stroke="#757575" />
-                        </svg>
-                    </button>
-                <?php } ?>
+                <button type="button"
+                    class="absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full text-[#757575] bg-white shadow-[2px_2px_4px_0_#0000001A] p-2">
+                    <svg width="11" height="11" viewBox="0 0 11 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.3018 3.66504L3.84473 10.4785L0.5 10.4971V7.40137L7.35156 0.703125L10.3018 3.66504Z"
+                            fill="white" stroke="#757575" />
+                    </svg>
+                </button>
             </div>
 
-            <p class="text-xl font-bold text-zinc-900">
-                <?php if ($is_guest) { ?>
-                    게스트님
-                <?php } else { ?>
+            <div class="flex items-center gap-2">
+                <p class="text-xl font-bold text-zinc-900">
                     <?php echo get_text($member['mb_nick']); ?>님
-                <?php } ?>
-            </p>
+                </p>
+                <a href="<?php echo G5_BBS_URL; ?>/logout.php" class="text-xs text-[#757575]">로그아웃</a>
+            </div>
 
-            <?php if ($is_guest) { ?>
-                <p class="text-base text-[#757575]">로그인이 필요합니다.</p>
-            <?php } else { ?>
-                <p class="text-base text-[#757575]">가입한 도넛 00 · 함께한 지 00일</p>
-            <?php } ?>
+            <p class="text-base text-[#757575]">가입한 도넛 00 · 함께한 지 00일</p>
         </div>
     </section>
 
@@ -142,25 +138,25 @@ include_once(G5_THEME_PATH . '/head.php');
             <div>
                 <div class="flex items-center gap-2" role="tablist">
                     <button type="button" class="rounded-full bg-black px-4 py-2 text-xs text-white" role="tab"
-                        data-community-tab="" aria-selected="true">
+                        data-community-tab="posts" aria-selected="true">
                         작성글
                     </button>
                     <button type="button" class="rounded-full bg-white px-4 py-2 text-xs text-black" role="tab"
-                        data-community-tab="" aria-selected="false">
+                        data-community-tab="comments" aria-selected="false">
                         작성 댓글
                     </button>
                     <button type="button" class="rounded-full bg-white px-4 py-2 text-xs text-black" role="tab"
-                        data-community-tab="" aria-selected="false">
+                        data-community-tab="commented" aria-selected="false">
                         댓글 단 글
                     </button>
                     <button type="button" class="rounded-full bg-white px-4 py-2 text-xs text-black" role="tab"
-                        data-community-tab="" aria-selected="false">
+                        data-community-tab="liked" aria-selected="false">
                         좋아요한 글
                     </button>
                 </div>
             </div>
 
-            <ul class="flex flex-col gap-4">
+            <ul class="flex flex-col gap-4" data-community-panel="posts">
                 <li class="flex items-center gap-2">
                     <div class="w-9 h-9 rounded-full bg-gray-300"></div>
 
@@ -273,6 +269,15 @@ include_once(G5_THEME_PATH . '/head.php');
                 </li>
             </ul>
 
+            <ul class="hidden flex flex-col gap-4" data-community-panel="comments">
+            </ul>
+
+            <ul class="hidden flex flex-col gap-4" data-community-panel="commented">
+            </ul>
+
+            <ul class="hidden flex flex-col gap-4" data-community-panel="liked">
+            </ul>
+
             <a href="#" class="flex items-center justify-center gap-1 border-t border-[#75757533] pt-4 pb-2">
                 <span class="text-xs">전체 내역 보기</span>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -291,20 +296,20 @@ include_once(G5_THEME_PATH . '/head.php');
 
             <div class="flex items-center gap-2" role="tablist">
                 <button type="button" class="rounded-full bg-black px-4 py-2 text-xs text-white" role="tab"
-                    data-shopping-tab="" aria-selected="true">
+                    data-shopping-tab="orders" aria-selected="true">
                     주문 배송 조회
                 </button>
                 <button type="button" class="rounded-full bg-white px-4 py-2 text-xs text-black" role="tab"
-                    data-shopping-tab="" aria-selected="false">
+                    data-shopping-tab="recent" aria-selected="false">
                     최근 본 상품
                 </button>
                 <button type="button" class="rounded-full bg-white px-4 py-2 text-xs text-black" role="tab"
-                    data-shopping-tab="" aria-selected="false">
+                    data-shopping-tab="frequent" aria-selected="false">
                     자주 산 상품
                 </button>
             </div>
 
-            <ul class="flex flex-col gap-4">
+            <ul class="flex flex-col gap-4" data-shopping-panel="orders">
                 <li class="flex items-center gap-2">
                     <div class="w-9 h-9 rounded bg-gray-300"></div>
 
@@ -361,6 +366,12 @@ include_once(G5_THEME_PATH . '/head.php');
                         <span class="font-bold">+100</span>
                     </div>
                 </li>
+            </ul>
+
+            <ul class="hidden flex flex-col gap-4" data-shopping-panel="recent">
+            </ul>
+
+            <ul class="hidden flex flex-col gap-4" data-shopping-panel="frequent">
             </ul>
 
             <a href="#" class="flex items-center justify-center gap-1 border-t border-[#75757533] pt-4 pb-2">
@@ -435,6 +446,36 @@ include_once(G5_THEME_PATH . '/head.php');
 
         $(".topping-info-close").on("click", function () {
             $(this).closest(".topping-info-popover").addClass("hidden");
+        });
+
+        // 나의 커뮤니티 활동 탭 기능
+        const $communityTabs = $("[data-community-tab]");
+        const $communityPanels = $("[data-community-panel]");
+        const activeClasses = "bg-black text-white";
+        const inactiveClasses = "bg-white text-black";
+
+        $communityTabs.on("click", function () {
+            const selectedTab = $(this).attr("data-community-tab");
+
+            $communityTabs.removeClass(activeClasses).addClass(inactiveClasses).attr("aria-selected", "false");
+            $(this).removeClass(inactiveClasses).addClass(activeClasses).attr("aria-selected", "true");
+
+            $communityPanels.addClass("hidden");
+            $communityPanels.filter('[data-community-panel="' + selectedTab + '"]').removeClass("hidden");
+        });
+
+        // 나의 쇼핑 탭 기능
+        const $shoppingTabs = $("[data-shopping-tab]");
+        const $shoppingPanels = $("[data-shopping-panel]");
+
+        $shoppingTabs.on("click", function () {
+            const selectedTab = $(this).attr("data-shopping-tab");
+
+            $shoppingTabs.removeClass(activeClasses).addClass(inactiveClasses).attr("aria-selected", "false");
+            $(this).removeClass(inactiveClasses).addClass(activeClasses).attr("aria-selected", "true");
+
+            $shoppingPanels.addClass("hidden");
+            $shoppingPanels.filter('[data-shopping-panel="' + selectedTab + '"]').removeClass("hidden");
         });
     });
 </script>

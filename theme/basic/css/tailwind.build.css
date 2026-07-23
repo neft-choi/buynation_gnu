@@ -342,6 +342,9 @@
   .top-2 {
     top: calc(var(--spacing) * 2);
   }
+  .top-2\.5 {
+    top: calc(var(--spacing) * 2.5);
+  }
   .top-3 {
     top: calc(var(--spacing) * 3);
   }
@@ -392,6 +395,9 @@
   }
   .right-2 {
     right: calc(var(--spacing) * 2);
+  }
+  .right-2\.5 {
+    right: calc(var(--spacing) * 2.5);
   }
   .right-3 {
     right: calc(var(--spacing) * 3);
@@ -1050,6 +1056,9 @@
   .w-8 {
     width: calc(var(--spacing) * 8);
   }
+  .w-8\.5 {
+    width: calc(var(--spacing) * 8.5);
+  }
   .w-9 {
     width: calc(var(--spacing) * 9);
   }
@@ -1070,6 +1079,9 @@
   }
   .w-15 {
     width: calc(var(--spacing) * 15);
+  }
+  .w-19 {
+    width: calc(var(--spacing) * 19);
   }
   .w-20 {
     width: calc(var(--spacing) * 20);
@@ -1103,6 +1115,9 @@
   }
   .w-100 {
     width: calc(var(--spacing) * 100);
+  }
+  .w-\[28px\] {
+    width: 28px;
   }
   .w-\[45px\] {
     width: 45px;
@@ -1942,6 +1957,9 @@
   .\!bg-white {
     background-color: var(--color-white) !important;
   }
+  .bg-\[\#000000\]\/30 {
+    background-color: color-mix(in oklab, #000000 30%, transparent);
+  }
   .bg-\[\#3b3b3b\] {
     background-color: #3b3b3b;
   }
@@ -2158,6 +2176,12 @@
       background-color: color-mix(in oklab, var(--color-white) 20%, transparent);
     }
   }
+  .bg-white\/40 {
+    background-color: color-mix(in srgb, #fff 40%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(in oklab, var(--color-white) 40%, transparent);
+    }
+  }
   .bg-white\/50 {
     background-color: color-mix(in srgb, #fff 50%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
@@ -2287,6 +2311,15 @@
   }
   .fill-gray-300 {
     fill: var(--color-gray-300);
+  }
+  .fill-gray-900 {
+    fill: var(--color-gray-900);
+  }
+  .fill-transparent {
+    fill: transparent;
+  }
+  .fill-white {
+    fill: var(--color-white);
   }
   .object-cover {
     object-fit: cover;
@@ -2512,6 +2545,12 @@
   }
   .pr-1 {
     padding-right: calc(var(--spacing) * 1);
+  }
+  .pr-2 {
+    padding-right: calc(var(--spacing) * 2);
+  }
+  .pr-3 {
+    padding-right: calc(var(--spacing) * 3);
   }
   .pr-4 {
     padding-right: calc(var(--spacing) * 4);
@@ -3097,6 +3136,10 @@
     --tw-shadow: 0 4px 20.3px var(--tw-shadow-color, rgba(0,0,0,0.10)), 0 7px 5.2px var(--tw-shadow-color, rgba(0,0,0,0.05));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
   }
+  .shadow-\[0_8px_30px_0px_rgba\(0\,0\,0\,0\.12\)\] {
+    --tw-shadow: 0 8px 30px 0px var(--tw-shadow-color, rgba(0,0,0,0.12));
+    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
+  }
   .shadow-\[0_8px_30px_rgba\(0\,0\,0\,0\.12\)\] {
     --tw-shadow: 0 8px 30px var(--tw-shadow-color, rgba(0,0,0,0.12));
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow);
@@ -3407,6 +3450,20 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-zinc-100);
+      }
+    }
+  }
+  .hover\:fill-black {
+    &:hover {
+      @media (hover: hover) {
+        fill: var(--color-black);
+      }
+    }
+  }
+  .hover\:fill-gray-900 {
+    &:hover {
+      @media (hover: hover) {
+        fill: var(--color-gray-900);
       }
     }
   }

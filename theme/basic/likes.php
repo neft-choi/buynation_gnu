@@ -496,12 +496,20 @@ include_once(G5_THEME_PATH . '/head.php');
             <!-- 상품 패널 -->
             <ul class="hidden grid grid-cols-2 gap-8" data-likes-panel="product">
                 <li>
-                    <div class="aspect-square rounded-[25px] bg-gray-300"></div>
+                    <div class="relative aspect-square rounded-[25px] bg-gray-300">
+                        <div
+                            class="absolute top-2.5 right-2.5 inline-flex items-center justify-center w-7 h-7 rounded-full text-[#FF4428] bg-[#000000]/30">
+                            <svg viewBox="0 0 50 50" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M38.77 13.0188C35.38 9.56877 29.88 9.56877 26.49 13.0188L25 14.5488L23.5 13.0188C20.11 9.56877 14.62 9.56877 11.23 13.0188C7.84 16.4788 7.84 22.0788 11.23 25.5388L12.72 27.0588L25 39.5688L37.27 27.0588L38.77 25.5388C42.16 22.0788 42.16 16.4788 38.77 13.0188Z"
+                                    fill="currentColor" />
+                            </svg>
+                        </div>
+                    </div>
                     <div class="mt-3">
                         <p class="text-xs">문스앤</p>
                         <p class="text-base font-bold">사각 세탁바구니</p>
-                        <p
-                        >
+                        <p>
                             <span class="text-base text-[#FF4428] font-bold">20%</span>
                             <span class="text-base font-bold">36,000원</span>
                         </p>
@@ -520,12 +528,20 @@ include_once(G5_THEME_PATH . '/head.php');
                 </li>
 
                 <li>
-                    <div class="aspect-square rounded-[25px] bg-gray-300"></div>
+                    <div class="relative aspect-square rounded-[25px] bg-gray-300">
+                        <div
+                            class="absolute top-2.5 right-2.5 inline-flex items-center justify-center w-7 h-7 rounded-full text-[#FF4428] bg-[#000000]/30">
+                            <svg viewBox="0 0 50 50" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M38.77 13.0188C35.38 9.56877 29.88 9.56877 26.49 13.0188L25 14.5488L23.5 13.0188C20.11 9.56877 14.62 9.56877 11.23 13.0188C7.84 16.4788 7.84 22.0788 11.23 25.5388L12.72 27.0588L25 39.5688L37.27 27.0588L38.77 25.5388C42.16 22.0788 42.16 16.4788 38.77 13.0188Z"
+                                    fill="currentColor" />
+                            </svg>
+                        </div>
+                    </div>
                     <div class="mt-3">
                         <p class="text-xs">문스앤</p>
                         <p class="text-base font-bold">사각 세탁바구니</p>
-                        <p
-                        >
+                        <p>
                             <span class="text-base text-[#FF4428] font-bold">20%</span>
                             <span class="text-base font-bold">36,000원</span>
                         </p>
@@ -544,12 +560,20 @@ include_once(G5_THEME_PATH . '/head.php');
                 </li>
 
                 <li>
-                    <div class="aspect-square rounded-[25px] bg-gray-300"></div>
+                    <div class="relative aspect-square rounded-[25px] bg-gray-300">
+                        <div
+                            class="absolute top-2.5 right-2.5 inline-flex items-center justify-center w-7 h-7 rounded-full text-[#FF4428] bg-[#000000]/30">
+                            <svg viewBox="0 0 50 50" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M38.77 13.0188C35.38 9.56877 29.88 9.56877 26.49 13.0188L25 14.5488L23.5 13.0188C20.11 9.56877 14.62 9.56877 11.23 13.0188C7.84 16.4788 7.84 22.0788 11.23 25.5388L12.72 27.0588L25 39.5688L37.27 27.0588L38.77 25.5388C42.16 22.0788 42.16 16.4788 38.77 13.0188Z"
+                                    fill="currentColor" />
+                            </svg>
+                        </div>
+                    </div>
                     <div class="mt-3">
                         <p class="text-xs">문스앤</p>
                         <p class="text-base font-bold">4종 접이식 조리도구 세트</p>
-                        <p
-                        >
+                        <p>
                             <span class="text-base text-[#FF4428] font-bold">20%</span>
                             <span class="text-base font-bold">36,000원</span>
                         </p>
@@ -568,12 +592,20 @@ include_once(G5_THEME_PATH . '/head.php');
                 </li>
 
                 <li>
-                    <div class="aspect-square rounded-[25px] bg-gray-300"></div>
+                    <div class="relative aspect-square rounded-[25px] bg-gray-300">
+                        <div
+                            class="absolute top-2.5 right-2.5 inline-flex items-center justify-center w-7 h-7 rounded-full text-[#FF4428] bg-[#000000]/30">
+                            <svg viewBox="0 0 50 50" class="w-6 h-6" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M38.77 13.0188C35.38 9.56877 29.88 9.56877 26.49 13.0188L25 14.5488L23.5 13.0188C20.11 9.56877 14.62 9.56877 11.23 13.0188C7.84 16.4788 7.84 22.0788 11.23 25.5388L12.72 27.0588L25 39.5688L37.27 27.0588L38.77 25.5388C42.16 22.0788 42.16 16.4788 38.77 13.0188Z"
+                                    fill="currentColor" />
+                            </svg>
+                        </div>
+                    </div>
                     <div class="mt-3">
                         <p class="text-xs">문스앤</p>
                         <p class="text-base font-bold">3종 스푼포크나이프 세트</p>
-                        <p
-                        >
+                        <p>
                             <span class="text-base text-[#FF4428] font-bold">20%</span>
                             <span class="text-base font-bold">36,000원</span>
                         </p>
