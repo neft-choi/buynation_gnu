@@ -3,3 +3,51 @@
 @theme {
   --breakpoint-pc: 1200px;
 }
+
+@layer components {
+
+  /* input */
+  .input-text {
+    border: 1px solid var(--color-semantic-border-normal-default);
+    border-radius: 4px;
+    padding: 8px 16px;
+  }
+
+  /* checkbox */
+  .input-checkbox-control {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+  }
+
+  .input-checkbox {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    margin: 0;
+    border: 1.5px solid var(--color-semantic-border-normal-strong);
+    border-radius: 999px;
+    cursor: pointer;
+  }
+
+  .input-checkbox:checked {
+    border-color: var(--color-semantic-fill-solid-strongest);
+    background: var(--color-semantic-fill-solid-strongest);
+  }
+
+  .input-checkbox-icon {
+    pointer-events: none;
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    color: var(--color-semantic-border-normal-strong);
+  }
+
+  .input-checkbox:checked+.input-checkbox-icon {
+    color: var(--color-semantic-static-white);
+  }
+}

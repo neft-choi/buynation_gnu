@@ -294,13 +294,14 @@
   font-weight: 600;
   background: #ffffff;
   color: #18181b;
-  border: 1px solid #d4d4d8;
+  border: 1px solid #afafaf;
   border-radius: 4px;
   outline: none;
 }
 
 /* 인풋 테마 */
-:where(input[type="text"], input[type="password"], input[type="email"]) {
+
+/* :where(input[type="text"], input[type="password"], input[type="email"]) {
   width: 100%;
   border: 1px solid #d4d4d8;
   border-radius: 4px;
@@ -308,29 +309,29 @@
   padding: 16px;
   color: #18181b;
   outline: none;
-}
+} */
 
-:where(input[type="text"],
+/* :where(input[type="text"],
   input[type="password"],
   input[type="email"])::placeholder {
   color: #a1a1aa;
-}
+} */
 
-:where(input[type="text"], input[type="password"], input[type="email"]):focus {
+/* :where(input[type="text"], input[type="password"], input[type="email"]):focus {
   border-color: #a1a1aa;
   outline: none;
-}
+} */
 
-:where(textarea) {
+/* :where(textarea) {
   padding: 16px;
   resize: vertical;
   outline: none;
-}
+} */
 
-input[type="search"]::-webkit-search-cancel-button {
+/* input[type="search"]::-webkit-search-cancel-button {
   -webkit-appearance: none;
   appearance: none;
-}
+} */
 
 /* date 인풋에서 달력 및 우측 아이콘 삭제 */
 input[type="date"]::-webkit-calendar-picker-indicator,
@@ -1794,7 +1795,7 @@ border:1px solid #558ab7;
 }
 
 /* 버튼 */
-a.btn,
+/* a.btn,
 .btn {
   line-height: 35px;
   height: 35px;
@@ -1807,7 +1808,7 @@ a.btn,
   -moz-transition: background-color 0.3s ease-out;
   -o-transition: background-color 0.3s ease-out;
   transition: background-color 0.3s ease-out;
-}
+} */
 
 a.btn01 {
   display: inline-block;
@@ -1888,13 +1889,13 @@ a.btn_close {
   line-height: 50px;
 }
 
-a.btn_cancel {
+/* a.btn_cancel {
   display: inline-block;
   background: #969696;
   color: #fff;
   text-decoration: none;
   vertical-align: middle;
-}
+} */
 
 button.btn_cancel {
   display: inline-block;
@@ -1904,9 +1905,9 @@ button.btn_cancel {
   vertical-align: middle;
 }
 
-.btn_cancel:hover {
+/* .btn_cancel:hover {
   background: #aaa;
-}
+} */
 
 a.btn_frmline,
 button.btn_frmline {
@@ -2341,16 +2342,16 @@ a.btn_admin:hover {
   font-size: 1.25em;
 }
 
-.form_01 li {
+/* .form_01 li {
   margin: 10px 0;
-}
+} */
 
-.form_01 li:after {
+/* .form_01 li:after {
   display: block;
   visibility: hidden;
   clear: both;
   content: "";
-}
+} */
 
 .form_01 li .right_input {
   float: right;

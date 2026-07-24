@@ -123,8 +123,8 @@ if (!empty($qaconfig['qa_category'])) {
             <span><?php echo $page; ?> 페이지</span>
         </div>
 
-        <section class="p-4 space-y-4">
-            <div class="flex items-center justify-between gap-2">
+        <section class="p-4">
+            <div class="flex items-center justify-between gap-2 mb-2">
                 <h2 class="text-lg font-bold">상품 문의</h2>
                 <?php if ($write_href) { ?>
                     <a href="<?php echo $write_href; ?>" title="문의하기"
@@ -140,15 +140,6 @@ if (!empty($qaconfig['qa_category'])) {
                 <input type="hidden" name="token" value="<?php echo get_text($token); ?>">
 
                 <div>
-                    <?php if ($is_checkbox) { ?>
-                        <div class="all_chk flex items-center gap-2 px-2 py-4 text-xs text-slate-600">
-                            <input type="checkbox" id="chkall"
-                                onclick="if (this.checked) all_checked(true); else all_checked(false);"
-                                class="h-4 w-4 rounded border-slate-300 text-slate-700 focus:ring-slate-400">
-                            <label for="chkall" class="cursor-pointer">전체선택</label>
-                        </div>
-                    <?php } ?>
-
                     <div class="border-b border-slate-200 bg-white">
                         <?php
                         for ($i = 0; $i < count($list); $i++) {

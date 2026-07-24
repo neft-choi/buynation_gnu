@@ -285,7 +285,7 @@ html.no-overflowscrolling #autosave_pop {height:auto;max-height:10000px !importa
 
 /*글쓰기*/
 #bo_w .write_div {margin:10px 0;position:relative}
-#bo_w li, .form_01 li {position:relative}
+/* #bo_w li, .form_01 li {position:relative} */
 #bo_w .bo_w_info:after {display:block;visibility:hidden;clear:both;content:""}
 #bo_w .bo_w_info .frm_input {float:left;width:33%}
 #bo_w #wr_password {margin:0 0.5%}
