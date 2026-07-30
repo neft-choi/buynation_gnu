@@ -42,6 +42,148 @@ if ($is_brand) {
     ";
 }
 
+
+/**
+ * 대시보드 실제 데이터
+ *
+ * 매출:
+ * - 결제 이후 상태(입금/준비/배송/완료)의 상품금액 기준
+ * - 브랜드 계정은 g5_shop_item.it_brand = 로그인 아이디 상품만 합산
+ * - 최고관리자는 전체 상품 합산
+ *
+ * 상품문의:
+ * - 답변 전(iq_answer = '') 문의 수
+ *
+ * 사용후기:
+ * - 미확인(is_confirm = 0) 후기 수
+ */
+function get_dashboard_sale_sum($from_datetime, $to_datetime)
+{
+    global $g5, $is_brand, $member;
+
+    $brand_where = '';
+
+    if ($is_brand) {
+        $brand_id = sql_real_escape_string($member['mb_id']);
+        $brand_where = " AND i.it_brand = '{$brand_id}' ";
+    }
+
+    $from_datetime = sql_real_escape_string($from_datetime);
+    $to_datetime = sql_real_escape_string($to_datetime);
+
+    $sql = "
+        SELECT
+            COALESCE(
+                SUM(
+                    IF(
+                        c.io_type = 1,
+                        c.io_price * c.ct_qty,
+                        (c.ct_price + c.io_price) * c.ct_qty
+                    )
+                ),
+                0
+            ) AS sale_price
+        FROM {$g5['g5_shop_cart_table']} c
+        INNER JOIN {$g5['g5_shop_order_table']} o
+            ON c.od_id = o.od_id
+        INNER JOIN {$g5['g5_shop_item_table']} i
+            ON c.it_id = i.it_id
+        WHERE o.od_time BETWEEN '{$from_datetime}' AND '{$to_datetime}'
+          AND c.ct_status IN ('입금', '준비', '배송', '완료')
+          {$brand_where}
+    ";
+
+    $row = sql_fetch($sql);
+
+    return isset($row['sale_price']) ? (int)$row['sale_price'] : 0;
+}
+
+function get_dashboard_qna_count()
+{
+    global $g5, $is_brand, $member;
+
+    $brand_where = '';
+
+    if ($is_brand) {
+        $brand_id = sql_real_escape_string($member['mb_id']);
+        $brand_where = " AND i.it_brand = '{$brand_id}' ";
+    }
+
+    $sql = "
+        SELECT COUNT(*) AS cnt
+        FROM {$g5['g5_shop_item_qa_table']} q
+        INNER JOIN {$g5['g5_shop_item_table']} i
+            ON q.it_id = i.it_id
+        WHERE q.iq_answer = ''
+          {$brand_where}
+    ";
+
+    $row = sql_fetch($sql);
+
+    return isset($row['cnt']) ? (int)$row['cnt'] : 0;
+}
+
+function get_dashboard_review_count()
+{
+    global $g5, $is_brand, $member;
+
+    $brand_where = '';
+
+    if ($is_brand) {
+        $brand_id = sql_real_escape_string($member['mb_id']);
+        $brand_where = " AND i.it_brand = '{$brand_id}' ";
+    }
+
+    $sql = "
+        SELECT COUNT(*) AS cnt
+        FROM {$g5['g5_shop_item_use_table']} u
+        INNER JOIN {$g5['g5_shop_item_table']} i
+            ON u.it_id = i.it_id
+        WHERE u.is_confirm = '0'
+          {$brand_where}
+    ";
+
+    $row = sql_fetch($sql);
+
+    return isset($row['cnt']) ? (int)$row['cnt'] : 0;
+}
+
+// 오늘 00:00:00 ~ 현재
+$dashboard_today_from = date('Y-m-d 00:00:00', G5_SERVER_TIME);
+$dashboard_now = date('Y-m-d H:i:s', G5_SERVER_TIME);
+
+// 이번 주 월요일 00:00:00 ~ 현재
+$dashboard_week_from = date(
+    'Y-m-d 00:00:00',
+    strtotime('monday this week', G5_SERVER_TIME)
+);
+
+$dashboard_today_sales = get_dashboard_sale_sum(
+    $dashboard_today_from,
+    $dashboard_now
+);
+
+$dashboard_week_sales = get_dashboard_sale_sum(
+    $dashboard_week_from,
+    $dashboard_now
+);
+
+$dashboard_qna_count = get_dashboard_qna_count();
+$dashboard_review_count = get_dashboard_review_count();
+
+// 현재 donuts_brand 구조에는 별도 승인 컬럼이 없으므로
+// donuts_brand에 로그인 아이디가 등록되어 있으면 승인된 브랜드로 판단합니다.
+if ($is_admin === 'super') {
+    $dashboard_approval_text = '최고관리자';
+    $dashboard_approval_class = 'text-blue-600';
+} elseif ($is_brand) {
+    $dashboard_approval_text = '승인됨';
+    $dashboard_approval_class = 'text-green-600';
+} else {
+    $dashboard_approval_text = '승인대기';
+    $dashboard_approval_class = 'text-orange-600';
+}
+
 // 주문상태에 따른 합계 금액
 function get_order_status_sum($status)
 {
@@ -147,28 +289,50 @@ function get_max_value($arr)
         <section class="text-sm">
             <div class="flex items-center gap-4">
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>금일 매출(임시)</p>
-                    <p class="self-end mt-auto">1000원</p>
+                    <p>금일 매출</p>
+                    <p class="self-end mt-auto">
+                        <a href="./sale1today.php?date=<?php echo G5_TIME_YMD; ?>">
+                            <?php echo number_format($dashboard_today_sales); ?>원
+                        </a>
+                    </p>
                 </div>
+
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>주간 매출(임시)</p>
-                    <p class="self-end mt-auto">1000원</p>
+                    <p>주간 매출</p>
+                    <p class="self-end mt-auto">
+                        <a href="./sale1date.php?fr_date=<?php echo substr($dashboard_week_from, 0, 10); ?>&amp;to_date=<?php echo G5_TIME_YMD; ?>">
+                            <?php echo number_format($dashboard_week_sales); ?>원
+                        </a>
+                    </p>
                 </div>
+
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>승인여부(임시)</p>
-                    <p class="self-end mt-auto text-green-600">승인됨</p>
+                    <p>승인여부</p>
+                    <p class="self-end mt-auto <?php echo $dashboard_approval_class; ?>">
+                        <?php echo $dashboard_approval_text; ?>
+                    </p>
                 </div>
             </div>
 
             <div class="flex items-center gap-4 mt-4 mb-16">
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>상품문의(임시)</p>
-                    <p class="self-end mt-auto">10</p>
+                    <p>미답변 상품문의</p>
+                    <p class="self-end mt-auto">
+                        <a href="./itemqalist.php?sort1=iq_answer&amp;sort2=asc">
+                            <?php echo number_format($dashboard_qna_count); ?>건
+                        </a>
+                    </p>
                 </div>
+
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>사용후기(임시)</p>
-                    <p class="self-end mt-auto">10</p>
+                    <p>미확인 사용후기</p>
+                    <p class="self-end mt-auto">
+                        <a href="./itemuselist.php?sort1=is_confirm&amp;sort2=asc">
+                            <?php echo number_format($dashboard_review_count); ?>건
+                        </a>
+                    </p>
                 </div>
+
                 <div class="invisible flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
                 </div>
             </div>

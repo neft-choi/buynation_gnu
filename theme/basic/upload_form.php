@@ -65,6 +65,13 @@ function get_file_upload_script()
             $input.on('change', function () {
                 const file = this.files[0];
 
+                if (!file) {
+                    $fileName.text('');
+                    $fileSize.text('');
+                    $selected.attr('hidden', '');
+                    return;
+                }
+
                 $fileName.text(file.name);
                 $fileSize.text(formatFileSize(file.size));
                 $selected.removeAttr('hidden');

@@ -84,9 +84,9 @@ $admin = get_admin("super");
                 <div id="ft_company_pc" class="ft_cnt w-full">
                     <h2 class="sr-only">사이트 정보</h2>
                     <div class="ft_info text-sm text-[#8D8D8D]/88 font-normal">
-                        <span>법인명(상호) : <?php echo $default['de_admin_company_name']; ?></span>
-                        <!-- <span>주소 : <?php echo $default['de_admin_company_addr']; ?></span>--><br>
-                        <span>대표자 : <?php echo $default['de_admin_company_owner']; ?></span>
+                        <span>법인명(상호) : <?php echo $default['de_admin_company_name']; ?></span><br>
+                        <span>주소 : <?php echo $default['de_admin_company_addr']; ?></span><br>
+                        <span>대표자 : <?php echo $default['de_admin_company_owner']; ?></span><br>
                         <!-- <span><b>전화</b> <?php echo $default['de_admin_company_tel']; ?></span> -->
                         <!-- <span><b>팩스</b> <?php echo $default['de_admin_company_fax']; ?></span>--><br>
                         <!-- <span><b>운영자</b> <?php echo $admin['mb_name']; ?></span><br> -->

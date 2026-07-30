@@ -236,7 +236,7 @@ $(function() {
         var $this = $(this);
         close_btn_idx = $(".mod_options").index($(this));
 
-        $.post(
+        ㅇ
             "./cartoption.php",
             { it_id: it_id },
             function(data) {

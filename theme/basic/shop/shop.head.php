@@ -1,5 +1,6 @@
 <?php
-if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
+if (!defined("_GNUBOARD_"))
+    exit; // 개별 페이지 접근 불가
 
 $q = isset($_GET['q']) ? clean_xss_tags($_GET['q'], 1, 1) : '';
 
@@ -27,38 +28,137 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
         <div id="skip_to_container"><a href="#container">본문 바로가기</a></div>
 
         <?php if (defined('_INDEX_')) { // index에서만 실행
-            include G5_BBS_PATH . '/newwin.inc.php'; // 팝업레이어
-        } ?>
+                include G5_BBS_PATH . '/newwin.inc.php'; // 팝업레이어
+            } ?>
 
         <!-- 기본 헤더 본문 (로고/아이콘/검색) -->
         <div id="hd_wrapper">
             <div class="header-inner mx-auto w-full max-w-[var(--breakpoint-pc)] p-4 pb-0 space-y-4">
-                <div id="shop-header" class="flex items-center justify-between">
+                <div id="shop-header" class="relative flex items-center justify-between">
                     <div class="inline-flex items-center gap-10">
                         <a href="<?php echo G5_SHOP_URL; ?>/" id="shop-logo-link" class="block">
-                            <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>">
+                            <img src="<?php echo G5_DATA_URL; ?>/common/logo_img"
+                                alt="<?php echo $config['cf_title']; ?>">
                         </a>
 
                         <div id="shop-searchbar-desktop-slot"></div>
                     </div>
 
                     <div class="flex items-center gap-2 text-2xl">
-                        <?= get_notification() ?>
+                        <?php echo get_notification() ?>
+                    </div>
+
+                    <div id="notification-popover"
+                        class="hidden absolute right-0 top-full z-50 mt-2 w-90 overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-lg"
+                        role="dialog" aria-label="알림 목록">
+                        <div id="notification-popover-content" class="max-h-120 overflow-y-auto"></div>
                     </div>
                 </div>
+
+                <script>
+                    $(function () {
+                        const $notificationButton = $('#notification-open');
+                        const $notificationPopover = $('#notification-popover');
+                        const $notificationPopoverContent = $('#notification-popover-content');
+                        let isNotificationPc = false;
+
+                        syncWithPcBreakpoint(function (isPc) {
+                            isNotificationPc = isPc;
+
+                            if (!isNotificationPc) {
+                                $notificationPopover.addClass('hidden');
+                                $notificationButton.removeClass('bg-zinc-200');
+                            }
+                        });
+
+                        $(document).on('click', '#notification-open', function (event) {
+                            if (!isNotificationPc || !g5_is_member) {
+                                return;
+                            }
+
+                            event.preventDefault();
+
+                            // 알림 팝오버 토글
+                            if (!$notificationPopover.hasClass('hidden')) {
+                                $notificationPopover.addClass('hidden');
+                                $notificationButton.removeClass('bg-zinc-200');
+                                return;
+                            }
+
+                            // <a> 태그인 알림 버튼의 href
+                            const notificationUrl = this.href;
+
+                            // 서버에 GET 요청을 보낸다
+                            // { view: 'popover' } 는 뒤에 함께 보낼 데이터
+                            $.get(notificationUrl, { view: 'popover' })
+
+                                // GET 요청 성공 시
+                                // html은 서버가 응답으로 보낸 문자열
+                                // 여기서 html은 head/tail 없는 알림 목록 HTML
+                                .done(function (html) {
+                                    // #notification-popover-content에 기존 내용 지우고 html 삽입
+                                    $notificationPopoverContent.html(html);
+
+                                    // 팝오버 읽음 처리
+                                    const userId = "<?= $member['mb_id'] ?>";
+                                    const storageKey = "readNoti_" + userId;
+                                    const readList = JSON.parse(localStorage.getItem(storageKey) || "[]");
+
+                                    $notificationPopoverContent.find('.noti-item').each(function () {
+                                        const notificationItem = this;
+                                        const id = notificationItem.dataset.id;
+
+                                        if (readList.includes(id)) {
+                                            notificationItem.classList.add('opacity-50');
+                                        }
+
+                                        notificationItem.addEventListener('click', function () {
+                                            if (!readList.includes(id)) {
+                                                readList.push(id);
+                                                localStorage.setItem(storageKey, JSON.stringify(readList));
+                                            }
+                                        });
+                                    });
+
+                                    $notificationPopover.removeClass('hidden');
+                                    $notificationButton.addClass('bg-zinc-200');
+                                })
+
+                                // GET 요청 실패 시
+                                .fail(function () {
+                                    // 원래 알림 주소로인 알림 버튼의 href로 이동
+                                    window.location.href = notificationUrl;
+                                });
+                        });
+
+                        // 알림 아이콘 혹은 알림 팝오버 외부를 클릭했을 때 팝오버 hidden 처리
+                        $(document).on('click', function (event) {
+                            const $target = $(event.target);
+
+                            if ($target.closest('#notification-open, #notification-popover').length) {
+                                return;
+                            }
+
+                            $notificationPopover.addClass('hidden');
+                            $notificationButton.removeClass('bg-zinc-200');
+                        });
+                    });
+                </script>
 
                 <!-- 최근 본 상품 -->
                 <div id="recent-viewed-backdrop" class="hidden fixed inset-0 z-40 bg-black/40"></div>
 
-                <div id="recent-viewed-panel" class="fixed top-0 right-0 z-50 flex flex-col h-full w-full max-w-[440px] translate-x-full bg-white">
+                <div id="recent-viewed-panel"
+                    class="fixed top-0 right-0 z-50 flex flex-col h-full w-full max-w-[440px] translate-x-full bg-white">
                     <div class="flex items-center justify-between border-b border-zinc-200 px-5 py-6">
                         <p class="text-lg font-semibold text-gray-900">최근 본 상품</p>
 
-                        <button type="button"
-                            id="recent-viewed-close"
+                        <button type="button" id="recent-viewed-close"
                             class="inline-flex items-center justify-center w-9 h-9 rounded text-gray-700 hover:bg-gray-300 cursor-pointer"
                             aria-label="최근 본 상품 닫기">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-6 h-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x w-6 h-6">
                                 <path d="M18 6 6 18" />
                                 <path d="m6 6 12 12" />
                             </svg>
@@ -73,14 +173,14 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
                 <script>
                     // 최근 본 상품 패널 열기/닫기 제어
-                    $(function() {
-                        $(document).on('click', '#recent-viewed-open', function() {
+                    $(function () {
+                        $(document).on('click', '#recent-viewed-open', function () {
                             $('#recent-viewed-backdrop').removeClass('hidden');
                             $('#recent-viewed-panel').removeClass('translate-x-full');
                             $('html, body').addClass('!overflow-hidden');
                         });
 
-                        $(document).on('click', '#recent-viewed-close, #recent-viewed-backdrop', function() {
+                        $(document).on('click', '#recent-viewed-close, #recent-viewed-backdrop', function () {
                             $('#recent-viewed-backdrop').addClass('hidden');
                             $('#recent-viewed-panel').addClass('translate-x-full');
                             $('html, body').removeClass('!overflow-hidden');
@@ -97,7 +197,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 </div>
                 <script>
                     // PC 반응형 분기
-                    syncWithPcBreakpoint(function(isPc) {
+                    syncWithPcBreakpoint(function (isPc) {
                         const searchbarRoot = document.getElementById('shop-searchbar-root');
                         const desktopSlot = document.getElementById('shop-searchbar-desktop-slot');
                         const defaultSlot = document.getElementById('shop-searchbar-default-slot');
@@ -115,17 +215,20 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 <!-- 검색 바 끝 -->
 
                 <ul class="hd_login !hidden">
-                    <?php if ($is_member) {  ?>
+                    <?php if ($is_member) { ?>
                         <li class="shop_login">
-                            <?php 
+                            <?php
                             // echo outlogin('theme/shop_basic'); 
                             // 아웃로그인 
                             ?>
                         </li>
-                        <li class="shop_cart"><a href="<?php echo G5_SHOP_URL; ?>/cart.php"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="sound_only">장바구니</span><span class="count"><?php echo get_boxcart_datas_count(); ?></span></a></li>
+                        <li class="shop_cart"><a href="<?php echo G5_SHOP_URL; ?>/cart.php"><i class="fa fa-shopping-cart"
+                                    aria-hidden="true"></i><span class="sound_only">장바구니</span><span
+                                    class="count"><?php echo get_boxcart_datas_count(); ?></span></a></li>
                     <?php } else { ?>
-                        <li class="login"><a href="<?php echo G5_BBS_URL ?>/login.php?url=<?php echo $urlencode; ?>">로그인</a></li>
-                    <?php }  ?>
+                        <li class="login"><a href="<?php echo G5_BBS_URL ?>/login.php?url=<?php echo $urlencode; ?>">로그인</a>
+                        </li>
+                    <?php } ?>
                 </ul>
             </div>
         </div>
@@ -147,12 +250,18 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
         ?>
 
         <nav id="hd_menu" class="!w-full max-w-[var(--breakpoint-pc)] !bg-white py-2">
-            <button type="button" id="menu_open" class="!hidden"><i class="fa fa-bars" aria-hidden="true"></i> 카테고리</button>
-            <ul class="shop-nav scrollbar-hidden flex items-center gap-8 overflow-x-auto overflow-y-hidden whitespace-nowrap text-base text-gray-600 pc:text-[#111] font-medium px-4">
+            <button type="button" id="menu_open" class="!hidden"><i class="fa fa-bars" aria-hidden="true"></i>
+                카테고리</button>
+            <ul
+                class="shop-nav scrollbar-hidden flex items-center gap-8 overflow-x-auto overflow-y-hidden whitespace-nowrap text-base text-gray-600 pc:text-[#111] font-medium px-4">
                 <li class="hidden pc:block">
-                    <button type="button" class="flex items-center gap-2 cursor-pointer" id="category_open" aria-label="카테고리 열기">
-                        <span id="category_open_icon" class="inline-flex items-center justify-center h-7 w-7 rounded-full">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu h-5 w-5">
+                    <button type="button" class="flex items-center gap-2 cursor-pointer" id="category_open"
+                        aria-label="카테고리 열기">
+                        <span id="category_open_icon"
+                            class="inline-flex items-center justify-center h-7 w-7 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-menu-icon lucide-menu h-5 w-5">
                                 <path d="M4 5h16" />
                                 <path d="M4 12h16" />
                                 <path d="M4 19h16" />
@@ -189,9 +298,14 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
 
                 <li class="hidden pc:block ml-auto">
-                    <a href="<?php echo G5_URL; ?>/index.php" class="inline-flex items-center justify-center gap-1 px-4 py-2 text-white bg-[var(--color-primary-strong)] rounded-full">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" stroke="var(--color-primary-strong)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-message-circle-more-icon lucide-message-circle-more w-5 h-5">
-                            <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
+                    <a href="<?php echo G5_URL; ?>/index.php"
+                        class="inline-flex items-center justify-center gap-1 px-4 py-2 text-white bg-[var(--color-primary-strong)] rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
+                            stroke="var(--color-primary-strong)" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-message-circle-more-icon lucide-message-circle-more w-5 h-5">
+                            <path
+                                d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719" />
                             <path d="M8 12h.01" />
                             <path d="M12 12h.01" />
                             <path d="M16 12h.01" />
@@ -241,16 +355,21 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
     <div id="side_menu" class="!hidden">
         <ul id="quick">
-            <li><button class="btn_sm_cl1 btn_sm"><i class="fa fa-user-o" aria-hidden="true"></i><span class="qk_tit">마이메뉴</span></button></li>
-            <li><button class="btn_sm_cl2 btn_sm"><i class="fa fa-archive" aria-hidden="true"></i><span class="qk_tit">오늘 본 상품</span></button></li>
-            <li><button class="btn_sm_cl3 btn_sm"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span class="qk_tit">장바구니</span></button></li>
-            <li><button class="btn_sm_cl4 btn_sm"><i class="fa fa-heart-o" aria-hidden="true"></i><span class="qk_tit">위시리스트</span></button></li>
+            <li><button class="btn_sm_cl1 btn_sm"><i class="fa fa-user-o" aria-hidden="true"></i><span
+                        class="qk_tit">마이메뉴</span></button></li>
+            <li><button class="btn_sm_cl2 btn_sm"><i class="fa fa-archive" aria-hidden="true"></i><span
+                        class="qk_tit">오늘 본 상품</span></button></li>
+            <li><button class="btn_sm_cl3 btn_sm"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span
+                        class="qk_tit">장바구니</span></button></li>
+            <li><button class="btn_sm_cl4 btn_sm"><i class="fa fa-heart-o" aria-hidden="true"></i><span
+                        class="qk_tit">위시리스트</span></button></li>
         </ul>
-        <button type="button" id="top_btn"><i class="fa fa-arrow-up" aria-hidden="true"></i><span class="sound_only">상단으로</span></button>
+        <button type="button" id="top_btn"><i class="fa fa-arrow-up" aria-hidden="true"></i><span
+                class="sound_only">상단으로</span></button>
         <div id="tabs_con">
             <div class="side_mn_wr1 qk_con">
                 <div class="qk_con_wr">
-                    <?php 
+                    <?php
                     // echo outlogin('theme/shop_side'); 
                     // 아웃로그인 
                     ?>
@@ -268,7 +387,8 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                     </ul>
                     <?php // include_once(G5_SHOP_SKIN_PATH.'/boxcommunity.skin.php'); // 커뮤니티 
                     ?>
-                    <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span class="sound_only">나의정보 닫기</span></button>
+                    <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span
+                            class="sound_only">나의정보 닫기</span></button>
                 </div>
             </div>
             <div class="side_mn_wr2 qk_con">
@@ -276,28 +396,31 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                     <?php
                     // include(G5_SHOP_SKIN_PATH . '/boxtodayview.skin.php'); // 오늘 본 상품 
                     ?>
-                    <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span class="sound_only">오늘 본 상품 닫기</span></button>
+                    <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span
+                            class="sound_only">오늘 본 상품 닫기</span></button>
                 </div>
             </div>
             <div class="side_mn_wr3 qk_con">
                 <div class="qk_con_wr">
                     <?php include_once(G5_SHOP_SKIN_PATH . '/boxcart.skin.php'); // 장바구니 
                     ?>
-                    <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span class="sound_only">장바구니 닫기</span></button>
+                    <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span
+                            class="sound_only">장바구니 닫기</span></button>
                 </div>
             </div>
             <div class="side_mn_wr4 qk_con">
                 <div class="qk_con_wr">
                     <?php include_once(G5_SHOP_SKIN_PATH . '/boxwish.skin.php'); // 위시리스트 
                     ?>
-                    <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span class="sound_only">위시리스트 닫기</span></button>
+                    <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span
+                            class="sound_only">위시리스트 닫기</span></button>
                 </div>
             </div>
         </div>
     </div>
     <script>
-        jQuery(function($) {
-            $(".btn_member_mn").on("click", function() {
+        jQuery(function ($) {
+            $(".btn_member_mn").on("click", function () {
                 $(".member_mn").toggle();
                 $(".btn_member_mn").toggleClass("btn_member_mn_on");
             });
@@ -306,7 +429,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 side_btn_el = "#quick .btn_sm",
                 quick_container = ".qk_con";
 
-            $(document).on("click", side_btn_el, function(e) {
+            $(document).on("click", side_btn_el, function (e) {
                 e.preventDefault();
 
                 var $this = $(this);
@@ -325,12 +448,12 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 } else if ($this.hasClass("btn_sm_cl4")) {
                     $(".side_mn_wr4").show();
                 }
-            }).on("click", ".con_close", function(e) {
+            }).on("click", ".con_close", function (e) {
                 $(quick_container).hide();
                 $(side_btn_el).removeClass(active_class);
             });
 
-            $(document).mouseup(function(e) {
+            $(document).mouseup(function (e) {
                 var container = $(quick_container),
                     mn_container = $(".shop_login");
                 if (container.has(e.target).length === 0) {
@@ -343,7 +466,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 }
             });
 
-            $("#top_btn").on("click", function() {
+            $("#top_btn").on("click", function () {
                 $("html, body").animate({
                     scrollTop: 0
                 }, '500');
@@ -365,7 +488,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
             <?php if (defined('_INDEX_')) { ?>
                 <aside id="aside" class="!hidden">
                     <?php include_once(G5_SHOP_SKIN_PATH . '/boxcategory.skin.php'); // 상품분류 
-                    ?>
+                        ?>
                     <?php if ($default['de_type4_list_use']) { ?>
                         <!-- 인기상품 시작 { -->
                         <section id="side_pd">
@@ -389,7 +512,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
                     <?php echo display_banner('왼쪽', 'boxbanner.skin.php'); ?>
                     <?php echo poll('theme/shop_basic'); // 설문조사 
-                    ?>
+                        ?>
                 </aside>
             <?php } // end if 
             ?>
@@ -407,7 +530,8 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
             ?>
             <!-- .shop-content 시작 { -->
             <div class="<?php echo implode(' ', $content_class); ?> !p-0 !ml-0">
-                <?php if ((!$bo_table || $w == 's') && !defined('_INDEX_') && basename($_SERVER['SCRIPT_NAME']) !== 'listtype.php') { ?><div id="wrapper_title"><?php echo $g5['title'] ?></div><?php } ?>
+                <?php if ((!$bo_table || $w == 's') && !defined('_INDEX_') && basename($_SERVER['SCRIPT_NAME']) !== 'listtype.php') { ?>
+                    <div id="wrapper_title"><?php echo $g5['title'] ?></div><?php } ?>
                 <!-- 글자크기 조정 display:none 되어 있음 시작 { -->
                 <div id="text_size">
                     <button class="no_text_resize" onclick="font_resize('container', 'decrease');">작게</button>

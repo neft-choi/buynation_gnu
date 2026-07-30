@@ -3001,7 +3001,7 @@ function get_header_actions($mode)
 
     // 회원 ID 준비
     $member_id = isset($member['mb_id']) ? (string) $member['mb_id'] : '';
-    
+
     // 알림 수 확인
     $total_noti = $member_id !== ''
         ? get_total_noti_count($member, get_table())
@@ -3111,7 +3111,7 @@ function get_notification()
         </svg>
     </a>
 
-    <a href="<?= G5_BBS_URL ?>/notification.php"
+    <a href="<?= G5_BBS_URL ?>/notification.php" id="notification-open"
         class="relative inline-flex h-9 w-9 items-center justify-center rounded-full text-gray-700" aria-label="알림">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell">

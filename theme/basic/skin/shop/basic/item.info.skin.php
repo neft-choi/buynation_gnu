@@ -41,7 +41,11 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			<!-- 상품 정보 시작 { -->
 			<li id="sit_inf">
 				<h2 class="contents_tit"><span>상품 정보</span></h2>
-
+				<?php
+				echo '<pre class="text-wrap">';
+				var_dump($it);
+				echo '</pre>';
+				?>
 				<?php if ($it['it_explan']) { // 상품 상세설명 
 						?>
 					<h3>상품 상세설명</h3>

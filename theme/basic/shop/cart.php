@@ -24,11 +24,14 @@ $sql = " select a.ct_id,
                 a.ct_point,
                 a.ct_qty,
                 a.ct_status,
-	                a.ct_send_cost,
-	                a.it_sc_type,
-	                b.ca_id,
-	                b.it_cust_price,
-	                b.it_maker
+	            a.ct_send_cost,
+	            a.it_sc_type,
+				a.io_type,
+                a.io_price,
+	            b.ca_id,
+	            b.it_cust_price,
+	            b.it_brand
+
            from {$g5['g5_shop_cart_table']} a
            left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
           where a.od_id = '$s_cart_id' ";
@@ -188,27 +191,26 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 				while ($row = sql_fetch_array($result)) {
 					$sql = " select SUM(IF(io_type = 1, (io_price * ct_qty), ((ct_price + io_price) * ct_qty))) as price,
                                 SUM(ct_point * ct_qty) as point,
-                                SUM(ct_qty) as qty
+                                SUM(ct_qty) as qty, ct_send_cost 
                            from {$g5['g5_shop_cart_table']}
                           where it_id = '{$row['it_id']}'
                             and od_id = '$s_cart_id' ";
 					$sum = sql_fetch($sql);
-
 					if ($item_index == 0) {
 						$continue_ca_id = $row['ca_id'];
 					}
 
-					$a1 = '<a href="' . shop_item_url($row['it_id']) . '"><strong>';
-					$a2 = '</strong></a>';
-
 					// 상품 이미지 썸네일
 					$image = get_it_image($row['it_id'], 72, 72);
 
-					$it_name = $a1 . stripslashes(string: $row['it_name']) . $a2;
+					// 상품 옵션
+					// $row['it_id'] 는 지금 처리 중인 상품의 ID
+					// $s_cart_id 는 지금 보고 있는 장바구니 ID
 					$it_options = print_item_options($row['it_id'], $s_cart_id);
+
 					$mod_options = '';
 					if ($it_options) {
-						$mod_options = '<button type="button" id="mod_opt_' . $row['it_id'] . '" class="mod_btn mod_options">선택사항수정</button>';
+						$mod_options = '<button type="button" id="mod_opt_' . $row['it_id'] . '" class="mod_btn mod_options text-xs pc:text-sm">옵션 수정</button>';
 					}
 
 					switch ($row['ct_send_cost']) {
@@ -240,13 +242,13 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 					$unit_discount_price = $qty > 0 ? (int) round($discount_price / $qty) : (int) $discount_price;
 					$unit_market_price_calc = $qty > 0 ? (int) round($market_price / $qty) : (int) $market_price;
 
-					$maker_name = trim((string) $row['it_maker']);
-					if ($maker_name === '') {
-						$maker_name = '기타';
+					$brand_name = trim((string) $row['it_brand']);
+					if ($brand_name === '') {
+						$brand_name = '기타';
 					}
 
-					if (!isset($grouped_cart[$maker_name])) {
-						$grouped_cart[$maker_name] = array(
+					if (!isset($grouped_cart[$brand_name])) {
+						$grouped_cart[$brand_name] = array(
 							'items' => array(),
 							'market_price' => 0,
 							'discount_price' => 0,
@@ -258,18 +260,17 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 					}
 
 					if ($ct_send_cost === '착불') {
-						$grouped_cart[$maker_name]['send_collect']++;
+						$grouped_cart[$brand_name]['send_collect']++;
 					} elseif ($ct_send_cost === '선불') {
-						$grouped_cart[$maker_name]['send_prepaid']++;
+						$grouped_cart[$brand_name]['send_prepaid']++;
 					} else {
-						$grouped_cart[$maker_name]['send_free']++;
+						$grouped_cart[$brand_name]['send_free']++;
 					}
 
-					$grouped_cart[$maker_name]['items'][] = array(
+					$grouped_cart[$brand_name]['items'][] = array(
 						'idx' => $item_index,
 						'it_id' => $row['it_id'],
 						'it_name' => get_text($row['it_name']),
-						'it_name_html' => $it_name,
 						'qty' => (int) $qty,
 						'unit_market_price' => (int) $unit_market_price_calc,
 						'unit_discount_price' => (int) $unit_discount_price,
@@ -282,9 +283,9 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 						'sell_price' => (int) $sell_price
 					);
 
-					$grouped_cart[$maker_name]['market_price'] += (int) $market_price;
-					$grouped_cart[$maker_name]['discount_price'] += (int) $discount_price;
-					$grouped_cart[$maker_name]['sell_price'] += (int) $sell_price;
+					$grouped_cart[$brand_name]['market_price'] += (int) $market_price;
+					$grouped_cart[$brand_name]['discount_price'] += (int) $discount_price;
+					$grouped_cart[$brand_name]['sell_price'] += (int) $sell_price;
 
 					$tot_point += $point;
 					$tot_sell_price += $sell_price;
@@ -295,34 +296,36 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 				$i = $item_index;
 
 				if ($i > 0) {
-					$maker_index = 0;
-					foreach ($grouped_cart as $maker_name => $maker_group) {
-						$maker_send_cost = '무료';
-						if ($maker_group['send_collect'] > 0 && ($maker_group['send_prepaid'] > 0 || $maker_group['send_free'] > 0)) {
-							$maker_send_cost = '상품별 상이';
-						} elseif ($maker_group['send_collect'] > 0) {
-							$maker_send_cost = '착불';
-						} elseif ($maker_group['send_prepaid'] > 0 && $maker_group['send_free'] > 0) {
-							$maker_send_cost = '상품별 상이';
-						} elseif ($maker_group['send_prepaid'] > 0) {
-							$maker_send_cost = '선불';
+					$brand_index = 0;
+					foreach ($grouped_cart as $brand_name => $brand_group) {
+						$brand_send_cost = '무료';
+						if ($brand_group['send_collect'] > 0 && ($brand_group['send_prepaid'] > 0 || $brand_group['send_free'] > 0)) {
+							$brand_send_cost = '상품별 상이';
+						} elseif ($brand_group['send_collect'] > 0) {
+							$brand_send_cost = '착불';
+						} elseif ($brand_group['send_prepaid'] > 0 && $brand_group['send_free'] > 0) {
+							$brand_send_cost = '상품별 상이';
+						} elseif ($brand_group['send_prepaid'] > 0) {
+							$brand_send_cost = '선불';
 						}
 						?>
-						<li class="sod_li cart-maker-card overflow-hidden rounded-xl border border-[#8D8D8D38] bg-white">
-							<div class="border-b border-[#8D8D8D38] p-4">
+						<li
+							class="sod_li cart-maker-card overflow-hidden rounded-xl border border-(--color-semantic-border-normal-default) bg-white">
+							<div class="border-b border-(--color-semantic-border-normal-default) p-3 pc:p-4">
 								<div class="li_chk chk_box flex items-center gap-4">
-									<input type="checkbox" name="vendor_chk[<?php echo $maker_index; ?>]" value="1"
-										id="vendor_chk_<?php echo $maker_index; ?>" class="maker_chk selec_chk"
-										data-maker-index="<?php echo $maker_index; ?>" checked>
-									<label for="vendor_chk_<?php echo $maker_index; ?>"><span></span><b
+									<input type="checkbox" name="vendor_chk[<?php echo $brand_index; ?>]" value="1"
+										id="vendor_chk_<?php echo $brand_index; ?>" class="maker_chk selec_chk"
+										data-maker-index="<?php echo $brand_index; ?>" checked>
+									<label for="vendor_chk_<?php echo $brand_index; ?>"><span></span><b
 											class="sound_only">업체선택</b></label>
-									<div><?php echo get_text($maker_name); ?></div>
+									<div><?php echo get_text($brand_name); ?></div>
 								</div>
 							</div>
 
-							<div id="maker_items_<?php echo $maker_index; ?>" class="divide-y divide-[#8D8D8D38]">
-								<?php foreach ($maker_group['items'] as $item) { ?>
-									<div class="cart-item-card" data-maker-index="<?php echo $maker_index; ?>"
+							<div id="maker_items_<?php echo $brand_index; ?>"
+								class="divide-y divide-(--color-semantic-border-normal-default)">
+								<?php foreach ($brand_group['items'] as $item) { ?>
+									<div class="cart-item-card" data-maker-index="<?php echo $brand_index; ?>"
 										data-it-id="<?php echo $item['it_id']; ?>" data-qty="<?php echo (int) $item['qty']; ?>"
 										data-unit-market-price="<?php echo (int) $item['unit_market_price']; ?>"
 										data-unit-discount-price="<?php echo (int) $item['unit_discount_price']; ?>"
@@ -335,57 +338,38 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 										<input type="hidden" name="it_name[<?php echo $item['idx']; ?>]"
 											value="<?php echo $item['it_name']; ?>">
 
-										<div class="li_primary p-4">
-											<div class="flex gap-4">
+										<div class="li_primary px-3 pc:px-4 py-4">
+											<div class="flex gap-2 pc:gap-4">
 												<div class="li_chk chk_box">
 													<input type="checkbox" name="ct_chk[<?php echo $item['idx']; ?>]" value="1"
 														id="ct_chk_<?php echo $item['idx']; ?>" class="selec_chk"
-														data-maker-index="<?php echo $maker_index; ?>" checked>
+														data-maker-index="<?php echo $brand_index; ?>" checked>
 													<label for="ct_chk_<?php echo $item['idx']; ?>"><span></span><b
 															class="sound_only">상품선택</b></label>
 												</div>
 												<div class="flex flex-col gap-4">
 													<div class="total_img"><?php echo $item['image']; ?></div>
 
-													<div class="cart-qty-control flex items-center"
-														data-it-id="<?php echo $item['it_id']; ?>">
-														<button type="button"
-															class="qty-minus inline-flex h-6 w-6 items-center justify-center border border-r-0 border-zinc-500">
-															<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-																viewBox="0 0 24 24" fill="none" stroke="currentColor"
-																stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-																class="lucide lucide-minus-icon lucide-minus">
-																<path d="M5 12h14" />
-															</svg>
-														</button>
 
-														<input type="text" value="<?php echo (int) $item['qty']; ?>"
-															inputmode="numeric"
-															class="qty-input !h-6 !w-8 !rounded-none !border-zinc-500 !p-0 text-center text-xs">
-
-														<button type="button"
-															class="qty-plus inline-flex h-6 w-6 items-center justify-center border border-l-0 border-zinc-500">
-															<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-																viewBox="0 0 24 24" fill="none" stroke="currentColor"
-																stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-																class="lucide lucide-plus-icon lucide-plus">
-																<path d="M5 12h14" />
-																<path d="M12 5v14" />
-															</svg>
-														</button>
-													</div>
 												</div>
-												<div class="li_info flex flex-col justify-start pc:justify-center">
-													<div class="li_name"><?php echo $item['it_name_html']; ?></div>
+
+												<div
+													class="li_info flex-1 min-w-0 flex flex-col justify-start pc:justify-center gap-1">
+													<div class="li_name">
+														<a href="<?php echo shop_item_url($item['it_id']); ?>"
+															class="block text-sm pc:text-base font-semibold">
+															<?php echo $item['it_name']; ?>
+														</a>
+													</div>
 
 													<?php if ($item['it_options']) { ?>
-														<div class="sod_opt mt-2 text-sm"><?php echo $item['it_options']; ?></div>
+														<div class="sod_opt text-xs pc:text-sm">
+															<?php echo $item['it_options']; ?>
+														</div>
 													<?php } ?>
 
-													<?php
-													// 선택사항수정 버튼 hidden 처리 
-													if ($item['mod_options']) { ?>
-														<div class="li_mod hidden mt-2 w-fit rounded border border-[#8D8D8D38] px-2">
+													<?php if ($item['mod_options']) { ?>
+														<div class="li_mod w-fit rounded border border-[#8D8D8D38] px-2">
 															<?php echo $item['mod_options']; ?>
 														</div>
 													<?php } ?>
@@ -412,16 +396,16 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 									class="flex flex-col pc:flex-row pc:items-center pc:justify-between space-y-1 pc:space-y-0">
 									<div class="flex pc:inline-flex pc:flex-col items-center pc:items-start justify-between">
 										<span class="text-[#8D8D8D] text-sm">상품금액</span>
-										<span id="maker_market_price_<?php echo $maker_index; ?>"
-											class="payment-product-price justify-self-end font-semibold"><?php echo number_format((int) $maker_group['market_price']); ?>원</span>
+										<span id="maker_market_price_<?php echo $brand_index; ?>"
+											class="payment-product-price justify-self-end font-semibold"><?php echo number_format((int) $brand_group['market_price']); ?>원</span>
 									</div>
 
 									<span class="hidden pc:block">-</span>
 
 									<div class="inline-flex pc:flex-col items-center justify-between">
 										<span class="text-[#8D8D8D] text-sm">할인금액</span>
-										<span id="maker_discount_price_<?php echo $maker_index; ?>"
-											class="justify-self-end font-semibold <?php echo (int) $maker_group['discount_price'] > 0 ? 'text-red-400' : 'text-[#8D8D8D]'; ?>"><?php echo (int) $maker_group['discount_price'] > 0 ? number_format((int) $maker_group['discount_price']) . '원' : '0원'; ?></span>
+										<span id="maker_discount_price_<?php echo $brand_index; ?>"
+											class="justify-self-end font-semibold <?php echo (int) $brand_group['discount_price'] > 0 ? 'text-red-400' : 'text-[#8D8D8D]'; ?>"><?php echo (int) $brand_group['discount_price'] > 0 ? number_format((int) $brand_group['discount_price']) . '원' : '0원'; ?></span>
 									</div>
 
 									<span class="hidden pc:block">+</span>
@@ -429,21 +413,21 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 									<div class="inline-flex pc:flex-col items-center justify-between">
 										<span class="text-[#8D8D8D] text-sm">배송비</span>
 										<span
-											class="justify-self-end text-blue-400 font-semibold"><?php echo $maker_send_cost; ?></span>
+											class="justify-self-end text-blue-400 font-semibold"><?php echo $brand_send_cost; ?></span>
 									</div>
 
 									<span class="hidden pc:block">=</span>
 
 									<div class="inline-flex pc:flex-col pc:items-end justify-between">
 										<span class="text-sm">주문금액</span>
-										<span id="maker_sell_price_<?php echo $maker_index; ?>"
-											class="justify-self-end text-xl font-bold"><?php echo number_format((int) $maker_group['sell_price']); ?>원</span>
+										<span id="maker_sell_price_<?php echo $brand_index; ?>"
+											class="justify-self-end text-xl font-bold"><?php echo number_format((int) $brand_group['sell_price']); ?>원</span>
 									</div>
 								</div>
 							</div>
 						</li>
 						<?php
-						$maker_index++;
+						$brand_index++;
 					}
 				}
 
@@ -522,6 +506,9 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 			<?php } ?>
 		</form>
 
+		<!-- 옵션 수정 모달 -->
+		<div id="cart_option_modal_root"></div>
+
 		<section class="rounded bg-orange-400 mx-4 pc:mx-5 mt-6 pc:mt-8 p-4 text-white">
 			<div>이벤트 배너</div>
 		</section>
@@ -586,7 +573,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 	</div>
 
 	<!-- 결제 정보 섹션 -->
-	<section class="hidden pc:block w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-14">
+	<section class="hidden pc:block sticky top-6 w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-14">
 		<div class="flex items-center pb-4 border-b border-gray-500">
 			<h2 class="text-[20px] font-semibold">결제정보</h2>
 		</div>
@@ -633,8 +620,6 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 		if ($cartHeading.length && $hdMenu.length) {
 			$cartHeading.insertAfter($hdMenu);
 		}
-
-		var qtySyncInProgress = false;
 
 		// 상품 리스트에 상품 별 체크 박스 체크 유무를 판단하여 숫자 계산
 		function update_checked_count() {
@@ -692,27 +677,6 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 			return "0원";
 		}
 
-		function normalizeQtyValue($input) {
-			var cleaned = String($input.val() || "").replace(/[^0-9]/g, "");
-			var value = parseInt(cleaned, 10) || 1;
-			if (value < 1) {
-				value = 1;
-			}
-			$input.val(value);
-			return value;
-		}
-
-		function update_card_totals_by_qty($card, qty) {
-			var unitSell = parseInt($card.attr("data-unit-sell-price"), 10) || 0;
-			var unitDiscount = parseInt($card.attr("data-unit-discount-price"), 10) || 0;
-			var unitMarket = parseInt($card.attr("data-unit-market-price"), 10) || 0;
-
-			$card.attr("data-qty", qty);
-			$card.attr("data-sell-price", unitSell * qty);
-			$card.attr("data-discount-price", unitDiscount * qty);
-			$card.attr("data-market-price", unitMarket * qty);
-		}
-
 		function update_maker_summary(makerIndex) {
 			var marketTotal = 0;
 			var discountTotal = 0;
@@ -741,58 +705,6 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 			});
 		}
 
-		function collect_qty_sync_payload() {
-			var payload = {};
-			$(".cart-item-card").each(function () {
-				var itId = String($(this).attr("data-it-id") || "");
-				var qty = parseInt($(this).find(".qty-input").first().val(), 10) || 1;
-				if (!itId) {
-					return;
-				}
-				if (qty < 1) {
-					qty = 1;
-				}
-				payload[itId] = qty;
-			});
-
-			return payload;
-		}
-
-		function sync_qty_before_buy(done) {
-			if (qtySyncInProgress) {
-				return;
-			}
-
-			qtySyncInProgress = true;
-			$("#floating_buy_button").prop("disabled", true).addClass("opacity-50");
-
-			$.ajax({
-				url: "<?php echo G5_SHOP_URL; ?>/cartupdate.php",
-				method: "POST",
-				dataType: "json",
-				data: {
-					act: "qtysync",
-					qty_sync: collect_qty_sync_payload()
-				}
-			}).done(function (resp) {
-				qtySyncInProgress = false;
-				$("#floating_buy_button").prop("disabled", false).removeClass("opacity-50");
-				if (resp && resp.ok) {
-					done(true);
-				} else {
-					done(false, "수량 동기화에 실패했습니다.");
-				}
-			}).fail(function () {
-				qtySyncInProgress = false;
-				$("#floating_buy_button").prop("disabled", false).removeClass("opacity-50");
-				done(false, "수량 동기화 중 오류가 발생했습니다.");
-			});
-		}
-
-		window.sync_qty_before_buy = sync_qty_before_buy;
-
-
-
 		function sync_maker_checkbox(makerIndex) {
 			var $items = $("#maker_items_" + makerIndex + " input[name^=ct_chk][id^=ct_chk_]");
 			var checkedCount = $items.filter(":checked").length;
@@ -810,32 +722,6 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 			var checkedCount = $cartChecks.filter(":checked").length;
 			$("input[name=ct_all]").prop("checked", $cartChecks.length > 0 && checkedCount === $cartChecks.length);
 		}
-
-		// 썸네일 하단 수량 UI (+/-) 동작
-		$(document).on("click", ".cart-qty-control .qty-minus, .cart-qty-control .qty-plus", function () {
-			var $wrap = $(this).closest(".cart-qty-control");
-			var $input = $wrap.find(".qty-input");
-			var current = normalizeQtyValue($input);
-			var next = $(this).hasClass("qty-plus") ? current + 1 : current - 1;
-
-			if (next < 1) {
-				next = 1;
-			}
-
-			$input.val(next);
-			var $card = $wrap.closest(".cart-item-card");
-			update_card_totals_by_qty($card, next);
-			update_maker_summary($card.attr("data-maker-index"));
-			update_floating_payment();
-		});
-
-		$(document).on("change", ".cart-qty-control .qty-input", function () {
-			var value = normalizeQtyValue($(this));
-			var $card = $(this).closest(".cart-item-card");
-			update_card_totals_by_qty($card, value);
-			update_maker_summary($card.attr("data-maker-index"));
-			update_floating_payment();
-		});
 
 		// 상품별 X 버튼 클릭 시 해당 상품만 선택 후 기존 선택삭제 동작 실행
 		$(document).on("click", ".item-delete-btn", function () {
@@ -860,23 +746,46 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 			return form_check("seldelete");
 		});
 
-		// 선택사항수정 버튼 클릭 시 옵션 수정 모달 로드
+		/* 옵션 수정 버튼 로직 */
+		// 클릭 시 cartoption.php 로드 후 모달로 출력
 		$(".mod_options").click(function () {
-			var it_id = $(this).attr("id").replace("mod_opt_", "");
-			var $this = $(this);
-			close_btn_idx = $(".mod_options").index($(this));
+			const it_id = $(this).attr("id").replace("mod_opt_", "");
+			const $button = $(this);
+			const $modalRoot = $("#cart_option_modal_root");
+
+			close_btn_idx = $(".mod_options").index($button);
+
+			if (!$modalRoot.length) {
+				return;
+			}
 
 			$.post(
 				"./cartoption.php", {
 				it_id: it_id
 			},
 				function (data) {
+					$modalRoot.empty();
 					$("#mod_option_frm").remove();
-					$this.after("<div id=\"mod_option_frm\"></div><div class=\"mod_option_bg\"></div>");
+					$modalRoot.append(`
+						<div class="mod_option_bg fixed inset-0 z-40 bg-black/20"></div>
+						<div id="mod_option_frm" class="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-[600px] p-4"></div>
+					`);
 					$("#mod_option_frm").html(data);
 					price_calculate();
 				}
 			);
+		});
+
+		// 옵션 수정 모달 닫기 버튼 처리
+		$(document).on("click", "#mod_option_close", function () {
+			$("#mod_option_frm, .mod_option_bg").remove();
+			$(".mod_options").eq(close_btn_idx).focus();
+		});
+
+		// 옵션 수정 모달 배경 클릭 시 닫기
+		$(document).on("click", ".mod_option_bg", function () {
+			$("#mod_option_frm, .mod_option_bg").remove();
+			$(".mod_options").eq(close_btn_idx).focus();
 		});
 
 		// 전체 선택 체크박스 토글
@@ -909,20 +818,6 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 			sync_all_checkbox();
 			update_checked_count();
 			update_floating_payment();
-		});
-
-		// 옵션 수정 모달 닫기 버튼 처리
-		$(document).on("click", "#mod_option_close", function () {
-			$("#mod_option_frm, .mod_option_bg").remove();
-			$("#win_mask, .window").hide();
-			$(".mod_options").eq(close_btn_idx).focus();
-		});
-
-		// 모달 마스크 클릭 시 닫기 처리
-		$("#win_mask").click(function () {
-			$("#mod_option_frm").remove();
-			$("#win_mask").hide();
-			$(".mod_options").eq(close_btn_idx).focus();
 		});
 
 		// 초기 카운트 1회 반영
@@ -962,20 +857,9 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 				alert("주문하실 상품을 하나이상 선택해 주십시오.");
 				return false;
 			}
-			if (typeof window.sync_qty_before_buy === "function") {
-				window.sync_qty_before_buy(function (success, message) {
-					if (!success) {
-						alert(message || "수량 동기화에 실패했습니다.");
-						return;
-					}
-					f.act.value = act;
-					f.submit();
-				});
-				return false;
-			} else {
-				f.act.value = act;
-				f.submit();
-			}
+
+			f.act.value = act;
+			f.submit();
 		} else if (act === "alldelete") {
 			f.act.value = act;
 			f.submit();

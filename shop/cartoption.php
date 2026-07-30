@@ -2,7 +2,7 @@
 include_once('./_common.php');
 
 $pattern = '#[/\'\"%=*\#\(\)\|\+\&\!\$~\{\}\[\]`;:\?\^\,]#';
-$it_id  = isset($_POST['it_id']) ? preg_replace($pattern, '', $_POST['it_id']) : '';
+$it_id = isset($_POST['it_id']) ? preg_replace($pattern, '', $_POST['it_id']) : '';
 
 $sql = " select * from {$g5['g5_shop_item_table']} where it_id = '$it_id' and it_use = '1' ";
 $it = sql_fetch($sql);
@@ -25,188 +25,167 @@ if (!sql_num_rows($result))
 ?>
 
 <style>
-    /** 상품 옵션 수정 모달 **/
-    /* 모달 제목 */
-    #mod_option_frm h2 {
-        border-bottom: 1px solid #e8e8e8;
-        font-size: 18px;
-    }
-
-    /* 모달 크기와 위치 */
-    #sod_bsk_list #mod_option_frm {
-        width: 350px;
-        margin: 0;
-        transform: translate(-50%, -50%);
-        border-radius: 16px;
-    }
-
-    /* 옵션 선택 시 텍스트 */
-    .option_wr h3 {
-        font-size: 16px;
-        margin-bottom: 10px;
-    }
-
-    /* 옵션 영역 */
-    #sit_opt_added li {
-        background: #8D8D8D0D;
-    }
-
-    /* 총 금액 (텍스트) */
-    #sit_tot_price span {
-        font-size: 18px
-    }
-
-    /* 총 금액 (금액) */
-    #sit_tot_price strong {
-        font-size: 20px;
-    }
-
-    /* 확인 버튼 */
-    #mod_option_frm .btn_confirm .btn_submit {
-        width: fit-content;
-        height: fit-content;
-        padding: 8px 16px;
-        background: #393939;
-        color: #FFFFFF;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        border: none;
-    }
-
-    /* 항목 삭제 버튼 아이콘 위치 가운데 조절 */
-    #sit_opt_added .sit_opt_del {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    .option_wr select {
+        width: 100%;
+        margin-top: 4px;
+        padding: 8px 4px;
+        border: 1px solid #d4d4d4;
     }
 </style>
 
-<h2>상품옵션수정</h2>
-<!-- 장바구니 옵션 시작 { -->
-<form name="foption" method="post" action="<?php echo G5_SHOP_URL; ?>/cartupdate.php" onsubmit="return formcheck(this);">
-    <input type="hidden" name="act" value="optionmod">
-    <input type="hidden" name="it_id[]" value="<?php echo $it['it_id']; ?>">
-    <input type="hidden" id="it_price" value="<?php echo $row2['ct_price']; ?>">
-    <input type="hidden" name="ct_send_cost" value="<?php echo $row2['ct_send_cost']; ?>">
-    <input type="hidden" name="sw_direct">
-    <?php
-    if (defined('G5_THEME_USE_OPTIONS_TRTD') && G5_THEME_USE_OPTIONS_TRTD) {
-        $option_1 = get_item_options($it['it_id'], $it['it_option_subject'], '');
-    } else {
-        // 선택 옵션 ( 기존의 tr td 태그로 가져오려면 'div' 를 '' 로 바꾸거나 또는 지워주세요 )
-        $option_1 = get_item_options($it['it_id'], $it['it_option_subject'], 'div');
-    }
-    if ($option_1) {
-    ?>
-        <section class="option_wr">
-            <h3>옵션 선택</h3>
+<section class="border border-gray-300 rounded-xl bg-white">
+    <h2 class="border-b border-gray-300 text-sm pc:text-base font-semibold leading-none p-3 pc:p-4">상품 옵션 수정</h2>
+    <!-- 장바구니 옵션 시작 { -->
+    <form name="foption" method="post" action="<?php echo G5_SHOP_URL; ?>/cartupdate.php"
+        onsubmit="return formcheck(this);" class="p-3 pc:p-4">
+        <input type="hidden" name="act" value="optionmod">
+        <input type="hidden" name="it_id[]" value="<?php echo $it['it_id']; ?>">
+        <input type="hidden" id="it_price" value="<?php echo $row2['ct_price']; ?>">
+        <input type="hidden" name="ct_send_cost" value="<?php echo $row2['ct_send_cost']; ?>">
+        <input type="hidden" name="sw_direct">
 
-            <?php // 선택옵션
-            echo $option_1;
-            ?>
-
-        </section>
-    <?php
-    }
-    ?>
-
-    <?php
-    if (defined('G5_THEME_USE_OPTIONS_TRTD') && G5_THEME_USE_OPTIONS_TRTD) {
-        $option_2 = get_item_supply($it['it_id'], $it['it_supply_subject'], '');
-    } else {
-        // 추가 옵션 ( 기존의 tr td 태그로 가져오려면 'div' 를 '' 로 바꾸거나 또는 지워주세요 )
-        $option_2 = get_item_supply($it['it_id'], $it['it_supply_subject'], 'div');
-    }
-    if ($option_2) {
-    ?>
-        <section class="option_wr">
-            <h3>추가옵션</h3>
-
-            <?php // 추가옵션
-            echo $option_2;
-            ?>
-
-        </section>
-    <?php
-    }
-    ?>
-
-    <div id="sit_sel_option">
-        <h3>선택옵션</h3>
-        <ul id="sit_opt_added">
+        <div class="space-y-3">
             <?php
-            for ($i = 0; $row = sql_fetch_array($result); $i++) {
-                if (!$row['io_id'])
-                    $it_stock_qty = get_it_stock_qty($row['it_id']);
-                else
-                    $it_stock_qty = get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
+            if (defined('G5_THEME_USE_OPTIONS_TRTD') && G5_THEME_USE_OPTIONS_TRTD) {
+                $option_1 = get_item_options($it['it_id'], $it['it_option_subject'], '');
+            } else {
+                // 선택 옵션 ( 기존의 tr td 태그로 가져오려면 'div' 를 '' 로 바꾸거나 또는 지워주세요 )
+                $option_1 = get_item_options($it['it_id'], $it['it_option_subject'], 'div');
+            }
+            if ($option_1) {
+                ?>
+                <section class="option_wr flex flex-col text-sm">
+                    <h3 class="sound_only">옵션 선택</h3>
 
-                if ($row['io_price'] < 0)
-                    $io_price = '(' . number_format($row['io_price']) . '원)';
-                else
-                    $io_price = '(+' . number_format($row['io_price']) . '원)';
+                    <?php // 선택옵션
+                        echo $option_1;
+                        ?>
 
-                $cls = 'opt';
-                if ($row['io_type'])
-                    $cls = 'spl';
-            ?>
-                <li class="sit_<?php echo $cls; ?>_list">
-                    <input type="hidden" name="io_type[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['io_type']; ?>">
-                    <input type="hidden" name="io_id[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['io_id']; ?>">
-                    <input type="hidden" name="io_value[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['ct_option']; ?>">
-                    <input type="hidden" class="io_price" value="<?php echo $row['io_price']; ?>">
-                    <input type="hidden" class="io_stock" value="<?php echo $it_stock_qty; ?>">
-                    <div class="opt_name">
-                        <span class="sit_opt_subj"><?php echo $row['ct_option']; ?></span>
-                    </div>
-                    <div class="opt_count">
-                        <button type="button" class="sit_qty_minus btn_frmline">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus" aria-hidden="true">
-                                <path d="M5 12h14" />
-                            </svg>
-                            <span class="sound_only">감소</span>
-                        </button>
-                        <label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
-                        <input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>" class="num_input" size="5">
-                        <button type="button" class="sit_qty_plus btn_frmline">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus" aria-hidden="true">
-                                <path d="M5 12h14" />
-                                <path d="M12 5v14" />
-                            </svg>
-                            <span class="sound_only">증가</span>
-                        </button>
-                        <span class="sit_opt_prc"><?php echo $io_price; ?></span>
-                        <button type="button" class="sit_opt_del">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x" aria-hidden="true">
-                                <path d="M18 6 6 18" />
-                                <path d="m6 6 12 12" />
-                            </svg>
-                            <span class="sound_only">삭제</span>
-                        </button>
-                    </div>
-
-                </li>
-            <?php
+                </section>
+                <?php
             }
             ?>
-        </ul>
-    </div>
 
-    <div id="sit_tot_price"></div>
+            <?php
+            if (defined('G5_THEME_USE_OPTIONS_TRTD') && G5_THEME_USE_OPTIONS_TRTD) {
+                $option_2 = get_item_supply($it['it_id'], $it['it_supply_subject'], '');
+            } else {
+                // 추가 옵션 ( 기존의 tr td 태그로 가져오려면 'div' 를 '' 로 바꾸거나 또는 지워주세요 )
+                $option_2 = get_item_supply($it['it_id'], $it['it_supply_subject'], 'div');
+            }
+            if ($option_2) {
+                ?>
+                <section class="option_wr">
+                    <h3>추가옵션</h3>
 
-    <div class="btn_confirm">
-        <button type="submit" class="btn_submit bg-[#393939] text-white">확인</button>
-        <button type="button" id="mod_option_close" class="btn_close hover:!bg-white">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x" aria-hidden="true">
-                <path d="M18 6 6 18" />
-                <path d="m6 6 12 12" />
-            </svg>
-            <span class="sound_only">닫기</span>
-        </button>
-    </div>
-</form>
+                    <?php // 추가옵션
+                        echo $option_2;
+                        ?>
 
+                </section>
+                <?php
+            }
+            ?>
+
+            <div id="sit_sel_option">
+                <h3>선택옵션</h3>
+                <ul id="sit_opt_added" class="space-y-2">
+                    <?php
+                    for ($i = 0; $row = sql_fetch_array($result); $i++) {
+                        if (!$row['io_id'])
+                            $it_stock_qty = get_it_stock_qty($row['it_id']);
+                        else
+                            $it_stock_qty = get_option_stock_qty($row['it_id'], $row['io_id'], $row['io_type']);
+
+                        if ($row['io_price'] < 0)
+                            $io_price = '(' . number_format($row['io_price']) . '원)';
+                        else
+                            $io_price = '(+' . number_format($row['io_price']) . '원)';
+
+                        $cls = 'opt';
+                        if ($row['io_type'])
+                            $cls = 'spl';
+                        ?>
+                        <li class="sit_<?php echo $cls; ?>_list text-xs pc:text-sm !p-3">
+                            <input type="hidden" name="io_type[<?php echo $it['it_id']; ?>][]"
+                                value="<?php echo $row['io_type']; ?>">
+                            <input type="hidden" name="io_id[<?php echo $it['it_id']; ?>][]"
+                                value="<?php echo $row['io_id']; ?>">
+                            <input type="hidden" name="io_value[<?php echo $it['it_id']; ?>][]"
+                                value="<?php echo $row['ct_option']; ?>">
+                            <input type="hidden" class="io_price" value="<?php echo $row['io_price']; ?>">
+                            <input type="hidden" class="io_stock" value="<?php echo $it_stock_qty; ?>">
+
+                            <div class="flex items-center justify-between">
+                                <div class="opt_name">
+                                    <span class="sit_opt_subj">
+                                        <?php echo $row['ct_option']; ?>
+                                    </span>
+                                </div>
+
+                                <button type="button" class="sit_opt_del">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x" aria-hidden="true">
+                                        <path d="M18 6 6 18" />
+                                        <path d="m6 6 12 12" />
+                                    </svg>
+                                    <span class="sound_only">삭제</span>
+                                </button>
+                            </div>
+
+                            <div class="opt_count mt-2 flex items-center justify-between">
+                                <div class="flex items-center gap-2 border border-gray-300 bg-white">
+                                    <button type="button"
+                                        class="sit_qty_minus shrink-0 inline-flex items-center justify-center w-8 h-8">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus w-4 h-4"
+                                            aria-hidden="true">
+                                            <path d="M5 12h14" />
+                                        </svg>
+                                        <span class="sound_only">감소</span>
+                                    </button>
+                                    <label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
+                                    <input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]"
+                                        value="<?php echo $row['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>"
+                                        class="num_input text-center w-6" size="1">
+                                    <button type="button"
+                                        class="sit_qty_plus shrink-0 inline-flex items-center justify-center w-8 h-8">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus w-4 h-4"
+                                            aria-hidden="true">
+                                            <path d="M5 12h14" />
+                                            <path d="M12 5v14" />
+                                        </svg>
+                                        <span class="sound_only">증가</span>
+                                    </button>
+                                </div>
+
+                                <span class="sit_opt_prc"><?php echo $io_price; ?></span>
+                            </div>
+
+                        </li>
+                        <?php
+                    }
+                    ?>
+                </ul>
+            </div>
+
+            <div id="sit_tot_price"></div>
+
+            <div class="btn_confirm">
+                <button type="submit" class="btn_submit rounded text-xs pc:text-sm text-white bg-[#393939] px-2 py-1">옵션
+                    적용
+                </button>
+                <button type="button" id="mod_option_close" class="btn_close border border-[#8D8D8D38] rounded text-xs pc:text-sm px-2 py-1">
+                    취소
+                </button>
+            </div>
+        </div>
+    </form>
+</section>
 <script>
     function formcheck(f) {
         var val, io_type, result = true;
@@ -215,7 +194,7 @@ if (!sql_num_rows($result))
         var max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
         var $el_type = $("input[name^=io_type]");
 
-        $("input[name^=ct_qty]").each(function(index) {
+        $("input[name^=ct_qty]").each(function (index) {
             val = $(this).val();
 
             if (val.length < 1) {

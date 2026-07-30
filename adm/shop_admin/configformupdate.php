@@ -8,6 +8,202 @@ auth_check_menu($auth, $sub_menu, "w");
 
 check_admin_token();
 
+
+// ------------------------------------------------------------
+// 브랜드별 쇼핑몰 설정 저장
+// 최고관리자는 아래 기존 영카트 저장 로직을 그대로 사용합니다.
+// ------------------------------------------------------------
+$is_brand_config = false;
+$brand_id = '';
+
+if ($is_admin !== 'super') {
+    $login_brand_id = sql_real_escape_string($member['mb_id']);
+    $brand_chk = sql_fetch(" SELECT brand_id FROM donuts_brand WHERE brand_id = '{$login_brand_id}' LIMIT 1 ");
+    if (!empty($brand_chk['brand_id'])) {
+        $is_brand_config = true;
+        $brand_id = $brand_chk['brand_id'];
+    }
+}
+
+if ($is_brand_config) {
+    // 브랜드 설정 테이블 자동 생성
+    sql_query(" CREATE TABLE IF NOT EXISTS `donuts_brand_config` (
+        `id` int NOT NULL AUTO_INCREMENT,
+        `brand_id` varchar(20) NOT NULL,
+        `brand_name` varchar(255) NOT NULL DEFAULT '',
+        `brand_commission_rate` decimal(5,2) NOT NULL DEFAULT '0.00',
+        `business_license` varchar(255) NOT NULL DEFAULT '',
+        `settings_json` longtext NOT NULL,
+        `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY `uk_brand_id` (`brand_id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ", false);
+
+    $brand_id_sql = sql_real_escape_string($brand_id);
+    $old_brand_config = sql_fetch(" SELECT * FROM donuts_brand_config WHERE brand_id = '{$brand_id_sql}' LIMIT 1 ");
+
+    $brand_name = isset($_POST['brand_name']) ? trim($_POST['brand_name']) : '';
+    $brand_name = clean_xss_tags($brand_name, 1, 1);
+    $brand_commission_rate = isset($_POST['brand_commission_rate']) ? (float)$_POST['brand_commission_rate'] : 0;
+    if ($brand_commission_rate < 0) $brand_commission_rate = 0;
+    if ($brand_commission_rate > 100) $brand_commission_rate = 100;
+
+    // 체크되지 않은 체크박스도 브랜드 설정에서는 0으로 저장해야
+    // 최고관리자 기본값이 다시 나타나는 현상을 막을 수 있습니다.
+    $brand_checkbox_fields = array(
+        'cf_use_point',
+        'de_type1_list_use','de_type2_list_use','de_type3_list_use','de_type4_list_use','de_type5_list_use',
+        'de_mobile_type1_list_use','de_mobile_type2_list_use','de_mobile_type3_list_use','de_mobile_type4_list_use','de_mobile_type5_list_use',
+        'de_rel_list_use','de_mobile_rel_list_use',
+        'de_samsung_pay_use','de_inicis_lpay_use','de_inicis_kakaopay_use','de_inicis_cartpoint_use',
+        'de_guest_cart_use','de_member_reg_coupon_use','de_tax_flag_use',
+        'de_sms_use1','de_sms_use2','de_sms_use3','de_sms_use4','de_sms_use5'
+    );
+
+    $settings = $_POST;
+    unset($settings['token'], $settings['brand_name'], $settings['brand_commission_rate']);
+    unset($settings['business_license_del'], $settings['logo_img_del'], $settings['logo_img_del2'], $settings['mobile_logo_img_del'], $settings['mobile_logo_img_del2']);
+
+    foreach ($brand_checkbox_fields as $field) {
+        if (!isset($settings[$field])) {
+            $settings[$field] = '0';
+        }
+    }
+
+    // 간편결제 체크박스 배열은 화면에서 사용하는 문자열 값도 같이 보관
+    if (!isset($settings['de_easy_pays']) || !is_array($settings['de_easy_pays'])) {
+        $settings['de_easy_pays'] = array();
+    }
+    $easy_pays = array();
+    foreach ($settings['de_easy_pays'] as $v) {
+        $easy_pays[] = preg_replace('/[^0-9a-z_\-]/i', '', $v);
+    }
+    $settings['de_easy_pays'] = $easy_pays;
+    $settings['de_easy_pay_services'] = implode(',', $easy_pays);
+
+    // 현금영수증 발급수단
+    $taxsave_types = array('account');
+    if (!empty($_POST['de_taxsave_types_vbank'])) $taxsave_types[] = 'vbank';
+    if (!empty($_POST['de_taxsave_types_transfer'])) $taxsave_types[] = 'transfer';
+    $settings['de_taxsave_types'] = implode(',', $taxsave_types);
+
+    // 설정값 재귀 정리
+    $clean_brand_value = function ($value) use (&$clean_brand_value) {
+        if (is_array($value)) {
+            $out = array();
+            foreach ($value as $k => $v) {
+                $out[$k] = $clean_brand_value($v);
+            }
+            return $out;
+        }
+        if (is_string($value)) {
+            return trim($value);
+        }
+        return $value;
+    };
+    $settings = $clean_brand_value($settings);
+
+    // 브랜드별 업로드 폴더
+    $brand_dir = G5_DATA_PATH . '/brand_config/' . $brand_id;
+    if (!is_dir(G5_DATA_PATH . '/brand_config')) {
+        @mkdir(G5_DATA_PATH . '/brand_config', G5_DIR_PERMISSION, true);
+        @chmod(G5_DATA_PATH . '/brand_config', G5_DIR_PERMISSION);
+    }
+    if (!is_dir($brand_dir)) {
+        @mkdir($brand_dir, G5_DIR_PERMISSION, true);
+        @chmod($brand_dir, G5_DIR_PERMISSION);
+    }
+
+    // 안전한 이미지 업로드 함수
+    $save_brand_image = function ($file_key, $save_name) use ($brand_dir) {
+        if (!isset($_FILES[$file_key]) || !is_uploaded_file($_FILES[$file_key]['tmp_name'])) {
+            return '';
+        }
+
+        $image_info = @getimagesize($_FILES[$file_key]['tmp_name']);
+        if (!$image_info || !in_array($image_info[2], array(IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG, IMAGETYPE_WEBP))) {
+            alert('이미지 파일만 업로드할 수 있습니다.');
+        }
+
+        $dest = $brand_dir . '/' . $save_name;
+        if (!move_uploaded_file($_FILES[$file_key]['tmp_name'], $dest)) {
+            alert('이미지 업로드에 실패했습니다. data/brand_config 폴더 권한을 확인해 주세요.');
+        }
+        @chmod($dest, G5_FILE_PERMISSION);
+        return $save_name;
+    };
+
+    // 사업자등록증
+    $business_license = !empty($old_brand_config['business_license']) ? $old_brand_config['business_license'] : '';
+    if (!empty($_POST['business_license_del']) && $business_license) {
+        @unlink($brand_dir . '/' . $business_license);
+        $business_license = '';
+    }
+    if (isset($_FILES['business_license']) && is_uploaded_file($_FILES['business_license']['tmp_name'])) {
+        $ext = strtolower(pathinfo($_FILES['business_license']['name'], PATHINFO_EXTENSION));
+        if (!in_array($ext, array('jpg','jpeg','png','gif','webp'))) $ext = 'jpg';
+        $new_name = 'business_license.' . $ext;
+        $saved = $save_brand_image('business_license', $new_name);
+        if ($saved) $business_license = $saved;
+    }
+
+    // 로고 삭제/업로드
+    $logo_map = array(
+        'logo_img' => 'logo_img',
+        'logo_img2' => 'logo_img2',
+        'mobile_logo_img' => 'mobile_logo_img',
+        'mobile_logo_img2' => 'mobile_logo_img2'
+    );
+    $delete_map = array(
+        'logo_img' => 'logo_img_del',
+        'logo_img2' => 'logo_img_del2',
+        'mobile_logo_img' => 'mobile_logo_img_del',
+        'mobile_logo_img2' => 'mobile_logo_img_del2'
+    );
+
+    foreach ($logo_map as $file_key => $save_name) {
+        if (!empty($_POST[$delete_map[$file_key]])) {
+            @unlink($brand_dir . '/' . $save_name);
+        }
+        if (isset($_FILES[$file_key]) && is_uploaded_file($_FILES[$file_key]['tmp_name'])) {
+            $save_brand_image($file_key, $save_name);
+        }
+    }
+
+    $json = json_encode($settings, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    if ($json === false) {
+        alert('브랜드 설정 데이터를 저장하는 중 JSON 변환 오류가 발생했습니다.');
+    }
+
+    $brand_name_sql = sql_real_escape_string($brand_name);
+    $business_license_sql = sql_real_escape_string($business_license);
+    $json_sql = sql_real_escape_string($json);
+
+    $sql = " INSERT INTO donuts_brand_config
+                SET brand_id = '{$brand_id_sql}',
+                    brand_name = '{$brand_name_sql}',
+                    brand_commission_rate = '{$brand_commission_rate}',
+                    business_license = '{$business_license_sql}',
+                    settings_json = '{$json_sql}',
+                    created_at = '" . G5_TIME_YMDHIS . "',
+                    updated_at = '" . G5_TIME_YMDHIS . "'
+             ON DUPLICATE KEY UPDATE
+                    brand_name = VALUES(brand_name),
+                    brand_commission_rate = VALUES(brand_commission_rate),
+                    business_license = VALUES(business_license),
+                    settings_json = VALUES(settings_json),
+                    updated_at = VALUES(updated_at) ";
+
+    $save_result = sql_query($sql, false);
+    if (!$save_result) {
+        alert('브랜드 쇼핑몰 설정 저장에 실패했습니다.');
+    }
+
+    run_event('shop_admin_brand_configformupdate', $brand_id, $settings);
+    alert('브랜드 쇼핑몰 설정이 저장되었습니다.', './configform.php');
+}
+
 // 대표전화번호 유효성 체크
 if(! (isset($_POST['de_admin_company_tel']) && check_vaild_callback($_POST['de_admin_company_tel'])) )
     alert('대표전화번호를 올바르게 입력해 주세요.');

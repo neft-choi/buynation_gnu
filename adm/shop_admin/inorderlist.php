@@ -2,11 +2,50 @@
 $sub_menu = '400410';
 include_once('./_common.php');
 
+/*************************************************
+ * 브랜드 회원 여부 확인
+ * - 최고관리자: 전체 조회
+ * - 브랜드 회원: 자신의 it_brand 상품이 포함된 미완료주문만 조회
+ *************************************************/
+$brand_member = false;
+$brand_id = '';
+
+if ($is_admin != 'super') {
+    $brand = sql_fetch("
+        SELECT brand_id
+        FROM donuts_brand
+        WHERE brand_id = '" . sql_real_escape_string($member['mb_id']) . "'
+        LIMIT 1
+    ");
+
+    if (!empty($brand['brand_id'])) {
+        $brand_member = true;
+        $brand_id = $brand['brand_id'];
+    }
+}
+
 auth_check_menu($auth, $sub_menu, "r");
 
 $sql_common = " from {$g5['g5_shop_order_data_table']} ";
 
 $sql_search = " where cart_id <> '0' ";
+
+// 브랜드 회원은 자신의 브랜드 상품이 포함된 미완료 주문만 조회
+if ($is_admin != 'super' && $brand_member) {
+    $brand_id_sql = sql_real_escape_string($brand_id);
+
+    $sql_search .= "
+        and exists (
+            select 1
+            from {$g5['g5_shop_cart_table']} c
+            inner join {$g5['g5_shop_item_table']} i
+                on c.it_id = i.it_id
+            where c.od_id = {$g5['g5_shop_order_data_table']}.cart_id
+              and i.it_brand = '{$brand_id_sql}'
+        )
+    ";
+}
+
 if ($stx) {
     $sql_search .= " and ( ";
     switch ($sfl) {
@@ -109,7 +148,32 @@ $colspan = 10;
                         }
 
                         // 주문금액
-                        $sql = " select sum(if(io_type = '1', io_price, (ct_price + io_price)) * ct_qty) as price from {$g5['g5_shop_cart_table']} where od_id = '{$row['cart_id']}' and ct_status = '쇼핑' ";
+                        // 브랜드 회원은 자신의 브랜드 상품 금액만 계산
+                        if ($is_admin != 'super' && $brand_member) {
+                            $brand_id_sql = sql_real_escape_string($brand_id);
+
+                            $sql = "
+                                select sum(
+                                    if(c.io_type = '1', c.io_price, (c.ct_price + c.io_price)) * c.ct_qty
+                                ) as price
+                                from {$g5['g5_shop_cart_table']} c
+                                inner join {$g5['g5_shop_item_table']} i
+                                    on c.it_id = i.it_id
+                                where c.od_id = '{$row['cart_id']}'
+                                  and c.ct_status = '쇼핑'
+                                  and i.it_brand = '{$brand_id_sql}'
+                            ";
+                        } else {
+                            $sql = "
+                                select sum(
+                                    if(io_type = '1', io_price, (ct_price + io_price)) * ct_qty
+                                ) as price
+                                from {$g5['g5_shop_cart_table']}
+                                where od_id = '{$row['cart_id']}'
+                                  and ct_status = '쇼핑'
+                            ";
+                        }
+
                         $ct = sql_fetch($sql);
 
                         $bg = 'bg' . ($i % 2);

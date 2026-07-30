@@ -226,11 +226,11 @@ $sns_url  = shop_item_url($it['it_id']);
 $sns_share_links = get_sns_share_link('facebook', $sns_url, $sns_title, G5_SHOP_SKIN_URL . '/img/facebook.png') . ' ';
 $sns_share_links .= get_sns_share_link('twitter', $sns_url, $sns_title, G5_SHOP_SKIN_URL . '/img/twitter.png') . ' ';
 
-// 상품품절체크
+// 상품 품절 체크
 if (G5_SOLDOUT_CHECK)
     $is_soldout = is_soldout($it['it_id']);
 
-// 주문가능체크
+// 주문 가능 상태인지 체크
 $is_orderable = true;
 if (!$it['it_use'] || $it['it_tel_inq'] || $is_soldout)
     $is_orderable = false;

@@ -5,6 +5,83 @@ include_once(G5_EDITOR_LIB);
 
 auth_check_menu($auth, $sub_menu, "r");
 
+
+// ------------------------------------------------------------
+// 브랜드별 쇼핑몰 설정
+// 최고관리자는 기존 g5_shop_default / g5_config를 그대로 사용하고,
+// donuts_brand에 등록된 일반 계정은 donuts_brand_config의 개별 설정을 사용합니다.
+// ------------------------------------------------------------
+$is_brand_config = false;
+$brand_id = '';
+$brand_config_row = array();
+$brand_name = '';
+$brand_commission_rate = '0';
+$business_license = '';
+
+// 브랜드 설정 테이블 자동 생성
+sql_query(" CREATE TABLE IF NOT EXISTS `donuts_brand_config` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `brand_id` varchar(20) NOT NULL,
+    `brand_name` varchar(255) NOT NULL DEFAULT '',
+    `brand_commission_rate` decimal(5,2) NOT NULL DEFAULT '0.00',
+    `business_license` varchar(255) NOT NULL DEFAULT '',
+    `settings_json` longtext NOT NULL,
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uk_brand_id` (`brand_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ", false);
+
+if ($is_admin !== 'super') {
+    $login_brand_id = sql_real_escape_string($member['mb_id']);
+    $brand_chk = sql_fetch(" SELECT brand_id FROM donuts_brand WHERE brand_id = '{$login_brand_id}' LIMIT 1 ");
+
+    if (!empty($brand_chk['brand_id'])) {
+        $is_brand_config = true;
+        $brand_id = $brand_chk['brand_id'];
+
+        $brand_config_row = sql_fetch(" SELECT * FROM donuts_brand_config WHERE brand_id = '{$login_brand_id}' LIMIT 1 ");
+
+        if (!empty($brand_config_row['id'])) {
+            $brand_name = $brand_config_row['brand_name'];
+            $brand_commission_rate = $brand_config_row['brand_commission_rate'];
+            $business_license = $brand_config_row['business_license'];
+
+            $brand_settings = json_decode($brand_config_row['settings_json'], true);
+            if (is_array($brand_settings)) {
+                foreach ($brand_settings as $key => $value) {
+                    // 배열형 데이터는 별도 변환
+                    if ($key === 'de_easy_pays' && is_array($value)) {
+                        $default['de_easy_pay_services'] = implode(',', $value);
+                        continue;
+                    }
+
+                    if (is_array($value)) {
+                        continue;
+                    }
+
+                    if (strpos($key, 'cf_') === 0) {
+                        $config[$key] = $value;
+                    } elseif (strpos($key, 'de_') === 0) {
+                        $default[$key] = $value;
+                    }
+                }
+            }
+        } else {
+            // 최초 진입 시 식별하기 쉽도록 로그인 ID를 기본 브랜드명으로 표시
+            $brand_name = $brand_id;
+        }
+    }
+}
+
+// 브랜드별 이미지 저장 위치
+$brand_config_data_dir = G5_DATA_PATH . '/brand_config';
+$brand_config_data_url = G5_DATA_URL . '/brand_config';
+if ($is_brand_config) {
+    $brand_config_data_dir .= '/' . $brand_id;
+    $brand_config_data_url .= '/' . $brand_id;
+}
+
 if (!$config['cf_icode_server_ip'])
     $config['cf_icode_server_ip'] = '211.172.232.124';
 if (!$config['cf_icode_server_port'])
@@ -17,6 +94,11 @@ if ($config['cf_sms_use'] && $config['cf_icode_id'] && $config['cf_icode_pw']) {
 
 $g5['title'] = '쇼핑몰설정';
 include_once(G5_ADMIN_PATH . '/admin.head.php');
+
+if ($is_brand_config) {
+    echo '<div class="local_desc01 local_desc" style="margin-bottom:15px;"><p><strong>'.get_text($brand_id).'</strong> 브랜드 전용 쇼핑몰 설정입니다. 이 화면에서 저장한 값은 다른 브랜드 및 최고관리자의 기본 설정과 분리되어 저장됩니다.</p></div>';
+}
+
 
 $pg_anchor = '<ul class="anchor">
 <li><a href="#anc_scf_info" data-tab-target="anc_scf_info">사업자정보</a></li>
@@ -265,20 +347,28 @@ if (!$default['de_kakaopay_cancelpwd']) {
                             <label for="business_license" class="btn btn_04 cursor-pointer">
                                 업로드
                             </label>
+                            <?php if ($is_brand_config && $business_license) { ?>
+                                <label style="margin-left:10px;">
+                                    <input type="checkbox" name="business_license_del" value="1"> 삭제
+                                </label>
+                            <?php } ?>
                         </td>
                     </tr>
                     <tr>
                         <td colspan="4">
-                            <div
-                                class="flex h-48 w-full items-center justify-center rounded border border-dashed border-gray-300 bg-gray-50">
-                                <span class="text-gray-400">등록된 이미지가 없습니다.</span>
+                            <div class="flex h-48 w-full items-center justify-center rounded border border-dashed border-gray-300 bg-gray-50">
+                                <?php if ($is_brand_config && $business_license) { ?>
+                                    <img src="<?php echo $brand_config_data_url . '/' . rawurlencode($business_license); ?>" alt="사업자등록증" style="max-height:180px;max-width:100%;">
+                                <?php } else { ?>
+                                    <span class="text-gray-400">등록된 이미지가 없습니다.</span>
+                                <?php } ?>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <th scope="row" for="brand_name"><label>브랜드명</label></th>
                         <td>
-                            <input type="text" id="brand_name" name="brand_name" value="CJ" class="frm_input">
+                            <input type="text" id="brand_name" name="brand_name" value="<?php echo get_sanitize_input($brand_name); ?>" class="frm_input">
                         </td>
                     </tr>
                     <tr>
@@ -286,7 +376,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                             <label for="brand_commission_rate">수수료율</label>
                         </th>
                         <td>
-                            <input type="number" id="brand_commission_rate" name="brand_commission_rate" min="0"
+                            <input type="number" id="brand_commission_rate" name="brand_commission_rate" value="<?php echo get_sanitize_input($brand_commission_rate); ?>" min="0"
                                 max="100" step="0.1" class="frm_input">
                             %
                         </td>
@@ -1746,7 +1836,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                             <?php echo help("쇼핑몰 상단로고를 직접 올릴 수 있습니다. 이미지 파일만 가능합니다."); ?>
                             <input type="file" name="logo_img" id="logo_img">
                             <?php
-                            $logo_img = G5_DATA_PATH . "/common/logo_img";
+                            $logo_img = $is_brand_config ? ($brand_config_data_dir . "/logo_img") : (G5_DATA_PATH . "/common/logo_img");
                             if (file_exists($logo_img)) {
                                 $size = getimagesize($logo_img);
                                 ?>
@@ -1754,7 +1844,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                                 <label for="logo_img_del"><span class="sound_only">상단로고이미지</span> 삭제</label>
                                 <span class="scf_img_logoimg"></span>
                                 <div id="logoimg" class="banner_or_img">
-                                    <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="">
+                                    <img src="<?php echo $is_brand_config ? ($brand_config_data_url . '/logo_img') : (G5_DATA_URL . '/common/logo_img'); ?>" alt="">
                                     <button type="button" class="sit_wimg_close">닫기</button>
                                 </div>
                                 <script>
@@ -1769,7 +1859,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                             <?php echo help("쇼핑몰 하단로고를 직접 올릴 수 있습니다. 이미지 파일만 가능합니다."); ?>
                             <input type="file" name="logo_img2" id="logo_img2">
                             <?php
-                            $logo_img2 = G5_DATA_PATH . "/common/logo_img2";
+                            $logo_img2 = $is_brand_config ? ($brand_config_data_dir . "/logo_img2") : (G5_DATA_PATH . "/common/logo_img2");
                             if (file_exists($logo_img2)) {
                                 $size = getimagesize($logo_img2);
                                 ?>
@@ -1777,7 +1867,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                                 <label for="logo_img_del2"><span class="sound_only">하단로고이미지</span> 삭제</label>
                                 <span class="scf_img_logoimg2"></span>
                                 <div id="logoimg2" class="banner_or_img">
-                                    <img src="<?php echo G5_DATA_URL; ?>/common/logo_img2" alt="">
+                                    <img src="<?php echo $is_brand_config ? ($brand_config_data_url . '/logo_img2') : (G5_DATA_URL . '/common/logo_img2'); ?>" alt="">
                                     <button type="button" class="sit_wimg_close">닫기</button>
                                 </div>
                                 <script>
@@ -1792,7 +1882,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                             <?php echo help("모바일 쇼핑몰 상단로고를 직접 올릴 수 있습니다. 이미지 파일만 가능합니다."); ?>
                             <input type="file" name="mobile_logo_img" id="mobile_logo_img">
                             <?php
-                            $mobile_logo_img = G5_DATA_PATH . "/common/mobile_logo_img";
+                            $mobile_logo_img = $is_brand_config ? ($brand_config_data_dir . "/mobile_logo_img") : (G5_DATA_PATH . "/common/mobile_logo_img");
                             if (file_exists($mobile_logo_img)) {
                                 $size = getimagesize($mobile_logo_img);
                                 ?>
@@ -1800,7 +1890,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                                 <label for="mobile_logo_img_del"><span class="sound_only">모바일 상단로고이미지</span> 삭제</label>
                                 <span class="scf_img_mobilelogoimg"></span>
                                 <div id="mobilelogoimg" class="banner_or_img">
-                                    <img src="<?php echo G5_DATA_URL; ?>/common/mobile_logo_img" alt="">
+                                    <img src="<?php echo $is_brand_config ? ($brand_config_data_url . '/mobile_logo_img') : (G5_DATA_URL . '/common/mobile_logo_img'); ?>" alt="">
                                     <button type="button" class="sit_wimg_close">닫기</button>
                                 </div>
                                 <script>
@@ -1815,7 +1905,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                             <?php echo help("모바일 쇼핑몰 하단로고를 직접 올릴 수 있습니다. 이미지 파일만 가능합니다."); ?>
                             <input type="file" name="mobile_logo_img2" id="mobile_logo_img2">
                             <?php
-                            $mobile_logo_img2 = G5_DATA_PATH . "/common/mobile_logo_img2";
+                            $mobile_logo_img2 = $is_brand_config ? ($brand_config_data_dir . "/mobile_logo_img2") : (G5_DATA_PATH . "/common/mobile_logo_img2");
                             if (file_exists($mobile_logo_img2)) {
                                 $size = getimagesize($mobile_logo_img2);
                                 ?>
@@ -1823,7 +1913,7 @@ if (!$default['de_kakaopay_cancelpwd']) {
                                 <label for="mobile_logo_img_del2"><span class="sound_only">모바일 하단로고이미지</span> 삭제</label>
                                 <span class="scf_img_mobilelogoimg2"></span>
                                 <div id="mobilelogoimg2" class="banner_or_img">
-                                    <img src="<?php echo G5_DATA_URL; ?>/common/mobile_logo_img2" alt="">
+                                    <img src="<?php echo $is_brand_config ? ($brand_config_data_url . '/mobile_logo_img2') : (G5_DATA_URL . '/common/mobile_logo_img2'); ?>" alt="">
                                     <button type="button" class="sit_wimg_close">닫기</button>
                                 </div>
                                 <script>

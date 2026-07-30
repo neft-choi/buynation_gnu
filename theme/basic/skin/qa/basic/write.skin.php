@@ -65,10 +65,10 @@ add_stylesheet('<link rel="stylesheet" href="' . $qa_skin_url . '/style.css">', 
 
             <div class="form_01">
                 <?php if ($category_option) { ?>
-                    <div class="relative inline-block mb-2 pc:mb-4">
+                    <div class="relative inline-block w-full mb-2 pc:mb-4">
                         <label for="qa_category" class="sound_only">분류<strong>필수</strong></label>
                         <select name="qa_category" id="qa_category"
-                            class="appearance-none border border-[var(--color-semantic-border-normal-default)] rounded pl-4 pr-10 py-2"
+                            class="appearance-none w-full border border-[var(--color-semantic-border-normal-default)] rounded pl-4 pr-10 py-2"
                             required>
                             <option value="">분류를 선택하세요</option>
                             <?php echo $category_option ?>
@@ -132,7 +132,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $qa_skin_url . '/style.css">', 
                         id="qa_subject" required class="required input-text w-full" maxlength="255" placeholder="제목">
                 </div>
 
-                <div class="qa_content_wrap <?php echo $is_dhtml_editor ? $config['cf_editor'] : ''; ?> mt-2 pc:mt-4">
+                <div class="qa_content_wrap <?php echo $is_dhtml_editor ? $config['cf_editor'] : ''; ?> mt-2 pc:mt-4 mb-4">
                     <label for="qa_content" class="sound_only">내용<strong class="sound_only">필수</strong></label>
                     <?php echo $editor_html; // 에디터 사용시는 에디터로, 아니면 textarea 로 노출 
                     ?>
@@ -145,42 +145,25 @@ add_stylesheet('<link rel="stylesheet" href="' . $qa_skin_url . '/style.css">', 
                     </div>
                 <?php } ?>
 
-                <div class="mt-4">
+                <fieldset class="space-y-3">
+                    <legend class="text-base font-medium text-gray-900">첨부 파일</legend>
+
                     <?php echo get_file_upload_field('bf_file[1]', 'bf_file_1'); ?>
-                    <?php echo get_file_upload_script() ?>
-                </div>
+                    
+                    <?php 
+                    // echo get_file_upload_field('bf_file[2]', 'bf_file_2'); 
+                    ?>
+                </fieldset>
 
-                <div class="bo_w_flie mt-4">
-                    <div class="file_wr">
-                        <label for="bf_file_1" class="lb_icon"><i class="fa fa-download" aria-hidden="true"></i><span
-                                class="sound_only"> 파일 #1</span></label>
-                        <input type="file" name="bf_file[1]" id="bf_file_1"
-                            title="파일첨부 1 :  용량 <?php echo $upload_max_filesize; ?> 이하만 업로드 가능" class="frm_file">
-
-                        <?php if ($w == 'u' && $write['qa_file1']) { ?>
-                            <input type="checkbox" id="bf_file_del1" name="bf_file_del[1]" value="1"> <label
-                                for="bf_file_del1"><?php echo $write['qa_source1']; ?> 파일 삭제</label>
-                        <?php } ?>
-                    </div>
-                </div>
-
-                <div class="bo_w_flie">
-                    <div class="file_wr">
-                        <label for="bf_file_2" class="lb_icon"><i class="fa fa-download" aria-hidden="true"></i><span
-                                class="sound_only"> 파일 #2</span></label>
-                        <input type="file" name="bf_file[2]" id="bf_file_2"
-                            title="파일첨부 2 :  용량 <?php echo $upload_max_filesize; ?> 이하만 업로드 가능" class="frm_file">
-                        <?php if ($w == 'u' && $write['qa_file2']) { ?>
-                            <input type="checkbox" id="bf_file_del2" name="bf_file_del[2]" value="1"> <label
-                                for="bf_file_del2"><?php echo $write['qa_source2']; ?> 파일 삭제</label>
-                        <?php } ?>
-                    </div>
-                </div>
+                <?php echo get_file_upload_script(); ?>
             </div>
 
             <div class="flex items-center justify-end gap-2 mt-4">
-                <a href="<?php echo $list_href; ?>" class="rounded text-sm text-[var(--color-semantic-label-solid-subtler)] font-medium bg-[var(--color-semantic-fill-solid-default)] px-4 py-2">취소</a>
-                <button type="submit" id="btn_submit" accesskey="s" class="rounded text-sm text-[var(--color-semantic-label-solid-default)] font-medium bg-[var(--color-semantic-primary-normal)] px-4 py-2">작성 완료</button>
+                <a href="<?php echo $list_href; ?>"
+                    class="rounded text-sm text-[var(--color-semantic-label-solid-subtler)] font-medium bg-[var(--color-semantic-fill-solid-default)] px-4 py-2">취소</a>
+                <button type="submit" id="btn_submit" accesskey="s"
+                    class="rounded text-sm text-[var(--color-semantic-label-solid-default)] font-medium bg-[var(--color-semantic-primary-normal)] px-4 py-2">작성
+                    완료</button>
             </div>
         </form>
 

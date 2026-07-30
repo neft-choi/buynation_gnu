@@ -2599,10 +2599,10 @@
   margin: 0 1px 0 0;
 }
 
-.sit_option {
+/* .sit_option {
   padding: 10px 0;
   margin: 10px 0 0;
-}
+} */
 .sit_option label {
   display: block;
   margin: 0 0 5px;
@@ -2613,7 +2613,7 @@
 }
 .sit_option select {
   width: 100%;
-  margin: 0 0 10px;
+  /* margin: 0 0 10px; */
   height: 50px;
   padding: 0 10px;
   border: 1px solid #cdcdcd;

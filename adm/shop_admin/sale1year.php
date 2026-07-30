@@ -4,6 +4,26 @@ include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, "r");
 
+// 브랜드별 매출 필터
+// 최고관리자는 전체, 그 외 계정은 자신의 브랜드 상품이 포함된 주문만 조회
+$is_brand_sale = ($is_admin !== 'super');
+$sale_brand_id = $is_brand_sale ? sql_real_escape_string($member['mb_id']) : '';
+
+$brand_order_where = '';
+if ($is_brand_sale) {
+    $brand_order_where = "
+        AND EXISTS (
+            SELECT 1
+            FROM {$g5['g5_shop_cart_table']} c_brand
+            INNER JOIN {$g5['g5_shop_item_table']} i_brand
+                ON c_brand.it_id = i_brand.it_id
+            WHERE c_brand.od_id = {$g5['g5_shop_order_table']}.od_id
+              AND i_brand.it_brand = '{$sale_brand_id}'
+        )
+    ";
+}
+
+
 $fr_year = isset($_REQUEST['fr_year']) ? preg_replace('/[^0-9 :_\-]/i', '', $_REQUEST['fr_year']) : '';
 $to_year = isset($_REQUEST['to_year']) ? preg_replace('/[^0-9 :_\-]/i', '', $_REQUEST['to_year']) : '';
 
@@ -44,6 +64,7 @@ $sql = " select od_id,
                 (od_cart_coupon + od_coupon + od_send_coupon) as couponprice
            from {$g5['g5_shop_order_table']}
           where SUBSTRING(od_time,1,4) between '$fr_year' and '$to_year'
+          {$brand_order_where}
           order by od_time desc ";
 $result = sql_query($sql);
 ?>

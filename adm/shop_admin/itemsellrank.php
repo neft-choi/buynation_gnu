@@ -2,6 +2,26 @@
 $sub_menu = '500100';
 include_once('./_common.php');
 
+/*************************************************
+ * 브랜드 회원 여부 확인
+ *************************************************/
+$brand_member = false;
+$brand_id = '';
+
+if ($is_admin != 'super') {
+    $brand = sql_fetch("
+        SELECT brand_id
+        FROM donuts_brand
+        WHERE brand_id = '" . sql_real_escape_string($member['mb_id']) . "'
+        LIMIT 1
+    ");
+
+    if (!empty($brand['brand_id'])) {
+        $brand_member = true;
+        $brand_id = $brand['brand_id'];
+    }
+}
+
 auth_check_menu($auth, $sub_menu, "r");
 
 $g5['title'] = '상품판매순위';
@@ -31,6 +51,13 @@ $sql  = " select a.it_id,
                  SUM(ct_qty) as ct_status_sum
             from {$g5['g5_shop_cart_table']} a, {$g5['g5_shop_item_table']} b ";
 $sql .= " where a.it_id = b.it_id ";
+
+// 브랜드 회원은 자신의 상품만 조회
+if ($is_admin != 'super' && $brand_member) {
+    $brand_id_sql = sql_real_escape_string($brand_id);
+    $sql .= " and b.it_brand = '{$brand_id_sql}' ";
+}
+
 if ($fr_date && $to_date)
 {
     $fr = preg_replace("/([0-9]{4})([0-9]{2})([0-9]{2})/", "\\1-\\2-\\3", $fr_date);

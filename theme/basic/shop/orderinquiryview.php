@@ -95,7 +95,7 @@ if ($od['od_pg'] == 'lg') {
                             <div class="sod_img !static border border-gray-100 bg-gray-50"><?php echo $image; ?></div>
                             <div class="sod_name flex-1">
                                 <a href="<?php echo shop_item_url($row['it_id']); ?>" class="block text-base font-medium text-gray-900"><?php echo $row['it_name']; ?></a>
-                                <div class="sod_opt mt-1 text-sm text-gray-500"><?php echo get_text($opt['ct_option']); ?></div>
+                                <div class="sod_opt my-1 text-sm text-gray-500"><?php echo get_text($opt['ct_option']); ?></div>
                             </div>
                         </div>
                         <div class="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">

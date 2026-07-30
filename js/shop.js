@@ -438,7 +438,7 @@ function add_sel_option(type, id, option, price, stock) {
   `;
 
   if ($("#sit_sel_option > ul").length < 1) {
-    $("#sit_sel_option").html('<ul id="sit_opt_added" class="space-y-3"></ul>');
+    $("#sit_sel_option").html('<ul id="sit_opt_added" class="space-y-2 mt-2"></ul>');
     $("#sit_sel_option > ul").html(opt);
   } else {
     if (type) {

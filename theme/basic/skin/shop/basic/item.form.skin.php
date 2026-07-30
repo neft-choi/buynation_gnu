@@ -297,7 +297,6 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 									<div class="text-sm font-medium text-gray-900"><?php echo $it['it_model']; ?></div>
 								</div>
 							<?php } ?>
-
 							<?php if ($config['cf_use_point']) { ?>
 								<div class="grid grid-cols-[72px_1fr] gap-x-4 py-4 border-t border-gray-200">
 									<div class="text-sm text-gray-500">포인트</div>
@@ -365,7 +364,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					?>
 
 					<!-- 선택된 옵션 시작 { -->
-					<section id="sit_sel_option" class="my-4">
+					<section id="sit_sel_option">
 						<h3>선택된 옵션</h3>
 						<?php
 						if (!$option_item) {
@@ -380,11 +379,13 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 										value="<?php echo $it['it_name']; ?>">
 									<input type="hidden" class="io_price" value="0">
 									<input type="hidden" class="io_stock" value="<?php echo $it['it_stock_qty']; ?>">
+
 									<div class="opt_name">
 										<span class="sit_opt_subj text-[15px] text-gray-700">
 											<?php echo $it['it_name']; ?>
 										</span>
 									</div>
+
 									<div class="opt_count flex items-center justify-between gap-2">
 										<label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
 										<div class="flex items-center border border-gray-300">
@@ -431,9 +432,10 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						<?php } ?>
 					</section>
 					<!-- } 선택된 옵션 끝 -->
-
-					<div id="sit_tot_price"></div>
 				</div>
+
+				<!-- 총 합계 -->
+				<div id="sit_tot_price"></div>
 
 				<script>
 					// 상품 옵션 관련 반응형 처리
@@ -495,8 +497,8 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 							</button>
 						<?php } ?>
 					<?php } else { ?>
-						<button type="submit" data-variant="primary" onclick="document.pressed=this.value;" value="장바구니"
-							class="h-14 flex-1 cursor-pointer">
+						<button type="submit" id="sit_order_summary_trigger" data-variant="primary"
+							onclick="document.pressed=this.value;" value="장바구니" class="h-14 flex-1 cursor-pointer">
 							장바구니 담기
 						</button>
 					<?php } ?>
@@ -558,125 +560,123 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			?>
 		</div>
 		<!-- } 다른 상품 보기 끝 -->
+
+		<!-- PC 하단 상품 주문 영역 -->
 		<?php if ($is_orderable) { ?>
-			<div id="sit_bottom_pc_fab"
-				class="hidden pc:flex fixed inset-x-0 bottom-0 z-[60] border-t-2 border-[var(--color-primary)] bg-white">
-				<div class="mx-auto flex w-full max-w-[var(--breakpoint-pc)] items-center gap-20 px-5 py-10">
-					<div id="sit_sel_option_pc" class="min-w-0 flex-1">
-						<div class="rounded-sm bg-gray-50 px-6 py-5">
-							<p class="pc_sel_option_name text-base font-medium text-gray-500">
+			<div id="sit_order_summary_pc" data-visible="false"
+				class="hidden pc:flex data-[visible=false]:!hidden fixed inset-x-0 bottom-0 z-60 border-t-2 border-(--color-semantic-primary-normal) bg-white">
+				<div id="sit_order_summary_panel" class="relative w-full max-w-[var(--breakpoint-pc)] mx-auto">
 
-							</p>
+					<div id="sit_order_summary_inner" class="hidden flex items-end gap-20 px-5 py-10">
+						<div id="sit_order_summary_option_area" class="min-w-0 flex-1"></div>
 
-							<div class="mt-5 flex items-center justify-between">
-								<div class="flex items-center border border-gray-300 bg-white">
-									<button type="button"
-										class="pc_sel_option_minus inline-flex w-8 h-8 items-center justify-center text-gray-500">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-											stroke="currentColor" stroke-width="2" stroke-linecap="round"
-											stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus w-4 h-4">
-											<path d="M5 12h14" />
-										</svg>
-									</button>
+						<div id="sit_order_summary_purchase_area" class="min-w-0 flex-1">
+							<div id="sit_order_total_price_area"></div>
+							<div class="mt-6 flex items-center gap-3">
+								<button type="button"
+									class="btn_wish shrink-0 inline-flex items-center justify-center h-12.5 w-12.5 rounded border border-gray-300 bg-white text-gray-700"
+									data-it_id="<?php echo $it['it_id']; ?>" aria-label="위시리스트">
+									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+										stroke="currentColor" stroke-width="2" stroke-linecap="round"
+										stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart h-6 w-6">
+										<path
+											d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+									</svg>
+								</button>
 
-									<span
-										class="pc_sel_option_qty inline-flex min-w-10 items-center justify-center text-sm font-medium text-gray-900">
-
-									</span>
-
-									<button type="button"
-										class="pc_sel_option_plus inline-flex w-8 h-8 items-center justify-center text-gray-500">
-										<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-											stroke="currentColor" stroke-width="2" stroke-linecap="round"
-											stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus w-4 h-4">
-											<path d="M5 12h14" />
-											<path d="M12 5v14" />
-										</svg>
-									</button>
-								</div>
-
-								<p class="pc_sel_option_price text-lg font-semibold text-gray-900"></p>
+								<button type="submit" data-variant="primary" onclick="document.pressed=this.value;"
+									value="장바구니" class="h-12.5 flex-1 cursor-pointer">
+									장바구니 담기
+								</button>
 							</div>
 						</div>
 					</div>
 
-					<div class="min-w-0 flex-1">
-						<div id="sit_tot_price_pc" class="flex items-center justify-end gap-2">
-							<span class="text-base font-medium text-gray-700">합계</span>
-							<span class="text-[28px] font-bold text-gray-900"></span>
-						</div>
-
-						<div class="mt-6 flex items-center gap-3">
-							<button type="button"
-								class="btn_wish flex h-14 w-14 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
-								data-it_id="<?php echo $it['it_id']; ?>" aria-label="위시리스트">
-								<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
-									stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-									class="lucide lucide-heart-icon lucide-heart h-6 w-6">
-									<path
-										d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
-								</svg>
-							</button>
-
-							<button type="submit" data-variant="primary" onclick="document.pressed=this.value;" value="장바구니"
-								class="h-14 flex-1 cursor-pointer">
-								장바구니 담기
-							</button>
-						</div>
-					</div>
+					<button type="button" id="sit_order_summary_toggle"
+						class="absolute -top-0.5 right-5 -translate-y-full inline-flex items-center gap-2 rounded-t bg-(--color-semantic-primary-normal) px-4 py-2"
+						aria-controls="sit_order_summary_inner" aria-expanded="false">
+						<span>상품 선택</span>
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+							stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+							class="lucide lucide-chevron-down-icon lucide-chevron-down w-4 h-4">
+							<path d="m6 9 6 6 6-6" />
+						</svg>
+					</button>
 				</div>
 			</div>
 
 			<script>
+				// PC 주문 요약 내부를 접고 펴는 기능
 				$(function () {
-					function syncPcSelOption() {
-						const $src = $("#sit_sel_option .sit_opt_list").first();
+					const $toggle = $("#sit_order_summary_toggle");
+					const $inner = $("#sit_order_summary_inner");
 
-						if (!$src.length) {
-							$(".pc_sel_option_name").text("");
-							$(".pc_sel_option_qty").text("");
-							$(".pc_sel_option_price").text("");
-							return;
-						}
-
-						$(".pc_sel_option_name").text($.trim($src.find(".sit_opt_subj").first().text()));
-						$(".pc_sel_option_qty").text($.trim($src.find("input[name^='ct_qty']").first().val()));
-						$(".pc_sel_option_price").text($.trim($src.find(".opt_prc_custom").first().text()));
+					if (!$toggle.length || !$inner.length) {
+						return;
 					}
 
-					syncPcSelOption();
+					$toggle.on("click", function () {
+						$inner.toggleClass("hidden");
 
-					$("#sit_sel_option").on("add_sit_sel_option", syncPcSelOption);
-					$("#sit_tot_price").on("price_calculate", syncPcSelOption);
+						// hidden 클래스가 있으면 true가 되어 접힌 상태인지 확인
+						const isExpanded = !$inner.hasClass("hidden");
 
-					$(document).on("click", ".sit_qty_plus, .sit_qty_minus", function () {
-						setTimeout(syncPcSelOption, 0);
-					});
-
-					$(document).on("click", ".pc_sel_option_plus", function () {
-						$("#sit_sel_option .sit_qty_plus").first().trigger("click");
-					});
-
-					$(document).on("click", ".pc_sel_option_minus", function () {
-						$("#sit_sel_option .sit_qty_minus").first().trigger("click");
+						// 접근성 정보도 현재 화면 상태와 동일하게 갱신
+						$toggle.attr("aria-expanded", String(isExpanded));
 					});
 				});
 
 				$(function () {
-					function syncPcTotPrice() {
-						const totalText = $.trim($("#sit_tot_price").text());
-						const priceText = totalText.replace(/^.*?([0-9,]+원)$/, "$1");
+					// 본문 장바구니 버튼이 화면 위로 사라졌을 때 주문 요약 보여주기
+					const triggerDOM = $("#sit_order_summary_trigger")[0];
+					const $orderSummary = $("#sit_order_summary_pc");
+					const $optionArea = $("#sit_option_area");
+					const $orderSummaryOptionArea = $("#sit_order_summary_option_area");
+					const $totalPrice = $("#sit_tot_price");
+					const $orderTotalPriceArea = $("#sit_order_total_price_area");
 
-						$("#sit_tot_price_pc span").last().text(priceText);
+					const pcBreakpoint = parseInt(
+						getComputedStyle(document.documentElement)
+							.getPropertyValue("--breakpoint-pc")
+							.trim(),
+						10
+					);
+
+					if (!triggerDOM || !$orderSummary.length) {
+						return;
 					}
 
-					syncPcTotPrice();
+					const observer = new IntersectionObserver(function (entries) {
+						const entry = entries[0];
+						const shouldShow = entry.boundingClientRect.bottom < 0;
 
-					$("#sit_tot_price").on("price_calculate", syncPcTotPrice);
-					$("#sit_sel_option").on("add_sit_sel_option", syncPcTotPrice);
+						$orderSummary.attr("data-visible", String(shouldShow));
 
-					$(document).on("click", ".sit_qty_plus, .sit_qty_minus", function () {
-						setTimeout(syncPcTotPrice, 0);
+						if (window.innerWidth < pcBreakpoint) {
+							return;
+						}
+
+						if (shouldShow) {
+							$optionArea.prependTo($orderSummaryOptionArea);
+							$totalPrice.children().appendTo($orderTotalPriceArea);
+						} else {
+							$optionArea.insertBefore($totalPrice);
+							$orderTotalPriceArea.children().appendTo($totalPrice);
+						}
+					}, {
+						threshold: 0
+					});
+
+					observer.observe(triggerDOM);
+
+					$totalPrice.on("price_calculate", function () {
+						if (
+							window.innerWidth >= pcBreakpoint &&
+							$orderSummary.attr("data-visible") === "true"
+						) {
+							$orderTotalPriceArea.empty();
+							$totalPrice.children().appendTo($orderTotalPriceArea);
+						}
 					});
 				});
 			</script>

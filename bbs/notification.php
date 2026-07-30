@@ -1,13 +1,20 @@
 <?php
 include_once('./_common.php');
 
+// view 쿼리 문자열이 있는지 그리고 view 값이 popover 인지 확인
+$is_notification_popover = isset($_GET['view']) && $_GET['view'] === 'popover';
+
 if ($is_guest) {
     alert('로그인 후 이용하실 수 있습니다.', G5_BBS_URL . '/login.php?url=' . urlencode(G5_BBS_URL . '/notification.php'));
 }
 
 $g5['title'] = '알림';
-include_once('./_head.php');
 
+if (!$is_notification_popover) {
+    include_once(G5_THEME_PATH . '/head.sub.php');
+}
+
+// 주문 관련 알림
 $sql = "
 SELECT *
 FROM g5_shop_order
@@ -20,18 +27,25 @@ $result = sql_query($sql);
 
 ?>
 
-<section class="mx-auto w-full max-w-full space-y-4 px-4 py-4">
+<section class="mx-auto w-full max-w-full">
 
-    <div class="flex items-center justify-between">
-        <button type="button" onclick="goBackFromNotification();" class="inline-flex h-8 w-8 items-center justify-center text-zinc-700" aria-label="뒤로가기">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="m15 18-6-6 6-6"></path>
-            </svg>
-        </button>
-        <div class="text-lg font-semibold text-zinc-900">알림</div>
-        <div class="h-8 w-8" aria-hidden="true"></div>
-    </div>
-    <div class="p-4 ">
+    <!-- 모바일 헤더 -->
+    <?php if (!$is_notification_popover) { ?>
+        <div class="flex pc:hidden items-center justify-between border-b border-gray-200 p-4">
+            <button type="button" id="notification-back" class="inline-flex items-center justify-center text-zinc-700"
+                aria-label="뒤로가기">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
+                    <path d="m15 18-6-6 6-6" />
+                </svg>
+            </button>
+            <div class="text-lg font-semibold text-zinc-900 leading-0">알림</div>
+            <div class="w-6 h-6" aria-hidden="true"></div>
+        </div>
+    <?php } ?>
+
+    <div class="divide-y divide-gray-200">
         <?php
         $queries = [];
 
@@ -43,7 +57,7 @@ $result = sql_query($sql);
             $bo_table = $bo['bo_table'];
             $write_table = "g5_write_" . $bo_table;
 
-            // 👉 내 글 댓글
+            // 내 글 댓글
             $queries[] = "
             SELECT 
                  a.wr_id,
@@ -106,7 +120,7 @@ $result = sql_query($sql);
             $link = G5_BBS_URL . "/board.php?bo_table={$row['bo_table']}&wr_id={$row['wr_parent']}#c_" . $row['wr_id'];
             ?>
 
-            <a href="<?= $link ?>" class="noti-item block border-t p-4 border-gray-200" data-id="<?= $link ?>">
+            <a href="<?= $link ?>" class="noti-item block p-4" data-id="<?= $link ?>">
 
                 <div class="font-medium text-gray-900">
 
@@ -141,7 +155,7 @@ $result = sql_query($sql);
             // 상품명용 첫번째 상품
             $first_item = sql_fetch_array($res2);
 
-            // 다시 처음부터 돌리기 위해 재쿼리 (중요🔥)
+            // 다시 처음부터 돌리기 위해 재쿼리
             $res2 = sql_query($sql2);
 
             // 상품 개수
@@ -149,9 +163,8 @@ $result = sql_query($sql);
             $noti_id = "order_" . $od['od_id']; // 주문
             ?>
 
-            <a href="/shop/orderinquiryview.php?od_id=<?php echo $od_id ?>"
-                data-id="<?= $noti_id ?>"
-                class="noti-item block font-medium text-gray-900 border-gray-200 border-t p-4 ">
+            <a href="/shop/orderinquiryview.php?od_id=<?php echo $od_id ?>" data-id="<?= $noti_id ?>"
+                class="noti-item block font-medium text-gray-900 p-4 ">
 
                 <!-- 상품 이미지들 -->
                 <div class="flex">
@@ -185,42 +198,57 @@ $result = sql_query($sql);
 
     </div>
 </section>
-<script>
-    if (g5_is_member) {
 
-        const userId = "<?= $member['mb_id'] ?>"; // PHP에서 로그인한 유저 ID
-        const storageKey = "readNoti_" + userId;
-        const readList = JSON.parse(localStorage.getItem(storageKey) || "[]");
+<?php if (!$is_notification_popover) { ?>
+    <script>
+        if (g5_is_member) {
 
-        document.querySelectorAll(".noti-item").forEach(el => {
-            const id = el.dataset.id;
+            const userId = "<?= $member['mb_id'] ?>"; // PHP에서 로그인한 유저 ID
+            const storageKey = "readNoti_" + userId;
+            const readList = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
-            if (readList.includes(id)) {
-                el.classList.add("opacity-50"); // 읽은 표시
+            document.querySelectorAll(".noti-item").forEach(el => {
+                const id = el.dataset.id;
+
+                if (readList.includes(id)) {
+                    el.classList.add("opacity-50"); // 읽은 표시
+                }
+
+                el.addEventListener("click", () => {
+                    if (!readList.includes(id)) {
+                        readList.push(id);
+                        localStorage.setItem(storageKey, JSON.stringify(readList));
+                    }
+                });
+            });
+        }
+    </script>
+<?php } ?>
+
+<?php if (!$is_notification_popover) { ?>
+    <script>
+        // 뒤로 가기 로직
+        function goBackFromNotification() {
+            const referrer = document.referrer || '';
+            const isLoginReferrer = /\/bbs\/login\.php(?:\?|$)/i.test(referrer);
+
+            if (isLoginReferrer) {
+                location.href = '<?php echo G5_URL; ?>';
+                return;
             }
 
-            el.addEventListener("click", () => {
-                if (!readList.includes(id)) {
-                    readList.push(id);
-                    localStorage.setItem(storageKey, JSON.stringify(readList));
-                }
-            });
-        });
-    }
-</script>
-<script>
-    function goBackFromNotification() {
-        var referrer = document.referrer || '';
-        var isLoginReferrer = /\/bbs\/login\.php(?:\?|$)/i.test(referrer);
-
-        if (isLoginReferrer) {
-            location.href = '<?php echo G5_URL; ?>';
-            return;
+            history.back();
         }
 
-        history.back();
-    }
-</script>
+        const notificationBackButton = document.getElementById('notification-back');
+
+        if (notificationBackButton) {
+            notificationBackButton.addEventListener('click', goBackFromNotification);
+        }
+    </script>
+<?php } ?>
 
 <?php
-include_once('./_tail.php');
+if (!$is_notification_popover) {
+    include_once(G5_THEME_PATH . '/tail.sub.php');
+}

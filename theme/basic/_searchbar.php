@@ -37,8 +37,10 @@ if ($is_community_mode && isset($stx)) {
             <label for="<?php echo $search_input_id; ?>" class="sound_only">검색어<span class="sound_only"> 필수</span></label>
             <input type="search" name="<?php echo $search_input_name; ?>" id="<?php echo $search_input_id; ?>"
                 value="<?php echo $search_input_value; ?>"
-                class="flex-1 min-w-0 h-[45px] rounded-full bg-white px-4 py-2 text-sm font-medium focus-visible:outline-none" required>
-            <button type="submit" id="community_searchbar_submit" class="shrink-0 inline-flex items-center justify-center w-[45px] h-[45px] rounded-full text-black bg-white cursor-pointer"
+                class="flex-1 min-w-0 h-[45px] rounded-full bg-white px-4 py-2 text-sm font-medium focus-visible:outline-none"
+                required>
+            <button type="submit" id="community_searchbar_submit"
+                class="shrink-0 inline-flex items-center justify-center w-[45px] h-[45px] rounded-full text-black bg-white cursor-pointer"
                 value="검색">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -60,7 +62,7 @@ if ($is_community_mode && isset($stx)) {
             <label for="<?php echo $search_input_id; ?>" class="sound_only">검색어<span class="sound_only"> 필수</span></label>
             <input type="search" name="<?php echo $search_input_name; ?>" id="<?php echo $search_input_id; ?>"
                 value="<?php echo $search_input_value; ?>" class="text-sm flex-auto focus-visible:outline-0" required
-                placeholder="검색어를 입력해주세요">
+                placeholder="검색어를 입력해주세요" autocomplete="off">
             <button type="submit" id="shop_searchbar_submit" class="text-[var(--color-primary)]" value="검색">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -71,8 +73,204 @@ if ($is_community_mode && isset($stx)) {
                 <span class="sound_only">검색</span>
             </button>
         </form>
+
+        <div id="shop-searchbar-panel"
+            class="hidden absolute top-full left-1/2 z-20 h-screen pc:h-[70vh] w-screen -translate-x-1/2 border-b border-gray-300 bg-white overflow-y-auto"
+            role="dialog" aria-label="쇼핑 검색 영역" aria-hidden="true">
+            <div
+                class="flex flex-col pc:flex-row max-w-[var(--breakpoint-pc)] divide-y pc:divide-none divide-gray-300 mx-auto">
+                <div class="p-4 w-full">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm pc:text-base font-bold">최근 검색어</h3>
+                        <span class="text-xs pc:text-sm">전체 삭제</span>
+                    </div>
+                    <div class="flex flex-row pc:flex-col items-center pc:items-start gap-2 mt-2">
+                        <div class="inline-flex items-center gap-2 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
+                            <span>테니스 라켓</span>
+                            <span>x</span>
+                        </div>
+                        <div class="inline-flex items-center gap-2 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
+                            <span>여행 도넛</span>
+                            <span>x</span>
+                        </div>
+                        <div class="inline-flex items-center gap-2 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
+                            <span>고추장</span>
+                            <span>x</span>
+                        </div>
+                        <div class="inline-flex items-center gap-2 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
+                            <span>러닝화</span>
+                            <span>x</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 w-full">
+                    <h3 class="text-sm pc:text-base font-bold">인기 검색어</h3>
+                    <div class="flex items-center gap-4 mt-2">
+                        <div class="text-xs pc:text-sm space-y-2 w-full">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-300 rounded-full px-2">1</span>
+                                    <span class="text-nowrap">테니스 라켓</span>
+                                </div>
+                                <span>-></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-300 rounded-full px-2">2</span>
+                                    <span class="text-nowrap">테니스 화</span>
+                                </div>
+                                <span>-></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-yellow-300 rounded-full px-2">3</span>
+                                    <span class="text-nowrap">테니스 가방</span>
+                                </div>
+                                <span>-></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-gray-200 rounded-full px-2">4</span>
+                                    <span class="text-nowrap">테니스 라켓</span>
+                                </div>
+                                <span>-></span>
+                            </div>
+                        </div>
+
+                        <div class="text-xs pc:text-sm space-y-2 w-full">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-gray-200 rounded-full px-2">5</span>
+                                    <span class="text-nowrap">테니스 공</span>
+                                </div>
+                                <span>-></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-gray-200 rounded-full px-2">6</span>
+                                    <span class="text-nowrap">윌슨 라켓</span>
+                                </div>
+                                <span>-></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-gray-200 rounded-full px-2">7</span>
+                                    <span class="text-nowrap">바볼랏 퓨어드라이브</span>
+                                </div>
+                                <span>-></span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="bg-gray-200 rounded-full px-2">8</span>
+                                    <span class="text-nowrap">테니스 입문</span>
+                                </div>
+                                <span>-></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 w-full">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm pc:text-base font-bold">인기 도넛</h3>
+                        <span class="text-xs pc:text-sm">더보기 ></span>
+                    </div>
+                    <div class="flex flex-col items-start gap-2 mt-2">
+                        <div class="inline-flex items-center gap-2 text-xs pc:text-sm">
+                            <div class="w-12 h-12 bg-gray-200 rounded-full"></div>
+                            <div>
+                                <p class="text-sm pc:text-base font-semibold">테니스 커뮤니티</p>
+                                <span class="text-xs pc:text-sm text-gray-300">멤버 1.2만명 · 게시글 3.4천개</span>
+                            </div>
+                        </div>
+
+                        <div class="inline-flex items-center gap-2 text-xs pc:text-sm">
+                            <div class="w-12 h-12 bg-gray-200 rounded-full"></div>
+                            <div>
+                                <p class="text-sm pc:text-base font-semibold">맛집 도넛</p>
+                                <span class="text-xs pc:text-sm text-gray-300">멤버 8천명 · 게시글 2.1천개</span>
+                            </div>
+                        </div>
+
+                        <div class="inline-flex items-center gap-2 text-xs pc:text-sm">
+                            <div class="w-12 h-12 bg-gray-200 rounded-full"></div>
+                            <div>
+                                <p class="text-sm pc:text-base font-semibold">러닝 도넛</p>
+                                <span class="text-xs pc:text-sm text-gray-300">멤버 6천명 · 게시글 1.8천개</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="p-4 w-full">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm pc:text-base font-bold">추천 상품</h3>
+                        <span class="text-xs pc:text-sm">더보기 ></span>
+                    </div>
+                    <div class="flex flex-col items-start gap-2 mt-2">
+                        <div class="flex items-center gap-4 text-xs pc:text-sm">
+                            <div class="w-12 h-12 bg-gray-200 rounded"></div>
+                            <div class="flex-1 min-w-0">
+                                <p>바볼랏 퓨어 드라이브 98 2023</p>
+                                <span class="font-bold">240,000원</span>
+                                <span class="text-xs bg-yellow-300 rounded px-1 py-0.5">도넛배송</span>
+                                <p class="text-gray-300">판매자 ★4.9 | 78개 판매</p>
+                            </div>
+                            <div>ㅁ</div>
+                        </div>
+
+                        <div class="flex items-center gap-4 text-xs pc:text-sm">
+                            <div class="w-12 h-12 bg-gray-200 rounded"></div>
+                            <div class="flex-1 min-w-0">
+                                <p>나이키 코트 에어 줌 GP 터보</p>
+                                <span class="font-bold">159,000원</span>
+                                <span class="text-xs bg-yellow-300 rounded px-1 py-0.5">도넛배송</span>
+                                <p class="text-gray-300">판매자 ★4.8 | 56개 판매</p>
+                            </div>
+                            <div>ㅁ</div>
+                        </div>
+
+                        <div class="flex items-center gap-4 text-xs pc:text-sm">
+                            <div class="w-12 h-12 bg-gray-200 rounded"></div>
+                            <div class="flex-1 min-w-0">
+                                <p>윌슨 챔피언십 테니스공 (3구)</p>
+                                <span class="font-bold">8,900원</span>
+                                <span class="text-xs bg-yellow-300 rounded px-1 py-0.5">도넛배송</span>
+                                <p class="text-gray-300">판매자 ★4.9 | 320개 판매</p>
+                            </div>
+                            <div>ㅁ</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
+
+    <script>
+        $(function () {
+            const $header = $('#hd');
+            const $searchbarInput = $('#shop_searchbar_input');
+            const $searchbarPanel = $('#shop-searchbar-panel');
+
+            $searchbarInput.on('focus', function () {
+                $header.css('z-index', 51);
+                $searchbarPanel.removeClass('hidden').attr('aria-hidden', 'false');
+            });
+
+            $(document).on('click', function (event) {
+                if ($(event.target).closest('#shop-searchbar-root').length) {
+                    return;
+                }
+
+                $header.css('z-index', '');
+                $searchbarPanel.addClass('hidden').attr('aria-hidden', 'true');
+            });
+        });
+    </script>
 <?php } ?>
+
 <script>
     // 제출 검증 함수
     function searchbar_modern_submit(form, mode) {

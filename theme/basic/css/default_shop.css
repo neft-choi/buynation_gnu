@@ -3410,16 +3410,16 @@ textarea.required {
   font-size: 1.4em;
 }
 
-.sod_opt {
+/* .sod_opt {
   margin: 5px 0;
-}
+} */
 
-.sod_opt ul {
+/* .sod_opt ul {
   display: inline-block;
   margin: 0;
   padding: 0;
   list-style: none;
-}
+} */
 
 .sod_opt li {
   color: #000;
@@ -3553,7 +3553,7 @@ textarea.required {
 }
 
 /* 장바구니 선택사항수정 */
-#sod_bsk_list #mod_option_frm {
+/* #sod_bsk_list #mod_option_frm {
   z-index: 10000;
   position: fixed;
   top: 50%;
@@ -3569,9 +3569,9 @@ textarea.required {
   background: #fff;
   overflow-y: auto;
   overflow-x: inherit;
-}
+} */
 
-#sod_bsk_list .mod_option_bg {
+/* #sod_bsk_list .mod_option_bg {
   content: "";
   position: fixed;
   left: 0;
@@ -3581,46 +3581,46 @@ textarea.required {
   background: rgba(0, 0, 0, 0.1);
   display: block;
   z-index: 9999;
-}
+} */
 
-#mod_option_frm h2 {
+/* #mod_option_frm h2 {
   border-bottom: 1px solid #e8e8e8;
   padding: 0 20px;
   line-height: 50px;
   font-size: 1.25em;
-}
+} */
 
-.option_wr {
+/* .option_wr {
   padding: 20px 20px 0;
-}
+} */
 
-.option_wr h3 {
+/* .option_wr h3 {
   font-size: 1.167em;
   margin-bottom: 10px;
-}
+} */
 
-.option_wr .get_item_options,
+/* .option_wr .get_item_options,
 .option_wr .get_item_supply {
   margin-bottom: 10px;
-}
+} */
 
-.option_wr label {
+/* .option_wr label {
   display: block;
   margin: 10px 0 5px;
-}
+} */
 
-.option_wr select {
+/* .option_wr select {
   width: 100%;
   border: 1px solid #d4d4d4;
   height: 48px;
-}
+} */
 
-#sit_opt_added {
+/* #sit_opt_added {
   margin: 0;
   padding: 0;
   border-bottom: 0;
   list-style: none;
-}
+} */
 
 #sit_opt_added li {
   padding: 10px 15px;

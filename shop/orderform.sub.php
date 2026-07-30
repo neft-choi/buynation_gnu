@@ -244,7 +244,7 @@ if ($is_kakaopay_use) {
                                 $it_options .= '</ul>';
                             }
                             if ($it_options) {
-                                $it_name .= '<div class="sod_opt mt-1 text-sm text-[#7a7a7a]">' . $it_options . '</div>';
+                                $it_name .= '<div class="sod_opt my-1 text-sm text-[#7a7a7a]">' . $it_options . '</div>';
                             }
 
                             // 복합과세금액
@@ -434,7 +434,7 @@ if ($is_kakaopay_use) {
                                             필수</strong></label></div>
                                 <div><input type="text" name="od_name"
                                         value="<?php echo isset($member['mb_name']) ? get_text($member['mb_name']) : ''; ?>"
-                                        id="od_name" required class="required !w-full" maxlength="20"></div>
+                                        id="od_name" required class="required !w-full input-text" maxlength="20"></div>
                             </div>
 
                             <?php if (!$is_member) { // 비회원이면 
@@ -455,14 +455,14 @@ if ($is_kakaopay_use) {
                                 <div class="text-sm text-[#666]"><label for="od_tel">전화번호<strong class="sound_only">
                                             필수</strong></label></div>
                                 <div><input type="text" name="od_tel" value="<?php echo get_text($member['mb_tel']); ?>"
-                                        id="od_tel" required class="required !w-full" maxlength="20"></div>
+                                        id="od_tel" required class="required !w-full input-text" maxlength="20"></div>
                             </div>
 
                             <div
                                 class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
                                 <div class="text-sm text-[#666]"><label for="od_hp">핸드폰</label></div>
                                 <div><input type="text" name="od_hp" value="<?php echo get_text($member['mb_hp']); ?>"
-                                        id="od_hp" class="!w-full" maxlength="20"></div>
+                                        id="od_hp" class="!w-full input-text" maxlength="20"></div>
                             </div>
 
                             <div
@@ -474,23 +474,23 @@ if ($is_kakaopay_use) {
                                     <div class="flex items-center gap-2">
                                         <input type="text" name="od_zip"
                                             value="<?php echo $member['mb_zip1'] . $member['mb_zip2']; ?>" id="od_zip"
-                                            required class="required !w-full" size="8" maxlength="6" placeholder="우편번호">
+                                            required class="required !w-full input-text" size="8" maxlength="6" placeholder="우편번호">
                                         <button type="button" class="btn_address shrink-0"
                                             onclick="win_zip('forderform', 'od_zip', 'od_addr1', 'od_addr2', 'od_addr3', 'od_addr_jibeon');">주소
                                             검색</button>
                                     </div>
                                     <input type="text" name="od_addr1"
                                         value="<?php echo get_text($member['mb_addr1']) ?>" id="od_addr1" required
-                                        class="required !w-full" size="60" placeholder="기본주소">
+                                        class="required !w-full input-text" size="60" placeholder="기본주소">
                                     <label for="od_addr1" class="sound_only">기본주소<strong class="sound_only">
                                             필수</strong></label>
                                     <input type="text" name="od_addr2"
                                         value="<?php echo get_text($member['mb_addr2']) ?>" id="od_addr2"
-                                        class="!w-full" size="60" placeholder="상세주소">
+                                        class="!w-full input-text" size="60" placeholder="상세주소">
                                     <label for="od_addr2" class="sound_only">상세주소</label>
                                     <input type="text" name="od_addr3"
                                         value="<?php echo get_text($member['mb_addr3']) ?>" id="od_addr3"
-                                        class="!w-full" size="60" readonly="readonly" placeholder="참고항목">
+                                        class="!w-full input-text" size="60" readonly="readonly" placeholder="참고항목">
                                     <label for="od_addr3" class="sound_only">참고항목</label>
                                     <input type="hidden" name="od_addr_jibeon"
                                         value="<?php echo get_text($member['mb_addr_jibeon']); ?>">
@@ -502,7 +502,7 @@ if ($is_kakaopay_use) {
                                 <div class="text-sm text-[#666]"><label for="od_email">E-mail<strong class="sound_only">
                                             필수</strong></label></div>
                                 <div><input type="text" name="od_email" value="<?php echo $member['mb_email']; ?>"
-                                        id="od_email" required class="required !w-full" size="35" maxlength="100"></div>
+                                        id="od_email" required class="required !w-full input-text" size="35" maxlength="100"></div>
                             </div>
 
                             <?php if ($default['de_hope_date_use']) { // 배송희망일 사용 
@@ -511,7 +511,7 @@ if ($is_kakaopay_use) {
                                     class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
                                     <div class="text-sm text-[#666]"><label for="od_hope_date">희망배송일</label></div>
                                     <div><input type="text" name="od_hope_date" value="" id="od_hope_date" required
-                                            class="frm_input required inline-block w-auto max-w-full !h-8" size="11"
+                                            class="frm_input required inline-block w-auto max-w-full !h-8 input-text" size="11"
                                             maxlength="10" readonly="readonly"> 이후로 배송 바랍니다.</div>
                                 </div>
                             <?php } ?>
@@ -613,21 +613,21 @@ if ($is_kakaopay_use) {
                                 <div class="text-sm text-[#666]"><label for="od_b_name">이름<strong class="sound_only">
                                             필수</strong></label></div>
                                 <div><input type="text" name="od_b_name" id="od_b_name" required
-                                        class="required !w-full" maxlength="20"></div>
+                                        class="required !w-full input-text" maxlength="20"></div>
                             </div>
 
                             <div
                                 class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
                                 <div class="text-sm text-[#666]"><label for="od_b_tel">전화번호<strong class="sound_only">
                                             필수</strong></label></div>
-                                <div><input type="text" name="od_b_tel" id="od_b_tel" required class="required !w-full"
+                                <div><input type="text" name="od_b_tel" id="od_b_tel" required class="required !w-full input-text"
                                         maxlength="20"></div>
                             </div>
 
                             <div
                                 class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
                                 <div class="text-sm text-[#666]"><label for="od_b_hp">핸드폰</label></div>
-                                <div><input type="text" name="od_b_hp" id="od_b_hp" class="!w-full" maxlength="20">
+                                <div><input type="text" name="od_b_hp" id="od_b_hp" class="!w-full input-text" maxlength="20">
                                 </div>
                             </div>
 
@@ -639,19 +639,19 @@ if ($is_kakaopay_use) {
                                             필수</strong></label>
                                     <div class="flex items-center gap-2">
                                         <input type="text" name="od_b_zip" id="od_b_zip" required
-                                            class="required !w-full" size="8" maxlength="6" placeholder="우편번호">
+                                            class="required !w-full input-text" size="8" maxlength="6" placeholder="우편번호">
                                         <button type="button" class="btn_address shrink-0"
                                             onclick="win_zip('forderform', 'od_b_zip', 'od_b_addr1', 'od_b_addr2', 'od_b_addr3', 'od_b_addr_jibeon');">주소
                                             검색</button>
                                     </div>
                                     <input type="text" name="od_b_addr1" id="od_b_addr1" required
-                                        class="required !w-full" size="60" placeholder="기본주소">
+                                        class="required !w-full input-text" size="60" placeholder="기본주소">
                                     <label for="od_b_addr1" class="sound_only">기본주소<strong> 필수</strong></label>
-                                    <input type="text" name="od_b_addr2" id="od_b_addr2" class="!w-full" size="60"
+                                    <input type="text" name="od_b_addr2" id="od_b_addr2" class="!w-full input-text" size="60"
                                         placeholder="상세주소">
                                     <label for="od_b_addr2" class="sound_only">상세주소</label>
                                     <input type="text" name="od_b_addr3" id="od_b_addr3" readonly="readonly"
-                                        class="!w-full" size="60" placeholder="참고항목">
+                                        class="!w-full input-text" size="60" placeholder="참고항목">
                                     <label for="od_b_addr3" class="sound_only">참고항목</label>
                                     <input type="hidden" name="od_b_addr_jibeon" value="">
                                 </div>
@@ -1703,7 +1703,7 @@ if ($is_kakaopay_use) {
     </div>
 
     <!-- 결제 정보 섹션 -->
-    <section class="hidden pc:block w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-15">
+    <section class="hidden pc:block sticky top-6 w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-15">
         <div class="flex items-center pb-4 border-b border-gray-500">
             <h2 class="text-[20px] font-semibold">결제정보</h2>
         </div>
