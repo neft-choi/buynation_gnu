@@ -62,10 +62,13 @@ if ($w == "") {
     $agree3 = preg_replace('#[^0-9]#', '', $_POST['agree3']);
     $agree2 = preg_replace('#[^0-9]#', '', $_POST['agree2']);
     $agree4 = preg_replace('#[^0-9]#', '', $_POST['agree4']);
-    
+
     // 혜택 알림 이메일, 문자, 앱 푸시 수신 선택 동의
     // 선택 동의라 값이 있는지 우선 확인 없으면 빈 값, 있으면 value 인 1
     $agree5 = isset($_POST['agree5']) ? preg_replace('#[^0-9]#', '', $_POST['agree5']) : '';
+
+    $agree_mailling = isset($_POST['agree_mailling']) ? preg_replace('#[^0-9]#', '', $_POST['agree_mailling']) : '';
+    $agree_sms = isset($_POST['agree_sms']) ? preg_replace('#[^0-9]#', '', $_POST['agree_sms']) : '';
 
     $member['mb_birth'] = '';
     $member['mb_sex'] = '';

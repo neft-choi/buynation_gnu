@@ -26,6 +26,15 @@ if ($is_community_mode && isset($stx)) {
 } else if (!$is_community_mode && isset($q)) {
     $search_input_value = stripslashes(get_text(get_search_string($q)));
 }
+
+$shop_searchbar_bookmark_icon = '
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark-icon lucide-bookmark w-5 h-5">
+    <path d="M17 3a2 2 0 0 1 2 2v15a1 1 0 0 1-1.496.868l-4.512-2.578a2 2 0 0 0-1.984 0l-4.512 2.578A1 1 0 0 1 5 20V5a2 2 0 0 1 2-2z" />
+</svg>';
+
+$shop_searchbar_arrow_up_right_icon = '
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-up-right-icon lucide-arrow-up-right w-5 h-5"><path d="M7 7h10v10"/><path d="M7 17 17 7"/>
+</svg>';
 ?>
 <?php if ($is_community_mode) { ?>
     <div id="community-searchbar-root">
@@ -75,15 +84,16 @@ if ($is_community_mode && isset($stx)) {
         </form>
 
         <div id="shop-searchbar-panel"
-            class="hidden absolute top-full left-1/2 z-20 h-screen pc:h-[70vh] w-screen -translate-x-1/2 border-b border-gray-300 bg-white overflow-y-auto"
+            class="hidden absolute top-full left-1/2 z-20 h-[calc(100vh-112px)] w-screen -translate-x-1/2 border-b border-gray-300 bg-white overflow-y-auto"
             role="dialog" aria-label="쇼핑 검색 영역" aria-hidden="true">
 
-            <div id="shop-searchbar-panel-inner" class="max-w-[var(--breakpoint-pc)] mx-auto">
-                <div class="flex items-center justify-end p-4">
-                    <button type="button" id="shop-searchbar-panel-close" class=""aria-label="검색 패널 닫기">
+            <div id="shop-searchbar-panel-inner" class="max-w-[var(--breakpoint-pc)] mx-auto pb-4">
+                <div class="flex items-center justify-end px-2 pc:px-4 py-4">
+                    <button type="button" id="shop-searchbar-panel-close"
+                        class="rounded-full hover:bg-gray-200 p-1 cursor-pointer" aria-label="검색 패널 닫기">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x w-5 pc:w-6 h-5 pc:h-6">
+                            class="lucide lucide-x-icon lucide-x w-6 h-6">
                             <path d="M18 6 6 18" />
                             <path d="m6 6 12 12" />
                         </svg>
@@ -96,61 +106,90 @@ if ($is_community_mode && isset($stx)) {
                             <h3 class="text-sm pc:text-base font-bold">최근 검색어</h3>
                             <span class="text-xs pc:text-sm">전체 삭제</span>
                         </div>
-                        <div class="flex flex-row pc:flex-col items-center pc:items-start gap-2 mt-2">
+                        <div class="flex flex-row pc:flex-col items-center pc:items-start gap-2 mt-4">
                             <div
-                                class="inline-flex items-center gap-2 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
+                                class="inline-flex items-center gap-1 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
                                 <span>테니스 라켓</span>
-                                <span>x</span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-3 pc:w-4 h-3 pc:h-4">
+                                        <path d="M18 6 6 18" />
+                                        <path d="m6 6 12 12" />
+                                    </svg>
+                                </span>
                             </div>
                             <div
-                                class="inline-flex items-center gap-2 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
+                                class="inline-flex items-center gap-1 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
                                 <span>여행 도넛</span>
-                                <span>x</span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-3 pc:w-4 h-3 pc:h-4">
+                                        <path d="M18 6 6 18" />
+                                        <path d="m6 6 12 12" />
+                                    </svg>
+                                </span>
                             </div>
                             <div
-                                class="inline-flex items-center gap-2 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
+                                class="inline-flex items-center gap-1 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
                                 <span>고추장</span>
-                                <span>x</span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-3 pc:w-4 h-3 pc:h-4">
+                                        <path d="M18 6 6 18" />
+                                        <path d="m6 6 12 12" />
+                                    </svg>
+                                </span>
                             </div>
                             <div
-                                class="inline-flex items-center gap-2 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
+                                class="inline-flex items-center gap-1 text-xs pc:text-sm bg-gray-200 rounded-full px-2 py-1">
                                 <span>러닝화</span>
-                                <span>x</span>
+                                <span>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                        stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-3 pc:w-4 h-3 pc:h-4">
+                                        <path d="M18 6 6 18" />
+                                        <path d="m6 6 12 12" />
+                                    </svg>
+                                </span>
                             </div>
                         </div>
                     </div>
 
                     <div class="p-4 w-full">
                         <h3 class="text-sm pc:text-base font-bold">인기 검색어</h3>
-                        <div class="flex items-center gap-4 mt-2">
+
+                        <div class="flex items-center gap-4 mt-4">
                             <div class="text-xs pc:text-sm space-y-2 w-full">
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="bg-yellow-300 rounded-full px-2">1</span>
                                         <span class="text-nowrap">테니스 라켓</span>
                                     </div>
-                                    <span>-></span>
+                                    <span><?= $shop_searchbar_arrow_up_right_icon ?></span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="bg-yellow-300 rounded-full px-2">2</span>
                                         <span class="text-nowrap">테니스 화</span>
                                     </div>
-                                    <span>-></span>
+                                    <span><?= $shop_searchbar_arrow_up_right_icon ?></span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="bg-yellow-300 rounded-full px-2">3</span>
                                         <span class="text-nowrap">테니스 가방</span>
                                     </div>
-                                    <span>-></span>
+                                    <span><?= $shop_searchbar_arrow_up_right_icon ?></span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="bg-gray-200 rounded-full px-2">4</span>
                                         <span class="text-nowrap">테니스 라켓</span>
                                     </div>
-                                    <span>-></span>
+                                    <span><?= $shop_searchbar_arrow_up_right_icon ?></span>
                                 </div>
                             </div>
 
@@ -160,28 +199,30 @@ if ($is_community_mode && isset($stx)) {
                                         <span class="bg-gray-200 rounded-full px-2">5</span>
                                         <span class="text-nowrap">테니스 공</span>
                                     </div>
-                                    <span>-></span>
+                                    <span><?= $shop_searchbar_arrow_up_right_icon ?></span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="bg-gray-200 rounded-full px-2">6</span>
                                         <span class="text-nowrap">윌슨 라켓</span>
                                     </div>
-                                    <span>-></span>
+                                    <span><?= $shop_searchbar_arrow_up_right_icon ?></span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="bg-gray-200 rounded-full px-2">7</span>
                                         <span class="text-nowrap">바볼랏 퓨어드라이브</span>
                                     </div>
-                                    <span>-></span>
+                                    <span><?= $shop_searchbar_arrow_up_right_icon ?></span>
                                 </div>
                                 <div class="flex items-center justify-between">
                                     <div class="flex items-center gap-2">
                                         <span class="bg-gray-200 rounded-full px-2">8</span>
                                         <span class="text-nowrap">테니스 입문</span>
                                     </div>
-                                    <span>-></span>
+                                    <span>
+                                        <?= $shop_searchbar_arrow_up_right_icon ?>
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -190,9 +231,16 @@ if ($is_community_mode && isset($stx)) {
                     <div class="p-4 w-full">
                         <div class="flex items-center justify-between">
                             <h3 class="text-sm pc:text-base font-bold">인기 도넛</h3>
-                            <span class="text-xs pc:text-sm">더보기 ></span>
+                            <div class="flex items-center">
+                                <span class="text-xs pc:text-sm">더보기</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right w-4 h-4">
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </div>
                         </div>
-                        <div class="flex flex-col items-start gap-2 mt-2">
+                        <div class="flex flex-col items-start gap-2 mt-4">
                             <div class="inline-flex items-center gap-2 text-xs pc:text-sm">
                                 <div class="w-12 h-12 bg-gray-200 rounded-full"></div>
                                 <div>
@@ -222,40 +270,53 @@ if ($is_community_mode && isset($stx)) {
                     <div class="p-4 w-full">
                         <div class="flex items-center justify-between">
                             <h3 class="text-sm pc:text-base font-bold">추천 상품</h3>
-                            <span class="text-xs pc:text-sm">더보기 ></span>
+                            <div class="flex items-center">
+                                <span class="text-xs pc:text-sm">더보기</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right w-4 h-4">
+                                    <path d="m9 18 6-6-6-6" />
+                                </svg>
+                            </div>
                         </div>
-                        <div class="flex flex-col items-start gap-2 mt-2">
+                        <div class="flex flex-col gap-2 mt-4">
                             <div class="flex items-center gap-4 text-xs pc:text-sm">
                                 <div class="w-12 h-12 bg-gray-200 rounded"></div>
                                 <div class="flex-1 min-w-0">
-                                    <p>바볼랏 퓨어 드라이브 98 2023</p>
+                                    <p class="line-clamp-1">바볼랏 퓨어 드라이브 98 2023</p>
                                     <span class="font-bold">240,000원</span>
                                     <span class="text-xs bg-yellow-300 rounded px-1 py-0.5">도넛배송</span>
                                     <p class="text-gray-300">판매자 ★4.9 | 78개 판매</p>
                                 </div>
-                                <div>ㅁ</div>
+                                <div>
+                                    <?php echo $shop_searchbar_bookmark_icon; ?>
+                                </div>
                             </div>
 
                             <div class="flex items-center gap-4 text-xs pc:text-sm">
                                 <div class="w-12 h-12 bg-gray-200 rounded"></div>
                                 <div class="flex-1 min-w-0">
-                                    <p>나이키 코트 에어 줌 GP 터보</p>
+                                    <p class="line-clamp-1">나이키 코트 에어 줌 GP 터보</p>
                                     <span class="font-bold">159,000원</span>
                                     <span class="text-xs bg-yellow-300 rounded px-1 py-0.5">도넛배송</span>
                                     <p class="text-gray-300">판매자 ★4.8 | 56개 판매</p>
                                 </div>
-                                <div>ㅁ</div>
+                                <div>
+                                    <?php echo $shop_searchbar_bookmark_icon; ?>
+                                </div>
                             </div>
 
                             <div class="flex items-center gap-4 text-xs pc:text-sm">
                                 <div class="w-12 h-12 bg-gray-200 rounded"></div>
                                 <div class="flex-1 min-w-0">
-                                    <p>윌슨 챔피언십 테니스공 (3구)</p>
+                                    <p class="line-clamp-1">윌슨 챔피언십 테니스공 (3구)</p>
                                     <span class="font-bold">8,900원</span>
                                     <span class="text-xs bg-yellow-300 rounded px-1 py-0.5">도넛배송</span>
                                     <p class="text-gray-300">판매자 ★4.9 | 320개 판매</p>
                                 </div>
-                                <div>ㅁ</div>
+                                <div>
+                                    <?php echo $shop_searchbar_bookmark_icon; ?>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -266,18 +327,27 @@ if ($is_community_mode && isset($stx)) {
 
     <script>
         $(function () {
+            const $html = $('html');
             const $header = $('#hd');
             const $searchbarInput = $('#shop_searchbar_input');
             const $searchbarPanel = $('#shop-searchbar-panel');
             const $searchbarClose = $('#shop-searchbar-panel-close');
 
             $searchbarInput.on('focus', function () {
+                $html.css({
+                    'overflow': 'hidden',
+                    'scrollbar-gutter': 'stable'
+                });
                 $header.css('z-index', 51);
                 $searchbarPanel.removeClass('hidden').attr('aria-hidden', 'false');
             });
 
             // 검색 패널 닫기 버튼 클릭 시
             $searchbarClose.on('click', function () {
+                $html.css({
+                    'overflow': '',
+                    'scrollbar-gutter': ''
+                });
                 $header.css('z-index', '');
                 $searchbarPanel.addClass('hidden').attr('aria-hidden', 'true');
             })
@@ -286,6 +356,11 @@ if ($is_community_mode && isset($stx)) {
                 if ($(event.target).closest('#shop-searchbar-root').length) {
                     return;
                 }
+
+                $html.css({
+                    overflow: '',
+                    'scrollbar-gutter': ''
+                });
 
                 $header.css('z-index', '');
                 $searchbarPanel.addClass('hidden').attr('aria-hidden', 'true');

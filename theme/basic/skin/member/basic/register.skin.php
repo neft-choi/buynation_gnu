@@ -151,10 +151,44 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                             <path d="m5 12 5 5L20 7"></path>
                         </svg>
                     </span>
-                    혜택 알림 이메일, 문자, 앱 푸시 수신 <span class="text-zinc-400">(선택)</span>
+                    마케팅 목적의 개인정보 수집 및 이용 <span class="text-zinc-400">(선택)</span>
                 </label>
                 <span></span>
             </div>
+
+
+            <div class="grid grid-cols-[1fr_auto] items-center gap-3 px-3 py-1.5">
+                <label for="agree_mailling" class="flex cursor-pointer items-center gap-2">
+                    <input type="checkbox" name="agree_mailling" value="1" id="agree_mailling"
+                        class="selec_chk sr-only peer">
+                    <span
+                        class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="m5 12 5 5L20 7"></path>
+                        </svg>
+                    </span>
+                    광고성 이메일 수신 동의 <span class="text-zinc-400">(선택)</span>
+                </label>
+                <span></span>
+            </div>
+
+            <?php if ($config['cf_use_hp'] || $config['cf_req_hp']) { ?>
+                <div class="grid grid-cols-[1fr_auto] items-center gap-3 px-3 py-1.5">
+                    <label for="agree_sms" class="flex cursor-pointer items-center gap-2">
+                        <input type="checkbox" name="agree_sms" value="1" id="agree_sms" class="selec_chk sr-only peer">
+                        <span
+                            class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <path d="m5 12 5 5L20 7"></path>
+                            </svg>
+                        </span>
+                        광고성 SMS/카카오톡 수신 동의 <span class="text-zinc-400">(선택)</span>
+                    </label>
+                    <span></span>
+                </div>
+            <?php } ?>
         </div>
 
         <div class="flex items-center gap-3 mt-10 text-base text-gray-900 font-semibold">

@@ -33,10 +33,10 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 	</button>
 </header>
 
-<div class="mx-auto min-h-screen w-full max-w-[460px] pt-8 pc:pt-21">
+<div class="mx-auto min-h-screen w-full pc:max-w-[460px] pt-8 pc:pt-21">
 
 	<!-- 회원정보 입력/수정 시작 { -->
-	<div class="px-4">
+	<div class="px-4 pb-4">
 		<form id="fregisterform" name="fregisterform" action="<?php echo $register_action_url ?>"
 			onsubmit="return fregisterform_submit(this);" method="post" enctype="multipart/form-data"
 			autocomplete="off">
@@ -106,7 +106,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 
 				<section id="register_personal_info">
 					<h2 class="sound_only">개인정보 입력</h2>
-					
+
 					<ul class="space-y-2">
 						<?php
 						$desc_name = '';
@@ -313,88 +313,96 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 					</ul>
 				</section>
 
-				<div class="">
-					<h2 class="sound_only">기타 개인설정</h2>
-					<ul class="grid gap-4">
-						<?php if ($config['cf_use_signature']) { ?>
-							<li>
-								<label for="reg_mb_signature">서명<?php if ($config['cf_req_signature']) { ?>
-										(필수)<?php } ?></label>
-								<textarea name="mb_signature" id="reg_mb_signature" <?php echo $config['cf_req_signature'] ? "required" : ""; ?> class="<?php echo $config['cf_req_signature'] ? "required" : ""; ?>"
-									placeholder="서명"><?php echo $member['mb_signature'] ?></textarea>
-							</li>
-						<?php } ?>
+				<?php if (
+					$config['cf_use_signature'] ||
+					$config['cf_use_profile'] ||
+					($config['cf_use_member_icon'] && $member['mb_level'] >= $config['cf_icon_level']) ||
+					($member['mb_level'] >= $config['cf_icon_level'] && $config['cf_member_img_size'] && $config['cf_member_img_width'] && $config['cf_member_img_height']) ||
+					($w == 'u' && function_exists('social_member_provider_manage')) ||
+					($w == '' && $config['cf_use_recommend'])
+				) { ?>
+					<div>
+						<h2 class="sound_only">기타 개인설정</h2>
+						<ul class="grid gap-4">
+							<?php if ($config['cf_use_signature']) { ?>
+								<li>
+									<label for="reg_mb_signature">서명<?php if ($config['cf_req_signature']) { ?>
+											(필수)<?php } ?></label>
+									<textarea name="mb_signature" id="reg_mb_signature" <?php echo $config['cf_req_signature'] ? "required" : ""; ?> class="<?php echo $config['cf_req_signature'] ? "required" : ""; ?>"
+										placeholder="서명"><?php echo $member['mb_signature'] ?></textarea>
+								</li>
+							<?php } ?>
 
-						<?php if ($config['cf_use_profile']) { ?>
-							<li>
-								<label for="reg_mb_profile">자기소개</label>
-								<textarea name="mb_profile" id="reg_mb_profile" <?php echo $config['cf_req_profile'] ? "required" : ""; ?> class="<?php echo $config['cf_req_profile'] ? "required" : ""; ?>"
-									placeholder="자기소개"><?php echo $member['mb_profile'] ?></textarea>
-							</li>
-						<?php } ?>
+							<?php if ($config['cf_use_profile']) { ?>
+								<li>
+									<label for="reg_mb_profile">자기소개</label>
+									<textarea name="mb_profile" id="reg_mb_profile" <?php echo $config['cf_req_profile'] ? "required" : ""; ?> class="<?php echo $config['cf_req_profile'] ? "required" : ""; ?>"
+										placeholder="자기소개"><?php echo $member['mb_profile'] ?></textarea>
+								</li>
+							<?php } ?>
 
-						<?php if ($config['cf_use_member_icon'] && $member['mb_level'] >= $config['cf_icon_level']) { ?>
-							<li>
-								<label for="reg_mb_icon" class="frm_label">
-									회원아이콘
-									<button type="button"
-										class="tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
-										aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-											viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-											stroke-linecap="round" stroke-linejoin="round"
-											class="lucide lucide-circle-help">
-											<circle cx="12" cy="12" r="10" />
-											<path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
-											<path d="M12 17h.01" />
-										</svg><span class="sound_only">설명보기</span></button>
-									<span class="tooltip">이미지 크기는 가로 <?php echo $config['cf_member_icon_width'] ?>픽셀, 세로
-										<?php echo $config['cf_member_icon_height'] ?>픽셀 이하로 해주세요.<br>
-										gif, jpg, png파일만 가능하며 용량
-										<?php echo number_format($config['cf_member_icon_size']) ?>바이트 이하만 등록됩니다.</span>
-								</label>
-								<input type="file" name="mb_icon" id="reg_mb_icon">
+							<?php if ($config['cf_use_member_icon'] && $member['mb_level'] >= $config['cf_icon_level']) { ?>
+								<li>
+									<label for="reg_mb_icon" class="frm_label">
+										회원아이콘
+										<button type="button"
+											class="tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
+											aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" stroke-linejoin="round"
+												class="lucide lucide-circle-help">
+												<circle cx="12" cy="12" r="10" />
+												<path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
+												<path d="M12 17h.01" />
+											</svg><span class="sound_only">설명보기</span></button>
+										<span class="tooltip">이미지 크기는 가로 <?php echo $config['cf_member_icon_width'] ?>픽셀, 세로
+											<?php echo $config['cf_member_icon_height'] ?>픽셀 이하로 해주세요.<br>
+											gif, jpg, png파일만 가능하며 용량
+											<?php echo number_format($config['cf_member_icon_size']) ?>바이트 이하만 등록됩니다.</span>
+									</label>
+									<input type="file" name="mb_icon" id="reg_mb_icon">
 
-								<?php if ($w == 'u' && file_exists($mb_icon_path)) { ?>
-									<img src="<?php echo $mb_icon_url ?>" alt="회원아이콘">
-									<input type="checkbox" name="del_mb_icon" value="1" id="del_mb_icon">
-									<label for="del_mb_icon" class="inline">삭제</label>
-								<?php } ?>
+									<?php if ($w == 'u' && file_exists($mb_icon_path)) { ?>
+										<img src="<?php echo $mb_icon_url ?>" alt="회원아이콘">
+										<input type="checkbox" name="del_mb_icon" value="1" id="del_mb_icon">
+										<label for="del_mb_icon" class="inline">삭제</label>
+									<?php } ?>
 
-							</li>
-						<?php } ?>
+								</li>
+							<?php } ?>
 
-						<?php if ($member['mb_level'] >= $config['cf_icon_level'] && $config['cf_member_img_size'] && $config['cf_member_img_width'] && $config['cf_member_img_height']) { ?>
-							<li class="reg_mb_img_file">
-								<label for="reg_mb_img" class="frm_label">
-									회원이미지
-									<button type="button"
-										class="tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
-										aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-											viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-											stroke-linecap="round" stroke-linejoin="round"
-											class="lucide lucide-circle-help">
-											<circle cx="12" cy="12" r="10" />
-											<path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
-											<path d="M12 17h.01" />
-										</svg><span class="sound_only">설명보기</span></button>
-									<span class="tooltip">이미지 크기는 가로 <?php echo $config['cf_member_img_width'] ?>픽셀, 세로
-										<?php echo $config['cf_member_img_height'] ?>픽셀 이하로 해주세요.<br>
-										gif, jpg, png파일만 가능하며 용량
-										<?php echo number_format($config['cf_member_img_size']) ?>바이트 이하만 등록됩니다.</span>
-								</label>
-								<input type="file" name="mb_img" id="reg_mb_img">
+							<?php if ($member['mb_level'] >= $config['cf_icon_level'] && $config['cf_member_img_size'] && $config['cf_member_img_width'] && $config['cf_member_img_height']) { ?>
+								<li class="reg_mb_img_file">
+									<label for="reg_mb_img" class="frm_label">
+										회원이미지
+										<button type="button"
+											class="tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
+											aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+												viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+												stroke-linecap="round" stroke-linejoin="round"
+												class="lucide lucide-circle-help">
+												<circle cx="12" cy="12" r="10" />
+												<path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
+												<path d="M12 17h.01" />
+											</svg><span class="sound_only">설명보기</span></button>
+										<span class="tooltip">이미지 크기는 가로 <?php echo $config['cf_member_img_width'] ?>픽셀, 세로
+											<?php echo $config['cf_member_img_height'] ?>픽셀 이하로 해주세요.<br>
+											gif, jpg, png파일만 가능하며 용량
+											<?php echo number_format($config['cf_member_img_size']) ?>바이트 이하만 등록됩니다.</span>
+									</label>
+									<input type="file" name="mb_img" id="reg_mb_img">
 
-								<?php if ($w == 'u' && file_exists($mb_img_path)) { ?>
-									<img src="<?php echo $mb_img_url ?>" alt="회원이미지">
-									<input type="checkbox" name="del_mb_img" value="1" id="del_mb_img">
-									<label for="del_mb_img" class="inline">삭제</label>
-								<?php } ?>
+									<?php if ($w == 'u' && file_exists($mb_img_path)) { ?>
+										<img src="<?php echo $mb_img_url ?>" alt="회원이미지">
+										<input type="checkbox" name="del_mb_img" value="1" id="del_mb_img">
+										<label for="del_mb_img" class="inline">삭제</label>
+									<?php } ?>
 
-							</li>
-						<?php } ?>
+								</li>
+							<?php } ?>
 
-						<!-- <?php if (isset($member['mb_open_date']) && $member['mb_open_date'] <= date("Y-m-d", G5_SERVER_TIME - ($config['cf_open_modify'] * 86400)) || empty($member['mb_open_date'])) { // 정보공개 수정일이 지났다면 수정가능 
-								?>
+							<!-- <?php if (isset($member['mb_open_date']) && $member['mb_open_date'] <= date("Y-m-d", G5_SERVER_TIME - ($config['cf_open_modify'] * 86400)) || empty($member['mb_open_date'])) { // 정보공개 수정일이 지났다면 수정가능 
+										?>
 							<li class="chk_box flex gap-2 py-4">
 								<input type="checkbox" name="mb_open" value="1" id="reg_mb_open" <?php echo ($w == '' || $member['mb_open']) ? 'checked' : ''; ?> class="selec_chk">
 
@@ -430,27 +438,28 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							</li>
 						<?php } ?> -->
 
-						<?php
-						//회원정보 수정인 경우 소셜 계정 출력
-						if ($w == 'u' && function_exists('social_member_provider_manage')) {
-							social_member_provider_manage();
-						}
-						?>
+							<?php
+							//회원정보 수정인 경우 소셜 계정 출력
+							if ($w == 'u' && function_exists('social_member_provider_manage')) {
+								social_member_provider_manage();
+							}
+							?>
 
-						<?php if ($w == "" && $config['cf_use_recommend']) { ?>
-							<li>
-								<label for="reg_mb_recommend" class="sound_only">추천인아이디</label>
-								<input type="text" name="mb_recommend" id="reg_mb_recommend"
-									class="h-12 w-full rounded-md border border-zinc-300 bg-zinc-100 px-4 text-base text-zinc-900 placeholder:text-zinc-400"
-									placeholder="추천인아이디">
-							</li>
-						<?php } ?>
-					</ul>
-				</div>
+							<?php if ($w == "" && $config['cf_use_recommend']) { ?>
+								<li>
+									<label for="reg_mb_recommend" class="sound_only">추천인아이디</label>
+									<input type="text" name="mb_recommend" id="reg_mb_recommend"
+										class="h-12 w-full rounded-md border border-zinc-300 bg-zinc-100 px-4 text-base text-zinc-900 placeholder:text-zinc-400"
+										placeholder="추천인아이디">
+								</li>
+							<?php } ?>
+						</ul>
+					</div>
+				<?php } ?>
 
 				<!-- 회원가입 약관 동의에 광고성 정보 수신 동의 표시 여부가 사용시에만 -->
 				<?php if ($config['cf_use_promotion'] == 1) { ?>
-					<div class="">
+					<div class="!hidden">
 						<h2 class="text-base font-semibold text-zinc-900">수신설정</h2>
 						<!-- 수신설정만 팝업 및 체크박스 관련 class 적용 -->
 						<ul>
@@ -503,7 +512,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								<!-- 하위 채널(이메일/SMS) -->
 								<ul class="sub-consents">
 									<li class="chk_box is-inline">
-										<input type="checkbox" name="mb_mailling" value="1" id="reg_mb_mailling" <?php echo $member['mb_mailling'] || $agree5 ? 'checked' : ''; ?>
+										<input type="checkbox" name="mb_mailling" value="1" id="reg_mb_mailling" <?php echo $member['mb_mailling'] || $agree_mailling ? 'checked' : ''; ?>
 											class="selec_chk child-promo">
 										<label for="reg_mb_mailling"><span></span><b class="sound_only">광고성 이메일 수신
 												동의</b></label>
@@ -519,7 +528,8 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 									<!-- 휴대폰번호 입력 보이기 or 필수입력일 경우에만 -->
 									<?php if ($config['cf_use_hp'] || $config['cf_req_hp']) { ?>
 										<li class="chk_box is-inline">
-											<input type="checkbox" name="mb_sms" value="1" id="reg_mb_sms" <?php echo $member['mb_sms'] ? 'checked' : ''; ?> class="selec_chk child-promo">
+											<input type="checkbox" name="mb_sms" value="1" id="reg_mb_sms" <?php echo $member['mb_sms'] || $agree_sms ? 'checked' : ''; ?>
+												class="selec_chk child-promo">
 											<label for="reg_mb_sms"><span></span><b class="sound_only">광고성 SMS/카카오톡 수신
 													동의</b></label>
 											<span class="chk_li">광고성 SMS/카카오톡 수신 동의</span>
@@ -594,7 +604,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 					</ul>
 				</div> -->
 			</div>
-			<div class="flex items-center gap-3 mt-10 text-base text-gray-900 font-semibold">
+			<div class="flex items-center gap-3 text-base text-gray-900 font-semibold">
 				<a href="<?php echo G5_BBS_URL ?>/register_type.php"
 					class="inline-flex items-center justify-center w-full rounded border border-zinc-300 bg-zinc-100 py-4">처음으로</a>
 				<button type="submit" id="btn_submit" data-variant="primary" class="py-4" accesskey="s">완료</button>
@@ -653,7 +663,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							$cert_type = 'kcp-hp';
 							break;
 						case 'kcp_v2':
-							$cert_url = G5_KCPCERT_V2_URL.'/kcpcert_form.php';
+							$cert_url = G5_KCPCERT_V2_URL . '/kcpcert_form.php';
 							$cert_type = 'kcp_v2-hp';
 							break;
 						case 'lg':

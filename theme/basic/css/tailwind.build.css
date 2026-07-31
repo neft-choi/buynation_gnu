@@ -359,9 +359,6 @@
   .top-6 {
     top: calc(var(--spacing) * 6);
   }
-  .top-14 {
-    top: calc(var(--spacing) * 14);
-  }
   .top-36 {
     top: calc(var(--spacing) * 36);
   }
@@ -686,9 +683,6 @@
   .mb-2 {
     margin-bottom: calc(var(--spacing) * 2);
   }
-  .mb-2\.5 {
-    margin-bottom: calc(var(--spacing) * 2.5);
-  }
   .mb-3 {
     margin-bottom: calc(var(--spacing) * 3);
   }
@@ -953,9 +947,6 @@
   .h-\[50px\] {
     height: 50px;
   }
-  .h-\[70vh\] {
-    height: 70vh;
-  }
   .h-\[75px\] {
     height: 75px;
   }
@@ -970,6 +961,9 @@
   }
   .h-\[calc\(100dvh-var\(--bottom-nav-height\)-56px\)\] {
     height: calc(100dvh - var(--bottom-nav-height) - 56px);
+  }
+  .h-\[calc\(100vh-112px\)\] {
+    height: calc(100vh - 112px);
   }
   .h-\[var\(--admin-bottom-nav-height\)\] {
     height: var(--admin-bottom-nav-height);
@@ -994,9 +988,6 @@
   }
   .h-full {
     height: 100%;
-  }
-  .h-screen {
-    height: 100vh;
   }
   .max-h-120 {
     max-height: calc(var(--spacing) * 120);
@@ -1045,9 +1036,6 @@
   }
   .w-0 {
     width: calc(var(--spacing) * 0);
-  }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
   }
   .w-3 {
     width: calc(var(--spacing) * 3);
@@ -1163,9 +1151,6 @@
   .w-\[220px\] {
     width: 220px;
   }
-  .w-\[360px\] {
-    width: 360px;
-  }
   .w-\[470px\] {
     width: 470px;
   }
@@ -1192,6 +1177,9 @@
   }
   .max-w-100 {
     max-width: calc(var(--spacing) * 100);
+  }
+  .max-w-110 {
+    max-width: calc(var(--spacing) * 110);
   }
   .max-w-120 {
     max-width: calc(var(--spacing) * 120);
@@ -1633,11 +1621,6 @@
   .divide-gray-300 {
     :where(& > :not(:last-child)) {
       border-color: var(--color-gray-300);
-    }
-  }
-  .divide-gray-900 {
-    :where(& > :not(:last-child)) {
-      border-color: var(--color-gray-900);
     }
   }
   .self-center {
@@ -3425,6 +3408,13 @@
       }
     }
   }
+  .hover\:bg-gray-200 {
+    &:hover {
+      @media (hover: hover) {
+        background-color: var(--color-gray-200);
+      }
+    }
+  }
   .hover\:bg-gray-300 {
     &:hover {
       @media (hover: hover) {
@@ -3581,16 +3571,6 @@
       display: none !important;
     }
   }
-  .pc\:absolute {
-    @media (width >= 1200px) {
-      position: absolute;
-    }
-  }
-  .pc\:static {
-    @media (width >= 1200px) {
-      position: static;
-    }
-  }
   .pc\:top-0 {
     @media (width >= 1200px) {
       top: calc(var(--spacing) * 0);
@@ -3691,11 +3671,6 @@
       height: calc(var(--spacing) * 4);
     }
   }
-  .pc\:h-6 {
-    @media (width >= 1200px) {
-      height: calc(var(--spacing) * 6);
-    }
-  }
   .pc\:h-19 {
     @media (width >= 1200px) {
       height: calc(var(--spacing) * 19);
@@ -3711,11 +3686,6 @@
       height: calc(var(--spacing) * 100);
     }
   }
-  .pc\:h-\[70vh\] {
-    @media (width >= 1200px) {
-      height: 70vh;
-    }
-  }
   .pc\:h-\[350px\] {
     @media (width >= 1200px) {
       height: 350px;
@@ -3729,11 +3699,6 @@
   .pc\:w-4 {
     @media (width >= 1200px) {
       width: calc(var(--spacing) * 4);
-    }
-  }
-  .pc\:w-6 {
-    @media (width >= 1200px) {
-      width: calc(var(--spacing) * 6);
     }
   }
   .pc\:w-19 {
@@ -3754,6 +3719,16 @@
   .pc\:w-full {
     @media (width >= 1200px) {
       width: 100%;
+    }
+  }
+  .pc\:max-w-110 {
+    @media (width >= 1200px) {
+      max-width: calc(var(--spacing) * 110);
+    }
+  }
+  .pc\:max-w-\[460px\] {
+    @media (width >= 1200px) {
+      max-width: 460px;
     }
   }
   .pc\:max-w-\[520px\] {
@@ -3897,17 +3872,6 @@
   .pc\:gap-y-15 {
     @media (width >= 1200px) {
       row-gap: calc(var(--spacing) * 15);
-    }
-  }
-  .pc\:divide-y {
-    @media (width >= 1200px) {
-      :where(& > :not(:last-child)) {
-        --tw-divide-y-reverse: 0;
-        border-bottom-style: var(--tw-border-style);
-        border-top-style: var(--tw-border-style);
-        border-top-width: calc(1px * var(--tw-divide-y-reverse));
-        border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
-      }
     }
   }
   .pc\:divide-none {
@@ -4333,6 +4297,11 @@
   }
   .input-checkbox:checked+.input-checkbox-icon {
     color: var(--color-semantic-static-white);
+  }
+}
+@layer utilities {
+  .gutter-stable {
+    scrollbar-gutter: stable;
   }
 }
 @property --tw-translate-x {
