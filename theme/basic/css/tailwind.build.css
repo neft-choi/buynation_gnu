@@ -3691,6 +3691,11 @@
       height: calc(var(--spacing) * 4);
     }
   }
+  .pc\:h-6 {
+    @media (width >= 1200px) {
+      height: calc(var(--spacing) * 6);
+    }
+  }
   .pc\:h-19 {
     @media (width >= 1200px) {
       height: calc(var(--spacing) * 19);
@@ -3724,6 +3729,11 @@
   .pc\:w-4 {
     @media (width >= 1200px) {
       width: calc(var(--spacing) * 4);
+    }
+  }
+  .pc\:w-6 {
+    @media (width >= 1200px) {
+      width: calc(var(--spacing) * 6);
     }
   }
   .pc\:w-19 {
