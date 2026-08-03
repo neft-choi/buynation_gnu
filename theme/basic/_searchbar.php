@@ -84,7 +84,7 @@ $shop_searchbar_arrow_up_right_icon = '
         </form>
 
         <div id="shop-searchbar-panel"
-            class="hidden absolute top-full left-1/2 z-20 h-[calc(100vh-112px)] w-screen -translate-x-1/2 border-b border-gray-300 bg-white overflow-y-auto"
+            class="hidden absolute top-full left-1/2 z-20 h-[calc(100vh-112px)] pc:h-auto w-screen -translate-x-1/2 bg-white overflow-y-auto"
             role="dialog" aria-label="쇼핑 검색 영역" aria-hidden="true">
 
             <div id="shop-searchbar-panel-inner" class="max-w-[var(--breakpoint-pc)] mx-auto pb-4">

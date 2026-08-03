@@ -72,6 +72,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">아이디</label>
 						<span id="msg_mb_id"></span>
 					</li>
+
 					<li class="relative grid gap-2 mt-4">
 						<label for="reg_mb_password" class="sound_only">비밀번호 (필수)</label>
 						<input type="password" name="mb_password" id="reg_mb_password" <?php echo $required ?>
@@ -80,6 +81,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 						<span
 							class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호</span>
 					</li>
+
 					<li class="relative grid gap-2">
 						<label for="reg_mb_password_re" class="sound_only">비밀번호 확인 (필수)</label>
 						<input type="password" name="mb_password_re" id="reg_mb_password_re" <?php echo $required ?>
@@ -89,18 +91,15 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">비밀번호
 							재입력</span>
 					</li>
-					<li>
-						<label for="mb_recommend_code">
-							추천인 코드
-							<strong class="sound_only">필수</strong>
-						</label>
 
+					<li class="relative grid gap-2">
 						<input type="text" name="mb_recommend_code" id="mb_recommend_code"
-							class="frm_input full_input required" maxlength="20" placeholder="추천인 코드를 입력하세요" required>
-
-						<span class="frm_info">
-							추천인 코드를 입력해야 가입할 수 있습니다.
-						</span>
+							class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 !pb-0 text-base text-zinc-900 placeholder:text-zinc-400 required"
+							maxlength="20" placeholder=" " required>
+						<label for="mb_recommend_code"
+							class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">추천인
+							코드</label>
+						<span class="text-sm text-zinc-500">추천인 코드를 입력해야 가입할 수 있습니다.</span>
 					</li>
 				</ul>
 
@@ -175,21 +174,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 
 						<?php if ($req_nick) { ?>
 							<li class="relative">
-								<label for="reg_mb_nick" class="sound_only">
-									닉네임 (필수)
-									<button type="button"
-										class=" tooltip_icon inline-flex h-5 w-5 items-center justify-center text-zinc-500"
-										aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-											viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-											stroke-linecap="round" stroke-linejoin="round"
-											class="lucide lucide-circle-help">
-											<circle cx="12" cy="12" r="10" />
-											<path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
-											<path d="M12 17h.01" />
-										</svg><span class="sound_only">설명보기</span></button>
-									<span class="tooltip">공백없이 한글,영문,숫자만 입력 가능 (한글2자, 영문4자 이상)<br> 닉네임을 바꾸시면 앞으로
-										<?php echo (int) $config['cf_nick_modify'] ?>일 이내에는 변경 할 수 없습니다.</span>
-								</label>
+								<label for="reg_mb_nick" class="sound_only">닉네임 (필수)</label>
 
 								<input type="hidden" name="mb_nick_default"
 									value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>">
@@ -201,6 +186,19 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 								<span
 									class="pointer-events-none absolute left-4 top-4 bg-white text-base text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">닉네임</span>
 								<span id="msg_mb_nick"></span>
+
+								<button type="button"
+									class="tooltip_icon !hidden inline-flex h-5 w-5 items-center justify-center text-zinc-500"
+									aria-label="설명보기"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+										viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+										stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-help">
+										<circle cx="12" cy="12" r="10" />
+										<path d="M9.09 9a3 3 0 0 1 5.82 1c0 2-3 3-3 3" />
+										<path d="M12 17h.01" />
+									</svg><span class="sound_only">설명보기</span></button>
+								<span class="tooltip">공백없이 한글,영문,숫자만 입력 가능 (한글2자, 영문4자 이상)<br> 닉네임을 바꾸시면 앞으로
+									<?php echo (int) $config['cf_nick_modify'] ?>일 이내에는 변경 할 수 없습니다.
+								</span>
 							</li>
 						<?php } ?>
 

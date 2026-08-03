@@ -15,7 +15,7 @@ $depth1_ca_id = substr($ca_id, 0, 2);
 $root_cate_str = '';
 
 // 1차 카테고리만 코드와 이름 가져오기
-$root_cate_sql = " select ca_id, ca_name
+$root_cate_sql = " select ca_id, ca_name, ca_1
                    from {$g5['g5_shop_category_table']}
                    where length(ca_id) = 2
                      and ca_use = '1'
@@ -28,10 +28,15 @@ while ($root_row = sql_fetch_array($root_cate_result)) {
     $is_active = ($depth1_ca_id === $root_row['ca_id']);
     $active_class = $is_active ? 'border-[#f2b705] bg-white text-[#111111]' : 'border-transparent bg-[#f5f5f5] text-[#444444]';
 
+    $root_cate_icon = '';
+    if ($root_row['ca_1']) {
+        $root_cate_icon = '<img src="' . htmlspecialchars($root_row['ca_1'], ENT_QUOTES, 'UTF-8') . '" alt="" class="w-auto h-auto max-w-10 max-h-10 object-contain pc:max-w-14 pc:max-h-14">';
+    }
+
     $root_cate_str .= '
     <li class="shrink-0">
         <a href="' . shop_category_url($root_row['ca_id']) . '" class="flex flex-col items-center gap-3">
-            <span class="flex w-14 h-14 pc:w-19 pc:h-19 items-center justify-center rounded-full border-[1.5px] pc:border-2 ' . $active_class . '"></span>
+            <span class="flex w-14 h-14 pc:w-19 pc:h-19 items-center justify-center rounded-full border-[1.5px] pc:border-2 ' . $active_class . '">' . $root_cate_icon . '</span>
             <span class="text-sm">' . $root_row['ca_name'] . '</span>
         </a>
     </li>

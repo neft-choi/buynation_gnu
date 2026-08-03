@@ -914,6 +914,9 @@
   .h-15 {
     height: calc(var(--spacing) * 15);
   }
+  .h-16 {
+    height: calc(var(--spacing) * 16);
+  }
   .h-20 {
     height: calc(var(--spacing) * 20);
   }
@@ -988,6 +991,9 @@
   }
   .h-full {
     height: 100%;
+  }
+  .max-h-10 {
+    max-height: calc(var(--spacing) * 10);
   }
   .max-h-120 {
     max-height: calc(var(--spacing) * 120);
@@ -1091,6 +1097,9 @@
   .w-15 {
     width: calc(var(--spacing) * 15);
   }
+  .w-16 {
+    width: calc(var(--spacing) * 16);
+  }
   .w-20 {
     width: calc(var(--spacing) * 20);
   }
@@ -1175,11 +1184,11 @@
   .w-screen {
     width: 100vw;
   }
+  .max-w-10 {
+    max-width: calc(var(--spacing) * 10);
+  }
   .max-w-100 {
     max-width: calc(var(--spacing) * 100);
-  }
-  .max-w-110 {
-    max-width: calc(var(--spacing) * 110);
   }
   .max-w-120 {
     max-width: calc(var(--spacing) * 120);
@@ -2330,6 +2339,9 @@
   }
   .fill-transparent {
     fill: transparent;
+  }
+  .object-contain {
+    object-fit: contain;
   }
   .object-cover {
     object-fit: cover;
@@ -3671,6 +3683,11 @@
       height: calc(var(--spacing) * 4);
     }
   }
+  .pc\:h-14 {
+    @media (width >= 1200px) {
+      height: calc(var(--spacing) * 14);
+    }
+  }
   .pc\:h-19 {
     @media (width >= 1200px) {
       height: calc(var(--spacing) * 19);
@@ -3691,6 +3708,23 @@
       height: 350px;
     }
   }
+  .pc\:h-auto {
+    @media (width >= 1200px) {
+      height: auto;
+    }
+  }
+  .pc\:pc\:h-14 {
+    @media (width >= 1200px) {
+      @media (width >= 1200px) {
+        height: calc(var(--spacing) * 14);
+      }
+    }
+  }
+  .pc\:max-h-14 {
+    @media (width >= 1200px) {
+      max-height: calc(var(--spacing) * 14);
+    }
+  }
   .pc\:min-h-0 {
     @media (width >= 1200px) {
       min-height: calc(var(--spacing) * 0);
@@ -3699,6 +3733,11 @@
   .pc\:w-4 {
     @media (width >= 1200px) {
       width: calc(var(--spacing) * 4);
+    }
+  }
+  .pc\:w-14 {
+    @media (width >= 1200px) {
+      width: calc(var(--spacing) * 14);
     }
   }
   .pc\:w-19 {
@@ -3721,9 +3760,9 @@
       width: 100%;
     }
   }
-  .pc\:max-w-110 {
+  .pc\:max-w-14 {
     @media (width >= 1200px) {
-      max-width: calc(var(--spacing) * 110);
+      max-width: calc(var(--spacing) * 14);
     }
   }
   .pc\:max-w-\[460px\] {
