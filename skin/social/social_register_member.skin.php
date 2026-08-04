@@ -6,35 +6,43 @@ if (!$config['cf_social_login_use']) {     //소셜 로그인을 사용하지 �
 }
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
-add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/remodal/remodal.css">', 11);
-add_stylesheet('<link rel="stylesheet" href="'.G5_JS_URL.'/remodal/remodal-default-theme.css">', 12);
-add_stylesheet('<link rel="stylesheet" href="'.get_social_skin_url().'/style.css?ver='.G5_CSS_VER.'">', 13);
-add_javascript('<script src="'.G5_JS_URL.'/remodal/remodal.js"></script>', 10);
-add_javascript('<script src="'.G5_JS_URL.'/jquery.register_form.js"></script>', 14);
+add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/remodal/remodal.css">', 11);
+add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/remodal/remodal-default-theme.css">', 12);
+add_stylesheet('<link rel="stylesheet" href="' . get_social_skin_url() . '/style.css?ver=' . G5_CSS_VER . '">', 13);
+add_javascript('<script src="' . G5_JS_URL . '/remodal/remodal.js"></script>', 10);
+add_javascript('<script src="' . G5_JS_URL . '/jquery.register_form.js"></script>', 14);
 if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipin'] || $config['cf_cert_hp']))
-    add_javascript('<script src="'.G5_JS_URL.'/certify.js?v='.G5_JS_VER.'"></script>', 15);
+    add_javascript('<script src="' . G5_JS_URL . '/certify.js?v=' . G5_JS_VER . '"></script>', 15);
 
-$email_msg = $is_exists_email ? '등록할 이메일이 중복되었습니다.다른 이메일을 입력해 주세요.' : ''; 
+$email_msg = $is_exists_email ? '등록할 이메일이 중복되었습니다.다른 이메일을 입력해 주세요.' : '';
 ?>
 
 <!-- 회원가입약관 동의 시작 { -->
-<div class="social_register">
-    
+<div class="social_register w-full max-w-120 mx-auto p-4 bg-white">
+
     <form name="fregisterform" id="fregisterform" action="<?php echo $register_action_url; ?>" onsubmit="return fregisterform_submit(this);" method="POST" autocomplete="off">
+        <h1 class="text-lg font-bold">소셜 로그인 회원가입</h1>
 
-        <p><i class="fa fa-check-circle" aria-hidden="true"></i> 회원가입약관 및 개인정보 수집 및 이용의 내용에 동의하셔야 회원가입 하실 수 있습니다.</p>
+        <p class="mt-4">회원가입약관 및 개인정보 수집 및 이용의 내용에 동의하셔야 회원가입 하실 수 있습니다.</p>
 
-        <section id="fregister_term">
-            <h2>회원가입약관</h2>
-            <textarea readonly><?php echo get_text($config['cf_stipulation']) ?></textarea>
-            <fieldset class="fregister_agree">
-                <input type="checkbox" name="agree" value="1" id="agree11" class="selec_chk">
-                <label for="agree11"><span></span><b class="sound_only">회원가입약관의 내용에 동의합니다.</b></label>
+        <section id="fregister_term" class="mt-4">
+            <h2 class="font-semibold mb-2">회원가입약관</h2>
+            <textarea class="w-full border border-gray-200" readonly><?php echo get_text($config['cf_stipulation']) ?></textarea>
+            <fieldset class="fregister_agree mt-3">
+                <label for="agree11" class="flex cursor-pointer items-center gap-2">
+                    <input type="checkbox" name="agree" value="1" id="agree11" class="selec_chk sr-only peer">
+                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="m5 12 5 5L20 7"></path>
+                        </svg>
+                    </span>
+                    회원가입약관에 동의합니다 <span class="text-zinc-500">(필수)</span>
+                </label>
             </fieldset>
         </section>
 
-        <section id="fregister_private" class="fregister_terms">
-            <h2>개인정보 수집 및 이용</h2>
+        <section id="fregister_private" class="fregister_terms mt-4">
+            <h2 class="font-semibold mb-2">개인정보 수집 및 이용</h2>
             <div>
                 <table>
                     <caption>개인정보 수집 및 이용</caption>
@@ -60,15 +68,29 @@ $email_msg = $is_exists_email ? '등록할 이메일이 중복되었습니다.�
                 </table>
             </div>
 
-            <fieldset class="fregister_agree">
-                <input type="checkbox" name="agree2" value="1" id="agree21" class="selec_chk">
-                <label for="agree21"><span></span><b class="sound_only">개인정보 수집 및 이용의 내용에 동의합니다.</b></label>
+            <fieldset class="fregister_agree mt-3">
+                <label for="agree21" class="flex cursor-pointer items-center gap-2">
+                    <input type="checkbox" name="agree2" value="1" id="agree21" class="selec_chk sr-only peer">
+                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <path d="m5 12 5 5L20 7"></path>
+                        </svg>
+                    </span>
+                    개인정보 수집 및 이용에 동의합니다 <span class="text-zinc-500">(필수)</span>
+                </label>
             </fieldset>
         </section>
 
-        <div id="fregister_chkall" class="chk_all fregister_agree">
-            <input type="checkbox" name="chk_all" id="chk_all" class="selec_chk">
-            <label for="chk_all"><span></span>회원가입 약관에 모두 동의합니다</label>
+        <div id="fregister_chkall" class="chk_all fregister_agree rounded bg-zinc-100 p-3 mt-4">
+            <label for="chk_all" class="flex cursor-pointer items-center gap-2">
+                <input type="checkbox" name="chk_all" id="chk_all" class="selec_chk sr-only peer">
+                <span class="inline-flex h-5.5 w-5.5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+                        <path d="m5 12 5 5L20 7"></path>
+                    </svg>
+                </span>
+                <span class="text-base font-medium text-zinc-900">회원가입 약관에 모두 동의합니다</span>
+            </label>
         </div>
         <!-- } 회원가입 약관 동의 끝 -->
 
@@ -90,126 +112,107 @@ $email_msg = $is_exists_email ? '등록할 이메일이 중복되었습니다.�
             <?php } ?>
         <?php }  ?>
 
-        <div id="register_form" class="form_01">
-            <div class="tbl_frm01 tbl_wrap register_form_inner">
-                <h2>개인정보 입력</h2>
-                <ul>
+        <div id="register_form" class="mt-4">
+            <div class="register_form_inner">
+                <h2 class="font-semibold">개인정보 입력</h2>
+                <ul class="mt-2 space-y-2">
                     <li>
-                        <?php 
+                        <?php
                         if ($config['cf_cert_use']) {
                             if ($config['cf_cert_simple']) {
-                                echo '<button type="button" id="win_sa_kakao_cert" class="btn_frmline win_sa_cert" data-type="">간편인증</button>'.PHP_EOL;
+                                echo '<button type="button" id="win_sa_kakao_cert" class="btn_frmline win_sa_cert" data-type="">간편인증</button>' . PHP_EOL;
                             }
                             if ($config['cf_cert_hp'])
                                 echo '<button type="button" id="win_hp_cert" class="btn_frmline">휴대폰 본인확인</button>' . PHP_EOL;
                             if ($config['cf_cert_ipin'])
                                 echo '<button type="button" id="win_ipin_cert" class="btn_frmline">아이핀 본인확인</button>' . PHP_EOL;
 
-                            echo '<span class="cert_req">(필수)</span>';
+                            // echo '<span class="cert_req">(필수)</span>';
                             echo '<noscript>본인확인을 위해서는 자바스크립트 사용이 가능해야합니다.</noscript>' . PHP_EOL;
                         }
                         ?>
                     </li>
-                    <?php if ($req_nick) {  ?>
-                        <li>
-                            <label for="reg_mb_nick">
-                                닉네임 (필수)
-                                <button type="button" class="tooltip_icon"><i class="fa fa-question-circle-o" aria-hidden="true"></i><span class="sound_only">설명보기</span></button>
-                                <span class="tooltip">공백없이 한글,영문,숫자만 입력 가능 (한글2자, 영문4자 이상)<br> 닉네임을 바꾸시면 앞으로 <?php echo (int)$config['cf_nick_modify'] ?>일 이내에는 변경 할 수 없습니다.</span>
-                            </label>
 
+                    <?php if ($req_nick) { ?>
+                        <li class="relative">
+                            <label for="reg_mb_nick" class="sound_only">닉네임</label>
                             <input type="hidden" name="mb_nick_default" value="<?php echo isset($user_nick) ? get_text($user_nick) : ''; ?>">
-                            <input type="text" name="mb_nick" value="<?php echo isset($user_nick) ? get_text($user_nick) : ''; ?>" id="reg_mb_nick" required class="frm_input required nospace full_input" size="10" maxlength="20" placeholder="닉네임">
+                            <input type="text" name="mb_nick" value="<?php echo isset($user_nick) ? get_text($user_nick) : ''; ?>" id="reg_mb_nick" class="required peer w-full border border-zinc-300 rounded px-4 pt-6 pb-2" size="10" maxlength="20" placeholder=" " required>
+                            <span class="pointer-events-none absolute left-4 top-4 text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">닉네임</span>
                             <span id="msg_mb_nick"></span>
                         </li>
-                    <?php }  ?>
-                    <li>
-                        <label for="reg_mb_email">E-mail (필수)
+                    <?php } ?>
 
-                            <?php if ($config['cf_use_email_certify']) {  ?>
-                                <button type="button" class="tooltip_icon"><i class="fa fa-question-circle-o" aria-hidden="true"></i><span class="sound_only">설명보기</span></button>
-                                <span class="tooltip">
-                                    <?php if ($w == '') {
-                                        echo "E-mail 로 발송된 내용을 확인한 후 인증하셔야 회원가입이 완료됩니다.";
-                                    }  ?>
-                                    <?php if ($w == 'u') {
-                                        echo "E-mail 주소를 변경하시면 다시 인증하셔야 합니다.";
-                                    }  ?>
-                                </span>
-                            <?php }  ?>
-                        </label>
+                    <li class="relative">
+                        <label for="reg_mb_email" class="sound_only">이메일</label>
                         <input type="hidden" name="old_email" value="<?php echo $member['mb_email'] ?>">
-                        <input type="text" name="mb_email" value="<?php echo isset($user_email) ? $user_email : ''; ?>" id="reg_mb_email" required <?php echo (isset($user_email) && $user_email != '' && !$is_exists_email)? "readonly":''; ?> class="frm_input email full_input required" size="70" maxlength="100" placeholder="E-mail">
+                        <input type="text" name="mb_email" value="<?php echo isset($user_email) ? $user_email : ''; ?>" id="reg_mb_email" required <?php echo (isset($user_email) && $user_email != '' && !$is_exists_email) ? "readonly" : ''; ?> class="required peer w-full border border-zinc-300 rounded px-4 pt-6 pb-2" size="70" maxlength="100" placeholder=" ">
+                        <span class="pointer-events-none absolute left-4 top-4 text-zinc-400 transition-all peer-focus:top-2 peer-focus:text-xs peer-focus:text-zinc-600 peer-[&:not(:placeholder-shown)]:top-2 peer-[&:not(:placeholder-shown)]:text-xs peer-[&:not(:placeholder-shown)]:text-zinc-600">이메일</span>
                         <div class="check"><?php echo $email_msg; ?></div>
                     </li>
                 </ul>
             </div>
 
             <!-- 회원가입 약관 동의에 광고성 정보 수신 동의 표시 여부가 사용시에만 -->
-		    <?php if($config['cf_use_promotion'] == 1) { ?>
-            <div class="tbl_frm01 tbl_wrap register_form_inner">
-                <h2>수신설정</h2>
-                <!-- 수신설정만 팝업 및 체크박스 관련 class 적용 -->
-                <ul>
-                    <!-- (선택) 마케팅 목적의 개인정보 수집 및 이용 -->
-                    <li class="chk_box">
-                    <div class="consent-line">
-                        <input type="checkbox" name="mb_marketing_agree" value="1" id="reg_mb_marketing_agree" aria-describedby="desc_marketing" <?php echo $member['mb_marketing_agree'] ? 'checked' : ''; ?> class="selec_chk marketing-sync">
-                        <label for="reg_mb_marketing_agree"><span></span><b class="sound_only">(선택) 마케팅 목적의 개인정보 수집 및 이용</b></label>
-                        <span class="chk_li">(선택) 마케팅 목적의 개인정보 수집 및 이용</span>
-                        <button type="button" class="js-open-consent" data-title="마케팅 목적의 개인정보 수집 및 이용" data-template="#tpl_marketing" data-check="#reg_mb_marketing_agree" aria-controls="consentDialog">자세히보기</button>
-                    </div>
-                    <input type="hidden" name="mb_marketing_agree_default" value="<?php echo $member['mb_marketing_agree'] ?>">
-                    <div id="desc_marketing" class="sound_only">마케팅 목적의 개인정보 수집·이용에 대한 안내입니다. 자세히보기를 눌러 전문을 확인할 수 있습니다.</div>
+            <?php if ($config['cf_use_promotion'] == 1) { ?>
+                <div class="register_form_inner mt-4">
+                    <h2 class="font-semibold mb-2">수신설정</h2>
+                    <!-- 수신설정만 팝업 및 체크박스 관련 class 적용 -->
+                    <ul class="space-y-1">
+                        <!-- (선택) 마케팅 목적의 개인정보 수집 및 이용 -->
+                        <li class="chk_box">
+                            <label for="reg_mb_marketing_agree" class="flex cursor-pointer items-center gap-2">
+                                <input type="checkbox" name="mb_marketing_agree" value="1" id="reg_mb_marketing_agree" aria-describedby="desc_marketing" <?php echo $member['mb_marketing_agree'] ? 'checked' : ''; ?> class="selec_chk sr-only peer marketing-sync">
+                                <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="m5 12 5 5L20 7"></path>
+                                    </svg>
+                                </span>
+                                마케팅 목적의 개인정보 수집 및 이용 <span class="text-zinc-400">(선택)</span>
+                            </label>
+                            <input type="hidden" name="mb_marketing_agree_default" value="<?php echo $member['mb_marketing_agree'] ?>">
+                            <div id="desc_marketing" class="sound_only">마케팅 목적의 개인정보 수집·이용에 대한 안내입니다. 자세히보기를 눌러 전문을 확인할 수 있습니다.</div>
 
-                    <template id="tpl_marketing">
-                        * 목적: 서비스 마케팅 및 프로모션<br>
-                        * 항목: 이름, 이메일<?php echo ($config['cf_use_hp'] || ($config["cf_cert_use"] && ($config['cf_cert_hp'] || $config['cf_cert_simple']))) ? ", 휴대폰 번호" : "";?><br>
-                        * 보유기간: 회원 탈퇴 시까지<br>
-                        동의를 거부하셔도 서비스 기본 이용은 가능하나, 맞춤형 혜택 제공은 제한될 수 있습니다.
-                    </template>
-                    </li>
+                            <template id="tpl_marketing">
+                                * 목적: 서비스 마케팅 및 프로모션<br>
+                                * 항목: 이름, 이메일<?php echo ($config['cf_use_hp'] || ($config["cf_cert_use"] && ($config['cf_cert_hp'] || $config['cf_cert_simple']))) ? ", 휴대폰 번호" : ""; ?><br>
+                                * 보유기간: 회원 탈퇴 시까지<br>
+                                동의를 거부하셔도 서비스 기본 이용은 가능하나, 맞춤형 혜택 제공은 제한될 수 있습니다.
+                            </template>
+                        </li>
 
-                    <!-- (선택) 광고성 정보 수신 동의 (상위) -->
-                    <li class="chk_box consent-group">
-                    <div class="consent-line">
-                        <input type="checkbox" name="mb_promotion_agree" value="1" id="reg_mb_promotion_agree" aria-describedby="desc_promotion" class="selec_chk marketing-sync parent-promo">
-                        <label for="reg_mb_promotion_agree"><span></span><b class="sound_only">(선택) 광고성 정보 수신 동의</b></label>
-                        <span class="chk_li">(선택) 광고성 정보 수신 동의</span>
-                        <button type="button" class="js-open-consent" data-title="광고성 정보 수신 동의" data-template="#tpl_promotion" data-check="#reg_mb_promotion_agree" data-check-group=".child-promo" aria-controls="consentDialog">자세히보기</button>
-                    </div>
-                    
-                    <div id="desc_promotion" class="sound_only">광고성 정보(이메일/SMS·카카오톡) 수신 동의의 상위 항목입니다. 자세히보기를 눌러 전문을 확인할 수 있습니다.</div>
-
-                    <!-- 하위 채널(이메일/SMS) -->
-                    <ul class="sub-consents">
-                        <li class="chk_box is-inline">
-                            <input type="checkbox" name="mb_mailling" value="1" id="reg_mb_mailling" <?php echo $member['mb_mailling'] ? 'checked' : ''; ?> class="selec_chk child-promo">
-                            <label for="reg_mb_mailling"><span></span><b class="sound_only">광고성 이메일 수신 동의</b></label>
-                            <span class="chk_li">광고성 이메일 수신 동의</span>
+                        <li class="chk_box">
+                            <label for="reg_mb_mailling" class="flex cursor-pointer items-center gap-2">
+                                <input type="checkbox" name="mb_mailling" value="1" id="reg_mb_mailling" <?php echo $member['mb_mailling'] ? 'checked' : ''; ?> class="selec_chk sr-only peer">
+                                <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                        <path d="m5 12 5 5L20 7"></path>
+                                    </svg>
+                                </span>
+                                광고성 이메일 수신 동의 <span class="text-zinc-400">(선택)</span>
+                            </label>
                             <input type="hidden" name="mb_mailling_default" value="<?php echo $member['mb_mailling']; ?>">
                         </li>
 
-                        <!-- 휴대폰번호 입력 보이기 or 필수입력일 경우에만 -->
-					    <?php if ($config['cf_use_hp'] || $config['cf_req_hp']) { ?>
-                        <li class="chk_box is-inline">
-                            <input type="checkbox" name="mb_sms" value="1" id="reg_mb_sms" <?php echo $member['mb_sms'] ? 'checked' : ''; ?> class="selec_chk child-promo">
-                            <label for="reg_mb_sms"><span></span><b class="sound_only">광고성 SMS/카카오톡 수신 동의</b></label>
-                            <span class="chk_li">광고성 SMS/카카오톡 수신 동의</span>
-                            <input type="hidden" name="mb_sms_default" value="<?php echo $member['mb_sms']; ?>">
-                        </li>
-					    <?php } ?>
-                    </ul>
 
-                    <template id="tpl_promotion">
-                        수집·이용에 동의한 개인정보를 이용하여 이메일/SMS/카카오톡 등으로 오전 8시~오후 9시에 광고성 정보를 전송할 수 있습니다.<br>
-                        동의는 언제든지 마이페이지에서 철회할 수 있습니다.
-                    </template>
-                    </li>
+                        <?php if ($config['cf_use_hp'] || $config['cf_req_hp']) { ?>
+                            <li class="chk_box">
+                                <label for="reg_mb_sms" class="flex cursor-pointer items-center gap-2">
+                                    <input type="checkbox" name="mb_sms" value="1" id="reg_mb_sms" <?php echo $member['mb_sms'] ? 'checked' : ''; ?> class="selec_chk sr-only peer">
+                                    <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                            <path d="m5 12 5 5L20 7"></path>
+                                        </svg>
+                                    </span>
+                                    광고성 SMS/카카오톡 수신 동의 <span class="text-zinc-400">(선택)</span>
+                                </label>
+                                <input type="hidden" name="mb_sms_default" value="<?php echo $member['mb_sms']; ?>">
+                            </li>
+                        <?php } ?>
 
-                    <!-- (선택) 개인정보 제3자 제공 동의 -->
-                    <!-- SMS 사용시에만 -->
-                    <?php
+                        <!-- (선택) 개인정보 제3자 제공 동의 -->
+                        <!-- SMS 사용시에만 -->
+                        <?php
                         $configKeys = ['cf_sms_use'];
                         $companies = ['icode' => '아이코드'];
 
@@ -219,34 +222,40 @@ $email_msg = $is_exists_email ? '등록할 이메일이 중복되었습니다.�
                                 $usedCompanies[] = $companies[$config[$key]];
                             }
                         }
-                    ?>
-                    <?php if (!empty($usedCompanies)) { ?>
-                    <li class="chk_box">
-                    <div class="consent-line">
-                        <input type="checkbox" name="mb_thirdparty_agree" value="1" id="reg_mb_thirdparty_agree" aria-describedby="desc_thirdparty" <?php echo $member['mb_thirdparty_agree'] ? 'checked' : ''; ?> class="selec_chk marketing-sync">
-                        <label for="reg_mb_thirdparty_agree"><span></span><b class="sound_only">(선택) 개인정보 제3자 제공 동의</b></label>
-                        <span class="chk_li">(선택) 개인정보 제3자 제공 동의</span>
-                        <button type="button" class="js-open-consent" data-title="개인정보 제3자 제공 동의" data-template="#tpl_thirdparty" data-check="#reg_mb_thirdparty_agree" aria-controls="consentDialog">자세히보기</button>
-                    </div>
-                    <input type="hidden" name="mb_thirdparty_agree_default" value="<?php echo $member['mb_thirdparty_agree'] ?>">
-                    <div id="desc_thirdparty" class="sound_only">개인정보 제3자 제공 동의에 대한 안내입니다. 자세히보기를 눌러 전문을 확인할 수 있습니다.</div>
+                        ?>
+                        <?php if (!empty($usedCompanies)) { ?>
+                            <li class="chk_box">
+                                <div class="grid grid-cols-[1fr_auto] items-center gap-3">
+                                    <label for="reg_mb_thirdparty_agree" class="flex cursor-pointer items-center gap-2">
+                                        <input type="checkbox" name="mb_thirdparty_agree" value="1" id="reg_mb_thirdparty_agree" aria-describedby="desc_thirdparty" <?php echo $member['mb_thirdparty_agree'] ? 'checked' : ''; ?> class="selec_chk sr-only peer marketing-sync">
+                                        <span class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-zinc-300 bg-white text-zinc-300 peer-checked:border-zinc-800 peer-checked:bg-zinc-800 peer-checked:text-white">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                <path d="m5 12 5 5L20 7"></path>
+                                            </svg>
+                                        </span>
+                                        개인정보 제3자 제공 동의 <span class="text-zinc-400">(선택)</span>
+                                    </label>
+                                    <button type="button" class="js-open-consent" data-title="개인정보 제3자 제공 동의" data-template="#tpl_thirdparty" data-check="#reg_mb_thirdparty_agree" aria-controls="consentDialog">자세히보기</button>
+                                </div>
+                                <input type="hidden" name="mb_thirdparty_agree_default" value="<?php echo $member['mb_thirdparty_agree'] ?>">
+                                <div id="desc_thirdparty" class="sound_only">개인정보 제3자 제공 동의에 대한 안내입니다. 자세히보기를 눌러 전문을 확인할 수 있습니다.</div>
 
-                    <template id="tpl_thirdparty">
-                        * 목적: 상품/서비스, 사은/판촉행사, 이벤트 등의 마케팅 안내(카카오톡 등)<br>
-                        * 항목: 이름, 휴대폰 번호<br>
-                        * 제공받는 자: <?php echo implode(', ', $usedCompanies);?><br>
-                        * 보유기간: 제공 목적 서비스 기간 또는 동의 철회 시까지
-                    </template>
-                    </li>
-                    <?php } ?>
-                </ul>
-            </div>
+                                <template id="tpl_thirdparty">
+                                    * 목적: 상품/서비스, 사은/판촉행사, 이벤트 등의 마케팅 안내(카카오톡 등)<br>
+                                    * 항목: 이름, 휴대폰 번호<br>
+                                    * 제공받는 자: <?php echo implode(', ', $usedCompanies); ?><br>
+                                    * 보유기간: 제공 목적 서비스 기간 또는 동의 철회 시까지
+                                </template>
+                            </li>
+                        <?php } ?>
+                    </ul>
+                </div>
             <?php } ?>
         </div>
-        
-        <div class="btn_confirm">
-            <a href="<?php echo G5_URL ?>" class="btn_close">취소</a>
-            <button type="submit" id="btn_submit" class="btn_submit" accesskey="s"><?php echo $w == '' ? '회원가입' : '정보수정'; ?></button>
+
+        <div class="btn_confirm flex items-center gap-3 text-base text-gray-900 font-semibold mt-10">
+            <a href="<?php echo G5_URL ?>" class="inline-flex items-center justify-center w-full rounded border border-zinc-300 py-4">취소</a>
+            <button type="submit" data-variant="primary" id="btn_submit" class="py-4" accesskey="s"><?php echo $w == '' ? '회원가입' : '정보수정'; ?></button>
         </div>
 
     </form>
@@ -317,7 +326,7 @@ $email_msg = $is_exists_email ? '등록할 이메일이 중복되었습니다.�
             var type = "";
             var params = "";
             var request_url = "";
-            
+
             $(".win_sa_cert").click(function() {
                 if (!cert_confirm()) return false;
                 type = $(this).data("type");
@@ -347,19 +356,19 @@ $email_msg = $is_exists_email ? '등록할 이메일이 중복되었습니다.�
                 <?php
                 switch ($config['cf_cert_hp']) {
                     case 'kcb':
-                        $cert_url = G5_OKNAME_URL.'/hpcert1.php';
+                        $cert_url = G5_OKNAME_URL . '/hpcert1.php';
                         $cert_type = 'kcb-hp';
                         break;
                     case 'kcp':
-                        $cert_url = G5_KCPCERT_URL.'/kcpcert_form.php';
+                        $cert_url = G5_KCPCERT_URL . '/kcpcert_form.php';
                         $cert_type = 'kcp-hp';
                         break;
                     case 'kcp_v2':
-                        $cert_url = G5_KCPCERT_V2_URL.'/kcpcert_form.php';
+                        $cert_url = G5_KCPCERT_V2_URL . '/kcpcert_form.php';
                         $cert_type = 'kcp_v2-hp';
                         break;
                     case 'lg':
-                        $cert_url = G5_LGXPAY_URL.'/AuthOnlyReq.php';
+                        $cert_url = G5_LGXPAY_URL . '/AuthOnlyReq.php';
                         $cert_type = 'lg-hp';
                         break;
                     default:
@@ -440,30 +449,6 @@ $email_msg = $is_exists_email ? '등록할 이메일이 중복되었습니다.�
 
         return true;
     }
-
-    document.addEventListener('DOMContentLoaded', function () {
-        const parentPromo = document.getElementById('reg_mb_promotion_agree');
-        const childPromo  = Array.from(document.querySelectorAll('.child-promo'));
-        if (!parentPromo || childPromo.length === 0) return;
-
-        const syncParentFromChildren = () => {
-            const anyChecked = childPromo.some(cb => cb.checked);
-            parentPromo.checked = anyChecked; // 하나라도 체크되면 부모 체크
-        };
-
-        const syncChildrenFromParent = () => {
-            const isChecked = parentPromo.checked;
-            childPromo.forEach(cb => {
-            cb.checked = isChecked;
-            cb.dispatchEvent(new Event('change', { bubbles: true }));
-            });
-        };
-
-        syncParentFromChildren();
-
-        parentPromo.addEventListener('change', syncChildrenFromParent);
-        childPromo.forEach(cb => cb.addEventListener('change', syncParentFromChildren));
-    });
 </script>
 
 <!-- } 회원정보 입력/수정 끝 -->

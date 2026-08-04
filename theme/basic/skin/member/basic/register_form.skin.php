@@ -52,7 +52,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 			<?php if (isset($member['mb_sex'])) { ?><input type="hidden" name="mb_sex"
 					value="<?php echo $member['mb_sex'] ?>"><?php } ?>
 			<?php if (isset($member['mb_nick_date']) && $member['mb_nick_date'] > date("Y-m-d", G5_SERVER_TIME - ($config['cf_nick_modify'] * 86400))) { // 닉네임수정일이 지나지 않았다면  
-					?>
+			?>
 				<input type="hidden" name="mb_nick_default" value="<?php echo get_text($member['mb_nick']) ?>">
 				<input type="hidden" name="mb_nick" value="<?php echo get_text($member['mb_nick']) ?>">
 			<?php } ?>
@@ -117,7 +117,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							if (!$config['cf_cert_simple'] && !$config['cf_cert_hp'] && $config['cf_cert_ipin']) {
 								$desc_phone = '';
 							}
-							?>
+						?>
 							<li class="flex items-center gap-2">
 								<?php
 								if ($config['cf_cert_simple']) {
@@ -146,7 +146,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 										$mb_cert = "휴대폰";
 										break;
 								}
-								?>
+							?>
 
 								<div id="msg_certify"
 									class="rounded-md border border-zinc-300 bg-blue-50 px-3 py-2 text-sm text-zinc-700 text-center">
@@ -174,7 +174,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 
 						<?php if ($req_nick) { ?>
 							<li class="relative">
-								<label for="reg_mb_nick" class="sound_only">닉네임 (필수)</label>
+								<label for="reg_mb_nick" class="sound_only">닉네임</label>
 
 								<input type="hidden" name="mb_nick_default"
 									value="<?php echo isset($member['mb_nick']) ? get_text($member['mb_nick']) : ''; ?>">
@@ -205,7 +205,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 						<?php if ($config['cf_use_homepage']) { ?>
 							<li class="grid gap-2">
 								<label for="reg_mb_homepage">홈페이지<?php if ($config['cf_req_homepage']) { ?>
-										(필수)<?php } ?></label>
+									(필수)<?php } ?></label>
 								<input type="text" name="mb_homepage" value="<?php echo get_text($member['mb_homepage']) ?>"
 									id="reg_mb_homepage" <?php echo $config['cf_req_homepage'] ? "required" : ""; ?>
 									class="frm_input full_input <?php echo $config['cf_req_homepage'] ? "required" : ""; ?>"
@@ -226,12 +226,12 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							<?php
 							// if ($config['cf_use_hp'] || ($config["cf_cert_use"] && ($config['cf_cert_hp'] || $config['cf_cert_simple']))) { 
 							if (true) {
-								?>
+							?>
 								<label for="reg_mb_hp" class="sound_only">휴대폰번호<?php if (!empty($hp_required)) { ?>
-										(필수)<?php } ?><?php echo $desc_phone ?></label>
+									(필수)<?php } ?><?php echo $desc_phone ?></label>
 
 								<input type="text" name="mb_hp" value="<?php echo get_text($member['mb_hp']) ?>"
-									id="reg_mb_hp" <?php echo $hp_required; ?> 	<?php echo $hp_readonly; ?>
+									id="reg_mb_hp" <?php echo $hp_required; ?> <?php echo $hp_readonly; ?>
 									class="peer h-14 w-full rounded-md border border-zinc-300 px-4 pt-6 !pb-0 text-base text-zinc-900 placeholder:text-zinc-400 <?php echo $hp_required; ?> <?php echo $hp_readonly; ?>"
 									maxlength="20" placeholder=" ">
 								<span
@@ -281,31 +281,31 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							<li>
 								<label>주소</label>
 								<?php if ($config['cf_req_addr']) { ?> (필수)<?php } ?>
-								<label for="reg_mb_zip"
-									class="sound_only">우편번호<?php echo $config['cf_req_addr'] ? ' (필수)' : ''; ?></label>
-								<input type="text" name="mb_zip"
-									value="<?php echo $member['mb_zip1'] . $member['mb_zip2']; ?>" id="reg_mb_zip" <?php echo $config['cf_req_addr'] ? "required" : ""; ?>
-									class="frm_input twopart_input <?php echo $config['cf_req_addr'] ? "required" : ""; ?>"
-									size="5" maxlength="6" placeholder="우편번호">
-								<button type="button" class="btn_frmline"
-									onclick="win_zip('fregisterform', 'mb_zip', 'mb_addr1', 'mb_addr2', 'mb_addr3', 'mb_addr_jibeon');">주소
-									검색</button><br>
-								<input type="text" name="mb_addr1" value="<?php echo get_text($member['mb_addr1']) ?>"
-									id="reg_mb_addr1" <?php echo $config['cf_req_addr'] ? "required" : ""; ?>
-									class="frm_input frm_address full_input <?php echo $config['cf_req_addr'] ? "required" : ""; ?>"
-									size="50" placeholder="기본주소">
-								<label for="reg_mb_addr1"
-									class="sound_only">기본주소<?php echo $config['cf_req_addr'] ? ' (필수)' : ''; ?></label><br>
-								<input type="text" name="mb_addr2" value="<?php echo get_text($member['mb_addr2']) ?>"
-									id="reg_mb_addr2" class="frm_input frm_address full_input" size="50" placeholder="상세주소">
-								<label for="reg_mb_addr2" class="sound_only">상세주소</label>
-								<br>
-								<input type="text" name="mb_addr3" value="<?php echo get_text($member['mb_addr3']) ?>"
-									id="reg_mb_addr3" class="frm_input frm_address full_input" size="50" readonly="readonly"
-									placeholder="참고항목">
-								<label for="reg_mb_addr3" class="sound_only">참고항목</label>
-								<input type="hidden" name="mb_addr_jibeon"
-									value="<?php echo get_text($member['mb_addr_jibeon']); ?>">
+									<label for="reg_mb_zip"
+										class="sound_only">우편번호<?php echo $config['cf_req_addr'] ? ' (필수)' : ''; ?></label>
+									<input type="text" name="mb_zip"
+										value="<?php echo $member['mb_zip1'] . $member['mb_zip2']; ?>" id="reg_mb_zip" <?php echo $config['cf_req_addr'] ? "required" : ""; ?>
+										class="frm_input twopart_input <?php echo $config['cf_req_addr'] ? "required" : ""; ?>"
+										size="5" maxlength="6" placeholder="우편번호">
+									<button type="button" class="btn_frmline"
+										onclick="win_zip('fregisterform', 'mb_zip', 'mb_addr1', 'mb_addr2', 'mb_addr3', 'mb_addr_jibeon');">주소
+										검색</button><br>
+									<input type="text" name="mb_addr1" value="<?php echo get_text($member['mb_addr1']) ?>"
+										id="reg_mb_addr1" <?php echo $config['cf_req_addr'] ? "required" : ""; ?>
+										class="frm_input frm_address full_input <?php echo $config['cf_req_addr'] ? "required" : ""; ?>"
+										size="50" placeholder="기본주소">
+									<label for="reg_mb_addr1"
+										class="sound_only">기본주소<?php echo $config['cf_req_addr'] ? ' (필수)' : ''; ?></label><br>
+									<input type="text" name="mb_addr2" value="<?php echo get_text($member['mb_addr2']) ?>"
+										id="reg_mb_addr2" class="frm_input frm_address full_input" size="50" placeholder="상세주소">
+									<label for="reg_mb_addr2" class="sound_only">상세주소</label>
+									<br>
+									<input type="text" name="mb_addr3" value="<?php echo get_text($member['mb_addr3']) ?>"
+										id="reg_mb_addr3" class="frm_input frm_address full_input" size="50" readonly="readonly"
+										placeholder="참고항목">
+									<label for="reg_mb_addr3" class="sound_only">참고항목</label>
+									<input type="hidden" name="mb_addr_jibeon"
+										value="<?php echo get_text($member['mb_addr_jibeon']); ?>">
 							</li>
 						<?php } ?>
 					</ul>
@@ -325,7 +325,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							<?php if ($config['cf_use_signature']) { ?>
 								<li>
 									<label for="reg_mb_signature">서명<?php if ($config['cf_req_signature']) { ?>
-											(필수)<?php } ?></label>
+										(필수)<?php } ?></label>
 									<textarea name="mb_signature" id="reg_mb_signature" <?php echo $config['cf_req_signature'] ? "required" : ""; ?> class="<?php echo $config['cf_req_signature'] ? "required" : ""; ?>"
 										placeholder="서명"><?php echo $member['mb_signature'] ?></textarea>
 								</li>
@@ -400,7 +400,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 							<?php } ?>
 
 							<!-- <?php if (isset($member['mb_open_date']) && $member['mb_open_date'] <= date("Y-m-d", G5_SERVER_TIME - ($config['cf_open_modify'] * 86400)) || empty($member['mb_open_date'])) { // 정보공개 수정일이 지났다면 수정가능 
-										?>
+									?>
 							<li class="chk_box flex gap-2 py-4">
 								<input type="checkbox" name="mb_open" value="1" id="reg_mb_open" <?php echo ($w == '' || $member['mb_open']) ? 'checked' : ''; ?> class="selec_chk">
 
@@ -613,7 +613,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 	<?php include_once(__DIR__ . '/consent_modal.inc.php'); ?>
 
 	<script>
-		$(function () {
+		$(function() {
 			$("#reg_zip_find").css("display", "inline-block");
 			var pageTypeParam = "pageType=register";
 
@@ -624,7 +624,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 				var params = "";
 				var request_url = "";
 
-				$(".win_sa_cert").click(function () {
+				$(".win_sa_cert").click(function() {
 					if (!cert_confirm()) return false;
 					type = $(this).data("type");
 					params = "?directAgency=" + type + "&" + pageTypeParam;
@@ -635,7 +635,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 			<?php if ($config['cf_cert_use'] && $config['cf_cert_ipin']) { ?>
 				// 아이핀인증
 				var params = "";
-				$("#win_ipin_cert").click(function () {
+				$("#win_ipin_cert").click(function() {
 					if (!cert_confirm()) return false;
 					params = "?" + pageTypeParam;
 					var url = "<?php echo G5_OKNAME_URL; ?>/ipin1.php" + params;
@@ -647,7 +647,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 			<?php if ($config['cf_cert_use'] && $config['cf_cert_hp']) { ?>
 				// 휴대폰인증
 				var params = "";
-				$("#win_hp_cert").click(function () {
+				$("#win_hp_cert").click(function() {
 					if (!cert_confirm()) return false;
 					params = "?" + pageTypeParam;
 					<?php
@@ -791,7 +791,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 				}
 			}
 
-			if (typeof (f.mb_recommend) != "undefined" && f.mb_recommend.value) {
+			if (typeof(f.mb_recommend) != "undefined" && f.mb_recommend.value) {
 				if (f.mb_id.value == f.mb_recommend.value) {
 					alert("본인을 추천할 수 없습니다.");
 					f.mb_recommend.focus();
@@ -813,16 +813,16 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 			return true;
 		}
 
-		jQuery(function ($) {
+		jQuery(function($) {
 			//tooltip
-			$(document).on("click", ".tooltip_icon", function (e) {
+			$(document).on("click", ".tooltip_icon", function(e) {
 				$(this).next(".tooltip").fadeIn(400).css("display", "inline-block");
-			}).on("mouseout", ".tooltip_icon", function (e) {
+			}).on("mouseout", ".tooltip_icon", function(e) {
 				$(this).next(".tooltip").fadeOut();
 			});
 		});
 
-		document.addEventListener('DOMContentLoaded', function () {
+		document.addEventListener('DOMContentLoaded', function() {
 			const parentPromo = document.getElementById('reg_mb_promotion_agree');
 			const childPromo = Array.from(document.querySelectorAll('.child-promo'));
 			if (!parentPromo || childPromo.length === 0) return;
@@ -849,7 +849,7 @@ if ($config['cf_cert_use'] && ($config['cf_cert_simple'] || $config['cf_cert_ipi
 		});
 
 		// 반응형 쇼핑몰 헤더 숨기기
-		syncWithPcBreakpoint(function (isPc) {
+		syncWithPcBreakpoint(function(isPc) {
 			if (isPc) {
 				$('#hd').css('display', '');
 			} else {

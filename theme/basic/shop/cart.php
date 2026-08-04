@@ -225,8 +225,9 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 							break;
 					}
 
+					$sendcost = get_item_sendcost($row['it_id'], $sum['price'], $sum['qty'], $s_cart_id);
+
 					if ($row['it_sc_type'] == 2) {
-						$sendcost = get_item_sendcost($row['it_id'], $sum['price'], $sum['qty'], $s_cart_id);
 						if ($sendcost == 0) {
 							$ct_send_cost = '무료';
 						}
@@ -278,6 +279,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 						'image' => $image,
 						'it_options' => $it_options,
 						'mod_options' => $mod_options,
+						'send_cost' => (int) $sendcost,
 						'market_price' => (int) $market_price,
 						'discount_price' => (int) $discount_price,
 						'sell_price' => (int) $sell_price
@@ -308,7 +310,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 						} elseif ($brand_group['send_prepaid'] > 0) {
 							$brand_send_cost = '선불';
 						}
-						?>
+				?>
 						<li
 							class="sod_li cart-maker-card overflow-hidden rounded-xl border border-(--color-semantic-border-normal-default) bg-white">
 							<div class="border-b border-(--color-semantic-border-normal-default) p-3 pc:p-4">
@@ -368,6 +370,10 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 														</div>
 													<?php } ?>
 
+													<div>
+														배송비 <?php echo number_format($item['send_cost']); ?>원
+													</div>
+
 													<?php if ($item['mod_options']) { ?>
 														<div class="li_mod w-fit rounded border border-[#8D8D8D38] px-2">
 															<?php echo $item['mod_options']; ?>
@@ -426,7 +432,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 								</div>
 							</div>
 						</li>
-						<?php
+					<?php
 						$brand_index++;
 					}
 				}
@@ -453,7 +459,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 							</a>
 						</div>
 					</li>
-					<?php
+				<?php
 				} else {
 					$send_cost = get_sendcost($s_cart_id, 0);
 				}
@@ -477,7 +483,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 					<?php
 					$tot_price = $tot_sell_price + $send_cost;
 					if ($tot_price > 0 || $send_cost > 0) {
-						?>
+					?>
 						<dl id="m_sod_bsk_tot">
 							<?php if ($send_cost > 0) { ?>
 								<dt class="sod_bsk_dvr">배송비</dt>
@@ -573,7 +579,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 	</div>
 
 	<!-- 결제 정보 섹션 -->
-	<section class="hidden pc:block sticky top-6 w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-14">
+	<section class="hidden pc:block sticky top-64 w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-14">
 		<div class="flex items-center pb-4 border-b border-gray-500">
 			<h2 class="text-[20px] font-semibold">결제정보</h2>
 		</div>
@@ -608,7 +614,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 </div>
 
 <script>
-	$(function () {
+	$(function() {
 		// 장바구니 페이지 배경색 교체
 		// $("#wrapper").css("background-color", "#f8f8f8")
 		document.getElementById("wrapper").style.setProperty("background-color", "#FAFAFA", "important");
@@ -641,7 +647,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 			let totalDiscount = 0;
 
 			$checkedBoxes.each(
-				function () {
+				function() {
 					const $card = $(this).closest(".cart-item-card");
 					totalOrder += parseInt($card.attr("data-sell-price"), 10) || 0;
 					totalDiscount += parseInt($card.attr("data-discount-price"), 10) || 0;
@@ -682,7 +688,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 			var discountTotal = 0;
 			var sellTotal = 0;
 
-			$("#maker_items_" + makerIndex + " .cart-item-card").each(function () {
+			$("#maker_items_" + makerIndex + " .cart-item-card").each(function() {
 				var $card = $(this);
 				var isChecked = $card.find("input[name^=ct_chk][id^=ct_chk_]").is(":checked");
 				if (!isChecked) {
@@ -700,7 +706,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 		}
 
 		function update_all_maker_summaries() {
-			$(".maker_chk").each(function () {
+			$(".maker_chk").each(function() {
 				update_maker_summary($(this).data("makerIndex"));
 			});
 		}
@@ -712,7 +718,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 		}
 
 		function sync_all_maker_checkboxes() {
-			$(".maker_chk").each(function () {
+			$(".maker_chk").each(function() {
 				sync_maker_checkbox($(this).data("makerIndex"));
 			});
 		}
@@ -724,7 +730,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 		}
 
 		// 상품별 X 버튼 클릭 시 해당 상품만 선택 후 기존 선택삭제 동작 실행
-		$(document).on("click", ".item-delete-btn", function () {
+		$(document).on("click", ".item-delete-btn", function() {
 			var $card = $(this).closest(".cart-item-card");
 			var $targetCheck = $card.find("input[name^=ct_chk][id^=ct_chk_]");
 			var makerIndex = $targetCheck.data("makerIndex");
@@ -748,7 +754,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 
 		/* 옵션 수정 버튼 로직 */
 		// 클릭 시 cartoption.php 로드 후 모달로 출력
-		$(".mod_options").click(function () {
+		$(".mod_options").click(function() {
 			const it_id = $(this).attr("id").replace("mod_opt_", "");
 			const $button = $(this);
 			const $modalRoot = $("#cart_option_modal_root");
@@ -761,9 +767,9 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 
 			$.post(
 				"./cartoption.php", {
-				it_id: it_id
-			},
-				function (data) {
+					it_id: it_id
+				},
+				function(data) {
 					$modalRoot.empty();
 					$("#mod_option_frm").remove();
 					$modalRoot.append(`
@@ -777,19 +783,19 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 		});
 
 		// 옵션 수정 모달 닫기 버튼 처리
-		$(document).on("click", "#mod_option_close", function () {
+		$(document).on("click", "#mod_option_close", function() {
 			$("#mod_option_frm, .mod_option_bg").remove();
 			$(".mod_options").eq(close_btn_idx).focus();
 		});
 
 		// 옵션 수정 모달 배경 클릭 시 닫기
-		$(document).on("click", ".mod_option_bg", function () {
+		$(document).on("click", ".mod_option_bg", function() {
 			$("#mod_option_frm, .mod_option_bg").remove();
 			$(".mod_options").eq(close_btn_idx).focus();
 		});
 
 		// 전체 선택 체크박스 토글
-		$("input[name=ct_all]").click(function () {
+		$("input[name=ct_all]").click(function() {
 			var $cartChecks = $("#sod_bsk_list .sod_list input[name^=ct_chk][id^=ct_chk_]");
 			var $makerChecks = $(".maker_chk");
 			if ($(this).is(":checked")) {
@@ -804,7 +810,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 		});
 
 		// 업체 체크박스 변경 시 해당 업체 상품 체크 동기화
-		$(document).on("change", ".maker_chk", function () {
+		$(document).on("change", ".maker_chk", function() {
 			var makerIndex = $(this).data("makerIndex");
 			$("#maker_items_" + makerIndex + " input[name^=ct_chk][id^=ct_chk_]").prop("checked", $(this).is(":checked"));
 			sync_all_checkbox();
@@ -813,7 +819,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 		});
 
 		// 개별 상품 체크 변경 시 카운트 갱신
-		$(document).on("change", "#sod_bsk_list .sod_list input[name^=ct_chk][id^=ct_chk_]", function () {
+		$(document).on("change", "#sod_bsk_list .sod_list input[name^=ct_chk][id^=ct_chk_]", function() {
 			sync_maker_checkbox($(this).data("makerIndex"));
 			sync_all_checkbox();
 			update_checked_count();
@@ -876,7 +882,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 	}
 
 	// 반응형 쇼핑몰 헤더 숨기기
-	syncWithPcBreakpoint(function (isPc) {
+	syncWithPcBreakpoint(function(isPc) {
 		if (isPc) {
 			$('#hd').css('display', '');
 		} else {

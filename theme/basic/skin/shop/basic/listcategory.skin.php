@@ -63,15 +63,20 @@ $depth2_all_active_class = $is_depth2_all_active
     ? 'text-white bg-gray-700 pc:bg-gray-900 font-semibold'
     : 'text-gray-400 bg-gray-700 pc:text-black pc:bg-white';
 
-$depth2_str .= '<li class="pc:w-50 pc:border border-gray-200 rounded ' . $depth2_all_active_class . '"><a href="' . shop_category_url($depth1_ca_id) . '" class="flex items-center justify-center px-5 py-3">전체</a></li>';
+$depth2_str .= '<li class="pc:w-50 pc:border border-gray-200 ' . $depth2_all_active_class . '"><a href="' . shop_category_url($depth1_ca_id) . '" class="flex items-center justify-center px-5 py-3">전체</a></li>';
+
+//
+$idx = 1;
 
 while ($depth2_row = sql_fetch_array($depth2_result)) {
+    $idx++;
+
     $is_depth2_active = ($current_depth2_ca_id === $depth2_row['ca_id']);
     $depth2_active_class = $is_depth2_active
         ? 'text-white bg-gray-700 pc:bg-gray-900 font-semibold'
         : 'text-gray-400 bg-gray-700 pc:text-black pc:bg-white';
 
-    $depth2_str .= '<li class="pc:w-50 pc:border border-gray-200 pc:rounded mt-[-1px] ml-[-1px] ' . $depth2_active_class . '"><a href="' . shop_category_url($depth2_row['ca_id']) . '" class="flex items-center justify-center px-5 py-3">' . $depth2_row['ca_name'] . '</a></li>';
+    $depth2_str .= '<li class="pc:w-50 pc:border border-gray-200 mt-[-1px] ml-[-1px] ' . $depth2_active_class . '"><a href="' . shop_category_url($depth2_row['ca_id']) . '" class="flex items-center justify-center px-5 py-3">' . $depth2_row['ca_name'] . '</a></li>';
     $depth2_exists = true;
 }
 
@@ -134,7 +139,8 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 <!-- 2차 카테고리 -->
 <aside id="sct_ct_2" class="sct_ct !text-sm overflow-x-auto">
     <h2 class="sound_only">2차 카테고리</h2>
-    <ul class="flex items-center pc:flex-wrap text-nowrap w-full bg-gray-700 pc:bg-white pc:[&>li:nth-child(6n+7)]:ml-0">
+    <ul class="flex items-center pc:flex-wrap text-nowrap w-full bg-gray-700 pc:bg-white pc:[&>li:nth-child(6n+1)]:rounded-l pc:[&>li:nth-child(6n)]:rounded-r
+    pc:[&>li:nth-child(6n+7)]:ml-0">
         <?php echo $depth2_str; ?>
     </ul>
 </aside>

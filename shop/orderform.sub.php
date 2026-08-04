@@ -1703,7 +1703,7 @@ if ($is_kakaopay_use) {
     </div>
 
     <!-- 결제 정보 섹션 -->
-    <section class="hidden pc:block sticky top-6 w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-15">
+    <section class="hidden pc:block sticky top-64 w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-15">
         <div class="flex items-center pb-4 border-b border-gray-500">
             <h2 class="text-[20px] font-semibold">결제정보</h2>
         </div>

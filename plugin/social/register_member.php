@@ -15,8 +15,19 @@ if( $is_member ){
 
 $provider_name = social_get_request_provider();
 $user_profile = social_session_exists_check();
+// if( ! $user_profile ){
+//     alert( "소셜로그인을 하신 분만 접근할 수 있습니다.", G5_URL);
+// }
 if( ! $user_profile ){
-    alert( "소셜로그인을 하신 분만 접근할 수 있습니다.", G5_URL);
+    $user_profile = (object) array(
+        'displayName' => '디자인확인',
+        'email' => 'design-preview@example.com',
+        'emailVerified' => 'design-preview@example.com',
+        'sid' => 'design_preview',
+        'identifier' => 'design_preview',
+        'phone' => '',
+        'username' => '디자인확인'
+    );
 }
 
 // 소셜 가입된 내역이 있는지 확인 상수 G5_SOCIAL_DELETE_DAY 관련

@@ -121,11 +121,11 @@
 }
 
 /* 인풋 테마 */
-:where(input[type="text"], input[type="password"], input[type="email"]) {
+/* :where(input[type="text"], input[type="password"], input[type="email"]) {
   width: 100%;
   padding: 16px;
   outline: none;
-}
+} */
 
 /* :where(input[type="text"], input[type="password"], input[type="email"]) {
   width: 100%;
@@ -137,13 +137,13 @@
   outline: none;
 } */
 
-:where(
+/* :where(
   input[type="text"],
   input[type="password"],
   input[type="email"]
 )::placeholder {
   color: #a1a1aa;
-}
+} */
 
 /* :where(input[type="text"], input[type="password"], input[type="email"]):focus {
   border-color: #a1a1aa;
