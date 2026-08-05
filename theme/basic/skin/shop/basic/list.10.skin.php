@@ -2,6 +2,8 @@
 if (!defined('_GNUBOARD_'))
     exit; // 개별 페이지 접근 불가
 
+global $ca;
+
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css">', 0);
 
@@ -10,10 +12,19 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
 ?>
 
 <div class="flex gap-6 items-start p-4">
-    <?php include __DIR__ . '/_filter.php'; ?>
+    <!-- 카테고리 필터 PC 사이드바 -->
+    <div class="hidden pc:block w-60 border border-gray-300 rounded">
+        <?php if (basename($_SERVER['SCRIPT_NAME']) !== 'listtype.php') { ?>
+            <?php include __DIR__ . '/_category.php'; ?>
+        <?php } ?>
+        <?php include __DIR__ . '/_filter.php'; ?>
+    </div>
+    <?php include __DIR__ . '/_filter_drawer.php'; ?>
 
     <!-- 상품진열 10 시작 { -->
     <div class="flex-1">
+        <h2 class="hidden pc:block text-xl font-bold mb-4"><?php echo get_text($ca['ca_name']); ?></h2>
+
         <?php
         $i = 0;
 
@@ -40,7 +51,7 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
             }
 
             $list_mod = $this->list_mod; // 분류관리에서 1줄당 이미지 수 값 또는 파일에서 지정한 가로 수
-        
+
             $classes = array();
             // $classes[] = 'col-row-' . $list_mod;
             $classes[] = 'grid-cols-' . $list_mod;
@@ -48,7 +59,7 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
             // if ($i && ($i % $list_mod == 0)) {
             //     $classes[] = 'row-clear';
             // }
-        
+
             $i++;
             ?>
             <?php if ($i === 1) { ?>
@@ -173,23 +184,23 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
             <?php } ?>
 
             <?php if ($i >= 1) { ?>
-            </ul>
-        <?php } ?>
+                </ul>
+            <?php } ?>
 
-        <?php if ($i === 0) { ?>
-            <p class="sct_noitem">등록된 상품이 없습니다.</p>
-        <?php } ?>
+            <?php if ($i === 0) { ?>
+                <p class="sct_noitem">등록된 상품이 없습니다.</p>
+            <?php } ?>
     </div>
     <!-- } 상품진열 10 끝 -->
 </div>
 
 <script>
     //SNS 공유
-    $(function () {
-        $(".btn_share").on("click", function () {
+    $(function() {
+        $(".btn_share").on("click", function() {
             $(this).parent("div").children(".sct_sns_wrap").show();
         });
-        $('.sct_sns_bg, .sct_sns_cls').click(function () {
+        $('.sct_sns_bg, .sct_sns_cls').click(function() {
             $('.sct_sns_wrap').hide();
         });
     });

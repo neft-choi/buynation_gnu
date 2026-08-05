@@ -124,10 +124,10 @@ if ($is_admin)
     // 상단 HTML
     echo '<div id="sct_hhtml">' . conv_content($ca['ca_head_html'], 1) . '</div>';
 
-    $cate_skin = $skin_dir . '/listcategory.skin.php';
-    if (!is_file($cate_skin))
-        $cate_skin = G5_SHOP_SKIN_PATH . '/listcategory.skin.php';
-    include $cate_skin;
+    // $cate_skin = $skin_dir . '/listcategory.skin.php';
+    // if (!is_file($cate_skin))
+    //     $cate_skin = G5_SHOP_SKIN_PATH . '/listcategory.skin.php';
+    // include $cate_skin;
 
     // 상품 출력순서가 있다면
     if ($sort != "")
@@ -197,7 +197,7 @@ if ($is_admin)
     if (file_exists($skin_file)) {
 
         echo '<div id="sct_sortlst" class="!border-none">';
-        ?>
+    ?>
 
         <!-- 상품 리스트 정렬, 필터 -->
         <section class="px-4 pt-4">
@@ -231,7 +231,7 @@ if ($is_admin)
 
 
 
-        <?php
+    <?php
         // 상품 보기 타입 변경 버튼
         $sub_skin = $skin_dir . '/list.sub.skin.php';
         if (!is_file($sub_skin))

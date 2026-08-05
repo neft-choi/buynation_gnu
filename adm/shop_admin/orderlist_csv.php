@@ -278,6 +278,9 @@ fputcsv($fp, array(
     '배송비 유형',
     '주문상태',
     '결제수단',
+    '택배사',
+    '송장번호',
+    '송장등록일시',
     '정산금액',
     '정산예정일'
 ));
@@ -311,6 +314,9 @@ SELECT
     c.ct_price,
     c.ct_send_cost,
     c.ct_status,
+    c.ct_delivery_company,
+    c.ct_invoice,
+    c.ct_invoice_time,
     c.io_type,
     c.io_price,
 
@@ -596,6 +602,10 @@ while ($row = sql_fetch_array($result)) {
 
         $row['od_status'],
         $row['od_settle_case'],
+
+        $row['ct_delivery_company'],
+        $row['ct_invoice'],
+        $row['ct_invoice_time'],
 
         $settle_price,
         $settle_date

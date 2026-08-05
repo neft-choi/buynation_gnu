@@ -214,7 +214,7 @@ if ($show_bottom_nav) {
     </style>
 
     <nav id="shop-bottom-nav-wrap"
-        class="fixed bottom-0 left-1/2 z-50 w-full h-[var(--bottom-nav-height)] max-w-full -translate-x-1/2 border-t border-gray-200 bg-white pc:hidden">
+        class="fixed bottom-0 z-50 w-full h-[var(--bottom-nav-height)] max-w-full border-t border-gray-200 bg-white pc:hidden">
         <ul class="h-full grid grid-cols-5 items-center text-xs">
             <li>
                 <a href="#" id="bottom_menu_open"

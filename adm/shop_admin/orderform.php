@@ -43,6 +43,16 @@ if (! (isset($od['od_id']) && $od['od_id'])) {
 $od['mb_id'] = $od['mb_id'] ? $od['mb_id'] : "비회원";
 //------------------------------------------------------------------------------
 
+// 상품 옵션별 택배사/송장번호 필드가 없으면 자동 생성
+if (!sql_query(" SELECT ct_delivery_company FROM {$g5['g5_shop_cart_table']} LIMIT 1 ", false)) {
+    sql_query("
+        ALTER TABLE `{$g5['g5_shop_cart_table']}`
+            ADD `ct_delivery_company` VARCHAR(100) NOT NULL DEFAULT '' AFTER `ct_status`,
+            ADD `ct_invoice` VARCHAR(100) NOT NULL DEFAULT '' AFTER `ct_delivery_company`,
+            ADD `ct_invoice_time` DATETIME NULL DEFAULT NULL AFTER `ct_invoice`
+    ", true);
+}
+
 
 $pg_anchor = '<ul class="anchor">
 <li><a href="#anc_sodr_list">주문상품 목록</a></li>
@@ -176,7 +186,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                         $image = get_it_image($row['it_id'], 50, 50);
 
                         // 상품의 옵션정보
-                        $sql = " select ct_id, it_id, ct_price, ct_point, ct_qty, ct_option, ct_status, cp_price, ct_stock_use, ct_point_use, ct_send_cost, io_type, io_price
+                        $sql = " select ct_id, it_id, ct_price, ct_point, ct_qty, ct_option, ct_status, ct_delivery_company, ct_invoice, ct_invoice_time, cp_price, ct_stock_use, ct_point_use, ct_send_cost, io_type, io_price
                         from {$g5['g5_shop_cart_table']}
                         where od_id = '{$od['od_id']}'
                           and it_id = '{$row['it_id']}'
@@ -254,9 +264,20 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                                 <td class="td_mngsmall"><?php echo get_yn($opt['ct_stock_use']); ?></td>
 
                                 <td class="td_left">
-                                    <div class="flex flex-col gap-1 w-30">
-                                        <input type="text" value="CJ대한통운(임시)" class="border border-gray-200 rounded px-2 py-1 focus-visible:outline-none">
-                                        <input type="text" value="123412341234(임시)" class="border border-gray-200 rounded px-2 py-1 focus-visible:outline-none">
+                                    <div class="flex flex-col gap-1 w-40">
+                                        <input type="text"
+                                               name="ct_delivery_company[<?php echo $chk_cnt; ?>]"
+                                               value="<?php echo get_text($opt['ct_delivery_company']); ?>"
+                                               placeholder="택배사"
+                                               maxlength="100"
+                                               class="border border-gray-200 rounded px-2 py-1 focus-visible:outline-none">
+
+                                        <input type="text"
+                                               name="ct_invoice[<?php echo $chk_cnt; ?>]"
+                                               value="<?php echo get_text($opt['ct_invoice']); ?>"
+                                               placeholder="송장번호"
+                                               maxlength="100"
+                                               class="border border-gray-200 rounded px-2 py-1 focus-visible:outline-none">
                                     </div>
                                 </td>
                             </tr>
@@ -274,6 +295,16 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
         <div class="btn_list02 btn_list">
             <p>
                 <input type="hidden" name="chk_cnt" value="<?php echo $chk_cnt; ?>">
+
+                <button type="submit"
+                        formaction="./orderforminvoiceupdate.php"
+                        formmethod="post"
+                        formnovalidate
+                        class="btn_02 color_04"
+                        onclick="document.pressed='송장정보 저장'">
+                    송장정보 저장
+                </button>
+
                 <strong>주문 및 장바구니 상태 변경</strong>
                 <input type="submit" name="ct_status" value="주문" onclick="document.pressed=this.value" class="btn_02 color_01">
                 <input type="submit" name="ct_status" value="입금" onclick="document.pressed=this.value" class="btn_02 color_02">
@@ -1101,6 +1132,10 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     function form_submit(f) {
         var check = false;
         var status = document.pressed;
+
+        if (status === "송장정보 저장") {
+            return true;
+        }
 
         for (i = 0; i < f.chk_cnt.value; i++) {
             if (document.getElementById('ct_chk_' + i).checked == true)
