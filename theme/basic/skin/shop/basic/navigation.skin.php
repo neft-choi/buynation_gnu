@@ -20,71 +20,58 @@ if (!$is_item_view && $ca_id) {
     );
 }
 
-$location_class = array();
-if ($is_item_view) {
-    $location_class[] = 'view_location';    // view_location는 리스트 말고 상품보기에서만 표시
-} else {
-    $location_class[] = 'is_list is_right';    // view_location는 리스트 말고 상품보기에서만 표시
-}
+// $location_class = array();
+// if ($is_item_view) {
+//     $location_class[] = 'view_location';    // view_location는 리스트 말고 상품보기에서만 표시
+// } else {
+//     $location_class[] = 'is_list is_right';    // view_location는 리스트 말고 상품보기에서만 표시
+// }
 
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">', 0);
-add_javascript('<script src="' . G5_JS_URL . '/shop.category.navigation.js"></script>', 10);
+// add_javascript('<script src="' . G5_JS_URL . '/shop.category.navigation.js"></script>', 10);
 ?>
 
-<style>
-    /* 브레드크럼블 임시 none */
-    /* #sct_location {
-        display: none !important;
-    } */
-</style>
-
-<div id="sct_location" class="<?php echo implode(' ', $location_class); ?>"> <!-- class="view_location" --> <!-- view_location는 리스트 말고 상품보기에서만 표시 -->
-    <a href='<?php echo G5_SHOP_URL; ?>/' class="go_home"><span class="sound_only">메인으로</span><i class="fa fa-home" aria-hidden="true"></i></a>
-    <i class="dividing-line fa fa-angle-right" aria-hidden="true"></i>
+<nav id="sct_location" class="<?php //echo implode(' ', $location_class); ?> flex items-center gap-2 px-4 pc:px-6 py-3 text-sm text-gray-500 font-medium bg-zinc-100"> <!-- class="view_location" --> <!-- view_location는 리스트 말고 상품보기에서만 표시 -->
+    <a href='<?php echo G5_SHOP_URL; ?>/' class="go_home">
+        <span>도너츠 홈</span>
+    </a>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right w-4 h-4">
+        <path d="m9 18 6-6-6-6" />
+    </svg>
     <?php if (is_array($navi_datas) && $navi_datas) { ?>
 
         <?php if (isset($navi_datas[0]) && $navi_datas[0]) { ?>
-            <select class="shop_hover_selectbox category1">
-                <?php foreach ((array) $navi_datas[0] as $data) { ?>
-                    <option value="<?php echo $data['ca_id']; ?>" data-url="<?php echo $data['url']; ?>" <?php if ($ca_ids['ca_id'] === $data['ca_id']) echo 'selected'; ?>><?php echo $data['ca_name']; ?></option>
+            <?php foreach ((array) $navi_datas[0] as $data) { ?>
+                <?php if ($ca_ids['ca_id'] === $data['ca_id']) { ?>
+                    <a href="<?php echo $data['url']; ?>" class="last:text-red-400 last:font-semibold"><?php echo get_text($data['ca_name']); ?></a>
                 <?php } ?>
-            </select>
+            <?php } ?>
         <?php } ?>
+
         <?php if (isset($navi_datas[1]) && $navi_datas[1]) { ?>
-            <i class="dividing-line fa fa-angle-right" aria-hidden="true"></i>
-            <select class="shop_hover_selectbox category2">
-                <?php foreach ((array) $navi_datas[1] as $data) { ?>
-                    <option value="<?php echo $data['ca_id']; ?>" data-url="<?php echo $data['url']; ?>" <?php if ($ca_ids['ca_id2'] === $data['ca_id']) echo 'selected'; ?>><?php echo $data['ca_name']; ?></option>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right w-4 h-4" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+            <?php foreach ((array) $navi_datas[1] as $data) { ?>
+                <?php if ($ca_ids['ca_id2'] === $data['ca_id']) { ?>
+                    <a href="<?php echo $data['url']; ?>" class="last:text-red-400 last:font-semibold"><?php echo get_text($data['ca_name']); ?></a>
                 <?php } ?>
-            </select>
+            <?php } ?>
         <?php } ?>
+
         <?php if (isset($navi_datas[2]) && $navi_datas[2]) { ?>
-            <i class="dividing-line fa fa-angle-right" aria-hidden="true"></i>
-            <select class="shop_hover_selectbox category3">
-                <?php foreach ((array) $navi_datas[2] as $data) { ?>
-                    <option value="<?php echo $data['ca_id']; ?>" data-url="<?php echo $data['url']; ?>" <?php if ($ca_ids['ca_id3'] === $data['ca_id']) echo 'selected'; ?>><?php echo $data['ca_name']; ?></option>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right w-4 h-4" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+            </svg>
+            <?php foreach ((array) $navi_datas[2] as $data) { ?>
+                <?php if ($ca_ids['ca_id3'] === $data['ca_id']) { ?>
+                    <a href="<?php echo $data['url']; ?>" class="last:text-red-400 last:font-semibold"><?php echo get_text($data['ca_name']); ?></a>
                 <?php } ?>
-            </select>
+            <?php } ?>
+
         <?php } ?>
     <?php } else { ?>
         <?php echo get_text($g5['title']); ?>
     <?php } ?>
-</div>
-<script>
-    jQuery(function($) {
-        $(document).ready(function() {
-            $("#sct_location select").on("change", function(e) {
-                var url = $(this).find(':selected').attr("data-url");
-
-                if (typeof itemlist_ca_id != "undefined" && itemlist_ca_id === this.value) {
-                    return false;
-                }
-
-                window.location.href = url;
-            });
-
-            $("select.shop_hover_selectbox").shop_select_to_html();
-        });
-    });
-</script>
+</nav>

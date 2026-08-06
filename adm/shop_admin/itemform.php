@@ -114,7 +114,6 @@ if ($w == "") {
             if (!$row['it_id']) {
                 alert("'{$member['mb_id']}' 님께서 수정 할 권한이 없는 상품입니다.");
             }
-
         } else {
 
             // 기존 카테고리 관리자 방식 유지
@@ -1210,8 +1209,11 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
         </div>
     </section>
 
-
     <section id="anc_sitfrm_sendcost">
+        <?php include_once G5_ADMIN_PATH . '/shop_admin/sendcostform.php' ?>
+    </section>
+
+    <section id="anc_sitfrm_sendcost" class="hidden">
         <h2 class="h2_frm">배송비</h2>
         <div class="local_desc02 local_desc">
             <p>쇼핑몰설정 &gt; 배송비유형 설정보다 <strong>개별상품 배송비설정이 우선</strong> 적용됩니다.</p>
@@ -1278,6 +1280,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                 </tbody>
             </table>
         </div>
+
 
         <script>
             $(function() {
