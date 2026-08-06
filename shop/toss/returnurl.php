@@ -3,8 +3,8 @@ include_once('./_common.php');
 
 // 결제 실패 처리인 경우
 if (isset($_REQUEST['mode']) && $_REQUEST['mode'] === 'fail') {
-    $code = isset($_REQUEST['code']) ? trim($_REQUEST['code']) : '';
-    $message = isset($_REQUEST['message']) ? trim($_REQUEST['message']) : '';
+    $code = isset($_REQUEST['code']) ? clean_xss_tags(trim($_REQUEST['code'])) : '';
+    $message = isset($_REQUEST['message']) ? clean_xss_tags(trim($_REQUEST['message'])) : '';
 
     alert('결제에 실패하였습니다.\\n\\n[' . $code . '] ' . $message, G5_SHOP_URL . '/orderform.php');
     exit;
@@ -15,12 +15,17 @@ $g5['body_script'] = ' onload="setTossResult();"';
 include_once(G5_PATH.'/head.sub.php');
 
 // 토스페이먼츠 결제인증 성공시 인증키 주문 임시데이터에 업데이트
-$paymentKey = isset($_REQUEST['paymentKey']) ? trim($_REQUEST['paymentKey']) : '';
-$orderId = isset($_REQUEST['orderId']) ? trim($_REQUEST['orderId']) : '';
-$amount = isset($_REQUEST['amount']) ? trim($_REQUEST['amount']) : '';
+$paymentKey = isset($_GET['paymentKey']) ? trim($_GET['paymentKey']) : '';
+$orderId = isset($_GET['orderId']) ? preg_replace('/[^A-Za-z0-9_-]/', '', $_GET['orderId']) : '';
+$amount = isset($_GET['amount']) ? (int) $_GET['amount'] : 0;
 
-if (empty($paymentKey) || empty($orderId)) {
+if (empty($paymentKey) || strlen($paymentKey) > 200 || empty($orderId) || $amount <= 0) {
     alert('결제정보가 올바르지 않습니다.', G5_SHOP_URL);
+    exit;
+}
+
+if ($orderId !== get_session('ss_order_id')) {
+    alert('현재 주문과 결제 주문번호가 일치하지 않습니다.', G5_SHOP_URL.'/cart.php');
     exit;
 }
 
@@ -28,6 +33,13 @@ $sql = " select * from {$g5['g5_shop_order_data_table']} where od_id = '$orderId
 $row = sql_fetch($sql);
 
 $data = isset($row['dt_data']) ? unserialize(base64_decode($row['dt_data'])) : array();
+
+$savedAmount = isset($data['amountValue']) ? (int) $data['amountValue'] : 0;
+$savedOrderId = isset($data['orderId']) ? (string) $data['orderId'] : '';
+if (!$row || !is_array($data) || $savedOrderId !== $orderId || $savedAmount !== $amount) {
+    alert('저장된 주문정보와 토스페이먼츠 결제정보가 일치하지 않습니다.', G5_SHOP_URL.'/cart.php');
+    exit;
+}
 
 
 // 주문 임시데이터에 paymentKey 업데이트

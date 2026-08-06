@@ -1920,7 +1920,7 @@
 }
 
 /* 상품 목록 현재 위치 */
-#sct_location {
+/* #sct_location {
   display: inline-block;
   float: right;
   padding: 12px 0;
@@ -2078,7 +2078,7 @@
 .sct_bg {
   padding-right: 15px !important;
   background: url("img/sct_bg_toright.gif") right 50% no-repeat;
-}
+} */
 
 /* 상품 목록 카테고리 목록 */
 /* .sct_ct {

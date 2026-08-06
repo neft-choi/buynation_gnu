@@ -4,10 +4,10 @@ if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 // 토스페이먼츠 v2 공통 설정
 require_once(G5_SHOP_PATH.'/toss/toss.inc.php');
 
-$orderId = isset($_REQUEST['orderId']) ? $_REQUEST['orderId'] : '';
+$orderId = isset($_POST['orderId']) ? preg_replace('/[^A-Za-z0-9_-]/', '', $_POST['orderId']) : '';
 $paymentKey = isset($_POST['paymentKey']) ? $_POST['paymentKey'] : '';
 
-if (empty($orderId) || empty($paymentKey)) {
+if (empty($orderId) || empty($paymentKey) || strlen($paymentKey) > 200 || $orderId !== get_session('ss_order_id')) {
     alert('주문정보가 올바르지 않습니다.', G5_SHOP_URL);
 }
 
@@ -40,6 +40,21 @@ $toss->setPaymentHeader();
 $result = $toss->approvePayment();
 
 if ($result) {
+    $responseOrderId = isset($toss->responseData['orderId']) ? (string) $toss->responseData['orderId'] : '';
+    $responsePaymentKey = isset($toss->responseData['paymentKey']) ? (string) $toss->responseData['paymentKey'] : '';
+    $responseAmount = isset($toss->responseData['totalAmount']) ? (int) $toss->responseData['totalAmount'] : 0;
+    if ($responseOrderId !== $orderId || $responsePaymentKey !== $paymentKey || $responseAmount !== $amount) {
+        // 승인까지 완료된 응답이 주문과 다르면 고아 결제가 남지 않도록 즉시 전액 취소한다.
+        if ($responsePaymentKey) {
+            $toss->setCancelData(array(
+                'paymentKey' => $responsePaymentKey,
+                'cancelReason' => '주문 검증 실패 자동취소',
+            ));
+            $toss->cancelPayment();
+        }
+        alert('토스페이먼츠 승인 응답과 주문정보가 일치하지 않습니다.', G5_SHOP_URL);
+    }
+
     // 결제승인 성공시 처리
     $status = isset($toss->responseData['status']) ? $toss->responseData['status'] : '';
     $method = isset($toss->responseData['method']) ? $toss->responseData['method'] : '';
@@ -86,6 +101,7 @@ if ($result) {
             // 간편결제
             $provider = isset($toss->responseData['easyPay']['provider']) ? $toss->responseData['easyPay']['provider'] : '';
             $card_name = isset($toss->easyPayCode[$provider]) ? $toss->easyPayCode[$provider] : $provider;
+            $od_other_pay_type = $provider;
         }
     } else {
 
@@ -98,11 +114,17 @@ if ($result) {
                     $page_return_url .= '?sw_direct=1';
             }
 
-            alert($toss->responseData['message'].' 코드 : '.$toss->responseData['code'], $page_return_url);
+            $message = isset($toss->responseData['message']) ? $toss->responseData['message'] : '결제를 승인할 수 없습니다.';
+            $code = isset($toss->responseData['code']) ? $toss->responseData['code'] : 'UNKNOWN';
+            alert($message.' 코드 : '.$code, $page_return_url);
         } else {
-            alert($toss->responseData['message'].' 코드 : '.$toss->responseData['code'], G5_SHOP_URL.'/orderform.php');
+            $message = isset($toss->responseData['message']) ? $toss->responseData['message'] : '결제를 승인할 수 없습니다.';
+            $code = isset($toss->responseData['code']) ? $toss->responseData['code'] : 'UNKNOWN';
+            alert($message.' 코드 : '.$code, G5_SHOP_URL.'/orderform.php');
         }
     }
 } else {
-    alert($toss->responseData['message'].' 코드 : '.$toss->responseData['code'], G5_SHOP_URL);
+    $message = isset($toss->responseData['message']) ? $toss->responseData['message'] : ($toss->lastCurlError ? '통신 오류: '.$toss->lastCurlError : '결제를 승인할 수 없습니다.');
+    $code = isset($toss->responseData['code']) ? $toss->responseData['code'] : 'HTTP_'.$toss->lastHttpCode;
+    alert($message.' 코드 : '.$code, G5_SHOP_URL);
 }

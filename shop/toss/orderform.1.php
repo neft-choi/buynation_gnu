@@ -13,7 +13,8 @@ if($default['de_iche_use'] || $default['de_vbank_use'] || $default['de_hp_use'] 
 * 수정불가.
 */
 const clientKey = "<?php echo $config['cf_toss_client_key']; ?>";
-const customerKey = "<?php echo $is_member ? $member['mb_id'] : md5(get_session('ss_order_id')); ?>";
+// 회원 아이디/이메일처럼 추측 가능한 값은 customerKey로 직접 사용하지 않는다.
+const customerKey = "<?php echo substr(hash('sha256', ($is_member ? $member['mb_id'] : 'guest').'|'.get_session('ss_order_id').'|'.$config['cf_toss_client_key']), 0, 50); ?>";
 const tossPayments = TossPayments(clientKey);
 
 const payment = tossPayments.payment({ customerKey });
@@ -66,11 +67,16 @@ async function launchCrossPlatform(frm) {
         // 신용카드
         paymentOptions.card = {
             flowMode: frm.cardflowMode.value, // 통합결제창 여는 옵션
-            easyPay: frm.cardeasyPay.value,
             useCardPoint: frm.cardUseCardPoint.value == "true" ? true : false,
             useAppCardOnly: frm.cardUseAppCardOnly.value == "true" ? true : false,            
             useEscrow: frm.cardUseEscrow.value == "true" ? true : false,
         };
+
+        // 통합 PG 결제창(DEFAULT)에는 easyPay를 보내지 않는다.
+        // 간편결제를 명시적으로 선택했을 때만 토스페이로 바로 이동한다.
+        if (frm.cardflowMode.value === 'DIRECT' && frm.cardeasyPay.value) {
+            paymentOptions.card.easyPay = frm.cardeasyPay.value;
+        }
 
         // escrowProducts 추가
         addEscrowProducts(paymentOptions.card);
@@ -99,7 +105,13 @@ async function launchCrossPlatform(frm) {
         addEscrowProducts(paymentOptions.transfer);
     }
 
-    await payment.requestPayment(paymentOptions);
+    try {
+        await payment.requestPayment(paymentOptions);
+    } catch (error) {
+        // 사용자가 결제창을 닫은 경우를 포함해 SDK 오류를 화면에 안전하게 표시한다.
+        const message = error && error.message ? error.message : '결제창을 열지 못했습니다.';
+        alert(message);
+    }
 }
 /*
 * FORM 명만  수정 가능

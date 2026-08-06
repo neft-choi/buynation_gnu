@@ -112,15 +112,18 @@ if ($is_admin)
 </script>
 <script src="<?php echo G5_JS_URL; ?>/shop.list.js"></script>
 
+<!-- 브레드 크럼블 -->
+<?php
+$nav_skin = $skin_dir . '/navigation.skin.php';
+if (!is_file($nav_skin))
+    $nav_skin = G5_SHOP_SKIN_PATH . '/navigation.skin.php';
+include $nav_skin;
+?>
+
 <!-- 상품 목록 시작 { -->
 <div id="sct">
 
     <?php
-    $nav_skin = $skin_dir . '/navigation.skin.php';
-    if (!is_file($nav_skin))
-        $nav_skin = G5_SHOP_SKIN_PATH . '/navigation.skin.php';
-    include $nav_skin;
-
     // 상단 HTML
     echo '<div id="sct_hhtml">' . conv_content($ca['ca_head_html'], 1) . '</div>';
 

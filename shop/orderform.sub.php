@@ -1562,6 +1562,9 @@ if ($is_kakaopay_use) {
                                 case 'inicis':
                                     $pg_easy_pay_name = 'KPAY';
                                     break;
+                                case 'toss':
+                                    $pg_easy_pay_name = 'TOSSPAY';
+                                    break;
                                 default:
                                     $pg_easy_pay_name = 'PAYCO';
                                     break;
@@ -3085,8 +3088,12 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                     f.escrowProducts.value = JSON.stringify(<?php echo json_encode($escrow_products, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
                 <?php } ?>
 
+                // 결제수단을 바꿔 다시 시도해도 이전 DIRECT 설정이 남지 않게 초기화한다.
+                f.cardflowMode.value = 'DEFAULT';
+                f.cardeasyPay.value = '';
                 if (settle_method == "간편결제") {
                     f.cardflowMode.value = 'DIRECT';
+                    f.cardeasyPay.value = 'TOSSPAY';
                 }
 
                 f.amountCurrency.value = 'KRW';

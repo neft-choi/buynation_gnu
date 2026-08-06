@@ -18,6 +18,8 @@ class TossPayments {
     public array $cancelData = array();
     public array $cashReceiptsData = array();
     public array $responseData = array();
+    public int $lastHttpCode = 0;
+    public string $lastCurlError = '';
 
     public array $bankCode = array(
         // 은행
@@ -155,9 +157,9 @@ class TossPayments {
     public function setPaymentData(array $request): void
     {
         $this->paymentData = array(
-            'amount' => $request['amount'],
-            'orderId' => $request['orderId'],
-            'paymentKey' => $request['paymentKey'],
+            'amount' => (int) $request['amount'],
+            'orderId' => (string) $request['orderId'],
+            'paymentKey' => (string) $request['paymentKey'],
         );
     }
 
@@ -174,7 +176,7 @@ class TossPayments {
         }
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, str_replace('{orderId}', $orderId, $this->paymentUrl));
+        curl_setopt($curl, CURLOPT_URL, str_replace('{orderId}', rawurlencode($orderId), $this->paymentUrl));
         curl_setopt($curl, CURLOPT_HTTPHEADER, $this->headers);
         curl_setopt($curl, CURLOPT_SSLVERSION, 6);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
@@ -182,13 +184,15 @@ class TossPayments {
 
         $response = curl_exec($curl);
 
-        $return_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $this->responseData = json_decode($response, true);
+        $this->lastCurlError = curl_error($curl);
+        $this->lastHttpCode = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $decoded = json_decode((string) $response, true);
+        $this->responseData = is_array($decoded) ? $decoded : array();
 
         curl_close($curl);
 
         // 결제 실패 상황인 경우
-        if ($return_status != 200) {
+        if ($this->lastHttpCode !== 200) {
             return false;
         }
 
@@ -202,8 +206,10 @@ class TossPayments {
      */
     public function approvePayment(): bool {
         $curl = curl_init();
+        $headers = $this->headers;
+        $headers[] = 'Idempotency-Key: confirm-'.$this->paymentData['orderId'];
         curl_setopt($curl, CURLOPT_URL, $this->acceptUrl);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $this->headers);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($this->paymentData));
         curl_setopt($curl, CURLOPT_SSLVERSION, 6);
@@ -212,13 +218,16 @@ class TossPayments {
 
         $response = curl_exec($curl);
 
-        $return_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $this->responseData = json_decode($response, true);
+        $this->lastCurlError = curl_error($curl);
+        $this->lastHttpCode = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $decoded = json_decode((string) $response, true);
+        $this->responseData = is_array($decoded) ? $decoded : array();
 
         curl_close($curl);
 
         // 결제 실패 상황인 경우
-        if ($return_status != 200 || ($this->responseData['status'] != 'DONE' && $this->responseData['status'] != 'WAITING_FOR_DEPOSIT')) {
+        $status = isset($this->responseData['status']) ? $this->responseData['status'] : '';
+        if ($this->lastHttpCode !== 200 || ($status !== 'DONE' && $status !== 'WAITING_FOR_DEPOSIT')) {
             return false;
         }
 
@@ -234,9 +243,10 @@ class TossPayments {
     public function setCancelData(array $request): void
     {
         $this->cancelData = array(
-            'paymentKey' => $request['paymentKey'],
             'cancelReason' => $request['cancelReason'],
         );
+
+        $this->cancelData['paymentKey'] = (string) $request['paymentKey'];
 
         // 부분취소 금액이 있는 경우
         if (isset($request['cancelAmount']) && $request['cancelAmount'] > 0) {
@@ -271,23 +281,30 @@ class TossPayments {
         }
 
         $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, str_replace('{paymentKey}', $this->cancelData['paymentKey'], $this->cancelUrl));
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $this->headers);
+        $paymentKey = $this->cancelData['paymentKey'];
+        $requestData = $this->cancelData;
+        unset($requestData['paymentKey']);
+        $headers = $this->headers;
+        $headers[] = 'Idempotency-Key: cancel-'.hash('sha256', $paymentKey.'|'.json_encode($requestData));
+        curl_setopt($curl, CURLOPT_URL, str_replace('{paymentKey}', rawurlencode($paymentKey), $this->cancelUrl));
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($this->cancelData));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($requestData));
         curl_setopt($curl, CURLOPT_SSLVERSION, 6);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_TIMEOUT, 20);
 
         $response = curl_exec($curl);
 
-        $return_status = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        $this->responseData = json_decode($response, true);
+        $this->lastCurlError = curl_error($curl);
+        $this->lastHttpCode = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $decoded = json_decode((string) $response, true);
+        $this->responseData = is_array($decoded) ? $decoded : array();
 
         curl_close($curl);
 
         // 결제 실패 상황인 경우
-        if ($return_status != 200) {
+        if ($this->lastHttpCode !== 200) {
             return false;
         }
 
