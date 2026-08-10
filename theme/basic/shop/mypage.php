@@ -134,11 +134,32 @@ for ($k = 0; $cp = sql_fetch_array($res); $k++) {
                 <?php
                 define("_ORDERINQUIRY_", true);
 
-                $limit = " limit 0, 5 ";
+                $mypage_rows = $config['cf_page_rows'];
+                $limit = " limit 0, $mypage_rows ";
 
                 $is_mypage = true;
 
                 include G5_SHOP_PATH . '/orderinquiry.sub.php';
+
+                $mypage_total_page = ceil($mypage_total_count / $mypage_rows);
+
+                $mypage_qstr = 'q=' . urlencode($q);
+
+                if ($is_custom_range) {
+                    $mypage_qstr .= '&amp;from=' . urlencode($from_date);
+                    $mypage_qstr .= '&amp;to=' . urlencode($to_date);
+                } else {
+                    $mypage_qstr .= '&amp;period=' . urlencode($current_period);
+                }
+
+                if ($mypage_total_page > 1) {
+                    echo get_paging(
+                        $config['cf_write_pages'],
+                        1,
+                        $mypage_total_page,
+                        G5_SHOP_URL . '/orderinquiry.php?' . $mypage_qstr
+                    );
+                }
                 ?>
             </section>
         </section>

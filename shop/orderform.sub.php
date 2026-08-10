@@ -525,7 +525,7 @@ if ($is_kakaopay_use) {
                     <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
                         <h2 class="text-lg pc:text-2xl font-bold">배송지</h2>
                         <?php if ($is_member) { ?>
-                            <a href="<?php echo G5_SHOP_URL; ?>/orderaddress.php" id="order_address"
+                            <a href="<?php echo G5_SHOP_URL; ?>/orderaddress.php?editmode=false" id="order_address"
                                 class="flex items-center gap-1 border border-gray-400 rounded-full px-2 py-1">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

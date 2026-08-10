@@ -51,13 +51,15 @@ $depth3_result = sql_query($depth3_sql);
 
 $depth3_categories = [];
 
+$instanceId = uniqid('category_');
+// 유니크 아이디값을 부여함으로써 어디서 몇번 인클루드해도 각각 독립적으로 작동
 while ($depth3_row = sql_fetch_array($depth3_result)) {
     $depth2_parent_ca_id = substr($depth3_row['ca_id'], 0, 4);
     $depth3_categories[$depth2_parent_ca_id][] = $depth3_row;
 }
 ?>
 
-<section class="category-menu p-0 pc:p-4">
+<section id="<?= $instanceId ?>" class="category-menu p-0 pc:p-4">
     <h2 class="hidden pc:block text-base font-bold border-b pb-4">카테고리</h2>
 
     <ul class="pt-0 pc:pt-4 space-y-2 text-base pc:text-sm">
@@ -106,17 +108,18 @@ while ($depth3_row = sql_fetch_array($depth3_result)) {
     </ul>
 
     <script>
-        $(function() {
-            $('.category-menu').on('click', '.category-accordion-toggle', function() {
+        (function(root) {
+            $(root).on('click', '.category-accordion-toggle', function() {
+                // 이전에 셀렉터가 항상 category-menu 였기 때문에 모든 요소에 이벤트가 걸림
                 const $button = $(this);
-                const panelId = $button.attr('aria-controls');
-                const $panel = $('#' + panelId);
+                const $panel = $button.closest('li').children('ul');
+
                 const isExpanded = $button.attr('aria-expanded') === 'true';
 
                 $panel.toggleClass('hidden', isExpanded);
-                $button.attr('aria-expanded', String(!isExpanded));
-                $button.find('.category-accordion-icon').toggleClass('rotate-180', !isExpanded);
+                $button.attr('aria-expanded', !isExpanded);
             });
-        });
+        })('#<?= $instanceId ?>');
+        // 즉시 실행 함수임 
     </script>
 </section>

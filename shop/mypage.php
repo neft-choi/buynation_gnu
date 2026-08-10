@@ -94,7 +94,7 @@ for($k=0; $cp=sql_fetch_array($res); $k++) {
         // 최근 주문내역
         define("_ORDERINQUIRY_", true);
 
-        $limit = " limit 0, 5 ";
+        $limit = '';
         include G5_SHOP_PATH.'/orderinquiry.sub.php';
         ?>
 

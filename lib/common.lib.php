@@ -45,7 +45,7 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add = "")
             if ($cur_page != $k)
                 $str .= '<a href="' . $url . $k . $add . '" class="pg_page !inline-flex !items-center !justify-center !w-8 !h-8 !bg-white !text-gray-900 !font-medium !border !border-gray-200">' . $k . '<span class="sound_only">페이지</span></a>' . PHP_EOL;
             else
-                $str .= '<span class="pg_current !inline-flex !items-center !justify-center !w-8 !h-8 !bg-blue-500 !text-white !font-medium !border !border-gray-200"><span class="sound_only">열린</span>' . $k . '</span><span class="sound_only">페이지</span>' . PHP_EOL;
+                $str .= '<span class="pg_current inline-flex items-center justify-center w-8 h-8 bg-(--color-primary) text-white font-medium border border-gray-200"><span class="sound_only">열린</span>' . $k . '</span><span class="sound_only">페이지</span>' . PHP_EOL;
         }
     }
 
@@ -56,7 +56,7 @@ function get_paging($write_pages, $cur_page, $total_page, $url, $add = "")
     }
 
     if ($str)
-        return "<nav class=\"pg_wrap text-center p-4\"><span class=\"pg inline-flex items-center space-x-[-1px]\">{$str}</span></nav>";
+        return "<nav class=\"pg_wrap text-center p-4\"><span class=\"pg inline-flex items-center space-x-[-1px] [&>*:first-child]:rounded-l [&>*:last-child]:rounded-r\">{$str}</span></nav>";
     else
         return "";
 }

@@ -23,7 +23,7 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
 
     <!-- 상품진열 10 시작 { -->
     <div class="flex-1">
-        <h2 class="hidden pc:block text-xl font-bold mb-4"><?php echo get_text($ca['ca_name']); ?></h2>
+        <h2 class="text-2xl pc:text-3xl font-bold mb-4"><?php echo get_text($ca['ca_name']); ?></h2>
 
         <?php
         $i = 0;

@@ -42,9 +42,9 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
         <fieldset>
             <label for="confirm_mb_id" class="block text-sm pc:text-base font-medium mt-4 mb-1">아이디</label>
             <input type="text" id="confirm_mb_id" value="<?php echo get_text($member['mb_id']) ?>" readonly
-                class="!p-[10px]">
+                class="w-full border border-gray-300 rounded p-2">
             <label for="confirm_mb_password" class="block text-sm pc:text-base font-medium mt-4 mb-1">비밀번호</label>
-            <input type="password" name="mb_password" id="confirm_mb_password" required class="required !p-[10px]"
+            <input type="password" name="mb_password" id="confirm_mb_password" required class="required w-full border border-gray-300 rounded p-2"
                 size="15" maxLength="20" placeholder="비밀번호">
             <input type="submit" value="확인" id="btn_submit"
                 class="btn_submit w-full !bg-[var(--color-primary)] !text-gray-900 font-semibold rounded p-4 mt-6">

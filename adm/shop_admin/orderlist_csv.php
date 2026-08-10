@@ -413,87 +413,230 @@ while ($row = sql_fetch_array($result)) {
 
     $shipping_amount = 0;
     $shipping_type = '';
-    $it_sc_type = (int)$row['it_sc_type'];
+    $use_custom_delivery = false;
 
     /*
-     * 상품별 배송설정이 쇼핑몰 설정보다 우선.
+     * 새 배송관리에서 이 상품에 직접 적용된 배송조건 확인.
+     *
+     * 중요:
+     * 기존 영카트의 ct_send_cost / it_sc_type보다
+     * donuts_delivery_product_settings에 지정된 조건을 우선합니다.
      */
-    switch ($it_sc_type) {
+    if (!empty($brand['brand_id'])) {
 
-        case 1:
-            $shipping_amount = 0;
-            $shipping_method = '무료';
-            $shipping_type = '무료배송';
-            break;
+        $brand_id_sql2 = sql_real_escape_string($member['mb_id']);
 
-        case 2:
-            if ($item_order_price >= (int)$row['it_sc_minimum']) {
-                $shipping_amount = 0;
-                $shipping_method = '무료';
-            } else {
-                $shipping_amount = (int)$row['it_sc_price'];
-            }
-            $shipping_type = '조건부 무료배송';
-            break;
+        $custom_delivery = sql_fetch("
+            SELECT
+                ps.condition_id,
+                c.dc_name,
+                c.dc_type,
+                c.dc_price,
+                c.dc_minimum,
+                c.dc_qty
+            FROM donuts_delivery_product_settings ps
+            INNER JOIN donuts_delivery_conditions c
+                ON c.dc_id = ps.condition_id
+               AND c.brand_id = ps.brand_id
+            WHERE ps.brand_id = '{$brand_id_sql2}'
+              AND ps.it_id = '{$it_id_sql}'
+            LIMIT 1
+        ", false);
 
-        case 3:
-            $shipping_amount = (int)$row['it_sc_price'];
-            $shipping_type = '유료배송';
-            break;
+        if (!empty($custom_delivery['condition_id'])) {
 
-        case 4:
-            $sc_qty = max(1, (int)$row['it_sc_qty']);
-            $shipping_amount =
-                (int)$row['it_sc_price'] *
-                (int)ceil($item_order_qty / $sc_qty);
+            $use_custom_delivery = true;
 
-            $shipping_type = '수량별 배송비';
-            break;
+            $dc_type = isset($custom_delivery['dc_type'])
+                ? trim($custom_delivery['dc_type'])
+                : '';
 
-        case 0:
-        default:
-            /*
-             * 쇼핑몰 기본설정 사용.
-             * 브랜드 회원이면 donuts_brand_settings 기준.
-             */
-            if (!empty($brand['brand_id'])) {
+            $dc_price = isset($custom_delivery['dc_price'])
+                ? (int)$custom_delivery['dc_price']
+                : 0;
 
-                $shipping_amount = csv_brand_send_cost(
-                    $brand_settings,
-                    $item_order_price
-                );
+            $dc_minimum = isset($custom_delivery['dc_minimum'])
+                ? (int)$custom_delivery['dc_minimum']
+                : 0;
 
-                $brand_case = isset($brand_settings['de_send_cost_case'])
-                    ? $brand_settings['de_send_cost_case']
-                    : '';
+            $dc_qty = isset($custom_delivery['dc_qty'])
+                ? max(1, (int)$custom_delivery['dc_qty'])
+                : 1;
 
-                if ($brand_case === '무료' || $shipping_amount <= 0) {
+            $shipping_type = !empty($custom_delivery['dc_name'])
+                ? $custom_delivery['dc_name']
+                : '배송조건';
+
+            switch ($dc_type) {
+
+                case 'paid':
+                    // 유료: 주문금액과 관계없이 설정 배송비 고정 부과
+                    $shipping_amount = $dc_price;
+                    $shipping_method = '선불';
+                    break;
+
+                case 'conditional':
+                    // 조건부 무료: 기준금액 이상 무료
+                    if ($dc_minimum > 0 && $item_order_price >= $dc_minimum) {
+                        $shipping_amount = 0;
+                        $shipping_method = '무료';
+                    } else {
+                        $shipping_amount = $dc_price;
+                        $shipping_method = '선불';
+                    }
+                    break;
+
+                case 'free':
+                    $shipping_amount = 0;
                     $shipping_method = '무료';
-                    $shipping_type = '브랜드 기본 - 무료배송';
-                } else {
-                    $shipping_type = '브랜드 기본 - 금액별차등';
-                }
+                    break;
 
-            } else {
-                /*
-                 * 최고관리자는 브랜드 하나를 특정할 수 없으므로
-                 * 실제 주문서에 기록된 배송비 사용.
-                 */
-                $shipping_amount =
-                    (int)$row['od_send_cost'] +
-                    (int)$row['od_send_cost2'];
+                case 'quantity':
+                    $shipping_amount =
+                        $dc_price *
+                        (int)ceil($item_order_qty / $dc_qty);
+                    $shipping_method = '선불';
+                    break;
 
-                $shipping_type = '쇼핑몰 기본설정';
+                case 'amount_range':
+                    /*
+                     * 금액 구간별 배송비
+                     */
+                    $range_result = sql_query("
+                        SELECT min_amount, max_amount, dr_price
+                        FROM donuts_delivery_condition_ranges
+                        WHERE dc_id = '" . (int)$custom_delivery['condition_id'] . "'
+                        ORDER BY min_amount ASC
+                    ", false);
+
+                    $range_matched = false;
+
+                    if ($range_result) {
+                        while ($range = sql_fetch_array($range_result)) {
+                            $min_amount = (int)$range['min_amount'];
+
+                            $max_amount =
+                                ($range['max_amount'] === '' || $range['max_amount'] === null)
+                                ? null
+                                : (int)$range['max_amount'];
+
+                            if (
+                                $item_order_price >= $min_amount &&
+                                ($max_amount === null || $item_order_price < $max_amount)
+                            ) {
+                                $shipping_amount = (int)$range['dr_price'];
+                                $range_matched = true;
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!$range_matched) {
+                        $shipping_amount = 0;
+                    }
+
+                    $shipping_method =
+                        $shipping_amount > 0
+                        ? '선불'
+                        : '무료';
+                    break;
+
+                default:
+                    /*
+                     * 알 수 없는 타입이면 아래 기존 영카트 배송비 계산으로 fallback.
+                     */
+                    $use_custom_delivery = false;
+                    break;
             }
-            break;
+        }
     }
 
     /*
-     * 장바구니에서 무료로 확정된 경우 최종적으로 무료 처리.
+     * 새 배송관리 조건이 없는 상품만 기존 영카트 배송설정을 사용.
      */
-    if ((int)$row['ct_send_cost'] === 2) {
-        $shipping_amount = 0;
-        $shipping_method = '무료';
+    if (!$use_custom_delivery) {
+
+        $it_sc_type = (int)$row['it_sc_type'];
+
+        switch ($it_sc_type) {
+
+            case 1:
+                $shipping_amount = 0;
+                $shipping_method = '무료';
+                $shipping_type = '무료배송';
+                break;
+
+            case 2:
+                if ($item_order_price >= (int)$row['it_sc_minimum']) {
+                    $shipping_amount = 0;
+                    $shipping_method = '무료';
+                } else {
+                    $shipping_amount = (int)$row['it_sc_price'];
+                }
+                $shipping_type = '조건부 무료배송';
+                break;
+
+            case 3:
+                $shipping_amount = (int)$row['it_sc_price'];
+                $shipping_method = '선불';
+                $shipping_type = '유료배송';
+                break;
+
+            case 4:
+                $sc_qty = max(1, (int)$row['it_sc_qty']);
+
+                $shipping_amount =
+                    (int)$row['it_sc_price'] *
+                    (int)ceil($item_order_qty / $sc_qty);
+
+                $shipping_method = '선불';
+                $shipping_type = '수량별 배송비';
+                break;
+
+            case 0:
+            default:
+
+                if (!empty($brand['brand_id'])) {
+
+                    $shipping_amount = csv_brand_send_cost(
+                        $brand_settings,
+                        $item_order_price
+                    );
+
+                    $brand_case = isset($brand_settings['de_send_cost_case'])
+                        ? $brand_settings['de_send_cost_case']
+                        : '';
+
+                    if ($brand_case === '무료' || $shipping_amount <= 0) {
+                        $shipping_method = '무료';
+                        $shipping_type = '브랜드 기본 - 무료배송';
+                    } else {
+                        $shipping_method = '선불';
+                        $shipping_type = '브랜드 기본 - 금액별차등';
+                    }
+
+                } else {
+
+                    $shipping_amount =
+                        (int)$row['od_send_cost'] +
+                        (int)$row['od_send_cost2'];
+
+                    $shipping_type = '쇼핑몰 기본설정';
+                }
+
+                break;
+        }
+
+        /*
+         * 기존 영카트 조건을 사용할 때만 ct_send_cost=2를 무료로 인정.
+         *
+         * 새 배송관리에서 paid 3000원을 지정한 상품은
+         * 과거 주문의 ct_send_cost=2 값 때문에 0원으로 덮어쓰지 않습니다.
+         */
+        if ((int)$row['ct_send_cost'] === 2) {
+            $shipping_amount = 0;
+            $shipping_method = '무료';
+        }
     }
 
     /*

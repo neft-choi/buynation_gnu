@@ -31,7 +31,7 @@ $sql = " select *
             limit $from_record, $rows";
 
 $result = sql_query($sql);
-
+$editmode = ($_GET['editmode'] ?? 'true') === 'true';
 if (!sql_num_rows($result))
     alert_close('배송지 목록 자료가 없습니다.');
 
@@ -97,29 +97,54 @@ include_once(G5_SHOP_PATH . '/_head.php');
                     ?>
                         <div class="rounded-lg border border-gray-200 bg-white p-4 space-y-4">
                             <input type="hidden" name="ad_id[<?php echo $i; ?>]" value="<?php echo $row['ad_id']; ?>">
-
+                                <?php if ($row['ad_default']) { ?>
+                                    <span class="inline-flex items-center rounded-full bg-gray-900 px-3 py-1 text-xs font-medium text-white">
+                                        기본배송지
+                                    </span>
+                                <?php } ?>
                             <div class="flex items-start gap-2">
-                                <div>
-                                    <input type="checkbox" name="chk[]" value="<?php echo $i; ?>" id="chk_<?php echo $i; ?>" class="peer sr-only">
-                                    <label for="chk_<?php echo $i; ?>" class="addr-check-label inline-flex cursor-pointer items-center justify-center" aria-label="배송지선택">
-                                        <svg class="addr-check-off block" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="3" y="3" width="22" height="22" rx="11" fill="white" />
-                                            <rect x="3.75" y="3.75" width="20.5" height="20.5" rx="10.25" stroke="#8D8D8D" stroke-opacity="0.52" stroke-width="1.5" />
-                                            <path d="M18.0975 10.058C18.4337 9.74377 18.961 9.76159 19.2753 10.0977C19.5895 10.4339 19.5717 10.9611 19.2356 11.2755L12.8189 17.2755C12.4986 17.5749 12.0012 17.5749 11.6809 17.2755L8.76421 14.5482C8.42809 14.2339 8.41028 13.7067 8.7245 13.3705C9.03881 13.0344 9.56606 13.0165 9.90223 13.3308L12.2492 15.5255L18.0975 10.058Z" fill="#8D8D8D" fill-opacity="0.52" />
-                                        </svg>
-                                        <svg class="addr-check-on hidden" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <rect x="3" y="3" width="22" height="22" rx="11" fill="#393939" />
-                                            <path d="M18.0975 10.058C18.4337 9.74377 18.961 9.76159 19.2753 10.0977C19.5895 10.4339 19.5717 10.9611 19.2356 11.2755L12.8189 17.2755C12.4986 17.5749 12.0012 17.5749 11.6809 17.2755L8.76421 14.5482C8.42809 14.2339 8.41028 13.7067 8.7245 13.3705C9.03881 13.0344 9.56606 13.0165 9.90223 13.3308L12.2492 15.5255L18.0975 10.058Z" fill="white" />
-                                        </svg>
-                                    </label>
-                                    <span class="sound_only">배송지선택</span>
-                                </div>
+                                <?php if($editmode==true){ ?>
+                                    <div>
+                                        <input type="checkbox" name="chk[]" value="<?php echo $i; ?>" id="chk_<?php echo $i; ?>" class="peer sr-only">
+                                        <label for="chk_<?php echo $i; ?>" class="addr-check-label inline-flex cursor-pointer items-center justify-center" aria-label="배송지선택">
+                                            <svg class="addr-check-off block" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="3" y="3" width="22" height="22" rx="11" fill="white" />
+                                                <rect x="3.75" y="3.75" width="20.5" height="20.5" rx="10.25" stroke="#8D8D8D" stroke-opacity="0.52" stroke-width="1.5" />
+                                                <path d="M18.0975 10.058C18.4337 9.74377 18.961 9.76159 19.2753 10.0977C19.5895 10.4339 19.5717 10.9611 19.2356 11.2755L12.8189 17.2755C12.4986 17.5749 12.0012 17.5749 11.6809 17.2755L8.76421 14.5482C8.42809 14.2339 8.41028 13.7067 8.7245 13.3705C9.03881 13.0344 9.56606 13.0165 9.90223 13.3308L12.2492 15.5255L18.0975 10.058Z" fill="#8D8D8D" fill-opacity="0.52" />
+                                            </svg>
+                                            <svg class="addr-check-on hidden" width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect x="3" y="3" width="22" height="22" rx="11" fill="#393939" />
+                                                <path d="M18.0975 10.058C18.4337 9.74377 18.961 9.76159 19.2753 10.0977C19.5895 10.4339 19.5717 10.9611 19.2356 11.2755L12.8189 17.2755C12.4986 17.5749 12.0012 17.5749 11.6809 17.2755L8.76421 14.5482C8.42809 14.2339 8.41028 13.7067 8.7245 13.3705C9.03881 13.0344 9.56606 13.0165 9.90223 13.3308L12.2492 15.5255L18.0975 10.058Z" fill="white" />
+                                            </svg>
+                                        </label>
+                                        <span class="sound_only">배송지선택</span>
+                                    </div>
+                                <?php } ?>
+                                
 
 
                                 <div class="flex-1 space-y-4">
-                                    <div>
-                                        <label for="ad_subject<?php echo $i; ?>" class="sound_only">배송지명</label>
-                                        <input type="text" name="ad_subject[<?php echo $i; ?>]" id="ad_subject<?php echo $i; ?>" class="h-12 w-full rounded border border-gray-900 px-3 text-base font-medium text-gray-900 focus:outline-none" maxlength="20" value="<?php echo get_text($row['ad_subject']); ?>">
+                                   <div class="grid gap-1">
+                                        <label>배송지명</label>
+
+                                        <?php if ($editmode) { ?>
+
+                                            <input
+                                                type="text"
+                                                name="ad_subject[<?php echo $i; ?>]"
+                                                id="ad_subject<?php echo $i; ?>"
+                                                class="h-12 w-full rounded border border-gray-900 px-3 text-base font-medium text-gray-900 focus:outline-none"
+                                                maxlength="20"
+                                                value="<?php echo get_text($row['ad_subject']); ?>"
+                                            >
+
+                                        <?php } else { ?>
+
+                                            <p class="text-gray-900 text-lg font-bold">
+                                                <?php echo get_text($row['ad_subject']); ?>
+                                            </p>
+
+                                        <?php } ?>
                                     </div>
                                     <div class="grid gap-1">
                                         <p class="text-gray-900 text-xs font-medium">이름</p>
@@ -142,17 +167,50 @@ include_once(G5_SHOP_PATH . '/_head.php');
                                     </div>
 
                                     <div class="grid grid-cols-3 gap-2">
-                                        <div>
-                                            <input type="hidden" value="<?php echo $addr; ?>">
-                                            <button type="button" class="sel_address inline-flex w-full items-center justify-center rounded-md border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-base font-medium text-gray-900 whitespace-nowrap">선택</button>
-                                        </div>
+                                     
+                                        <?php 
+                                        if($editmode){ ?> 
 
+                                            <!-- 수정 -->
+                                        <div>
+                                            <button
+                                                type="button"
+                                                 data-index="<?php echo $i; ?>"
+                                                class="edit_address inline-flex w-full items-center justify-center rounded-md border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-base font-medium text-gray-900 whitespace-nowrap"
+                                            >
+                                                수정
+                                            </button>
+                                        </div>
                                         <a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?w=d&amp;ad_id=<?php echo $row['ad_id']; ?>" class="del_address inline-flex items-center justify-center rounded-md border border-gray-900 bg-gray-900 px-8 py-4 text-base font-medium text-white whitespace-nowrap">삭제</a>
 
                                         <div class="relative">
-                                            <input type="radio" name="ad_default" value="<?php echo $row['ad_id']; ?>" id="ad_default<?php echo $i; ?>" class="peer absolute h-0 w-0 opacity-0" <?php if ($row['ad_default']) echo 'checked="checked"'; ?>>
-                                            <label for="ad_default<?php echo $i; ?>" class="inline-flex w-full items-center justify-center rounded-md border border-gray-300 px-8 py-4 text-base font-medium text-gray-900 whitespace-nowrap">기본</label>
+                                            <input
+                                                type="radio"
+                                                name="ad_default"
+                                                value="<?php echo $row['ad_id']; ?>"
+                                                id="ad_default<?php echo $i; ?>"
+                                                class="peer absolute h-0 w-0 opacity-0"
+                                                <?php if ($row['ad_default']) echo 'checked="checked"'; ?>
+                                            >
+
+                                            <label
+                                                for="ad_default<?php echo $i; ?>"
+                                                class="set_default inline-flex w-full items-center justify-center rounded-md border border-gray-300 px-8 py-4 text-base font-medium text-gray-900 whitespace-nowrap cursor-pointer"
+                                                data-index="<?php echo $i; ?>"
+                                                data-ad-id="<?php echo $row['ad_id']; ?>"
+                                            >
+                                                기본
+                                            </label>
                                         </div>
+                                        
+                                        <?php } else {?>
+                                            <!-- 주문서페이지 -->
+                                            <div>
+                                            <input type="hidden" value="<?php echo $addr; ?>">
+                                            <button type="button" class="sel_address inline-flex w-full items-center justify-center rounded-md border border-[var(--color-primary)] bg-[var(--color-primary)] px-8 py-4 text-base font-medium text-gray-900 whitespace-nowrap">선택 <?= $editmode ?> </button>
+                                        </div>
+                                        <?php } ?>
+                                   
                                     </div>
                                 </div>
                             </div>
@@ -161,11 +219,13 @@ include_once(G5_SHOP_PATH . '/_head.php');
                     }
                     ?>
                 </div>
-
-                <div class="mt-4 grid grid-cols-2 gap-2">
+                 <?php if($editmode==true){ ?>
+                 <div class="mt-4 grid grid-cols-2 gap-2 sticky">
                     <input type="submit" name="act_button" value="선택수정" class="btn_submit inline-flex items-center justify-center rounded-md border border-[var(--color-primary)] bg-[var(--color-primary)] py-4 text-base font-medium text-gray-900 cursor-pointer hover:bg-[var(--color-primary)]/80">
                     <button type="button" onclick="window.location.href='<?php echo G5_SHOP_URL; ?>/mypage.php';" class="btn_close_custom inline-flex items-center justify-center rounded-md border border-gray-900 bg-gray-900 py-4 text-base font-medium text-white cursor-pointer hover:bg-gray-900/80">닫기</button>
                 </div>
+                 <?php } ?>
+                
             </div>
         </form>
 
@@ -225,7 +285,36 @@ include_once(G5_SHOP_PATH . '/_head.php');
                 return false;
             }
         });
+        $(".set_default").on("click", function() {
+            var index = $(this).data("index");
+            var adId = $(this).data("ad-id");
+            console.log("Setting default address:", adId, "at index:", index);
+            $.ajax({
+                url: "<?php echo $order_action_url; ?>",
+                type: "POST",
+                data: {
+                    "chk[]": index,
+                    "ad_id[]": adId,
+                    "ad_subject[]": $("#ad_subject" + index).val(),
+                    "ad_default": adId
+                },
+                success: function() {
+                    $("input[name='ad_default']").prop("checked", false);
+                    $("#ad_default" + index).prop("checked", true);
+                    alert("기본배송지 설정에 성공하였습니다.");
+                },
+                error: function() {
+                    alert("기본배송지 설정에 실패했습니다.");
+                }
+            });
+        });
+        $(".edit_address").on("click", function() {
+            var index = $(this).data("index");
 
+            $("#chk_" + index).prop("checked", true);
+
+            document.forderaddress.submit();
+        });
     });
 
     // 반응형 쇼핑몰 헤더 숨기기

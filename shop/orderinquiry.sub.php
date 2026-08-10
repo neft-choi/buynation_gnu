@@ -55,10 +55,44 @@ if (!$is_custom_range) {
     $period_where_sql = " and od_time >= '" . sql_real_escape_string($period_from_datetime) . "' ";
 }
 
+// 주문내역 검색
+// q 값이 전달됐는지 검사한 후, true일 경우 $q 에 앞 뒤 공백을 제거한 문자열로 값을 저장
+$q = isset($_GET['q']) ? trim((string) $_GET['q']) : '';
+
+// 검색 조건을 담을 빈 변수
+$search_where_sql = '';
+
+// 검색어가 없거나 주문내역에 처음 들어왔을 경우 false
+// 검색어가 있으면 true, SQL 문장에 넣기 전에 안전하게 변환
+if ($q !== '') {
+    $q_sql = sql_real_escape_string($q);
+
+    // 상품명 검색 조건 SQL
+    $search_where_sql = " and exists (
+        select 1
+          from {$g5['g5_shop_cart_table']} c
+         where c.od_id = {$g5['g5_shop_order_table']}.od_id
+           and c.it_name like '%{$q_sql}%'
+    ) ";
+}
+
+// 마이페이지 주문내역 전체 개수 조회 (페이지네이션을 위한)
+if (isset($is_mypage) && $is_mypage) {
+    $count_sql = " select count(*) as cnt
+                     from {$g5['g5_shop_order_table']}
+                    where mb_id = '{$member['mb_id']}'
+                      {$period_where_sql}
+                      {$search_where_sql} ";
+    $count_row = sql_fetch($count_sql);
+    $mypage_total_count = (int) $count_row['cnt'];
+}
+
+// 주문내역 조회 SQL
 $sql = " select *
            from {$g5['g5_shop_order_table']}
           where mb_id = '{$member['mb_id']}'
             {$period_where_sql}
+            {$search_where_sql}
           order by od_id desc
           $limit ";
 $result = sql_query($sql);
@@ -70,56 +104,117 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
     $order_ids[] = "'" . sql_real_escape_string($row['od_id']) . "'";
 }
 
-$first_items = array();
-$first_item_ids = array();
-$first_item_options = array();
+// $first_items = array();
+// $first_item_ids = array();
+// $first_item_options = array();
+
+$order_items = array();
+$order_item_options = array();
+
 if (!empty($order_ids)) {
     $item_sql = " select od_id, it_id, it_name, ct_qty, ct_price, io_price, io_type, io_id, ct_option
                     from {$g5['g5_shop_cart_table']}
                    where od_id in (" . implode(',', $order_ids) . ")
                    order by od_id asc, ct_id asc ";
     $item_result = sql_query($item_sql);
+
     for ($j = 0; $item_row = sql_fetch_array($item_result); $j++) {
         $od_id = $item_row['od_id'];
         $it_id = $item_row['it_id'];
+        $item_qty = (int) $item_row['ct_qty'];
 
-        if (!isset($first_items[$od_id])) {
-            $first_items[$od_id] = $item_row;
+        if (!isset($order_items[$od_id])) {
+            $order_items[$od_id] = array();
+            $order_item_options[$od_id] = array();
         }
 
-        if (!isset($first_item_ids[$od_id])) {
-            $first_item_ids[$od_id] = $it_id;
-        }
-
-        if ($first_item_ids[$od_id] === $it_id) {
-            if (!isset($first_item_options[$od_id])) {
-                $first_item_options[$od_id] = array();
-            }
-
-            $first_item_options[$od_id][] = array(
+        if (!isset($order_items[$od_id][$it_id])) {
+            $order_items[$od_id][$it_id] = array(
                 'it_id' => $it_id,
-                'io_id' => isset($item_row['io_id']) ? $item_row['io_id'] : '',
-                'io_type' => isset($item_row['io_type']) ? (string) $item_row['io_type'] : '0',
-                'ct_option' => isset($item_row['ct_option']) ? $item_row['ct_option'] : '',
-                'ct_qty' => isset($item_row['ct_qty']) ? (int) $item_row['ct_qty'] : 1
+                'it_name' => $item_row['it_name'],
+                'ct_qty' => 0,
+                'item_price' => 0
             );
+            $order_item_options[$od_id][$it_id] = array();
         }
+
+        if ((string) $item_row['io_type'] === '1') {
+            $item_price = (int) $item_row['io_price'] * $item_qty;
+        } else {
+            $item_price = ((int) $item_row['ct_price'] + (int) $item_row['io_price']) * $item_qty;
+            $order_items[$od_id][$it_id]['ct_qty'] += $item_qty;
+        }
+
+        $order_items[$od_id][$it_id]['item_price'] += $item_price;
+        $order_item_options[$od_id][$it_id][] = array(
+            'it_id' => $it_id,
+            'io_id' => isset($item_row['io_id']) ? $item_row['io_id'] : '',
+            'io_type' => isset($item_row['io_type']) ? (string) $item_row['io_type'] : '0',
+            'ct_option' => isset($item_row['ct_option']) ? $item_row['ct_option'] : '',
+            'ct_qty' => $item_qty
+        );
+
+        // if (!isset($first_items[$od_id])) {
+        //     $first_items[$od_id] = $item_row;
+        // }
+
+        // if (!isset($first_item_ids[$od_id])) {
+        //     $first_item_ids[$od_id] = $it_id;
+        // }
+
+        // if ($first_item_ids[$od_id] === $it_id) {
+        //     if (!isset($first_item_options[$od_id])) {
+        //         $first_item_options[$od_id] = array();
+        //     }
+
+        //     $first_item_options[$od_id][] = array(
+        //         'it_id' => $it_id,
+        //         'io_id' => isset($item_row['io_id']) ? $item_row['io_id'] : '',
+        //         'io_type' => isset($item_row['io_type']) ? (string) $item_row['io_type'] : '0',
+        //         'ct_option' => isset($item_row['ct_option']) ? $item_row['ct_option'] : '',
+        //         'ct_qty' => isset($item_row['ct_qty']) ? (int) $item_row['ct_qty'] : 1
+        //     );
+        // }
     }
 }
 ?>
 
-<!-- 모바일 헤더 -->
-<div class="flex pc:hidden items-center justify-between p-4">
-    <button type="button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기"
-        onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" stroke-linejoin="round"
-            class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
-            <path d="m15 18-6-6 6-6" />
-        </svg>
-    </button>
-    <h1 class="text-lg font-semibold text-zinc-900 leading-0">주문내역</h1>
-    <div class="w-6 h-6" aria-hidden="true"></div>
+<!-- 주문 내역 모바일 헤더 -->
+<div class="sticky pc:static top-0 bg-white">
+    <div class="flex pc:hidden items-center justify-between p-4">
+        <button type=" button" class="inline-flex items-center justify-center text-zinc-700" aria-label="뒤로가기"
+            onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '<?php echo G5_URL ?>'; }">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6">
+                <path d="m15 18-6-6 6-6" />
+            </svg>
+        </button>
+        <h1 class="text-lg font-semibold text-zinc-900 leading-0">주문내역</h1>
+        <div class="w-6 h-6" aria-hidden="true"></div>
+    </div>
+
+    <div id="order_search_mobile" class="block pc:hidden">
+        <form id="order_search_form" method="get" action="<?php echo G5_SHOP_URL; ?>/orderinquiry.php" class="px-4 pb-4">
+            <?php if ($is_custom_range) { ?>
+                <input type="hidden" name="from" value="<?php echo htmlspecialchars($from_date, ENT_QUOTES); ?>">
+                <input type="hidden" name="to" value="<?php echo htmlspecialchars($to_date, ENT_QUOTES); ?>">
+            <?php } else { ?>
+                <input type="hidden" name="period" value="<?php echo htmlspecialchars($current_period, ENT_QUOTES); ?>">
+            <?php } ?>
+
+            <div id="order_search_main" class="relative flex items-center w-full px-4 py-2 border-2 border-(--color-primary) rounded-full bg-white">
+                <input type="search" name="q" id="order_search_input" value="<?php echo htmlspecialchars($q, ENT_QUOTES); ?>" class="text-sm flex-auto focus-visible:outline-0" placeholder="주문내역 검색" autocomplete="off">
+                <button type="submit" id="order_search_submit" class="text-[var(--color-primary)]" value="검색">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search w-6 h-6">
+                        <path d="m21 21-4.34-4.34"></path>
+                        <circle cx="11" cy="11" r="8"></circle>
+                    </svg>
+                    <span class="sound_only">검색</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <!-- 주문 내역 시작 -->
@@ -127,9 +222,7 @@ if (!empty($order_ids)) {
 
     <!-- PC 너비 타이틀 -->
     <div class="hidden pc:block px-4">
-        <h2 class="text-2xl font-bold pb-4 border-b-2 border-gray-900">
-            <?php echo (isset($is_mypage) && $is_mypage) ? '주문내역' : $g5['title']; ?>
-        </h2>
+        <h2 class="text-2xl font-bold pb-4 border-b-2 border-gray-900">주문내역</h2>
     </div>
 
     <div id="order-filter-tabs" class="p-4">
@@ -224,13 +317,18 @@ if (!empty($order_ids)) {
         </div>
     </div>
 
+    <div id="order_search_pc" class="hidden pc:block">
+
+    </div>
+
     <section id="order-history-list" class="space-y-8 p-4">
         <?php
+
         for ($i = 0; $i < count($orders); $i++) {
             $row = $orders[$i];
             $uid = md5($row['od_id'] . $row['od_time'] . $row['od_ip']);
             $od_date = str_replace('-', '.', substr($row['od_time'], 0, 10));
-
+            $od_id = $row['od_id'];
             switch ($row['od_status']) {
                 case '주문':
                     $od_status = '<span class="status_01">입금확인중</span>';
@@ -252,45 +350,54 @@ if (!empty($order_ids)) {
                     break;
             }
 
-            $thumb_html = '';
+            $order_item_rows = isset($order_items[$row['od_id']]) ? $order_items[$row['od_id']] : array();
             $item_id = '';
-            $item_name = '';
-            $item_url = '#';
-            $item_qty = 0;
-            $item_price = 0;
-            $item_reorder_rows = isset($first_item_options[$row['od_id']]) ? $first_item_options[$row['od_id']] : array();
-            $item_reorder_json = htmlspecialchars(json_encode($item_reorder_rows), ENT_QUOTES);
-            if (isset($first_items[$row['od_id']])) {
-                $item = $first_items[$row['od_id']];
-                if (!empty($item['it_id'])) {
-                    $item_id = $item['it_id'];
-                    $item_url = shop_item_url($item['it_id']);
-                    $thumb_html = get_it_image($item['it_id'], 80, 80);
-                    $item_name = get_text($item['it_name']);
-                    $item_qty = (int) $item['ct_qty'];
-                    if ((string) $item['io_type'] === '1') {
-                        $item_price = (int) $item['io_price'] * $item_qty;
-                    } else {
-                        $item_price = ((int) $item['ct_price'] + (int) $item['io_price']) * $item_qty;
-                    }
-                }
+
+            if (!empty($order_item_rows)) {
+                $first_order_item = reset($order_item_rows);
+                $item_id = $first_order_item['it_id'];
             }
+
+            // $thumb_html = '';
+            // $item_id = '';
+            // $item_name = '';
+            // $item_url = '#';
+            // $item_qty = 0;
+            // $item_price = 0;
+            // $item_reorder_rows = isset($first_item_options[$row['od_id']]) ? $first_item_options[$row['od_id']] : array();
+            // $item_reorder_json = htmlspecialchars(json_encode($item_reorder_rows), ENT_QUOTES);
+            // if (isset($first_items[$row['od_id']])) {
+            //     $item = $first_items[$row['od_id']];
+            //     if (!empty($item['it_id'])) {
+            //         $item_id = $item['it_id'];
+            //         $item_url = shop_item_url($item['it_id']);
+            //         $thumb_html = get_it_image($item['it_id'], 80, 80);
+            //         $item_name = get_text($item['it_name']);
+            //         $item_qty = (int) $item['ct_qty'];
+            //         if ((string) $item['io_type'] === '1') {
+            //             $item_price = (int) $item['io_price'] * $item_qty;
+            //         } else {
+            //             $item_price = ((int) $item['ct_price'] + (int) $item['io_price']) * $item_qty;
+            //         }
+            //     }
+            // }
 
             $action_buttons = array();
             switch ($row['od_status']) {
                 case '주문':
                 case '입금':
                 case '준비':
-                    $action_buttons[] = array(
-                        'label' => '주문취소',
-                        'href' => G5_SHOP_URL . '/orderinquiryview.php?od_id=' . $row['od_id'] . '&uid=' . $uid . '#sod_fin_cancel',
-                        'disabled' => false
-                    );
-                    $action_buttons[] = array(
-                        'label' => '문의하기',
-                        'href' => G5_BBS_URL . '/qalist.php',
-                        'disabled' => false
-                    );
+                    // $action_buttons[] = array(
+                    //     'label' => '주문취소',
+                    //     'href' => G5_SHOP_URL . '/orderinquiryview.php?od_id=' . $row['od_id'] . '&uid=' . $uid . '#sod_fin_cancel',
+                    //     // 'href' => G5_BBS_URL . '/qalist.php',
+                    //     'disabled' => false
+                    // );
+                    // $action_buttons[] = array(
+                    //     'label' => '문의하기',
+                    //     'href' => G5_BBS_URL . '/qalist.php',
+                    //     'disabled' => false
+                    // );
                     break;
                 case '배송':
                     $action_buttons[] = array(
@@ -303,11 +410,11 @@ if (!empty($order_ids)) {
                         'href' => G5_BBS_URL . '/qalist.php',
                         'disabled' => false
                     );
-                    $action_buttons[] = array(
-                        'label' => '문의하기',
-                        'href' => G5_BBS_URL . '/qalist.php',
-                        'disabled' => false
-                    );
+                    // $action_buttons[] = array(
+                    //     'label' => '문의하기',
+                    //     'href' => G5_BBS_URL . '/qalist.php',
+                    //     'disabled' => false
+                    // );
                     break;
                 case '완료':
                     $action_buttons[] = array(
@@ -320,32 +427,32 @@ if (!empty($order_ids)) {
                         'href' => G5_BBS_URL . '/qalist.php',
                         'disabled' => false
                     );
-                    $action_buttons[] = array(
-                        'label' => '문의하기',
-                        'href' => G5_BBS_URL . '/qalist.php',
-                        'disabled' => false
-                    );
+                    // $action_buttons[] = array(
+                    //     'label' => '문의하기',
+                    //     'href' => G5_BBS_URL . '/qalist.php',
+                    //     'disabled' => false
+                    // );
                     break;
                 default:
-                    $action_buttons[] = array(
-                        'label' => '취소완료',
-                        'href' => '#',
-                        'disabled' => true
-                    );
-                    $action_buttons[] = array(
-                        'label' => '문의하기',
-                        'href' => G5_BBS_URL . '/qalist.php',
-                        'disabled' => false
-                    );
+                    // $action_buttons[] = array(
+                    //     'label' => '취소완료',
+                    //     'href' => '#',
+                    //     'disabled' => true
+                    // );
+                    // $action_buttons[] = array(
+                    //     'label' => '문의하기',
+                    //     'href' => G5_BBS_URL . '/qalist.php',
+                    //     'disabled' => false
+                    // );
                     break;
             }
 
             $action_cols = count($action_buttons) === 3 ? 'grid-cols-3' : 'grid-cols-2';
-            ?>
+        ?>
 
             <div class="order-card flex flex-col gap-4">
                 <div class="order-card-head flex items-center justify-between gap-2">
-                    <p class="font-semibold"><?php echo $od_date; ?></p>
+                    <p class="font-semibold"><?= $od_date; ?> - 주문번호 <?= $od_id ?></p>
                     <a href="<?php echo G5_SHOP_URL; ?>/orderinquiryview.php?od_id=<?php echo $row['od_id']; ?>&amp;uid=<?php echo $uid; ?>"
                         class="inline-flex items-center text-sm font-medium text-zinc-700">
                         주문 상세보기
@@ -360,30 +467,55 @@ if (!empty($order_ids)) {
                 <div class="order-card-status p-4 text-sm font-semibold text-gray-900 bg-zinc-100"><?php echo $od_status; ?>
                 </div>
 
-                <div class="order-card-items grid grid-cols-[80px_1fr_auto] gap-2">
-                    <div class="h-20 w-20 overflow-hidden rounded bg-zinc-100">
-                        <?php echo $thumb_html ? $thumb_html : '<div class="h-full w-full"></div>'; ?>
+                <?php foreach ($order_item_rows as $item) {
+                    $item_id = $item['it_id'];
+                    $item_url = shop_item_url($item_id);
+                    $thumb_html = get_it_image($item_id, 80, 80);
+                    $item_name = get_text($item['it_name']);
+                    $item_qty = (int) $item['ct_qty'];
+                    $item_price = (int) $item['item_price'];
+                    $item_reorder_rows = $order_item_options[$row['od_id']][$item_id];
+                    $item_reorder_json = htmlspecialchars(json_encode($item_reorder_rows), ENT_QUOTES);
+                ?>
+                    <div class="order-card-items grid grid-cols-[80px_1fr_auto] gap-2">
+                        <div class="h-20 w-20 overflow-hidden rounded bg-zinc-100">
+                            <?php echo $thumb_html ? $thumb_html : '<div class="h-full w-full"></div>'; ?>
+                        </div>
+
+                        <div class="flex flex-col justify-start gap-2">
+                            <a href="<?php echo $item_url; ?>" class="text-zinc-900"><?php echo $item_name; ?></a>
+                            <p class="font-semibold text-zinc-900">
+                                <?php echo display_price($item_price); ?> <span class="mx-1">|</span>
+                                <?php echo number_format($item_qty); ?>개
+                            </p>
+                        </div>
+
+                        <div class="flex flex-col items-end">
+                            <button type="button"
+                                class="js-order-add-cart flex h-10 w-10 items-center justify-center rounded border border-zinc-300 text-zinc-700"
+                                data-it-id="<?php echo $item_id; ?>" data-reorder-options="<?php echo $item_reorder_json; ?>"
+                                aria-label="장바구니">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
+                                    <circle cx="8" cy="21" r="1" />
+                                    <circle cx="19" cy="21" r="1" />
+                                    <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 1.95 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+                                </svg>
+                            </button>
+
+                            <div class="flex items-center gap-1 text-sm mt-2">
+                                <?php if ($row['od_status'] === '주문' || $row['od_status'] === '입금' || $row['od_status'] === '준비') { ?>
+                                    <a href="<?php echo G5_SHOP_URL; ?>/orderinquiryview.php?od_id=<?php echo $row['od_id']; ?>&amp;uid=<?php echo $uid; ?>#sod_fin_cancel"
+                                        class="border border-zinc-300 rounded px-2 py-1 hover:bg-gray-100">취소하기</a>
+                                <?php } ?>
+
+                                <a href="<?php echo G5_SHOP_URL; ?>/itemqaform.php?it_id=<?php echo urlencode($item_id); ?>"
+                                    class="itemqa_form border border-zinc-300 rounded px-2 py-1 hover:bg-gray-100">문의하기</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flex flex-col justify-start gap-2">
-                        <a href="<?php echo $item_url; ?>" class="text-zinc-900"><?php echo $item_name; ?></a>
-                        <p class="font-semibold text-zinc-900">
-                            <?php echo display_price($item_price); ?> <span class="mx-1">|</span>
-                            <?php echo number_format($item_qty); ?>개
-                        </p>
-                    </div>
-                    <button type="button"
-                        class="js-order-add-cart flex h-10 w-10 items-center justify-center rounded border border-zinc-300 text-zinc-700"
-                        data-it-id="<?php echo $item_id; ?>" data-reorder-options="<?php echo $item_reorder_json; ?>"
-                        aria-label="장바구니">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
-                            <circle cx="8" cy="21" r="1" />
-                            <circle cx="19" cy="21" r="1" />
-                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 1.95 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                        </svg>
-                    </button>
-                </div>
+                <?php } ?>
 
                 <div class="order-card-actions grid <?php echo $action_cols; ?> gap-2">
                     <?php for ($b = 0; $b < count($action_buttons); $b++) { ?>
@@ -420,7 +552,7 @@ if (!empty($order_ids)) {
 <!-- 주문 내역 끝 -->
 
 <script>
-    (function () {
+    (function() {
         const tabWrap = document.getElementById('order-filter-tabs');
         if (tabWrap) {
             const tabs = tabWrap.querySelectorAll('.js-order-filter-tab');
@@ -433,7 +565,7 @@ if (!empty($order_ids)) {
 
                 // 커스텀 달력 아이콘 클릭 시 해당 input의 네이티브 picker를 연다.
                 for (let i = 0; i < datePickerTriggers.length; i++) {
-                    datePickerTriggers[i].addEventListener('click', function () {
+                    datePickerTriggers[i].addEventListener('click', function() {
                         const targetId = this.getAttribute('data-target');
                         if (!targetId) return;
 
@@ -476,7 +608,7 @@ if (!empty($order_ids)) {
                 }
 
                 for (let i = 0; i < tabs.length; i++) {
-                    tabs[i].addEventListener('click', function () {
+                    tabs[i].addEventListener('click', function() {
                         const isCustomTab = this.getAttribute('data-tab-kind') === 'custom';
                         if (isCustomTab) {
                             setActiveTab(this);
@@ -498,7 +630,7 @@ if (!empty($order_ids)) {
                 }
 
                 if (applyButton) {
-                    applyButton.addEventListener('click', function () {
+                    applyButton.addEventListener('click', function() {
                         const fromValue = fromInput ? fromInput.value : '';
                         const toValue = toInput ? toInput.value : '';
 
@@ -587,16 +719,42 @@ if (!empty($order_ids)) {
         }
 
         for (let i = 0; i < cartButtons.length; i++) {
-            cartButtons[i].addEventListener('click', function () {
-                addOrderItemToCart(this).catch(function () {
+            cartButtons[i].addEventListener('click', function() {
+                addOrderItemToCart(this).catch(function() {
                     alert('장바구니 처리 중 오류가 발생했습니다.');
                 });
             });
         }
     })();
 
+    // 문의하기 새창
+    $(function() {
+        $(".itemqa_form").click(function() {
+            window.open(this.href, "itemqa_form", "width=810,height=680,scrollbars=1");
+            return false;
+        });
+    });
+
+    // 주문내역 검색 form 이동
+    syncWithPcBreakpoint(function(isPc) {
+        const $searchForm = $('#order_search_form');
+        const $searchMobile = $('#order_search_mobile');
+        const $searchPc = $('#order_search_pc');
+
+        if (!$searchForm.length || !$searchMobile.length || !$searchPc.length) {
+            return;
+        }
+
+        if (isPc) {
+            $searchForm.appendTo($searchPc);
+            return;
+        }
+
+        $searchForm.appendTo($searchMobile);
+    });
+
     // 기간 필터 이동
-    syncWithPcBreakpoint(function (isPc) {
+    syncWithPcBreakpoint(function(isPc) {
         const $customPanel = $('#order-filter-custom');
 
         if (!$customPanel.length) {
@@ -614,7 +772,7 @@ if (!empty($order_ids)) {
     });
 
     // 반응형 쇼핑몰 헤더 숨기기
-    syncWithPcBreakpoint(function (isPc) {
+    syncWithPcBreakpoint(function(isPc) {
         if (isPc) {
             $('#hd').css('display', '');
         } else {

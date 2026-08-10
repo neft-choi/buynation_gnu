@@ -2806,21 +2806,21 @@ textarea.required {
   text-align: center;
 }
 
-.pg_page,
+/* .pg_page,
 .pg_current,
 .qa_page {
   display: inline-block;
   vertical-align: middle;
   background: #eee;
   border: 1px solid #eee;
-}
+} */
 
-.pg a:focus,
+/* .pg a:focus,
 .pg a:hover {
   text-decoration: none;
-}
+} */
 
-.pg_page,
+/* .pg_page,
 .qa_page {
   color: #959595;
   font-size: 1.083em;
@@ -2830,53 +2830,53 @@ textarea.required {
   min-width: 30px;
   text-decoration: none;
   border-radius: 3px;
-}
+} */
 
-.pg_page:hover,
+/* .pg_page:hover,
 .qa_page:hover {
   background-color: #fafafa;
-}
+} */
 
-.pg_start {
+/* .pg_start {
   text-indent: -999px;
   overflow: hidden;
   background: url("../img/btn_first.gif") no-repeat 50% 50% #eee;
   padding: 0;
   border: 1px solid #eee;
-}
+} */
 
-.pg_prev {
+/* .pg_prev {
   text-indent: -999px;
   overflow: hidden;
   background: url("../img/btn_prev.gif") no-repeat 50% 50% #eee;
   padding: 0;
   border: 1px solid #eee;
-}
+} */
 
-.pg_end {
+/* .pg_end {
   text-indent: -999px;
   overflow: hidden;
   background: url("../img/btn_end.gif") no-repeat 50% 50% #eee;
   padding: 0;
   border: 1px solid #eee;
-}
+} */
 
-.pg_next {
+/* .pg_next {
   text-indent: -999px;
   overflow: hidden;
   background: url("../img/btn_next.gif") no-repeat 50% 50% #eee;
   padding: 0;
   border: 1px solid #eee;
-}
+} */
 
-.pg_start:hover,
+/* .pg_start:hover,
 .pg_prev:hover,
 .pg_end:hover,
 .pg_next:hover {
   background-color: #fafafa;
-}
+} */
 
-.pg_current {
+/* .pg_current {
   display: inline-block;
   background: #3a8afd;
   border: 1px solid #3a8afd;
@@ -2887,7 +2887,7 @@ textarea.required {
   padding: 0 10px;
   min-width: 30px;
   border-radius: 3px;
-}
+} */
 
 /* 팁 */
 .tooltip_icon {

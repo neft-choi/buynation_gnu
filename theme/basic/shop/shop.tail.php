@@ -208,6 +208,7 @@ if ($show_bottom_nav) {
     ?>
     <style>
         /* 본문 하단 네비게이션 만큼 padding */
+        /* 모바일 대응 부탁 */
         body {
             padding-bottom: calc(var(--bottom-nav-icon) + env(safe-area-inset-bottom));
         }

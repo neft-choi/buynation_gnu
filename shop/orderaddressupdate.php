@@ -21,8 +21,14 @@ if ($is_member && $count) {
         $sql = " update {$g5['g5_shop_order_address_table']}
                     set ad_subject = '" . sql_real_escape_string($ad_subject) . "' ";
 
-        if (!empty($_POST['ad_default']) && $ad_id === $_POST['ad_default']) {
-            sql_query(" update {$g5['g5_shop_order_address_table']} set ad_default = '0' where mb_id = '{$member['mb_id']}' ");
+        $ad_default = isset($_POST['ad_default']) ? (int) $_POST['ad_default'] : 0;
+
+        if ($ad_default && $ad_id === $ad_default) {
+            sql_query("
+                update {$g5['g5_shop_order_address_table']}
+                set ad_default = '0'
+                where mb_id = '{$member['mb_id']}'
+            ");
 
             $sql .= ", ad_default = '1' ";
         }

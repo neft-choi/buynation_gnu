@@ -1,6 +1,219 @@
 <?php
 $sub_menu = '400400';
 include_once('./_common.php');
+include_once(G5_LIB_PATH . '/donuts_delivery.lib.php');
+
+donuts_delivery_install();
+
+/*
+ * 브랜드 배송관리 기준 주문 배송비 계산
+ * - donuts_delivery_product_settings에 적용된 배송조건을 최우선 사용
+ * - paid 3,000원이 지정된 상품이면 기존 od_send_cost/ct_send_cost 값과 무관하게 3,000원 적용
+ * - 묶음배송 그룹은 MIN/MAX 규칙 적용
+ */
+if (!function_exists('donuts_admin_direct_delivery_calc')) {
+    function donuts_admin_direct_delivery_calc($od_id, $brand_id)
+    {
+        global $g5;
+
+        $result_data = array(
+            'item_total' => 0,
+            'shipping_total' => 0,
+            'item_fees' => array()
+        );
+
+        $od_id_sql = sql_real_escape_string($od_id);
+        $brand_id = trim((string)$brand_id);
+        $brand_id_sql = sql_real_escape_string($brand_id);
+
+        if ($od_id_sql === '' || $brand_id_sql === '') {
+            return $result_data;
+        }
+
+        // 기본 배송조건
+        $default_condition = array();
+        $default_result = sql_query("
+            SELECT *
+            FROM donuts_delivery_conditions
+            WHERE brand_id = '{$brand_id_sql}'
+              AND is_default = 1
+              AND use_yn = 'Y'
+            ORDER BY dc_id DESC
+            LIMIT 1
+        ", false);
+
+        if ($default_result) {
+            $default_condition = sql_fetch_array($default_result);
+        }
+
+        $sql = "
+            SELECT
+                c.it_id,
+                c.ct_qty,
+                c.ct_price,
+                c.io_type,
+                c.io_price,
+                ps.condition_id,
+                ps.group_id,
+                dc.dc_id,
+                dc.dc_name,
+                dc.dc_type,
+                dc.dc_price,
+                dc.dc_minimum,
+                dc.dc_qty,
+                dg.dg_name,
+                dg.calc_method
+            FROM {$g5['g5_shop_cart_table']} c
+            INNER JOIN {$g5['g5_shop_item_table']} i
+                ON c.it_id = i.it_id
+            LEFT JOIN donuts_delivery_product_settings ps
+                ON ps.brand_id = '{$brand_id_sql}'
+               AND ps.it_id = c.it_id
+            LEFT JOIN donuts_delivery_conditions dc
+                ON dc.dc_id = ps.condition_id
+               AND dc.brand_id = '{$brand_id_sql}'
+               AND dc.use_yn = 'Y'
+            LEFT JOIN donuts_delivery_groups dg
+                ON dg.dg_id = ps.group_id
+               AND dg.brand_id = '{$brand_id_sql}'
+               AND dg.use_yn = 'Y'
+            WHERE c.od_id = '{$od_id_sql}'
+              AND TRIM(i.it_brand) = '{$brand_id_sql}'
+            ORDER BY c.ct_id ASC
+        ";
+
+        $query = sql_query($sql, false);
+        if (!$query) {
+            return $result_data;
+        }
+
+        $items = array();
+
+        while ($row = sql_fetch_array($query)) {
+            $it_id = $row['it_id'];
+
+            if (!isset($items[$it_id])) {
+                $condition = !empty($row['dc_id']) ? $row : $default_condition;
+
+                $items[$it_id] = array(
+                    'amount' => 0,
+                    'qty' => 0,
+                    'condition' => $condition,
+                    'group_id' => !empty($row['group_id']) ? (int)$row['group_id'] : 0,
+                    'calc_method' => !empty($row['calc_method']) ? strtoupper($row['calc_method']) : 'MAX'
+                );
+            }
+
+            if ((int)$row['io_type'] === 1) {
+                $line = (int)$row['io_price'] * (int)$row['ct_qty'];
+            } else {
+                $line = ((int)$row['ct_price'] + (int)$row['io_price']) * (int)$row['ct_qty'];
+            }
+
+            $items[$it_id]['amount'] += $line;
+            $items[$it_id]['qty'] += (int)$row['ct_qty'];
+            $result_data['item_total'] += $line;
+        }
+
+        $groups = array();
+
+        foreach ($items as $it_id => $item) {
+            $condition = $item['condition'];
+            $fee = 0;
+
+            if (!empty($condition)) {
+                $type = isset($condition['dc_type']) ? trim($condition['dc_type']) : 'conditional';
+                $price = isset($condition['dc_price']) ? (int)$condition['dc_price'] : 0;
+                $minimum = isset($condition['dc_minimum']) ? (int)$condition['dc_minimum'] : 0;
+                $qty_unit = max(1, isset($condition['dc_qty']) ? (int)$condition['dc_qty'] : 1);
+
+                switch ($type) {
+                    case 'paid':
+                        $fee = max(0, $price);
+                        break;
+
+                    case 'free':
+                        $fee = 0;
+                        break;
+
+                    case 'quantity':
+                        $fee = max(0, $price) * (int)ceil(max(0, $item['qty']) / $qty_unit);
+                        break;
+
+                    case 'amount_range':
+                        $dc_id = isset($condition['dc_id']) ? (int)$condition['dc_id'] : 0;
+                        if ($dc_id > 0) {
+                            $range_result = sql_query("
+                                SELECT min_amount, max_amount, dr_price
+                                FROM donuts_delivery_condition_ranges
+                                WHERE dc_id = '{$dc_id}'
+                                ORDER BY sort_order, dr_id
+                            ", false);
+
+                            if ($range_result) {
+                                while ($range = sql_fetch_array($range_result)) {
+                                    $min = (int)$range['min_amount'];
+                                    $max = ($range['max_amount'] === null || $range['max_amount'] === '')
+                                        ? null
+                                        : (int)$range['max_amount'];
+
+                                    if (
+                                        $item['amount'] >= $min &&
+                                        ($max === null || $item['amount'] < $max)
+                                    ) {
+                                        $fee = max(0, (int)$range['dr_price']);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        break;
+
+                    case 'conditional':
+                    default:
+                        $fee = ($minimum > 0 && $item['amount'] >= $minimum)
+                            ? 0
+                            : max(0, $price);
+                        break;
+                }
+            }
+
+            $result_data['item_fees'][$it_id] = $fee;
+
+            if ($item['group_id'] > 0) {
+                $gid = $item['group_id'];
+
+                if (!isset($groups[$gid])) {
+                    $groups[$gid] = array(
+                        'method' => $item['calc_method'] === 'MIN' ? 'MIN' : 'MAX',
+                        'fees' => array()
+                    );
+                }
+
+                $groups[$gid]['fees'][] = $fee;
+            } else {
+                $result_data['shipping_total'] += $fee;
+            }
+        }
+
+        foreach ($groups as $group) {
+            if (empty($group['fees'])) {
+                continue;
+            }
+
+            if ($group['method'] === 'MIN') {
+                $result_data['shipping_total'] += min($group['fees']);
+            } else {
+                $result_data['shipping_total'] += max($group['fees']);
+            }
+        }
+
+        $result_data['shipping_total'] = max(0, (int)$result_data['shipping_total']);
+
+        return $result_data;
+    }
+}
+
 
 $cart_title3 = '주문번호';
 $cart_title4 = '배송완료';
@@ -42,6 +255,36 @@ if (! (isset($od['od_id']) && $od['od_id'])) {
 
 $od['mb_id'] = $od['mb_id'] ? $od['mb_id'] : "비회원";
 //------------------------------------------------------------------------------
+
+// 현재 로그인 계정이 브랜드 계정이면 새 배송관리 기준으로 표시 배송비 재계산
+$orderform_brand_id = '';
+$orderform_brand_delivery = null;
+$orderform_display_shipping = (int)$od['od_send_cost'] + (int)$od['od_send_cost2'];
+$orderform_display_item_total = (int)$od['od_cart_price'];
+
+$orderform_member_id_sql = sql_real_escape_string($member['mb_id']);
+$orderform_brand = sql_fetch("
+    SELECT brand_id
+    FROM donuts_brand
+    WHERE TRIM(brand_id) = '{$orderform_member_id_sql}'
+    LIMIT 1
+");
+
+if (!empty($orderform_brand['brand_id'])) {
+    $orderform_brand_id = trim($orderform_brand['brand_id']);
+
+    $orderform_brand_delivery = donuts_admin_direct_delivery_calc(
+        $od['od_id'],
+        $orderform_brand_id
+    );
+
+    $orderform_display_shipping = (int)$orderform_brand_delivery['shipping_total'];
+    $orderform_display_item_total = (int)$orderform_brand_delivery['item_total'];
+}
+
+$orderform_display_order_total =
+    $orderform_display_item_total +
+    $orderform_display_shipping;
 
 // 상품 옵션별 택배사/송장번호 필드가 없으면 자동 생성
 if (!sql_query(" SELECT ct_delivery_company FROM {$g5['g5_shop_cart_table']} LIMIT 1 ", false)) {
@@ -136,7 +379,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             |
             주문일시 <strong><?php echo substr($od['od_time'], 0, 16); ?> (<?php echo get_yoil($od['od_time']); ?>)</strong>
             |
-            주문총액 <strong><?php echo number_format($od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2']); ?></strong>원
+            주문총액 <strong><?php echo number_format($orderform_display_order_total); ?></strong>원
         </p>
         <?php if ($default['de_hope_date_use']) { ?><p>희망배송일은 <?php echo $od['od_hope_date']; ?> (<?php echo get_yoil($od['od_hope_date']); ?>) 입니다.</p><?php } ?>
         <?php if ($od['od_mobile']) { ?>
@@ -295,25 +538,23 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
         <div class="btn_list02 btn_list">
             <p>
                 <input type="hidden" name="chk_cnt" value="<?php echo $chk_cnt; ?>">
-
+                <strong>주문 및 장바구니 상태 변경</strong>
+                <input type="submit" name="ct_status" value="주문" onclick="document.pressed=this.value" class="btn_02 color_01 p-4">
+                <input type="submit" name="ct_status" value="입금" onclick="document.pressed=this.value" class="btn_02 color_02 p-4">
+                <input type="submit" name="ct_status" value="준비" onclick="document.pressed=this.value" class="btn_02 color_03 p-4">
+                <input type="submit" name="ct_status" value="배송" onclick="document.pressed=this.value" class="btn_02 color_04 p-4">
+                <input type="submit" name="ct_status" value="완료" onclick="document.pressed=this.value" class="btn_02 color_05 p-4">
+                <input type="submit" name="ct_status" value="취소" onclick="document.pressed=this.value" class="btn_02 color_06 p-4">
+                <input type="submit" name="ct_status" value="반품" onclick="document.pressed=this.value" class="btn_02 color_06 p-4">
+                <input type="submit" name="ct_status" value="품절" onclick="document.pressed=this.value" class="btn_02 color_06 p-4">
                 <button type="submit"
                         formaction="./orderforminvoiceupdate.php"
                         formmethod="post"
                         formnovalidate
-                        class="btn_02 color_04"
+                        class="btn_02 color_04 p-4"
                         onclick="document.pressed='송장정보 저장'">
                     송장정보 저장
                 </button>
-
-                <strong>주문 및 장바구니 상태 변경</strong>
-                <input type="submit" name="ct_status" value="주문" onclick="document.pressed=this.value" class="btn_02 color_01">
-                <input type="submit" name="ct_status" value="입금" onclick="document.pressed=this.value" class="btn_02 color_02">
-                <input type="submit" name="ct_status" value="준비" onclick="document.pressed=this.value" class="btn_02 color_03">
-                <input type="submit" name="ct_status" value="배송" onclick="document.pressed=this.value" class="btn_02 color_04">
-                <input type="submit" name="ct_status" value="완료" onclick="document.pressed=this.value" class="btn_02 color_05">
-                <input type="submit" name="ct_status" value="취소" onclick="document.pressed=this.value" class="btn_02 color_06">
-                <input type="submit" name="ct_status" value="반품" onclick="document.pressed=this.value" class="btn_02 color_06">
-                <input type="submit" name="ct_status" value="품절" onclick="document.pressed=this.value" class="btn_02 color_06">
             </p>
         </div>
 
@@ -355,7 +596,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
 
     <?php
     // 주문금액 = 상품구입금액 + 배송비 + 추가배송비
-    $amount['order'] = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2'];
+    $amount['order'] = $orderform_display_order_total;
 
     // 입금액 = 결제금액 + 포인트
     $amount['receipt'] = $od['od_receipt_price'] + $od['od_receipt_point'];
@@ -398,7 +639,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                     <td><?php echo $od['od_id']; ?></td>
                     <td class="td_paybybig"><?php echo $s_receipt_way; ?></td>
                     <td class="td_numbig td_numsum"><?php echo display_price($amount['order']); ?></td>
-                    <td class="td_numbig"><?php echo display_price($od['od_send_cost'] + $od['od_send_cost2']); ?></td>
+                    <td class="td_numbig"><?php echo display_price($orderform_display_shipping); ?></td>
                     <td class="td_numbig"><?php echo display_point($od['od_receipt_point']); ?></td>
                     <td class="td_numbig td_numincome"><?php echo number_format($amount['receipt']); ?>원</td>
                     <td class="td_numbig td_numcoupon"><?php echo display_price($amount['coupon']); ?></td>
@@ -634,7 +875,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                             <tr>
                                 <th scope="row"><label for="od_send_cost">배송비</label></th>
                                 <td>
-                                    <input type="text" name="od_send_cost" value="<?php echo $od['od_send_cost']; ?>" id="od_send_cost" class="frm_input" size="10"> 원
+                                    <input type="text" name="od_send_cost" value="<?php echo $orderform_brand_id !== '' ? $orderform_display_shipping : $od['od_send_cost']; ?>" id="od_send_cost" class="frm_input" size="10"> 원
                                 </td>
                             </tr>
                             <?php if ($od['od_send_coupon']) { ?>
@@ -646,7 +887,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                             <tr>
                                 <th scope="row"><label for="od_send_cost2">추가배송비</label></th>
                                 <td>
-                                    <input type="text" name="od_send_cost2" value="<?php echo $od['od_send_cost2']; ?>" id="od_send_cost2" class="frm_input" size="10"> 원
+                                    <input type="text" name="od_send_cost2" value="<?php echo $orderform_brand_id !== '' ? 0 : $od['od_send_cost2']; ?>" id="od_send_cost2" class="frm_input" size="10"> 원
                                 </td>
                             </tr>
                             <?php
