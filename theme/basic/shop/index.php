@@ -1,12 +1,17 @@
 <?php
 include_once('./_common.php');
 
+// 모바일이면 mobile/shop/index.php로 이동
+// 현재는 기능 자체를 미사용 중
 if (G5_IS_MOBILE) {
     include_once(G5_THEME_MSHOP_PATH . '/index.php');
     return;
 }
 
-if (! defined('_INDEX_')) define('_INDEX_', TRUE);
+// 메인 페이지 확인 용도 (중복 선언 방어)
+if (!defined('_INDEX_')) {
+    define('_INDEX_', TRUE);
+}
 
 include_once(G5_THEME_SHOP_PATH . '/shop.head.php');
 ?>
@@ -147,7 +152,6 @@ $promo_banner = array(
                     </svg>
                 </a>
             </h2>
-            <!-- <p class="text-sm text-gray-400">인기상품</p> -->
         </header>
         <?php
         $list = new item_list();

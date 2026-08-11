@@ -52,6 +52,7 @@ $depth3_result = sql_query($depth3_sql);
 $depth3_categories = [];
 
 $instanceId = uniqid('category_');
+
 // 유니크 아이디값을 부여함으로써 어디서 몇번 인클루드해도 각각 독립적으로 작동
 while ($depth3_row = sql_fetch_array($depth3_result)) {
     $depth2_parent_ca_id = substr($depth3_row['ca_id'], 0, 4);

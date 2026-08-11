@@ -43,7 +43,7 @@ foreach ((array) $list as $row) {
             ?>
             <li class="sct_li">
                 <article class="space-y-2">
-                    <div class="relative rounded-lg overflow-hidden">
+                    <div class="relative flex flex-col items-center justify-center bg-[#EEEEEE] rounded-lg overflow-hidden" style="aspect-ratio: <?= (int) $this->img_width ?> / <?= (int) $this->img_height ?>;">
                         <a href="<?= $item_link_href ?>">
                             <?= get_it_image($row['it_id'], $this->img_width, $this->img_height, '', '', stripslashes($row['it_name'])) ?>
                         </a>

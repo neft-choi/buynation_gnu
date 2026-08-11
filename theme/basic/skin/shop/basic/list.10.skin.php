@@ -68,7 +68,7 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
                 <?php } ?>
                 <li class="sct_li" data-css="nocss" style="height:auto">
                     <article class="space-y-2">
-                        <div class="relative rounded-lg overflow-hidden">
+                        <div class="relative flex flex-col items-center justify-center bg-[#EEEEEE] rounded-lg overflow-hidden" style="aspect-ratio: <?= (int) $this->img_width ?> / <?= (int) $this->img_height ?>;">
                             <?php if ($this->href) { ?>
                                 <a href="<?= $item_link_href ?>">
                                 <?php } ?>

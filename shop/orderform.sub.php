@@ -320,7 +320,7 @@ if ($is_kakaopay_use) {
                                 if ($sendcost == 0)
                                     $ct_send_cost = '무료';
                             }
-                            ?>
+                        ?>
                             <li class="sod_item flex gap-4">
                                 <div class="sod_img overflow-hidden rounded-lg"><?php echo $image; ?></div>
                                 <div class="min-w-0 flex-1 py-1">
@@ -355,12 +355,12 @@ if ($is_kakaopay_use) {
                                 </div>
                             </li>
 
-                            <?php
+                        <?php
                             $tot_point += $point;
                             $tot_sell_price += $sell_price;
                             $tot_cust_price += $cust_price;
                         } // for 끝
-                        
+
                         if ($i == 0) {
                             alert('장바구니가 비어 있습니다.', G5_SHOP_URL . '/cart.php');
                         } else {
@@ -438,7 +438,7 @@ if ($is_kakaopay_use) {
                             </div>
 
                             <?php if (!$is_member) { // 비회원이면 
-                                    ?>
+                            ?>
                                 <div
                                     class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
                                     <div class="text-sm text-[#666]"><label for="od_pwd">비밀번호</label></div>
@@ -506,7 +506,7 @@ if ($is_kakaopay_use) {
                             </div>
 
                             <?php if ($default['de_hope_date_use']) { // 배송희망일 사용 
-                                    ?>
+                            ?>
                                 <div
                                     class="pc:grid pc:grid-cols-[180px_1fr] items-center gap-8 pc:border-b border-gray-300 pc:pb-4">
                                     <div class="text-sm text-[#666]"><label for="od_hope_date">희망배송일</label></div>
@@ -873,7 +873,7 @@ if ($is_kakaopay_use) {
 
                         if ((int) $buycle_arr > 0) {
 
-                            ?>
+                        ?>
                             <!-- <span id="od_buycle_btn_label" class="text-sm">바이클 선택</span> -->
                             <span class="items-center w-full">
                                 <select class="w-full">
@@ -1233,7 +1233,7 @@ if ($is_kakaopay_use) {
                 </label>
 
                 <script>
-                    $(document).on("click", ".settle-pc-card", function () {
+                    $(document).on("click", ".settle-pc-card", function() {
                         var $card = $(this);
                         var targetSelector = $card.data("settle-target");
                         var $target = $(targetSelector);
@@ -1253,7 +1253,7 @@ if ($is_kakaopay_use) {
                         $target.prop("checked", true).trigger("click");
                     });
 
-                    $(document).on("click", ".settle-mobile-card", function () {
+                    $(document).on("click", ".settle-mobile-card", function() {
                         var $card = $(this);
                         var targetSelector = $card.data("settle-target");
                         var $target = $(targetSelector);
@@ -1389,7 +1389,7 @@ if ($is_kakaopay_use) {
             </div>
 
             <script>
-                $("#cf_privacy_modal_open").on("click", function () {
+                $("#cf_privacy_modal_open").on("click", function() {
                     const $modal = $("#cf_privacy_modal");
 
                     $modal
@@ -1397,7 +1397,7 @@ if ($is_kakaopay_use) {
                         .addClass("flex");
                 });
 
-                $("#cf_privacy_modal_close").on("click", function () {
+                $("#cf_privacy_modal_close").on("click", function() {
                     const $modal = $("#cf_privacy_modal");
 
                     $modal
@@ -1765,11 +1765,11 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
     var form_action_url = "<?php echo $order_action_url; ?>";
     var auto_applied_od_cp_id = "";
 
-    $(function () {
+    $(function() {
         var $cp_btn_el;
         var $cp_row_el;
 
-        $(".cp_btn").click(function () {
+        $(".cp_btn").click(function() {
             $cp_btn_el = $(this);
             $cp_row_el = $(this).closest(".sod_item");
             $("#cp_frm").remove();
@@ -1777,10 +1777,10 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
 
             $.post(
                 "./orderitemcoupon.php", {
-                it_id: it_id,
-                sw_direct: "<?php echo $sw_direct; ?>"
-            },
-                function (data) {
+                    it_id: it_id,
+                    sw_direct: "<?php echo $sw_direct; ?>"
+                },
+                function(data) {
                     $cp_btn_el.after(data);
                 }
             );
@@ -1794,7 +1794,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $orderHeading.insertAfter($hdMenu);
         }
 
-        $(document).on("click", ".cp_apply", function () {
+        $(document).on("click", ".cp_apply", function() {
             var $el = $(this).closest("tr");
             var cp_id = $el.find("input[name='f_cp_id[]']").val();
             var price = $el.find("input[name='f_cp_prc[]']").val();
@@ -1811,7 +1811,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             var cp_dup = false;
             var cp_dup_idx;
             var $cp_dup_el;
-            $("input[name^=cp_id]").each(function (index) {
+            $("input[name^=cp_id]").each(function(index) {
                 var id = $(this).val();
 
                 if (id == cp_id) {
@@ -1853,12 +1853,12 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                 $cp_btn_el.after("<button type=\"button\" class=\"cp_cancel\">취소</button>");
         });
 
-        $(document).on("click", "#cp_close", function () {
+        $(document).on("click", "#cp_close", function() {
             $("#cp_frm").remove();
             $cp_btn_el.focus();
         });
 
-        $(document).on("click", ".cp_cancel", function () {
+        $(document).on("click", ".cp_cancel", function() {
             coupon_cancel($(this).closest(".sod_item"));
             calculate_total_price();
             $("#cp_frm").remove();
@@ -1866,7 +1866,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $(this).remove();
         });
 
-        $("#od_coupon_btn").click(function () {
+        $("#od_coupon_btn").click(function() {
             if ($("#od_coupon_frm").parent(".od_coupon_wrap").length) {
                 $("#od_coupon_frm").parent(".od_coupon_wrap").remove();
             }
@@ -1879,15 +1879,15 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             }
             $.post(
                 "./ordercoupon.php", {
-                price: price
-            },
-                function (data) {
+                    price: price
+                },
+                function(data) {
                     $this.after(data);
                 }
             );
         });
 
-        $(document).on("click", ".od_cp_apply", function () {
+        $(document).on("click", ".od_cp_apply", function() {
             var $el = $(this).closest("tr");
             var cp_id = $el.find("input[name='o_cp_id[]']").val();
             var price = parseInt($el.find("input[name='o_cp_prc[]']").val());
@@ -1934,7 +1934,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                 $("#od_coupon_btn").after("<button type=\"button\" id=\"od_coupon_cancel\" class=\"cp_cancel\">취소</button>");
         });
 
-        $(document).on("click", "#od_coupon_close", function () {
+        $(document).on("click", "#od_coupon_close", function() {
             if ($("#od_coupon_frm").parent(".od_coupon_wrap").length) {
                 $("#od_coupon_frm").parent(".od_coupon_wrap").remove();
             }
@@ -1942,7 +1942,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $("#od_coupon_btn").focus();
         });
 
-        $(document).on("click", "#od_coupon_cancel", function () {
+        $(document).on("click", "#od_coupon_cancel", function() {
             var org_price = $("input[name=org_od_price]").val();
             var item_coupon = parseInt($("input[name=item_coupon]").val());
             $("input[name=od_price]").val(org_price - item_coupon);
@@ -1965,23 +1965,23 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             auto_applied_od_cp_id = "";
         });
 
-        $("#sc_coupon_btn").click(function () {
+        $("#sc_coupon_btn").click(function() {
             $("#sc_coupon_frm").remove();
             var $this = $(this);
             var price = parseInt($("input[name=od_price]").val());
             var send_cost = parseInt($("input[name=od_send_cost]").val());
             $.post(
                 "./ordersendcostcoupon.php", {
-                price: price,
-                send_cost: send_cost
-            },
-                function (data) {
+                    price: price,
+                    send_cost: send_cost
+                },
+                function(data) {
                     $this.after(data);
                 }
             );
         });
 
-        $(document).on("click", ".sc_cp_apply", function () {
+        $(document).on("click", ".sc_cp_apply", function() {
             var $el = $(this).closest("tr");
             var cp_id = $el.find("input[name='s_cp_id[]']").val();
             var price = parseInt($el.find("input[name='s_cp_prc[]']").val());
@@ -2004,12 +2004,12 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                 $("#sc_coupon_btn").after("<button type=\"button\" id=\"sc_coupon_cancel\" class=\"cp_cancel\">취소</button>");
         });
 
-        $(document).on("click", "#sc_coupon_close", function () {
+        $(document).on("click", "#sc_coupon_close", function() {
             $("#sc_coupon_frm").remove();
             $("#sc_coupon_btn").focus();
         });
 
-        $(document).on("click", "#sc_coupon_cancel", function () {
+        $(document).on("click", "#sc_coupon_cancel", function() {
             $("input[name=od_send_coupon]").val(0);
             $("#sc_cp_price").text(0);
             calculate_order_price();
@@ -2018,7 +2018,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $(this).remove();
         });
 
-        $("#od_b_addr2").focus(function () {
+        $("#od_b_addr2").focus(function() {
             var zip = $("#od_b_zip").val().replace(/[^0-9]/g, "");
             if (zip == "")
                 return false;
@@ -2032,13 +2032,13 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             calculate_sendcost(code);
         });
 
-        $("#od_settle_bank").on("click", function () {
+        $("#od_settle_bank").on("click", function() {
             $("[name=od_deposit_name]").val($("[name=od_name]").val());
             $("#settle_bank").show();
             syncCashBankUi();
         });
 
-        $("#od_settle_iche,#od_settle_card,#od_settle_vbank,#od_settle_hp,#od_settle_easy_pay,#od_settle_kakaopay,#od_settle_nhnkcp_payco,#od_settle_nhnkcp_naverpay,#od_settle_nhnkcp_naverpay_money,#od_settle_nhnkcp_kakaopay,#od_settle_inicislpay,#od_settle_inicis_kakaopay").bind("click", function () {
+        $("#od_settle_iche,#od_settle_card,#od_settle_vbank,#od_settle_hp,#od_settle_easy_pay,#od_settle_kakaopay,#od_settle_nhnkcp_payco,#od_settle_nhnkcp_naverpay,#od_settle_nhnkcp_naverpay_money,#od_settle_nhnkcp_kakaopay,#od_settle_inicislpay,#od_settle_inicis_kakaopay").bind("click", function() {
             $("#settle_bank").hide();
             syncCashBankUi();
         });
@@ -2051,7 +2051,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             var inactiveClass = "border-gray-300 bg-white text-gray-900";
             currentSettleTabKey = tabKey;
 
-            $(".settle-tab-btn").each(function () {
+            $(".settle-tab-btn").each(function() {
                 var $btn = $(this);
                 var isActive = $btn.data("settle-tab") === tabKey;
                 $btn.toggleClass(activeClass, isActive);
@@ -2098,7 +2098,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             var activeClass = "border-gray-800 bg-gray-50";
             var inactiveClass = "border-gray-300 bg-white";
 
-            $(".settle-pc-card").each(function () {
+            $(".settle-pc-card").each(function() {
                 var $card = $(this);
                 var targetSelector = $card.data("settle-target");
                 var $target = $(targetSelector);
@@ -2143,7 +2143,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             setSettleTabUi(tabKey);
         }
 
-        $(document).on("click", ".settle-tab-btn", function () {
+        $(document).on("click", ".settle-tab-btn", function() {
             var tabKey = $(this).data("settle-tab");
             setSettleTabUi(tabKey);
 
@@ -2178,17 +2178,17 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             syncPcSettleUi();
         });
 
-        $(document).on("change", "input[name='od_settle_case']", function () {
+        $(document).on("change", "input[name='od_settle_case']", function() {
             syncSettleTabByRadio();
             syncCashBankUi();
             syncPcSettleUi();
         });
 
-        $(document).on("change", "#ui_od_bank_account", function () {
+        $(document).on("change", "#ui_od_bank_account", function() {
             $("#od_bank_account").val($(this).val());
         });
 
-        $(document).on("input", "#ui_od_deposit_name", function () {
+        $(document).on("input", "#ui_od_deposit_name", function() {
             $("#od_deposit_name").val($(this).val());
         });
 
@@ -2197,7 +2197,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         syncPcSettleUi();
 
         // 배송지선택
-        $("input[name=ad_sel_addr]").on("click", function () {
+        $("input[name=ad_sel_addr]").on("click", function() {
             var addr = $(this).val().split(String.fromCharCode(30));
 
             if (addr[0] == "same") {
@@ -2232,13 +2232,13 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         });
 
         // 배송지목록
-        $("#order_address").on("click", function () {
+        $("#order_address").on("click", function() {
             var url = this.href;
             window.open(url, "win_address", "left=100,top=100,width=800,height=600,scrollbars=1");
             return false;
         });
 
-        $("#orderer_accordion_btn").on("click", function () {
+        $("#orderer_accordion_btn").on("click", function() {
             var $btn = $(this);
             var $body = $("#sod_frm_orderer_body");
             var isExpanded = $btn.attr("aria-expanded") === "true";
@@ -2248,7 +2248,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $btn.find(".accordion-chevron").toggleClass("rotate-180", isExpanded);
         });
 
-        $("#order_products_accordion_btn").on("click", function () {
+        $("#order_products_accordion_btn").on("click", function() {
             var $btn = $(this);
             var $body = $("#sod_order_products_body");
             var isExpanded = $btn.attr("aria-expanded") === "true";
@@ -2258,7 +2258,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $btn.find(".accordion-chevron").toggleClass("rotate-180", isExpanded);
         });
 
-        $("#coupon_accordion_btn").on("click", function () {
+        $("#coupon_accordion_btn").on("click", function() {
             var $btn = $(this);
             var $body = $("#sod_coupon_apply_body");
             var isExpanded = $btn.attr("aria-expanded") === "true";
@@ -2268,7 +2268,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $btn.find(".accordion-chevron").toggleClass("rotate-180", isExpanded);
         });
 
-        $("#point_accordion_btn").on("click", function () {
+        $("#point_accordion_btn").on("click", function() {
             var $btn = $(this);
             var $body = $("#sod_point_apply_body");
             var isExpanded = $btn.attr("aria-expanded") === "true";
@@ -2278,7 +2278,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $btn.find(".accordion-chevron").toggleClass("rotate-180", isExpanded);
         });
 
-        $("#expected_accordion_btn").on("click", function () {
+        $("#expected_accordion_btn").on("click", function() {
             var $btn = $(this);
             var $body = $("#sod_expected_price_body");
             var isExpanded = $btn.attr("aria-expanded") === "true";
@@ -2288,7 +2288,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             $btn.find(".accordion-chevron").toggleClass("rotate-180", isExpanded);
         });
 
-        $("#agree_accordion_btn").on("click", function () {
+        $("#agree_accordion_btn").on("click", function() {
             var $btn = $(this);
             var $body = $("#sod_agree_ui_body");
             var isExpanded = $btn.attr("aria-expanded") === "true";
@@ -2299,7 +2299,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         });
 
         // 최대 할인 적용 스위치의 UI를 토글하고 ON일 때 주문쿠폰 최대 할인을 자동 적용한다.
-        $("#max_coupon_toggle").on("click", function () {
+        $("#max_coupon_toggle").on("click", function() {
             var isOn = $(this).attr("aria-pressed") === "true";
             var nextOn = !isOn;
 
@@ -2312,12 +2312,12 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
             }
         });
 
-        $("#use_all_point_btn").on("click", function () {
+        $("#use_all_point_btn").on("click", function() {
             var maxPoint = parseInt($("input[name=max_temp_point]").val(), 10) || 0;
             $("#od_temp_point").val(maxPoint).trigger("input");
         });
 
-        $(document).on("input", "#od_temp_point", function () {
+        $(document).on("input", "#od_temp_point", function() {
             var val = this.value.replace(/[^0-9]/g, "");
             var maxPoint = parseInt($("input[name=max_temp_point]").val(), 10) || 0;
 
@@ -2402,13 +2402,13 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
 
         $.post(
             "./ordercoupon.php", {
-            price: basePrice
-        },
-            function (data) {
+                price: basePrice
+            },
+            function(data) {
                 var $html = $("<div>").html(data);
                 var maxCoupon = null;
 
-                $html.find("tr").each(function () {
+                $html.find("tr").each(function() {
                     var $tr = $(this);
                     var cpId = $tr.find("input[name='o_cp_id[]']").val();
                     var cpPrice = parseInt($tr.find("input[name='o_cp_prc[]']").val(), 10);
@@ -2500,7 +2500,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         var tot_mny = comm_tax_mny = comm_vat_mny = comm_free_mny = tax_mny = vat_mny = 0;
         var send_cost = parseInt($("input[name=od_send_cost]").val());
 
-        $it_prc.each(function (index) {
+        $it_prc.each(function(index) {
             it_price = parseInt($(this).val());
             cp_price = parseInt($cp_prc.eq(index).val());
             sell_price += it_price;
@@ -2592,9 +2592,9 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
     function calculate_sendcost(code) {
         $.post(
             "./ordersendcost.php", {
-            zipcode: code
-        },
-            function (data) {
+                zipcode: code
+            },
+            function(data) {
                 $("input[name=od_send_cost2]").val(data);
                 $("#od_send_cost2").text(number_format(String(data)));
 
@@ -2617,7 +2617,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         var send_coupon = parseInt($("input[name=od_send_coupon]").val());
         var temp_point = 0;
 
-        $it_prc.each(function (index) {
+        $it_prc.each(function(index) {
             it_price = parseInt($(this).val());
             cp_price = parseInt($cp_prc.eq(index).val());
             sell_price += it_price;
@@ -2659,7 +2659,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         var deffld = "";
 
         check_field(f.od_name, "주문하시는 분 이름을 입력하십시오.");
-        if (typeof (f.od_pwd) != 'undefined') {
+        if (typeof(f.od_pwd) != 'undefined') {
             clear_field(f.od_pwd);
             if ((f.od_pwd.value.length < 3) || (f.od_pwd.value.search(/([^A-Za-z0-9]+)/) != -1))
                 error_field(f.od_pwd, "회원이 아니신 경우 주문서 조회시 필요한 비밀번호를 3자리 이상 입력해 주십시오.");
@@ -2673,7 +2673,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         if (f.od_email.value == '' || f.od_email.value.search(/(\S+)@(\S+)\.(\S+)/) == -1)
             error_field(f.od_email, "E-mail을 바르게 입력해 주십시오.");
 
-        if (typeof (f.od_hope_date) != "undefined") {
+        if (typeof(f.od_hope_date) != "undefined") {
             clear_field(f.od_hope_date);
             if (!f.od_hope_date.value)
                 error_field(f.od_hope_date, "희망배송일을 선택하여 주십시오.");
@@ -2724,11 +2724,11 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
         var send_coupon = parseInt(f.od_send_coupon.value);
 
         var max_point = 0;
-        if (typeof (f.max_temp_point) != "undefined")
+        if (typeof(f.max_temp_point) != "undefined")
             max_point = parseInt(f.max_temp_point.value);
 
         var temp_point = 0;
-        if (typeof (f.od_temp_point) != "undefined") {
+        if (typeof(f.od_temp_point) != "undefined") {
             var point_unit = parseInt(<?php echo $default['de_settle_point_unit']; ?>);
             temp_point = parseInt(f.od_temp_point.value) || 0;
 
@@ -2877,153 +2877,153 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                         break;
                 }
             <?php } else if ($default['de_pg_service'] == 'lg') { ?>
-                    f.LGD_EASYPAY_ONLY.value = "";
-                    if (typeof f.LGD_CUSTOM_USABLEPAY === "undefined") {
-                        var input = document.createElement("input");
-                        input.setAttribute("type", "hidden");
-                        input.setAttribute("name", "LGD_CUSTOM_USABLEPAY");
-                        input.setAttribute("value", "");
-                        f.LGD_EASYPAY_ONLY.parentNode.insertBefore(input, f.LGD_EASYPAY_ONLY);
-                    }
+                f.LGD_EASYPAY_ONLY.value = "";
+                if (typeof f.LGD_CUSTOM_USABLEPAY === "undefined") {
+                    var input = document.createElement("input");
+                    input.setAttribute("type", "hidden");
+                    input.setAttribute("name", "LGD_CUSTOM_USABLEPAY");
+                    input.setAttribute("value", "");
+                    f.LGD_EASYPAY_ONLY.parentNode.insertBefore(input, f.LGD_EASYPAY_ONLY);
+                }
 
-                    switch (settle_method) {
-                        case "계좌이체":
-                            f.LGD_CUSTOM_FIRSTPAY.value = "SC0030";
-                            f.LGD_CUSTOM_USABLEPAY.value = "SC0030";
-                            break;
-                        case "가상계좌":
-                            f.LGD_CUSTOM_FIRSTPAY.value = "SC0040";
-                            f.LGD_CUSTOM_USABLEPAY.value = "SC0040";
-                            break;
-                        case "휴대폰":
-                            f.LGD_CUSTOM_FIRSTPAY.value = "SC0060";
-                            f.LGD_CUSTOM_USABLEPAY.value = "SC0060";
-                            break;
-                        case "신용카드":
-                            f.LGD_CUSTOM_FIRSTPAY.value = "SC0010";
-                            f.LGD_CUSTOM_USABLEPAY.value = "SC0010";
-                            break;
-                        case "간편결제":
-                            var elm = f.LGD_CUSTOM_USABLEPAY;
-                            if (elm.parentNode)
-                                elm.parentNode.removeChild(elm);
-                            f.LGD_EASYPAY_ONLY.value = "PAYNOW";
-                            break;
-                        default:
-                            f.LGD_CUSTOM_FIRSTPAY.value = "무통장";
-                            break;
-                    }
+                switch (settle_method) {
+                    case "계좌이체":
+                        f.LGD_CUSTOM_FIRSTPAY.value = "SC0030";
+                        f.LGD_CUSTOM_USABLEPAY.value = "SC0030";
+                        break;
+                    case "가상계좌":
+                        f.LGD_CUSTOM_FIRSTPAY.value = "SC0040";
+                        f.LGD_CUSTOM_USABLEPAY.value = "SC0040";
+                        break;
+                    case "휴대폰":
+                        f.LGD_CUSTOM_FIRSTPAY.value = "SC0060";
+                        f.LGD_CUSTOM_USABLEPAY.value = "SC0060";
+                        break;
+                    case "신용카드":
+                        f.LGD_CUSTOM_FIRSTPAY.value = "SC0010";
+                        f.LGD_CUSTOM_USABLEPAY.value = "SC0010";
+                        break;
+                    case "간편결제":
+                        var elm = f.LGD_CUSTOM_USABLEPAY;
+                        if (elm.parentNode)
+                            elm.parentNode.removeChild(elm);
+                        f.LGD_EASYPAY_ONLY.value = "PAYNOW";
+                        break;
+                    default:
+                        f.LGD_CUSTOM_FIRSTPAY.value = "무통장";
+                        break;
+                }
             <?php } else if ($default['de_pg_service'] == 'toss') { ?>
-                        switch (settle_method) {
-                            case "계좌이체":
-                                f.method.value = "TRANSFER";
-                                break;
-                            case "가상계좌":
-                                f.method.value = "VIRTUAL_ACCOUNT";
-                                break;
-                            case "휴대폰":
-                                f.method.value = "MOBILE_PHONE";
-                                break;
-                            case "신용카드":
-                                f.method.value = "CARD";
-                                break;
-                            case "간편결제":
-                                f.method.value = "CARD";
-                                break;
-                            default:
-                                f.method.value = "무통장";
-                                break;
-                        }
+                switch (settle_method) {
+                    case "계좌이체":
+                        f.method.value = "TRANSFER";
+                        break;
+                    case "가상계좌":
+                        f.method.value = "VIRTUAL_ACCOUNT";
+                        break;
+                    case "휴대폰":
+                        f.method.value = "MOBILE_PHONE";
+                        break;
+                    case "신용카드":
+                        f.method.value = "CARD";
+                        break;
+                    case "간편결제":
+                        f.method.value = "CARD";
+                        break;
+                    default:
+                        f.method.value = "무통장";
+                        break;
+                }
             <?php } else if ($default['de_pg_service'] == 'inicis') { ?>
-                            switch (settle_method) {
-                                case "계좌이체":
-                                    f.gopaymethod.value = "DirectBank";
-                                    break;
-                                case "가상계좌":
-                                    f.gopaymethod.value = "VBank";
-                                    break;
-                                case "휴대폰":
-                                    f.gopaymethod.value = "HPP";
-                                    break;
-                                case "신용카드":
-                                    f.gopaymethod.value = "Card";
-                                    f.acceptmethod.value = f.acceptmethod.value.replace(":useescrow", "");
-                                    break;
-                                case "간편결제":
-                                    f.gopaymethod.value = "Kpay";
-                                    break;
-                                case "lpay":
-                                    f.gopaymethod.value = "onlylpay";
-                                    f.acceptmethod.value = f.acceptmethod.value + ":cardonly";
-                                    break;
-                                case "inicis_kakaopay":
-                                    f.gopaymethod.value = "onlykakaopay";
-                                    f.acceptmethod.value = f.acceptmethod.value + ":cardonly";
-                                    break;
-                                default:
-                                    f.gopaymethod.value = "무통장";
-                                    break;
-                            }
+                switch (settle_method) {
+                    case "계좌이체":
+                        f.gopaymethod.value = "DirectBank";
+                        break;
+                    case "가상계좌":
+                        f.gopaymethod.value = "VBank";
+                        break;
+                    case "휴대폰":
+                        f.gopaymethod.value = "HPP";
+                        break;
+                    case "신용카드":
+                        f.gopaymethod.value = "Card";
+                        f.acceptmethod.value = f.acceptmethod.value.replace(":useescrow", "");
+                        break;
+                    case "간편결제":
+                        f.gopaymethod.value = "Kpay";
+                        break;
+                    case "lpay":
+                        f.gopaymethod.value = "onlylpay";
+                        f.acceptmethod.value = f.acceptmethod.value + ":cardonly";
+                        break;
+                    case "inicis_kakaopay":
+                        f.gopaymethod.value = "onlykakaopay";
+                        f.acceptmethod.value = f.acceptmethod.value + ":cardonly";
+                        break;
+                    default:
+                        f.gopaymethod.value = "무통장";
+                        break;
+                }
             <?php } else if ($default['de_pg_service'] == 'nicepay') { ?>
-                                f.DirectShowOpt.value = ""; // 간편결제 요청 값 초기화
-                                f.DirectEasyPay.value = ""; // 간편결제 요청 값 초기화
-                                f.NicepayReserved.value = ""; // 간편결제 요청 값 초기화
-                                f.EasyPayMethod.value = ""; // 간편결제 요청 값 초기화
+                f.DirectShowOpt.value = ""; // 간편결제 요청 값 초기화
+                f.DirectEasyPay.value = ""; // 간편결제 요청 값 초기화
+                f.NicepayReserved.value = ""; // 간편결제 요청 값 초기화
+                f.EasyPayMethod.value = ""; // 간편결제 요청 값 초기화
 
                 <?php if ($default['de_escrow_use']) {  // 간편결제시 에스크로값이 0이 되므로 기본설정값을 지정 
-                            ?>
-                                    f.TransType.value = "1";
+                ?>
+                    f.TransType.value = "1";
                 <?php } ?>
-                                switch (settle_method) {
-                                    case "계좌이체":
-                                        f.PayMethod.value = "BANK";
-                                        break;
-                                    case "가상계좌":
-                                        f.PayMethod.value = "VBANK";
-                                        break;
-                                    case "휴대폰":
-                                        f.PayMethod.value = "CELLPHONE";
-                                        break;
-                                    case "신용카드":
-                                        f.PayMethod.value = "CARD";
-                                        break;
-                                    case "간편결제":
-                                        f.PayMethod.value = "CARD";
-                                        f.DirectShowOpt.value = "CARD";
-                                        f.TransType.value = "0"; // 간편결제의 경우 에스크로를 사용할수 없다.
+                switch (settle_method) {
+                    case "계좌이체":
+                        f.PayMethod.value = "BANK";
+                        break;
+                    case "가상계좌":
+                        f.PayMethod.value = "VBANK";
+                        break;
+                    case "휴대폰":
+                        f.PayMethod.value = "CELLPHONE";
+                        break;
+                    case "신용카드":
+                        f.PayMethod.value = "CARD";
+                        break;
+                    case "간편결제":
+                        f.PayMethod.value = "CARD";
+                        f.DirectShowOpt.value = "CARD";
+                        f.TransType.value = "0"; // 간편결제의 경우 에스크로를 사용할수 없다.
 
-                                        var nicepay_easy_pay = jQuery("input[name='od_settle_case']:checked").attr("data-pay");
+                        var nicepay_easy_pay = jQuery("input[name='od_settle_case']:checked").attr("data-pay");
 
-                                        if (nicepay_easy_pay === "nice_naverpay") {
-                                            if (typeof f.DirectEasyPay !== "undefined") f.DirectEasyPay.value = "E020";
+                        if (nicepay_easy_pay === "nice_naverpay") {
+                            if (typeof f.DirectEasyPay !== "undefined") f.DirectEasyPay.value = "E020";
 
-                                <?php
-                                // * 카드 선택 시 전액 카드로 결제, 포인트 선택 시 전액 포인트로 결제.
-                                // (카드와 포인트를 같이 사용하는 복합결제 형태의 결제는 불가함.)
-                                // - 카드: EasyPayMethod=”E020=CARD”, 포인트: EasyPayMethod=”E020=POINT”
-                                ?>
+                            <?php
+                            // * 카드 선택 시 전액 카드로 결제, 포인트 선택 시 전액 포인트로 결제.
+                            // (카드와 포인트를 같이 사용하는 복합결제 형태의 결제는 불가함.)
+                            // - 카드: EasyPayMethod=”E020=CARD”, 포인트: EasyPayMethod=”E020=POINT”
+                            ?>
 
-                                            if (typeof f.EasyPayMethod !== "undefined") f.EasyPayMethod.value = "E020=CARD";
+                            if (typeof f.EasyPayMethod !== "undefined") f.EasyPayMethod.value = "E020=CARD";
 
-                                        } else if (nicepay_easy_pay === "nice_kakaopay") {
-                                            if (typeof f.NicepayReserved !== "undefined") f.NicepayReserved.value = "DirectKakao=Y";
-                                        } else if (nicepay_easy_pay === "nice_samsungpay") {
-                                            if (typeof f.DirectEasyPay !== "undefined") f.DirectEasyPay.value = "E021";
-                                        } else if (nicepay_easy_pay === "nice_paycopay") {
-                                            if (typeof f.NicepayReserved !== "undefined") f.NicepayReserved.value = "DirectPayco=Y";
-                                        } else if (nicepay_easy_pay === "nice_skpay") {
-                                            if (typeof f.NicepayReserved !== "undefined") f.NicepayReserved.value = "DirectPay11=Y";
-                                        } else if (nicepay_easy_pay === "nice_ssgpay") {
-                                            if (typeof f.DirectEasyPay !== "undefined") f.DirectEasyPay.value = "E007";
-                                        } else if (nicepay_easy_pay === "nice_lpay") {
-                                            if (typeof f.DirectEasyPay !== "undefined") f.DirectEasyPay.value = "E018";
-                                        }
+                        } else if (nicepay_easy_pay === "nice_kakaopay") {
+                            if (typeof f.NicepayReserved !== "undefined") f.NicepayReserved.value = "DirectKakao=Y";
+                        } else if (nicepay_easy_pay === "nice_samsungpay") {
+                            if (typeof f.DirectEasyPay !== "undefined") f.DirectEasyPay.value = "E021";
+                        } else if (nicepay_easy_pay === "nice_paycopay") {
+                            if (typeof f.NicepayReserved !== "undefined") f.NicepayReserved.value = "DirectPayco=Y";
+                        } else if (nicepay_easy_pay === "nice_skpay") {
+                            if (typeof f.NicepayReserved !== "undefined") f.NicepayReserved.value = "DirectPay11=Y";
+                        } else if (nicepay_easy_pay === "nice_ssgpay") {
+                            if (typeof f.DirectEasyPay !== "undefined") f.DirectEasyPay.value = "E007";
+                        } else if (nicepay_easy_pay === "nice_lpay") {
+                            if (typeof f.DirectEasyPay !== "undefined") f.DirectEasyPay.value = "E018";
+                        }
 
-                                        break;
-                                    default:
-                                        f.PayMethod.value = "무통장";
-                                        break;
-                                }
+                        break;
+                    default:
+                        f.PayMethod.value = "무통장";
+                        break;
+                }
             <?php } ?>
             // 결제정보설정
             <?php if ($default['de_pg_service'] == 'kcp') { ?>
@@ -3113,7 +3113,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                         url: g5_url + "/shop/ajax.orderdatasave.php",
                         cache: false,
                         async: false,
-                        success: function (data) {
+                        success: function(data) {
                             save_result = data;
                         }
                     });
@@ -3152,7 +3152,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                         url: g5_url + "/shop/ajax.orderdatasave.php",
                         cache: false,
                         async: false,
-                        success: function (data) {
+                        success: function(data) {
                             save_result = data;
                         }
                     });
@@ -3191,7 +3191,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                         url: g5_url + "/shop/ajax.orderdatasave.php",
                         cache: false,
                         async: false,
-                        success: function (data) {
+                        success: function(data) {
                             save_result = data;
                         }
                     });
@@ -3233,7 +3233,7 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
     }
 
     <?php if ($default['de_hope_date_use']) { ?>
-        $(function () {
+        $(function() {
             $("#od_hope_date").datepicker({
                 changeMonth: true,
                 changeYear: true,

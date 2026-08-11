@@ -299,6 +299,12 @@
   outline: none;
 }
 
+/* table 정렬 */
+.th_left{text-align:left !important}
+.th_right{text-align:right !important}
+.td_left{text-align:left !important}
+.td_right{text-align:right !important}
+
 /* 인풋 테마 */
 
 /* :where(input[type="text"], input[type="password"], input[type="email"]) {

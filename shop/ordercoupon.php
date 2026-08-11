@@ -22,22 +22,44 @@ $count = sql_num_rows($result);
 ?>
 
 <style>
-    .od_coupon h3 {
-        font-size: 16px;
+    .tbl_head02 td {
+        padding: 8px;
+        /* border-bottom: 1px solid #e9e9e9;
+        line-height: 1.4em;
+        word-break: break-all; */
+    }
+
+    .tbl_head02 thead th {
+        padding: 8px;
+        /* background: #f3f3f3;
+        border-top: 1px solid #d3d3d3;
+        border-bottom: 1px solid #d3d3d3; */
+    }
+
+    /* 할인금액 */
+    .td_numbig {
+        width: 80px;
+        /* text-align: center; */
+    }
+
+    /* 적용 */
+    .td_mngsmall {
+        width: 80px;
+        /* text-align: center; */
     }
 </style>
 
 <!-- 쿠폰 선택 시작 { -->
 <div class="od_coupon_wrap">
-    <div id="od_coupon_frm" class="od_coupon">
-        <h3>쿠폰 선택</h3>
+    <div id="od_coupon_frm" class="od_coupon pc:!max-w-100 rounded-lg text-sm p-4">
+        <h3 class="text-lg font-semibold">쿠폰 선택</h3>
         <?php if ($count > 0) { ?>
-            <div class="tbl_head02 tbl_wrap">
+            <div class="tbl_head02 tbl_wrap !my-2">
                 <table>
                     <caption>쿠폰 선택</caption>
                     <thead>
                         <tr>
-                            <th scope="col">쿠폰명</th>
+                            <th scope="col" class="th_left">쿠폰명</th>
                             <th scope="col">할인금액</th>
                             <th scope="col">적용</th>
                         </tr>
@@ -67,7 +89,7 @@ $count = sql_num_rows($result);
                                     <?php echo get_text($row['cp_subject']); ?>
                                 </td>
                                 <td class="td_numbig"><?php echo number_format($dc); ?></td>
-                                <td class="td_mngsmall"><button type="button" class="od_cp_apply btn_frmline">적용</button></td>
+                                <td class="td_mngsmall"><button type="button" class="od_cp_apply text-white bg-gray-700 rounded px-4 py-2">적용</button></td>
                             </tr>
                         <?php
                         }
@@ -81,7 +103,7 @@ $count = sql_num_rows($result);
         }
         ?>
         <div class="btn_confirm">
-            <button type="button" id="od_coupon_close" class="btn_close"><i class="fa fa-times" aria-hidden="true"></i><span class="sound_only">닫기</span></button>
+            <button type="button" id="od_coupon_close" class="btn_close px-2 py-1">닫기</button>
         </div>
     </div>
 </div>
