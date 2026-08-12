@@ -362,3 +362,8 @@ function donuts_delivery_calculate_order_brand($od_id, $brand_id)
         'items' => $items,
     );
 }
+function delivery_type_label($type)
+{
+    $map = array('paid' => '유료', 'conditional' => '조건부 무료', 'free' => '무료', 'quantity' => '수량별', 'amount_range' => '금액 구간별');
+    return isset($map[$type]) ? $map[$type] : $type;
+}

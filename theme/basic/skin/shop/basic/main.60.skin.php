@@ -55,10 +55,6 @@ foreach ((array) $list as $row) {
                         <?php if ($is_soldout && $this->view_it_icon) { ?>
                             <span class="shop_icon_soldout h160"><span class="soldout_txt">SOLD OUT</span></span>
                         <?php } ?>
-
-                        <div class="absolute inset-x-0 bottom-0 z-20 bg-black/60 p-2 text-center text-sm font-semibold text-gray-200">
-                            기부금 <?= number_format($it_price) ?>원 ~
-                        </div>
                     </div>
 
                     <h3 class="font-medium line-clamp-2"><a href="<?= $item_link_href ?>"><?= stripslashes($row['it_name']) ?></a></h3>

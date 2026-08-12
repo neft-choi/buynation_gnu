@@ -72,7 +72,6 @@ include_once(G5_THEME_SHOP_PATH . '/shop.head.php');
         <?php
         $list = new item_list();
         $list->set_type(2);
-        $list->set_list_skin(G5_SHOP_SKIN_PATH . '/main.10.skin.php');
         $list->set_view('it_id', false);
         $list->set_view('it_name', true);
         $list->set_view('it_basic', true);
@@ -104,7 +103,6 @@ include_once(G5_THEME_SHOP_PATH . '/shop.head.php');
         <?php
         $list = new item_list();
         $list->set_type(3);
-        $list->set_list_skin(G5_SHOP_SKIN_PATH . '/main.10.skin.php');
         $list->set_view('it_id', false);
         $list->set_view('it_name', true);
         $list->set_view('it_basic', true);
@@ -156,7 +154,6 @@ $promo_banner = array(
         <?php
         $list = new item_list();
         $list->set_type(4);
-        $list->set_list_skin(G5_SHOP_SKIN_PATH . '/main.60.skin.php');
         $list->set_view('it_id', false);
         $list->set_view('it_name', true);
         $list->set_view('it_basic', true);
@@ -196,9 +193,6 @@ $promo_banner = array(
         <?php
         $list = new item_list();
         $list->set_type(5);
-        $list->set_list_skin(G5_SHOP_SKIN_PATH . '/main.70.skin.php');
-        $list->set_list_mod(1);
-        $list->set_list_row(2);
         $list->set_view('it_id', false);
         $list->set_view('it_name', true);
         $list->set_view('it_basic', true);
@@ -238,7 +232,6 @@ $promo_banner = array(
             <?php
             $list = new item_list();
             $list->set_type(2);
-            $list->set_list_skin(G5_SHOP_SKIN_PATH . '/main.80.skin.php');
             $list->set_list_mod(5);
             $list->set_list_row(2);
             $list->set_view('it_id', false);
@@ -291,7 +284,6 @@ $promo_banner = array(
         <?php
         $list = new item_list();
         $list->set_type(2);
-        $list->set_list_skin(G5_SHOP_SKIN_PATH . '/main.10.skin.php');
         $list->set_view('it_id', false);
         $list->set_view('it_name', true);
         $list->set_view('it_basic', true);
@@ -344,9 +336,18 @@ $promo_banner = array(
                     nav: false,
                     autoplay: false,
                     autoplayHoverPause: false,
-                    margin: sliderMargin,
-                    stagePadding: sliderStagePadding,
-                    items: sliderItems
+                    responsive: {
+                        0: {
+                            items: parseFloat($sectionSlider.attr('data-items-mobile')) || 2.15,
+                            margin: parseInt($sectionSlider.attr('data-margin'), 10) || 12,
+                            stagePadding: parseInt($sectionSlider.attr('data-stage-padding'), 10) || 12
+                        },
+                        1200: {
+                            items: parseFloat($sectionSlider.attr('data-items-pc')) || 4,
+                            margin: parseInt($sectionSlider.attr('data-margin'), 10) || 12,
+                            stagePadding: parseInt($sectionSlider.attr('data-stage-padding'), 10) || 12
+                        }
+                    }
                 });
             });
         }

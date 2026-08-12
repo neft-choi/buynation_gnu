@@ -4446,11 +4446,11 @@
   padding: 16px;
 }
 
-.timedeal-thumb img {
+/* .timedeal-thumb img {
   width: 100%;
   height: 240px;
   object-fit: cover;
-}
+} */
 
 .sct_cartop_wr {
   background: none;
