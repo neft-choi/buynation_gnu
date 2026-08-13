@@ -411,28 +411,32 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <label for="chk_all_it_order">전체적용</label>
                         </td>
                     </tr>
-                    <tr>
-                        <th scope="row">상품유형</th>
-                        <td>
-                            <?php echo help("메인화면에 유형별로 출력할때 사용합니다.\n이곳에 체크하게되면 상품리스트에서 유형별로 정렬할때 체크된 상품이 가장 먼저 출력됩니다."); ?>
-                            <input type="checkbox" name="it_type1" value="1" <?php echo ($it['it_type1'] ? "checked" : ""); ?> id="it_type1">
-                            <label for="it_type1">히트 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_hit.gif" alt=""></label>
-                            <input type="checkbox" name="it_type2" value="1" <?php echo ($it['it_type2'] ? "checked" : ""); ?> id="it_type2">
-                            <label for="it_type2">추천 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_rec.gif" alt=""></label>
-                            <input type="checkbox" name="it_type3" value="1" <?php echo ($it['it_type3'] ? "checked" : ""); ?> id="it_type3">
-                            <label for="it_type3">신상품 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_new.gif" alt=""></label>
-                            <input type="checkbox" name="it_type4" value="1" <?php echo ($it['it_type4'] ? "checked" : ""); ?> id="it_type4">
-                            <label for="it_type4">인기 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_best.gif" alt=""></label>
-                            <input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
-                            <label for="it_type5">할인 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_discount.gif" alt=""></label>
-                        </td>
-                        <td class="td_grpset">
-                            <input type="checkbox" name="chk_ca_it_type" value="1" id="chk_ca_it_type">
-                            <label for="chk_ca_it_type">분류적용</label>
-                            <input type="checkbox" name="chk_all_it_type" value="1" id="chk_all_it_type">
-                            <label for="chk_all_it_type">전체적용</label>
-                        </td>
-                    </tr>
+
+                    <?php if ($is_admin === 'super') { ?>
+                        <tr>
+                            <th scope="row">상품유형</th>
+                            <td>
+                                <?php echo help("메인화면에 유형별로 출력할때 사용합니다.\n이곳에 체크하게되면 상품리스트에서 유형별로 정렬할때 체크된 상품이 가장 먼저 출력됩니다."); ?>
+                                <input type="checkbox" name="it_type1" value="1" <?php echo ($it['it_type1'] ? "checked" : ""); ?> id="it_type1">
+                                <label for="it_type1">히트 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_hit.gif" alt=""></label>
+                                <input type="checkbox" name="it_type2" value="1" <?php echo ($it['it_type2'] ? "checked" : ""); ?> id="it_type2">
+                                <label for="it_type2">추천 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_rec.gif" alt=""></label>
+                                <input type="checkbox" name="it_type3" value="1" <?php echo ($it['it_type3'] ? "checked" : ""); ?> id="it_type3">
+                                <label for="it_type3">신상품 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_new.gif" alt=""></label>
+                                <input type="checkbox" name="it_type4" value="1" <?php echo ($it['it_type4'] ? "checked" : ""); ?> id="it_type4">
+                                <label for="it_type4">인기 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_best.gif" alt=""></label>
+                                <input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
+                                <label for="it_type5">할인 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_discount.gif" alt=""></label>
+                            </td>
+                            <td class="td_grpset">
+                                <input type="checkbox" name="chk_ca_it_type" value="1" id="chk_ca_it_type">
+                                <label for="chk_ca_it_type">분류적용</label>
+                                <input type="checkbox" name="chk_all_it_type" value="1" id="chk_all_it_type">
+                                <label for="chk_all_it_type">전체적용</label>
+                            </td>
+                        </tr>
+                    <?php } ?>
+
                     <tr>
                         <th scope="row"><label for="it_maker">제조사</label></th>
                         <td>

@@ -225,6 +225,7 @@ while ($row = sql_fetch_array($result)) {
         'it_price' => (int)$row['it_price'],
         'it_stock_qty' => (int)$row['it_stock_qty'],
         'it_use' => (int)$row['it_use'],
+        'it_image' => get_it_image($row['it_id'], 50, 50),
         'it_soldout' => (int)$row['it_soldout'],
         'condition_id' => (int)$setting['condition_id'],
         'group_id' => (int)$setting['group_id'],

@@ -536,10 +536,10 @@ tfoot th {}
 /* 목록 홀짝 배경색 */
 .tbl_head01 tbody .bg0{background:#fff !important}
 .tbl_head01 tbody .bg1{background:#fff !important}
-.tbl_head01 tbody .bg0cancel {background:#fff !important}
-.tbl_head01 tbody .bg0cancel td {border-color:#fff !important}
-.tbl_head01 tbody .bg1cancel {background:#fff !important}
-.tbl_head01 tbody .bg1cancel td {border-color:#fff !important}
+.tbl_head01 tbody .bg0cancel {background:#ffe9e9 !important}
+.tbl_head01 tbody .bg0cancel td {border-color:#ffe9e9 !important}
+.tbl_head01 tbody .bg1cancel {background:#ffe9e9 !important}
+.tbl_head01 tbody .bg1cancel td {border-color:#ffe9e9 !important}
 
 /* 메뉴설정 */
 #menu_frm #menu_result {margin:10px 0}

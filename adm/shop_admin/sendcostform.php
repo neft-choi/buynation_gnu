@@ -10,18 +10,31 @@ $brand_id_sql = sql_real_escape_string($item_delivery_brand_id);
 
 $conditions = array();
 $condition_result = sql_query("SELECT c.*,
-    (SELECT COUNT(*) FROM donuts_delivery_product_settings ps WHERE ps.brand_id = c.brand_id AND ps.condition_id = c.dc_id) AS product_count
+        (
+            SELECT COUNT(*) 
+            FROM donuts_delivery_product_settings ps 
+            WHERE ps.brand_id = c.brand_id 
+            AND ps.condition_id = c.dc_id
+        ) AS product_count
     FROM donuts_delivery_conditions c
     WHERE c.brand_id = '{$brand_id_sql}'
-    ORDER BY c.is_default DESC, c.dc_id ASC");
+    AND c.is_default = 1
+    AND c.use_yn = 'Y'
+    LIMIT 1");
+
+// SQL 결과 묶음에서 한 행을 꺼내서 $row 배열에 저장하는 것을 반복
 while ($row = sql_fetch_array($condition_result)) {
     $ranges = donuts_delivery_condition_ranges($row['dc_id']);
+
+    // $row 배열에 ranges_json 키와 값을 추가로 저장
+    // ranges_json 의 값은 배열 형태
     $row['ranges_json'] = json_encode(array_map(function ($r) {
         return array('min' => (int)$r['min_amount'], 'max' => ($r['max_amount'] === '' || $r['max_amount'] === null) ? null : (int)$r['max_amount'], 'fee' => (int)$r['dr_price']);
     }, $ranges), JSON_UNESCAPED_UNICODE);
+
+    // 최종 완성된 $row 한 행을 $conditions 배열에 저장
     $conditions[] = $row;
 }
-
 ?>
 <style>
     :root {
@@ -70,12 +83,6 @@ while ($row = sql_fetch_array($condition_result)) {
         font-weight: 800;
     }
 
-    .condition-select-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
-    }
-
     .register-condition {
         position: relative;
         min-height: 90px;
@@ -121,10 +128,10 @@ while ($row = sql_fetch_array($condition_result)) {
         <p>배송조건으로 금액을 정하고, 배송그룹 선택 여부로 묶음·개별을 결정합니다.</p>
     </div>
     <div class="section-title">배송조건</div>
-    <div class="condition-select-grid" id="registerConditions">
+    <div id="registerConditions">
         <?php foreach ($conditions as $index => $condition) { ?>
             <button
-                class="register-condition<?php echo $index === 0 ? ' selected' : ''; ?>"
+                class="register-condition<?php echo $index === 0 ? ' selected' : ''; ?> w-full"
                 type="button"
                 data-condition-id="<?php echo (int) $condition['dc_id']; ?>"
                 data-condition="<?php echo get_text($condition['dc_name']); ?>">
@@ -134,7 +141,40 @@ while ($row = sql_fetch_array($condition_result)) {
                         <span class="badge badge-base">기본</span>
                     <?php } ?>
                 </span>
-                <span class="block text-xs text-(--muted)"><?php echo delivery_type_label($condition['dc_type']); ?></span>
+
+                <span class="block text-xs text-(--muted)">
+                    <?php echo delivery_type_label($condition['dc_type']); ?>
+                </span>
+
+                <div class="flex items-center justify-self-center gap-2 text-xs text-(--muted)">
+                    <span>
+                        배송비 <?php echo number_format((int) $condition['dc_price']); ?>원
+                    </span>
+
+                    <?php if ($condition['dc_type'] === 'conditional') { ?>
+                        <span>/</span>
+
+                        <span>
+                            <?php echo number_format((int) $condition['dc_minimum']); ?>원 이상 무료
+                        </span>
+                    <?php } ?>
+                </div>
+
+                <?php if ((int) $condition['dc_jeju_use'] === 1) { ?>
+                    <span class="block text-xs text-(--muted) mt-2">
+                        제주 +<?php echo number_format((int) $condition['dc_jeju_price']); ?>원
+                    </span>
+                <?php } ?>
+
+                <?php if ((int) $condition['dc_island_use'] === 1) { ?>
+                    <span class="block text-xs text-(--muted)">
+                        도서산간 +<?php echo number_format((int) $condition['dc_island_price']); ?>원
+                    </span>
+                <?php } ?>
+
+                <span class="block text-xs text-(--muted) mt-2">
+                    적용 상품 <span class="font-bold"><?php echo number_format((int) $condition['product_count']); ?>개</span>
+                </span>
             </button>
         <?php } ?>
     </div>
