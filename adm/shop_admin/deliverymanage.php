@@ -2323,7 +2323,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
 
 
 <aside class="drawer" id="conditionProductDrawer">
-    <div class="drawer-head">
+    <div class="drawer-head shrink-0">
         <div>
             <h2 id="conditionProductTitle">배송조건 적용 상품</h2>
             <p id="conditionProductSub">이 배송조건을 사용할 상품을 선택합니다.</p>
@@ -2331,13 +2331,13 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
         <button class="close-btn" type="button" data-close>×</button>
     </div>
 
-    <form method="post" action="./deliverymanage_update.php" id="conditionProductForm">
+    <form method="post" action="./deliverymanage_update.php" id="conditionProductForm" class="flex min-h-0 flex-1 flex-col">
         <input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>">
         <input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>">
         <input type="hidden" name="action" value="sync_condition_products">
         <input type="hidden" name="condition_id" id="conditionProductConditionId" value="">
 
-        <div class="drawer-body">
+        <div class="drawer-body min-h-0 flex-1 overflow-y-auto px-6 pt-[22px] pb-[34px]">
             <div class="rule-note" style="margin:0 0 16px">
                 <span class="info-dot">i</span>
                 <span>
@@ -2396,7 +2396,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             <div id="conditionProductSelectedHidden"></div>
         </div>
 
-        <div class="drawer-foot">
+        <div class="drawer-foot shrink-0">
             <button class="btn" type="button" data-close>취소</button>
             <button class="btn btn-brand" type="submit">선택 상품 적용</button>
         </div>

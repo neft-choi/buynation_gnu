@@ -191,14 +191,14 @@ if (!empty($order_ids)) {
 </section>
 
 <script>
-    $(function () {
+    $(function() {
         const $cartButtons = $('.js-order-add-cart');
 
         if (!$cartButtons.length) {
             return;
         }
 
-        $cartButtons.on('click', function () {
+        $cartButtons.on('click', function() {
             const $button = $(this);
             const itemId = $button.attr('data-it-id');
 
@@ -253,20 +253,20 @@ if (!empty($order_ids)) {
                 headers: {
                     'X-Requested-With': 'XMLHttpRequest'
                 }
-            }).done(function (data) {
+            }).done(function(data) {
                 if (data.error) {
                     alert(String(data.error).replace(/\\n/g, '\n'));
                     return;
                 }
 
                 alert('상품을 장바구니에 담았습니다.');
-            }).fail(function () {
+            }).fail(function() {
                 alert('장바구니 처리 중 오류가 발생했습니다.');
             });
         });
     });
 
-        // 반응형 쇼핑몰 헤더 숨기기
+    // 반응형 쇼핑몰 헤더 숨기기
     syncWithPcBreakpoint(function(isPc) {
         if (isPc) {
             $('#hd').css('display', '');

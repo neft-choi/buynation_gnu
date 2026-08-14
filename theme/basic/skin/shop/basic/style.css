@@ -3393,7 +3393,7 @@
   display: inline-block;
   margin-left: 10px;
 }
-.sit_qaa_done {
+/* .sit_qaa_done {
   display: inline-block;
   height: 30px;
   line-height: 30px;
@@ -3404,8 +3404,8 @@
   font-size: 12px;
   font-weight: normal;
   border-radius: 3px;
-}
-.sit_qaa_yet {
+} */
+/* .sit_qaa_yet {
   display: inline-block;
   height: 30px;
   line-height: 30px;
@@ -3416,37 +3416,37 @@
   font-size: 12px;
   font-weight: normal;
   border-radius: 3px;
-}
+} */
 
-.sit_qa_con {
+/* .sit_qa_con {
   display: none;
   clear: both;
-}
-.sit_qa_p {
+} */
+/* .sit_qa_p {
   margin: 10px 0;
   background: #f3f3f3;
   line-height: 1.5em;
-}
-.sit_qa_p .qa_alp {
+} */
+/* .sit_qa_p .qa_alp {
   position: absolute;
   top: 13px;
   left: 15px;
   font-size: 2em;
   color: #000;
-}
-.sit_qa_qaa {
+} */
+/* .sit_qa_qaa {
   padding: 15px 20px;
   padding-left: 50px;
   position: relative;
   min-height: 50px;
   border-top: 1px solid #fff;
-}
-.sit_qa_qaq {
+} */
+/* .sit_qa_qaq {
   padding: 15px 20px;
   padding-left: 50px;
   position: relative;
   min-height: 50px;
-}
+} */
 .sit_qa_con textarea {
   display: none;
 }
@@ -3827,10 +3827,10 @@
 } */
 
 /* 상품문의 모음 */
-#sqa_sch {
+/* #sqa_sch {
   margin: 0 0 10px;
-}
-#sqa_sch a {
+} */
+/* #sqa_sch a {
   display: inline-block;
   padding: 0 8px;
   height: 40px;
@@ -3840,159 +3840,159 @@
   background: #434a54;
   color: #fff;
   font-weight: bold;
-  text-decoration: none;
+  text-decoration: none; */
 }
-#sqa_sch .sch_wr {
+/* #sqa_sch .sch_wr {
   width: 300px;
   border: 1px solid #d0d3db;
   border-radius: 3px;
   display: inline-block;
   background: #fff;
-}
-#sqa_sch:after {
+} */
+/* #sqa_sch:after {
   display: block;
   visibility: hidden;
   clear: both;
   content: "";
-}
-#sqa_sch select {
+} */
+/* #sqa_sch select {
   float: left;
   border: 0;
   width: 175px;
   height: 40px;
   margin-right: 5px;
   border: 1px solid #d0d3db;
-  border-radius: 3px;
+  border-radius: 3px; */
 }
-#sqa_sch .sch_input {
+/* #sqa_sch .sch_input {
   width: 258px;
   height: 38px;
   border: 0;
   padding: 0;
   background-color: transparent;
   float: left;
-}
-#sqa_sch .sch_btn {
+} */
+/* #sqa_sch .sch_btn {
   height: 38px;
   float: left;
   background: none;
   border: 0;
   width: 40px;
   font-size: 15px;
-}
+} */
 
-#sqa {
+/* #sqa {
   margin-bottom: 20px;
-}
-#sqa ol {
+} */
+/* #sqa ol {
   margin: 0;
   padding: 0;
   list-style: none;
-}
-#sqa li {
+} */
+/* #sqa li {
   position: relative;
   padding: 15px 20px 15px 15px;
   border-bottom: 1px solid #f0f0f0;
   background: #fff;
-}
-#sqa li:after {
+} */
+/* #sqa li:after {
   display: block;
   visibility: hidden;
   clear: both;
   content: "";
-}
-#sqa li .sit_qaa_yet {
+} */
+/* #sqa li .sit_qaa_yet {
   position: absolute;
   right: 20px;
   top: 20px;
   margin-right: 0;
-}
-#sqa li .sit_qaa_done {
+} */
+/* #sqa li .sit_qaa_done {
   position: absolute;
   right: 20px;
   top: 20px;
   margin-right: 0;
-}
+} */
 
-.sqa_img {
+/* .sqa_img {
   float: left;
   margin: 0 10px 0 0;
-}
-.sqa_img span {
+} */
+/* .sqa_img span {
   position: absolute;
   font-size: 0;
   line-height: 0;
   overflow: hidden;
-}
+} */
 
-#sqa dl {
+/* #sqa dl {
   margin: 5px 0;
-}
-#sqa dl:after {
+} */
+/* #sqa dl:after {
   display: block;
   visibility: hidden;
   clear: both;
   content: "";
-}
-#sqa dt {
+} */
+/* #sqa dt {
   float: left;
-}
-#sqa dd {
+} */
+/* #sqa dd {
   float: left;
   margin: 0 10px 0 0;
   color: #999;
-}
+} */
 
-#sqa dd img {
+/* #sqa dd img {
   position: relative;
   top: -2px;
-}
-.sqa_con {
+} */
+/* .sqa_con {
   margin: 10px 0;
   background: #f3f3f3;
   line-height: 1.5em;
-}
-.sqa_con .qa_alp {
+} */
+/* .sqa_con .qa_alp {
   position: absolute;
   top: 13px;
   left: 15px;
   font-size: 2em;
   color: #000;
-}
+} */
 
-.sqa_section {
+/* .sqa_section {
   float: left;
   width: 1100px;
-}
-.sqa_section h2 {
+} */
+/* .sqa_section h2 {
   padding-right: 70px;
   font-size: 1.2em;
   font-weight: bold;
-}
-.sqa_section .sqa_con {
+} */
+/* .sqa_section .sqa_con {
   line-height: 1.7em;
-}
-.sqa_section p {
+} */
+/* .sqa_section p {
   padding: 0;
   width: 100%;
-}
-.sqa_con_full {
+} */
+/* .sqa_con_full {
   padding: 0;
   height: auto !important;
-}
-.sqa_con_btn button {
+} */
+/* .sqa_con_btn button {
   border: 1px solid #ddd;
   padding: 5px 8px;
   color: #666;
   font-size: 0.92em;
   margin: 5px 0;
   background: #fff;
-}
-.sqa_con_btn button:hover {
+} */
+/* .sqa_con_btn button:hover {
   background: #6b99ee;
   border-color: #6b99ee;
   color: #fff;
-}
+} */
 
 /* 상품검색 */
 #ssch {
