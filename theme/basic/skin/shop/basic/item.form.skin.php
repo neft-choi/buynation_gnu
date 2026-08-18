@@ -157,12 +157,17 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			<!-- 상품 요약정보 및 구매 시작 { -->
 			<section id="sit_ov" class="relative w-full !h-auto p-4 pc:p-0x">
 				<p class="flex items-center gap-1 text-sm text-zinc-500 font-semibold">
-					<?php echo $it["it_brand"]; ?>
-					<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-						stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-						class="lucide lucide-chevron-right-icon lucide-chevron-right">
-						<path d="m9 18 6-6-6-6" />
-					</svg>
+					<?php if (!empty($it['it_brand'])) { ?>
+						<a href="<?php echo G5_SHOP_URL . '/brand.php?brand_id=' . urlencode($it['it_brand']); ?>"
+							class="inline-flex items-center gap-1">
+							<?php echo get_text($it['it_brand']); ?>
+							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+								stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+								class="lucide lucide-chevron-right-icon lucide-chevron-right">
+								<path d="m9 18 6-6-6-6" />
+							</svg>
+						</a>
+					<?php } ?>
 				</p>
 				<div class="flex items-baseline justify-between">
 
@@ -215,10 +220,10 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					</div>
 				</div>
 				<script>
-					$(".btn_sns_share").click(function () {
+					$(".btn_sns_share").click(function() {
 						$(".sns_area").show();
 					});
-					$(document).mouseup(function (e) {
+					$(document).mouseup(function(e) {
 						const container = $(".sns_area");
 						if (container.has(e.target).length === 0)
 							container.hide();
@@ -315,7 +320,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 							<?php
 							// 					$ct_send_cost_label = '배송비결제';
-							
+
 							// 					if ($it['it_sc_type'] == 1) {
 							// 						$sc_method = '무료배송';
 							// 					} else {
@@ -339,27 +344,27 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 				<div id="sit_option_area">
 					<?php
 					if ($option_item) {
-						?>
+					?>
 						<!-- 선택옵션 시작 { -->
 						<section class="sit_option">
 							<h3>선택옵션</h3>
 							<?php echo $option_item; ?>
 						</section>
 						<!-- } 선택옵션 끝 -->
-						<?php
+					<?php
 					}
 					?>
 
 					<?php
 					if ($supply_item) {
-						?>
+					?>
 						<!-- 추가옵션 시작 { -->
 						<section class="sit_option">
 							<h3>추가옵션</h3>
 							<?php echo $supply_item; ?>
 						</section>
 						<!-- } 추가옵션 끝 -->
-						<?php
+					<?php
 					}
 					?>
 
@@ -370,7 +375,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						if (!$option_item) {
 							if (!$it['it_buy_min_qty'])
 								$it['it_buy_min_qty'] = 1;
-							?>
+						?>
 							<ul id="sit_opt_added" class="space-y-2">
 								<li class="sit_opt_list space-y-2">
 									<input type="hidden" name="io_type[<?php echo $it_id; ?>][]" value="0">
@@ -425,7 +430,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 								</li>
 							</ul>
 							<script>
-								$(function () {
+								$(function() {
 									price_calculate();
 								});
 							</script>
@@ -439,11 +444,11 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 				<script>
 					// 상품 옵션 관련 반응형 처리
-					$(function () {
+					$(function() {
 						const pcBreakpoint = parseInt(
 							getComputedStyle(document.documentElement)
-								.getPropertyValue('--breakpoint-pc')
-								.trim(),
+							.getPropertyValue('--breakpoint-pc')
+							.trim(),
 							10
 						);
 
@@ -607,7 +612,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 			<script>
 				// PC 주문 요약 내부를 접고 펴는 기능
-				$(function () {
+				$(function() {
 					const $toggle = $("#sit_order_summary_toggle");
 					const $inner = $("#sit_order_summary_inner");
 
@@ -615,7 +620,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						return;
 					}
 
-					$toggle.on("click", function () {
+					$toggle.on("click", function() {
 						$inner.toggleClass("hidden");
 
 						// hidden 클래스가 있으면 true가 되어 접힌 상태인지 확인
@@ -626,7 +631,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					});
 				});
 
-				$(function () {
+				$(function() {
 					// 본문 장바구니 버튼이 화면 위로 사라졌을 때 주문 요약 보여주기
 					const triggerDOM = $("#sit_order_summary_trigger")[0];
 					const $orderSummary = $("#sit_order_summary_pc");
@@ -637,8 +642,8 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 					const pcBreakpoint = parseInt(
 						getComputedStyle(document.documentElement)
-							.getPropertyValue("--breakpoint-pc")
-							.trim(),
+						.getPropertyValue("--breakpoint-pc")
+						.trim(),
 						10
 					);
 
@@ -646,7 +651,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						return;
 					}
 
-					const observer = new IntersectionObserver(function (entries) {
+					const observer = new IntersectionObserver(function(entries) {
 						const entry = entries[0];
 						const shouldShow = entry.boundingClientRect.bottom < 0;
 
@@ -669,7 +674,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 					observer.observe(triggerDOM);
 
-					$totalPrice.on("price_calculate", function () {
+					$totalPrice.on("price_calculate", function() {
 						if (
 							window.innerWidth >= pcBreakpoint &&
 							$orderSummary.attr("data-visible") === "true"
@@ -759,14 +764,14 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					</div>
 				</div>
 			</div>
-	</div>
+</div>
 
 <?php } ?>
 </form>
 </div>
 
 <script>
-	$(function () {
+	$(function() {
 		const $drawer = $("#sit_purchase_drawer");
 		const $overlay = $("#sit_drawer_overlay");
 		const $openDrawerBtn = $("#sit_open_drawer");
@@ -777,7 +782,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			const $optionSelects = $drawer.find("select.it_option");
 			if (!$optionSelects.length) return;
 
-			$optionSelects.each(function (index) {
+			$optionSelects.each(function(index) {
 				const $sel = $(this);
 				$sel.val("");
 				if (index === 0) {
@@ -794,7 +799,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			resetDrawerOptionSelects();
 			$overlay.removeClass("hidden");
 			$drawer.removeClass("hidden");
-			requestAnimationFrame(function () {
+			requestAnimationFrame(function() {
 				$drawer.removeClass("translate-y-full");
 			});
 			$("body").addClass("overflow-hidden");
@@ -802,7 +807,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			$overlay.attr("aria-hidden", "false");
 			$drawer.attr("aria-hidden", "false");
 
-			setTimeout(function () {
+			setTimeout(function() {
 				const $firstFocusable = $drawer.find("select, input, button, textarea, a[href]").filter(":visible").first();
 				if ($firstFocusable.length) {
 					$firstFocusable.focus();
@@ -817,7 +822,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			$openDrawerBtn.attr("aria-expanded", "false");
 			$overlay.attr("aria-hidden", "true");
 			$drawer.attr("aria-hidden", "true");
-			setTimeout(function () {
+			setTimeout(function() {
 				$overlay.addClass("hidden");
 				$drawer.addClass("hidden");
 				if (lastFocusedElement && typeof lastFocusedElement.focus === "function") {
@@ -829,23 +834,23 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		$openDrawerBtn.on("click", openPurchaseDrawer);
 		$closeDrawerBtn.on("click", closePurchaseDrawer);
 		$overlay.on("click", closePurchaseDrawer);
-		$(document).on("keydown", function (e) {
+		$(document).on("keydown", function(e) {
 			if (e.key === "Escape") closePurchaseDrawer();
 		});
 
-		$(function () {
+		$(function() {
 			// 상품이미지 첫번째 링크
 			$("#sit_pvi_big a:first").addClass("visible");
 
 			// 상품이미지 미리보기 (썸네일에 마우스 오버시)
-			$("#sit_pvi .img_thumb").bind("mouseover focus", function () {
+			$("#sit_pvi .img_thumb").bind("mouseover focus", function() {
 				var idx = $("#sit_pvi .img_thumb").index($(this));
 				$("#sit_pvi_big a.visible").removeClass("visible");
 				$("#sit_pvi_big a:eq(" + idx + ")").addClass("visible");
 			});
 
 			// 상품이미지 크게보기
-			$(".popup_item_image").click(function () {
+			$(".popup_item_image").click(function() {
 				var url = $(this).attr("href");
 				var top = 10;
 				var left = 10;
@@ -905,7 +910,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		// });
 
 		// btn_wish 클래스가 있
-		$(document).on("click", ".btn_wish", function (e) {
+		$(document).on("click", ".btn_wish", function(e) {
 			e.preventDefault();
 
 			const itId = $(this).data("it_id");
@@ -923,10 +928,10 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 			$.post(
 				g5_shop_url + "/ajax.action.php", {
-				action: "wish_update",
-				it_id: itId
-			},
-				function (res) {
+					action: "wish_update",
+					it_id: itId
+				},
+				function(res) {
 					if (res !== "OK") {
 						alert(String(res).replace(/\\n/g, "\n"));
 						return;
@@ -941,15 +946,15 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			);
 		});
 
-		$("#sit_copy_link_btn").on("click", function (e) {
+		$("#sit_copy_link_btn").on("click", function(e) {
 			e.preventDefault();
 
 			const pageUrl = window.location.href;
 
 			if (navigator.clipboard && window.isSecureContext) {
-				navigator.clipboard.writeText(pageUrl).then(function () {
+				navigator.clipboard.writeText(pageUrl).then(function() {
 					alert("링크가 복사되었습니다.");
-				}).catch(function () {
+				}).catch(function() {
 					copyWithFallback(pageUrl);
 				});
 			} else {
@@ -975,7 +980,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			const itemPrice = parseInt($("input#it_price").val(), 10);
 			const safeItemPrice = isNaN(itemPrice) ? 0 : itemPrice;
 
-			$("#sit_sel_option li").each(function () {
+			$("#sit_sel_option li").each(function() {
 				const $row = $(this);
 				const $legacyPrice = $row.find(".sit_opt_prc").first();
 				if (!$legacyPrice.length) return;
@@ -1013,11 +1018,11 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			});
 		}
 
-		$("#sit_tot_price").on("price_calculate", function () {
+		$("#sit_tot_price").on("price_calculate", function() {
 			syncOptionPriceLabels();
 		});
 
-		$("#sit_sel_option").on("add_sit_sel_option", function () {
+		$("#sit_sel_option").on("add_sit_sel_option", function() {
 			syncOptionPriceLabels();
 		});
 
@@ -1044,7 +1049,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		const max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
 		const $el_type = $("input[name^=io_type]");
 
-		$("input[name^=ct_qty]").each(function (index) {
+		$("input[name^=ct_qty]").each(function(index) {
 			val = $(this).val();
 
 			if (val.length < 1) {
@@ -1117,7 +1122,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		const max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
 		const $el_type = $("input[name^=io_type]");
 
-		$("input[name^=ct_qty]").each(function (index) {
+		$("input[name^=ct_qty]").each(function(index) {
 			val = $(this).val();
 
 			if (val.length < 1) {

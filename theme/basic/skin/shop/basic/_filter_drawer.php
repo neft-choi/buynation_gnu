@@ -12,6 +12,10 @@ if (!defined('_GNUBOARD_'))
             <input type="hidden" name="type" value="<?php echo (int) $this->type; ?>">
         <?php } ?>
 
+        <?php if (isset($brand['brand_id']) && $brand['brand_id'] !== '') { ?>
+            <input type="hidden" name="brand_id" value="<?php echo get_text($brand['brand_id']); ?>">
+        <?php } ?>
+
         <?php if ($this->ca_id) { ?>
             <input type="hidden" name="ca_id" value="<?php echo get_text($this->ca_id); ?>">
         <?php } ?>
@@ -51,7 +55,7 @@ if (!defined('_GNUBOARD_'))
                     가격대
                 </button>
 
-                <?php if (basename($_SERVER['SCRIPT_NAME']) !== 'listtype.php') { ?>
+                <?php if (basename($_SERVER['SCRIPT_NAME']) !== 'listtype.php' && basename($_SERVER['SCRIPT_NAME']) !== 'brand.php') { ?>
                     <button type="button" id="filterTabCategory" class="pb-2 text-gray-400">
                         카테고리
                     </button>
@@ -194,7 +198,7 @@ if (!defined('_GNUBOARD_'))
             </div>
         </div>
 
-        <?php if (basename($_SERVER['SCRIPT_NAME']) !== 'listtype.php') { ?>
+        <?php if (basename($_SERVER['SCRIPT_NAME']) !== 'listtype.php' && basename($_SERVER['SCRIPT_NAME']) !== 'brand.php') { ?>
             <div id="filterPanelCategory" class="filterDrawerPanel mt-6 px-4 hidden">
                 <?php include G5_THEME_PATH . '/' . G5_SKIN_DIR . '/shop/basic/_category.php'; ?>
             </div>

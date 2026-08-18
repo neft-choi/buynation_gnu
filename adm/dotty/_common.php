@@ -7,3 +7,5 @@ require_once G5_ADMIN_PATH . '/admin.lib.php';
 require_once __DIR__ . '/dotty.menu.php';
 
 run_event('admin_common');
+
+add_stylesheet('<link rel="stylesheet" href="' . G5_ADMIN_URL . '/dotty/css/dotty.css?ver=' . G5_CSS_VER . '">', 100);

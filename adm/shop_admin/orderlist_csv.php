@@ -156,7 +156,7 @@ if ($where)
                 FROM {$g5['g5_shop_cart_table']} c
                 INNER JOIN {$g5['g5_shop_item_table']} i
                     ON c.it_id = i.it_id
-                WHERE i.it_brand = '{$member['mb_id']}'
+                WHERE TRIM(i.it_brand) = '{$member['mb_id']}'
             )
         ";
 
@@ -245,6 +245,478 @@ function csv_brand_send_cost($settings, $order_price)
     return 0;
 }
 
+
+/*
+ * ============================================================
+ * 새 배송관리 정책 기준 CSV 배송비 계산
+ * ============================================================
+ *
+ * 우선순위:
+ * 1. donuts_delivery_product_settings에 연결된 배송조건
+ * 2. 연결값이 없으면 해당 브랜드의 기본 배송조건(is_default=1)
+ * 3. 기본 배송조건도 없으면 donuts_brand_settings 기존 기본 배송비
+ *
+ * 지원 정책:
+ * - paid          : 유료
+ * - conditional   : 조건부 무료
+ * - free          : 무료
+ * - quantity      : 수량별
+ * - amount_range  : 금액 구간별
+ * - 묶음배송 그룹 MIN / MAX
+ * - 제주 추가비
+ * - 도서산간 추가비(기존 추가배송비 우편번호 범위로 지역 판정)
+ */
+function csv_new_delivery_is_island_zip($zip)
+{
+    global $g5;
+
+    $zip = preg_replace('/[^0-9]/', '', (string)$zip);
+
+    if ($zip === '') {
+        return false;
+    }
+
+    $zip_num = (int)$zip;
+
+    $result = sql_query("
+        SELECT sc_zip1, sc_zip2
+        FROM {$g5['g5_shop_sendcost_table']}
+    ", false);
+
+    if (!$result) {
+        return false;
+    }
+
+    while ($row = sql_fetch_array($result)) {
+        $from = (int)preg_replace('/[^0-9]/', '', (string)$row['sc_zip1']);
+        $to   = (int)preg_replace('/[^0-9]/', '', (string)$row['sc_zip2']);
+
+        if ($from <= $zip_num && $zip_num <= $to) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function csv_new_delivery_condition_fee($condition, $item_amount, $item_qty)
+{
+    global $g5;
+
+    if (empty($condition)) {
+        return 0;
+    }
+
+    $type = isset($condition['dc_type'])
+        ? trim((string)$condition['dc_type'])
+        : '';
+
+    $price = isset($condition['dc_price'])
+        ? max(0, (int)$condition['dc_price'])
+        : 0;
+
+    $minimum = isset($condition['dc_minimum'])
+        ? max(0, (int)$condition['dc_minimum'])
+        : 0;
+
+    $qty_unit = isset($condition['dc_qty'])
+        ? max(1, (int)$condition['dc_qty'])
+        : 1;
+
+    switch ($type) {
+        case 'paid':
+            return $price;
+
+        case 'free':
+            return 0;
+
+        case 'quantity':
+            return $price * (int)ceil(max(0, $item_qty) / $qty_unit);
+
+        case 'amount_range':
+            $dc_id = isset($condition['dc_id'])
+                ? (int)$condition['dc_id']
+                : 0;
+
+            if ($dc_id < 1) {
+                return 0;
+            }
+
+            $result = sql_query("
+                SELECT min_amount, max_amount, dr_price
+                FROM donuts_delivery_condition_ranges
+                WHERE dc_id = '{$dc_id}'
+                ORDER BY min_amount ASC
+            ", false);
+
+            if (!$result) {
+                return 0;
+            }
+
+            while ($range = sql_fetch_array($result)) {
+                $min = (int)$range['min_amount'];
+
+                $max = (
+                    $range['max_amount'] === null ||
+                    $range['max_amount'] === ''
+                )
+                    ? null
+                    : (int)$range['max_amount'];
+
+                if (
+                    $item_amount >= $min &&
+                    ($max === null || $item_amount < $max)
+                ) {
+                    return max(0, (int)$range['dr_price']);
+                }
+            }
+
+            return 0;
+
+        case 'conditional':
+        default:
+            if ($minimum > 0 && $item_amount >= $minimum) {
+                return 0;
+            }
+
+            return $price;
+    }
+}
+
+function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiver_zip)
+{
+    global $g5;
+
+    $data = array(
+        'shipping_total' => 0,
+        'item_charges' => array(),
+        'item_types' => array(),
+        'item_methods' => array(),
+        'item_groups' => array()
+    );
+
+    $od_id = trim((string)$od_id);
+    $brand_id = trim((string)$brand_id);
+
+    if ($od_id === '' || $brand_id === '') {
+        return $data;
+    }
+
+    $od_id_sql = sql_real_escape_string($od_id);
+    $brand_id_sql = sql_real_escape_string($brand_id);
+
+    /*
+     * 브랜드 기본 배송조건.
+     */
+    $default_condition = array();
+
+    $default_result = sql_query("
+        SELECT *
+        FROM donuts_delivery_conditions
+        WHERE brand_id = '{$brand_id_sql}'
+          AND is_default = 1
+          AND use_yn = 'Y'
+        ORDER BY dc_id DESC
+        LIMIT 1
+    ", false);
+
+    if ($default_result) {
+        $default_condition = sql_fetch_array($default_result);
+    }
+
+    /*
+     * 새 기본조건이 없는 서버/브랜드를 위한 기존 브랜드 설정 fallback.
+     */
+    $brand_settings = array();
+
+    $bs_result = sql_query("
+        SELECT *
+        FROM donuts_brand_settings
+        WHERE brand_id = '{$brand_id_sql}'
+        LIMIT 1
+    ", false);
+
+    if ($bs_result) {
+        $brand_settings = sql_fetch_array($bs_result);
+    }
+
+    /*
+     * 주문에서 현재 브랜드 상품을 상품코드별로 합산.
+     * 옵션 추가금액까지 포함합니다.
+     */
+    $item_result = sql_query("
+        SELECT
+            c.it_id,
+            SUM(
+                IF(
+                    c.io_type = 1,
+                    c.io_price * c.ct_qty,
+                    (c.ct_price + c.io_price) * c.ct_qty
+                )
+            ) AS item_amount,
+            SUM(c.ct_qty) AS item_qty
+        FROM {$g5['g5_shop_cart_table']} c
+        INNER JOIN {$g5['g5_shop_item_table']} i
+            ON i.it_id = c.it_id
+        WHERE c.od_id = '{$od_id_sql}'
+          AND TRIM(i.it_brand) = '{$brand_id_sql}'
+        GROUP BY c.it_id
+        ORDER BY MIN(c.ct_id) ASC
+    ", false);
+
+    if (!$item_result) {
+        return $data;
+    }
+
+    $items = array();
+
+    while ($item = sql_fetch_array($item_result)) {
+        $it_id = trim((string)$item['it_id']);
+
+        if ($it_id === '') {
+            continue;
+        }
+
+        $it_id_sql = sql_real_escape_string($it_id);
+
+        /*
+         * 상품에 연결된 배송조건/묶음그룹.
+         */
+        $setting = array();
+
+        $setting_result = sql_query("
+            SELECT condition_id, group_id
+            FROM donuts_delivery_product_settings
+            WHERE brand_id = '{$brand_id_sql}'
+              AND it_id = '{$it_id_sql}'
+            LIMIT 1
+        ", false);
+
+        if ($setting_result) {
+            $setting = sql_fetch_array($setting_result);
+        }
+
+        $condition_id = !empty($setting['condition_id'])
+            ? (int)$setting['condition_id']
+            : 0;
+
+        $group_id = !empty($setting['group_id'])
+            ? (int)$setting['group_id']
+            : 0;
+
+        $condition = array();
+
+        if ($condition_id > 0) {
+            $condition_result = sql_query("
+                SELECT *
+                FROM donuts_delivery_conditions
+                WHERE dc_id = '{$condition_id}'
+                  AND brand_id = '{$brand_id_sql}'
+                  AND use_yn = 'Y'
+                LIMIT 1
+            ", false);
+
+            if ($condition_result) {
+                $condition = sql_fetch_array($condition_result);
+            }
+        }
+
+        if (empty($condition) && !empty($default_condition)) {
+            $condition = $default_condition;
+            $condition_id = isset($default_condition['dc_id'])
+                ? (int)$default_condition['dc_id']
+                : 0;
+        }
+
+        $item_amount = (int)$item['item_amount'];
+        $item_qty = (int)$item['item_qty'];
+
+        if (!empty($condition)) {
+            $fee = csv_new_delivery_condition_fee(
+                $condition,
+                $item_amount,
+                $item_qty
+            );
+
+            $condition_name = !empty($condition['dc_name'])
+                ? $condition['dc_name']
+                : '배송조건';
+
+            /*
+             * 지역 추가배송비.
+             * 제주와 도서산간은 중복 가산하지 않고 제주를 우선합니다.
+             */
+            $is_jeju = (
+                mb_strpos((string)$receiver_addr, '제주') !== false
+            );
+
+            if (
+                $is_jeju &&
+                !empty($condition['dc_jeju_use'])
+            ) {
+                $fee += max(0, (int)$condition['dc_jeju_price']);
+                $condition_name .= ' + 제주추가';
+            } elseif (
+                !empty($condition['dc_island_use']) &&
+                csv_new_delivery_is_island_zip($receiver_zip)
+            ) {
+                $fee += max(0, (int)$condition['dc_island_price']);
+                $condition_name .= ' + 도서산간추가';
+            }
+
+        } else {
+            /*
+             * 새 배송조건이 전혀 없을 때만 기존 브랜드 기본배송비 사용.
+             */
+            $fee = csv_brand_send_cost($brand_settings, $item_amount);
+            $condition_name = '브랜드 기본 배송비';
+        }
+
+        $group_name = '';
+        $calc_method = 'MAX';
+
+        if ($group_id > 0) {
+            $group_result = sql_query("
+                SELECT dg_name, calc_method
+                FROM donuts_delivery_groups
+                WHERE dg_id = '{$group_id}'
+                  AND brand_id = '{$brand_id_sql}'
+                  AND use_yn = 'Y'
+                LIMIT 1
+            ", false);
+
+            if ($group_result) {
+                $group = sql_fetch_array($group_result);
+
+                if (!empty($group['dg_name'])) {
+                    $group_name = $group['dg_name'];
+                }
+
+                if (
+                    isset($group['calc_method']) &&
+                    strtoupper($group['calc_method']) === 'MIN'
+                ) {
+                    $calc_method = 'MIN';
+                }
+            }
+
+            /*
+             * 그룹 정보가 삭제/미사용 상태면 개별배송 취급.
+             */
+            if ($group_name === '') {
+                $group_id = 0;
+            }
+        }
+
+        $items[$it_id] = array(
+            'fee' => max(0, (int)$fee),
+            'condition_name' => $condition_name,
+            'group_id' => $group_id,
+            'group_name' => $group_name,
+            'calc_method' => $calc_method
+        );
+
+        $data['item_charges'][$it_id] = 0;
+        $data['item_types'][$it_id] = $condition_name;
+        $data['item_groups'][$it_id] = $group_name;
+        $data['item_methods'][$it_id] = $fee > 0 ? '선불' : '무료';
+    }
+
+    /*
+     * 개별배송 / 묶음배송 분리.
+     */
+    $groups = array();
+
+    foreach ($items as $it_id => $item) {
+        if ($item['group_id'] < 1) {
+            $data['item_charges'][$it_id] = $item['fee'];
+            $data['shipping_total'] += $item['fee'];
+            continue;
+        }
+
+        $gid = $item['group_id'];
+
+        if (!isset($groups[$gid])) {
+            $groups[$gid] = array(
+                'name' => $item['group_name'],
+                'method' => $item['calc_method'],
+                'items' => array()
+            );
+        }
+
+        $groups[$gid]['items'][$it_id] = $item['fee'];
+    }
+
+    /*
+     * 묶음배송:
+     * MAX = 그룹에서 가장 높은 배송비 1회
+     * MIN = 그룹에서 가장 낮은 배송비 1회
+     *
+     * CSV 합계가 실제 배송비와 일치하도록
+     * 대표 상품 한 행에만 그룹 배송비를 기록합니다.
+     */
+    foreach ($groups as $gid => $group) {
+        if (empty($group['items'])) {
+            continue;
+        }
+
+        $selected_it_id = '';
+        $selected_fee = null;
+
+        foreach ($group['items'] as $it_id => $fee) {
+            if ($selected_fee === null) {
+                $selected_it_id = $it_id;
+                $selected_fee = $fee;
+                continue;
+            }
+
+            if (
+                $group['method'] === 'MIN' &&
+                $fee < $selected_fee
+            ) {
+                $selected_it_id = $it_id;
+                $selected_fee = $fee;
+            }
+
+            if (
+                $group['method'] !== 'MIN' &&
+                $fee > $selected_fee
+            ) {
+                $selected_it_id = $it_id;
+                $selected_fee = $fee;
+            }
+        }
+
+        $selected_fee = max(0, (int)$selected_fee);
+
+        if ($selected_it_id !== '') {
+            $data['item_charges'][$selected_it_id] = $selected_fee;
+            $data['shipping_total'] += $selected_fee;
+        }
+
+        foreach ($group['items'] as $it_id => $fee) {
+            $data['item_groups'][$it_id] =
+                $group['name'] . ' (' . $group['method'] . ')';
+
+            /*
+             * 대표 상품이 아닌 그룹 상품은 배송비 0원 표시.
+             * "무료"로 오해하지 않도록 결제구분은 묶음배송으로 표시.
+             */
+            if ($it_id !== $selected_it_id) {
+                $data['item_methods'][$it_id] = '묶음배송';
+            } else {
+                $data['item_methods'][$it_id] =
+                    $selected_fee > 0 ? '선불' : '무료';
+            }
+
+            $data['item_types'][$it_id] .=
+                ' / ' . $group['name'] . ' ' . $group['method'];
+        }
+    }
+
+    return $data;
+}
+
 /* CSV 헤더 */
 fputcsv($fp, array(
     '주문일시',
@@ -276,11 +748,9 @@ fputcsv($fp, array(
     '배송비',
     '배송비 결제구분',
     '배송비 유형',
+    '묶음배송 그룹',
     '주문상태',
     '결제수단',
-    '택배사',
-    '송장번호',
-    '송장등록일시',
     '정산금액',
     '정산예정일'
 ));
@@ -293,12 +763,12 @@ $csv_brand_where = '';
 
 if (!empty($brand['brand_id'])) {
     $brand_id_sql = sql_real_escape_string($member['mb_id']);
-    $csv_brand_where = " AND i.it_brand = '{$brand_id_sql}' ";
+    $csv_brand_where = " AND TRIM(i.it_brand) = '{$brand_id_sql}' ";
 }
 
 /* WHERE가 없는 경우 AND를 붙일 수 없으므로 별도 처리 */
 if (!$sql_search && $csv_brand_where) {
-    $csv_brand_where = " WHERE i.it_brand = '{$brand_id_sql}' ";
+    $csv_brand_where = " WHERE TRIM(i.it_brand) = '{$brand_id_sql}' ";
 }
 
 /* 주문상품 기준 조회 */
@@ -314,9 +784,6 @@ SELECT
     c.ct_price,
     c.ct_send_cost,
     c.ct_status,
-    c.ct_delivery_company,
-    c.ct_invoice,
-    c.ct_invoice_time,
     c.io_type,
     c.io_price,
 
@@ -347,6 +814,7 @@ $result = sql_query($sql);
  * 같은 주문/상품의 옵션행마다 배송비가 반복되는 것을 막음.
  */
 $shipping_written = array();
+$new_delivery_cache = array();
 
 while ($row = sql_fetch_array($result)) {
 
@@ -369,286 +837,96 @@ while ($row = sql_fetch_array($result)) {
     $line_sale_price = $unit_sale_price * (int)$row['ct_qty'];
 
     /*
-     * 해당 주문에서 해당 상품 전체의 옵션포함 금액/수량.
-     * 조건부무료 및 수량별 배송비 계산에 사용.
+     * 현재 구현된 배송관리 정책으로 주문/브랜드 전체 배송비를 계산합니다.
+     * 주문 단위로 캐시하여 같은 주문의 옵션행마다 다시 계산하지 않습니다.
      */
-    $od_id_sql = sql_real_escape_string($row['od_id']);
-    $it_id_sql = sql_real_escape_string($row['it_id']);
+    $row_brand_id = trim((string)$row['it_brand']);
 
-    $item_sum = sql_fetch("
-        SELECT
-            SUM(
-                IF(
-                    io_type = 1,
-                    io_price * ct_qty,
-                    (ct_price + io_price) * ct_qty
-                )
-            ) AS price,
-            SUM(ct_qty) AS qty
-        FROM {$g5['g5_shop_cart_table']}
-        WHERE od_id = '{$od_id_sql}'
-          AND it_id = '{$it_id_sql}'
-    ");
-
-    $item_order_price = (int)$item_sum['price'];
-    $item_order_qty = (int)$item_sum['qty'];
-
-    /*
-     * ct_send_cost는 금액이 아니라
-     * 0=선불, 1=착불, 2=무료 구분값.
-     */
-    switch ((int)$row['ct_send_cost']) {
-        case 1:
-            $shipping_method = '착불';
-            break;
-
-        case 2:
-            $shipping_method = '무료';
-            break;
-
-        default:
-            $shipping_method = '선불';
-            break;
+    if (!isset($new_delivery_cache)) {
+        $new_delivery_cache = array();
     }
 
-    $shipping_amount = 0;
+    $delivery_cache_key =
+        $row['od_id'] . '|' . $row_brand_id;
+
+    if (
+        $row_brand_id !== '' &&
+        !isset($new_delivery_cache[$delivery_cache_key])
+    ) {
+        $receiver_addr_for_shipping = trim(
+            $row['od_b_addr1'] . ' ' .
+            $row['od_b_addr2'] . ' ' .
+            $row['od_b_addr3']
+        );
+
+        $receiver_zip_for_shipping =
+            (string)$row['od_b_zip1'] .
+            (string)$row['od_b_zip2'];
+
+        $new_delivery_cache[$delivery_cache_key] =
+            csv_new_delivery_order_brand(
+                $row['od_id'],
+                $row_brand_id,
+                $receiver_addr_for_shipping,
+                $receiver_zip_for_shipping
+            );
+    }
+
+    $delivery_calc =
+        ($row_brand_id !== '' && isset($new_delivery_cache[$delivery_cache_key]))
+        ? $new_delivery_cache[$delivery_cache_key]
+        : null;
+
+    $row_shipping_amount = 0;
+    $shipping_method = '무료';
     $shipping_type = '';
-    $use_custom_delivery = false;
 
-    /*
-     * 새 배송관리에서 이 상품에 직접 적용된 배송조건 확인.
-     *
-     * 중요:
-     * 기존 영카트의 ct_send_cost / it_sc_type보다
-     * donuts_delivery_product_settings에 지정된 조건을 우선합니다.
-     */
-    if (!empty($brand['brand_id'])) {
+    if ($delivery_calc) {
+        $row_shipping_amount =
+            isset($delivery_calc['item_charges'][$row['it_id']])
+            ? (int)$delivery_calc['item_charges'][$row['it_id']]
+            : 0;
 
-        $brand_id_sql2 = sql_real_escape_string($member['mb_id']);
+        $shipping_method =
+            isset($delivery_calc['item_methods'][$row['it_id']])
+            ? $delivery_calc['item_methods'][$row['it_id']]
+            : ($row_shipping_amount > 0 ? '선불' : '무료');
 
-        $custom_delivery = sql_fetch("
-            SELECT
-                ps.condition_id,
-                c.dc_name,
-                c.dc_type,
-                c.dc_price,
-                c.dc_minimum,
-                c.dc_qty
-            FROM donuts_delivery_product_settings ps
-            INNER JOIN donuts_delivery_conditions c
-                ON c.dc_id = ps.condition_id
-               AND c.brand_id = ps.brand_id
-            WHERE ps.brand_id = '{$brand_id_sql2}'
-              AND ps.it_id = '{$it_id_sql}'
-            LIMIT 1
-        ", false);
-
-        if (!empty($custom_delivery['condition_id'])) {
-
-            $use_custom_delivery = true;
-
-            $dc_type = isset($custom_delivery['dc_type'])
-                ? trim($custom_delivery['dc_type'])
-                : '';
-
-            $dc_price = isset($custom_delivery['dc_price'])
-                ? (int)$custom_delivery['dc_price']
-                : 0;
-
-            $dc_minimum = isset($custom_delivery['dc_minimum'])
-                ? (int)$custom_delivery['dc_minimum']
-                : 0;
-
-            $dc_qty = isset($custom_delivery['dc_qty'])
-                ? max(1, (int)$custom_delivery['dc_qty'])
-                : 1;
-
-            $shipping_type = !empty($custom_delivery['dc_name'])
-                ? $custom_delivery['dc_name']
-                : '배송조건';
-
-            switch ($dc_type) {
-
-                case 'paid':
-                    // 유료: 주문금액과 관계없이 설정 배송비 고정 부과
-                    $shipping_amount = $dc_price;
-                    $shipping_method = '선불';
-                    break;
-
-                case 'conditional':
-                    // 조건부 무료: 기준금액 이상 무료
-                    if ($dc_minimum > 0 && $item_order_price >= $dc_minimum) {
-                        $shipping_amount = 0;
-                        $shipping_method = '무료';
-                    } else {
-                        $shipping_amount = $dc_price;
-                        $shipping_method = '선불';
-                    }
-                    break;
-
-                case 'free':
-                    $shipping_amount = 0;
-                    $shipping_method = '무료';
-                    break;
-
-                case 'quantity':
-                    $shipping_amount =
-                        $dc_price *
-                        (int)ceil($item_order_qty / $dc_qty);
-                    $shipping_method = '선불';
-                    break;
-
-                case 'amount_range':
-                    /*
-                     * 금액 구간별 배송비
-                     */
-                    $range_result = sql_query("
-                        SELECT min_amount, max_amount, dr_price
-                        FROM donuts_delivery_condition_ranges
-                        WHERE dc_id = '" . (int)$custom_delivery['condition_id'] . "'
-                        ORDER BY min_amount ASC
-                    ", false);
-
-                    $range_matched = false;
-
-                    if ($range_result) {
-                        while ($range = sql_fetch_array($range_result)) {
-                            $min_amount = (int)$range['min_amount'];
-
-                            $max_amount =
-                                ($range['max_amount'] === '' || $range['max_amount'] === null)
-                                ? null
-                                : (int)$range['max_amount'];
-
-                            if (
-                                $item_order_price >= $min_amount &&
-                                ($max_amount === null || $item_order_price < $max_amount)
-                            ) {
-                                $shipping_amount = (int)$range['dr_price'];
-                                $range_matched = true;
-                                break;
-                            }
-                        }
-                    }
-
-                    if (!$range_matched) {
-                        $shipping_amount = 0;
-                    }
-
-                    $shipping_method =
-                        $shipping_amount > 0
-                        ? '선불'
-                        : '무료';
-                    break;
-
-                default:
-                    /*
-                     * 알 수 없는 타입이면 아래 기존 영카트 배송비 계산으로 fallback.
-                     */
-                    $use_custom_delivery = false;
-                    break;
-            }
-        }
-    }
-
-    /*
-     * 새 배송관리 조건이 없는 상품만 기존 영카트 배송설정을 사용.
-     */
-    if (!$use_custom_delivery) {
-
-        $it_sc_type = (int)$row['it_sc_type'];
-
-        switch ($it_sc_type) {
-
-            case 1:
-                $shipping_amount = 0;
-                $shipping_method = '무료';
-                $shipping_type = '무료배송';
-                break;
-
-            case 2:
-                if ($item_order_price >= (int)$row['it_sc_minimum']) {
-                    $shipping_amount = 0;
-                    $shipping_method = '무료';
-                } else {
-                    $shipping_amount = (int)$row['it_sc_price'];
-                }
-                $shipping_type = '조건부 무료배송';
-                break;
-
-            case 3:
-                $shipping_amount = (int)$row['it_sc_price'];
-                $shipping_method = '선불';
-                $shipping_type = '유료배송';
-                break;
-
-            case 4:
-                $sc_qty = max(1, (int)$row['it_sc_qty']);
-
-                $shipping_amount =
-                    (int)$row['it_sc_price'] *
-                    (int)ceil($item_order_qty / $sc_qty);
-
-                $shipping_method = '선불';
-                $shipping_type = '수량별 배송비';
-                break;
-
-            case 0:
-            default:
-
-                if (!empty($brand['brand_id'])) {
-
-                    $shipping_amount = csv_brand_send_cost(
-                        $brand_settings,
-                        $item_order_price
-                    );
-
-                    $brand_case = isset($brand_settings['de_send_cost_case'])
-                        ? $brand_settings['de_send_cost_case']
-                        : '';
-
-                    if ($brand_case === '무료' || $shipping_amount <= 0) {
-                        $shipping_method = '무료';
-                        $shipping_type = '브랜드 기본 - 무료배송';
-                    } else {
-                        $shipping_method = '선불';
-                        $shipping_type = '브랜드 기본 - 금액별차등';
-                    }
-
-                } else {
-
-                    $shipping_amount =
-                        (int)$row['od_send_cost'] +
-                        (int)$row['od_send_cost2'];
-
-                    $shipping_type = '쇼핑몰 기본설정';
-                }
-
-                break;
-        }
+        $shipping_type =
+            isset($delivery_calc['item_types'][$row['it_id']])
+            ? $delivery_calc['item_types'][$row['it_id']]
+            : '배송관리 정책';
 
         /*
-         * 기존 영카트 조건을 사용할 때만 ct_send_cost=2를 무료로 인정.
-         *
-         * 새 배송관리에서 paid 3000원을 지정한 상품은
-         * 과거 주문의 ct_send_cost=2 값 때문에 0원으로 덮어쓰지 않습니다.
+         * 같은 상품의 옵션행에는 배송비를 한 번만 출력.
          */
-        if ((int)$row['ct_send_cost'] === 2) {
-            $shipping_amount = 0;
-            $shipping_method = '무료';
+        $shipping_key = $row['od_id'] . '|' . $row_brand_id . '|' . $row['it_id'];
+
+        if (isset($shipping_written[$shipping_key])) {
+            $row_shipping_amount = 0;
+        } else {
+            $shipping_written[$shipping_key] = true;
         }
-    }
 
-    /*
-     * 동일 상품의 여러 옵션행에 배송비 중복 출력 방지.
-     */
-    $shipping_key = $row['od_id'] . '|' . $row['it_id'];
-
-    if (isset($shipping_written[$shipping_key])) {
-        $row_shipping_amount = 0;
     } else {
-        $shipping_written[$shipping_key] = true;
-        $row_shipping_amount = $shipping_amount;
+        /*
+         * 브랜드 정보가 없는 예외 행은 기존 주문 저장 배송비를 fallback.
+         */
+        $shipping_key = $row['od_id'] . '|fallback';
+
+        if (!isset($shipping_written[$shipping_key])) {
+            $shipping_written[$shipping_key] = true;
+            $row_shipping_amount =
+                (int)$row['od_send_cost'] +
+                (int)$row['od_send_cost2'];
+        }
+
+        $shipping_method =
+            $row_shipping_amount > 0
+            ? '선불'
+            : '무료';
+
+        $shipping_type = '기존 주문 배송비';
     }
 
     /*
@@ -742,13 +1020,12 @@ while ($row = sql_fetch_array($result)) {
         $row_shipping_amount,
         $shipping_method,
         $shipping_type,
+        ($delivery_calc && isset($delivery_calc['item_groups'][$row['it_id']]))
+            ? $delivery_calc['item_groups'][$row['it_id']]
+            : '',
 
         $row['od_status'],
         $row['od_settle_case'],
-
-        $row['ct_delivery_company'],
-        $row['ct_invoice'],
-        $row['ct_invoice_time'],
 
         $settle_price,
         $settle_date

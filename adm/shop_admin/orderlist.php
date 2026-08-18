@@ -2,218 +2,9 @@
 $sub_menu = '400400';
 include_once('./_common.php');
 include_once(G5_LIB_PATH . '/donuts_delivery.lib.php');
+include_once(G5_LIB_PATH . '/donuts_delivery_policy.lib.php');
 
 donuts_delivery_install();
-
-/*
- * 브랜드 배송관리 기준 주문 배송비 계산
- * - donuts_delivery_product_settings에 적용된 배송조건을 최우선 사용
- * - paid 3,000원이 지정된 상품이면 기존 od_send_cost/ct_send_cost 값과 무관하게 3,000원 적용
- * - 묶음배송 그룹은 MIN/MAX 규칙 적용
- */
-if (!function_exists('donuts_admin_direct_delivery_calc')) {
-    function donuts_admin_direct_delivery_calc($od_id, $brand_id)
-    {
-        global $g5;
-
-        $result_data = array(
-            'item_total' => 0,
-            'shipping_total' => 0,
-            'item_fees' => array()
-        );
-
-        $od_id_sql = sql_real_escape_string($od_id);
-        $brand_id = trim((string)$brand_id);
-        $brand_id_sql = sql_real_escape_string($brand_id);
-
-        if ($od_id_sql === '' || $brand_id_sql === '') {
-            return $result_data;
-        }
-
-        // 기본 배송조건
-        $default_condition = array();
-        $default_result = sql_query("
-            SELECT *
-            FROM donuts_delivery_conditions
-            WHERE brand_id = '{$brand_id_sql}'
-              AND is_default = 1
-              AND use_yn = 'Y'
-            ORDER BY dc_id DESC
-            LIMIT 1
-        ", false);
-
-        if ($default_result) {
-            $default_condition = sql_fetch_array($default_result);
-        }
-
-        $sql = "
-            SELECT
-                c.it_id,
-                c.ct_qty,
-                c.ct_price,
-                c.io_type,
-                c.io_price,
-                ps.condition_id,
-                ps.group_id,
-                dc.dc_id,
-                dc.dc_name,
-                dc.dc_type,
-                dc.dc_price,
-                dc.dc_minimum,
-                dc.dc_qty,
-                dg.dg_name,
-                dg.calc_method
-            FROM {$g5['g5_shop_cart_table']} c
-            INNER JOIN {$g5['g5_shop_item_table']} i
-                ON c.it_id = i.it_id
-            LEFT JOIN donuts_delivery_product_settings ps
-                ON ps.brand_id = '{$brand_id_sql}'
-               AND ps.it_id = c.it_id
-            LEFT JOIN donuts_delivery_conditions dc
-                ON dc.dc_id = ps.condition_id
-               AND dc.brand_id = '{$brand_id_sql}'
-               AND dc.use_yn = 'Y'
-            LEFT JOIN donuts_delivery_groups dg
-                ON dg.dg_id = ps.group_id
-               AND dg.brand_id = '{$brand_id_sql}'
-               AND dg.use_yn = 'Y'
-            WHERE c.od_id = '{$od_id_sql}'
-              AND TRIM(i.it_brand) = '{$brand_id_sql}'
-            ORDER BY c.ct_id ASC
-        ";
-
-        $query = sql_query($sql, false);
-        if (!$query) {
-            return $result_data;
-        }
-
-        $items = array();
-
-        while ($row = sql_fetch_array($query)) {
-            $it_id = $row['it_id'];
-
-            if (!isset($items[$it_id])) {
-                $condition = !empty($row['dc_id']) ? $row : $default_condition;
-
-                $items[$it_id] = array(
-                    'amount' => 0,
-                    'qty' => 0,
-                    'condition' => $condition,
-                    'group_id' => !empty($row['group_id']) ? (int)$row['group_id'] : 0,
-                    'calc_method' => !empty($row['calc_method']) ? strtoupper($row['calc_method']) : 'MAX'
-                );
-            }
-
-            if ((int)$row['io_type'] === 1) {
-                $line = (int)$row['io_price'] * (int)$row['ct_qty'];
-            } else {
-                $line = ((int)$row['ct_price'] + (int)$row['io_price']) * (int)$row['ct_qty'];
-            }
-
-            $items[$it_id]['amount'] += $line;
-            $items[$it_id]['qty'] += (int)$row['ct_qty'];
-            $result_data['item_total'] += $line;
-        }
-
-        $groups = array();
-
-        foreach ($items as $it_id => $item) {
-            $condition = $item['condition'];
-            $fee = 0;
-
-            if (!empty($condition)) {
-                $type = isset($condition['dc_type']) ? trim($condition['dc_type']) : 'conditional';
-                $price = isset($condition['dc_price']) ? (int)$condition['dc_price'] : 0;
-                $minimum = isset($condition['dc_minimum']) ? (int)$condition['dc_minimum'] : 0;
-                $qty_unit = max(1, isset($condition['dc_qty']) ? (int)$condition['dc_qty'] : 1);
-
-                switch ($type) {
-                    case 'paid':
-                        $fee = max(0, $price);
-                        break;
-
-                    case 'free':
-                        $fee = 0;
-                        break;
-
-                    case 'quantity':
-                        $fee = max(0, $price) * (int)ceil(max(0, $item['qty']) / $qty_unit);
-                        break;
-
-                    case 'amount_range':
-                        $dc_id = isset($condition['dc_id']) ? (int)$condition['dc_id'] : 0;
-                        if ($dc_id > 0) {
-                            $range_result = sql_query("
-                                SELECT min_amount, max_amount, dr_price
-                                FROM donuts_delivery_condition_ranges
-                                WHERE dc_id = '{$dc_id}'
-                                ORDER BY sort_order, dr_id
-                            ", false);
-
-                            if ($range_result) {
-                                while ($range = sql_fetch_array($range_result)) {
-                                    $min = (int)$range['min_amount'];
-                                    $max = ($range['max_amount'] === null || $range['max_amount'] === '')
-                                        ? null
-                                        : (int)$range['max_amount'];
-
-                                    if (
-                                        $item['amount'] >= $min &&
-                                        ($max === null || $item['amount'] < $max)
-                                    ) {
-                                        $fee = max(0, (int)$range['dr_price']);
-                                        break;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-
-                    case 'conditional':
-                    default:
-                        $fee = ($minimum > 0 && $item['amount'] >= $minimum)
-                            ? 0
-                            : max(0, $price);
-                        break;
-                }
-            }
-
-            $result_data['item_fees'][$it_id] = $fee;
-
-            if ($item['group_id'] > 0) {
-                $gid = $item['group_id'];
-
-                if (!isset($groups[$gid])) {
-                    $groups[$gid] = array(
-                        'method' => $item['calc_method'] === 'MIN' ? 'MIN' : 'MAX',
-                        'fees' => array()
-                    );
-                }
-
-                $groups[$gid]['fees'][] = $fee;
-            } else {
-                $result_data['shipping_total'] += $fee;
-            }
-        }
-
-        foreach ($groups as $group) {
-            if (empty($group['fees'])) {
-                continue;
-            }
-
-            if ($group['method'] === 'MIN') {
-                $result_data['shipping_total'] += min($group['fees']);
-            } else {
-                $result_data['shipping_total'] += max($group['fees']);
-            }
-        }
-
-        $result_data['shipping_total'] = max(0, (int)$result_data['shipping_total']);
-
-        return $result_data;
-    }
-}
-
 
 auth_check_menu($auth, $sub_menu, "r");
 
@@ -541,15 +332,50 @@ if (function_exists('pg_setting_check')) {
             <tbody>
                 <?php
                 for ($i = 0; $row = sql_fetch_array($result); $i++) {
-                    // 브랜드 계정은 새 배송관리 규칙으로 상품금액/배송비를 다시 계산
+                    // 현재 배송관리 정책 기준으로 상품금액/배송비 재계산
                     $brand_delivery = null;
-                    $display_order_total = $row['od_cart_price'] + $row['od_send_cost'] + $row['od_send_cost2'];
-                    $display_shipping_total = $row['od_send_cost'] + $row['od_send_cost2'];
+
+                    $receiver_addr_for_shipping = trim(
+                        $row['od_b_addr1'].' '.
+                        $row['od_b_addr2'].' '.
+                        $row['od_b_addr3']
+                    );
+
+                    $receiver_zip_for_shipping =
+                        (string)$row['od_b_zip1'].
+                        (string)$row['od_b_zip2'];
 
                     if (!empty($brand['brand_id'])) {
-                        $brand_delivery = donuts_admin_direct_delivery_calc($row['od_id'], $member['mb_id']);
-                        $display_shipping_total = (int)$brand_delivery['shipping_total'];
-                        $display_order_total = (int)$brand_delivery['item_total'] + $display_shipping_total;
+                        // 브랜드 계정은 자기 브랜드 상품/배송비만 표시
+                        $brand_delivery = donuts_delivery_policy_calc_by_cart_id(
+                            $row['od_id'],
+                            $member['mb_id'],
+                            $receiver_addr_for_shipping,
+                            $receiver_zip_for_shipping
+                        );
+                    } else {
+                        // 최고관리자는 주문 안의 모든 브랜드 배송정책을 합산
+                        $brand_delivery = donuts_delivery_policy_calc_all_brands_by_cart_id(
+                            $row['od_id'],
+                            $receiver_addr_for_shipping,
+                            $receiver_zip_for_shipping
+                        );
+                    }
+
+                    $display_shipping_total = (int)$brand_delivery['shipping_total'];
+                    $display_order_total =
+                        (int)$brand_delivery['item_total'] +
+                        $display_shipping_total;
+
+                    // 배송정책 계산 결과가 비어 있으면 기존 주문금액 fallback
+                    if ((int)$brand_delivery['item_total'] <= 0) {
+                        $display_order_total =
+                            (int)$row['od_cart_price'] +
+                            (int)$row['od_send_cost'] +
+                            (int)$row['od_send_cost2'];
+                        $display_shipping_total =
+                            (int)$row['od_send_cost'] +
+                            (int)$row['od_send_cost2'];
                     }
 
                     // 결제 수단

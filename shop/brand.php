@@ -39,93 +39,47 @@ if (isset($sort) && !in_array($sort, array('it_name', 'it_sum_qty', 'it_price', 
     $sort = '';
 }
 
-if (G5_IS_MOBILE) {
-    include_once(G5_MSHOP_PATH . '/list.php');
-    return;
-}
-
-// 테마에 list.php 있으면 include
-if (defined('G5_THEME_SHOP_PATH')) {
-    $theme_list_file = G5_THEME_SHOP_PATH . '/list.php';
-    if (is_file($theme_list_file)) {
-        include_once($theme_list_file);
-        return;
-    }
-    unset($theme_list_file);
-}
-
 // URL로 전달된 브랜드 ID가 donuts_brand 테이블에 실제로 등록되어 있는지 확인
-$sql = " select brand_id from donuts_brand where brand_id = '" . sql_real_escape_string($brand_id) . "' limit 1 ";
+$sql = " select b.brand_id, c.brand_name
+            from donuts_brand as b
+            left join donuts_brand_config as c on c.brand_id collate utf8mb4_general_ci = b.brand_id
+            where b.brand_id = '" . sql_real_escape_string($brand_id) . "'
+            limit 1 ";
 
 $brand = sql_fetch($sql);
 
 if (!isset($brand['brand_id']) || $brand['brand_id'] === '')
     alert('등록된 브랜드가 없습니다.');
 
-// 본인인증, 성인인증체크
-if (!$is_admin && $config['cf_cert_use']) {
-    $msg = shop_member_cert_check($ca_id, 'list');
-    if ($msg)
-        alert($msg, G5_SHOP_URL);
-}
+// 페이지 제목 용도로만 사용
+$g5['title'] = !empty($brand['brand_name']) ? $brand['brand_name'] . ' 상품리스트' : $brand['brand_id'] . ' 상품리스트';
 
-$g5['title'] = $ca['ca_name'] . ' 상품리스트';
-
-if ($ca['ca_include_head'] && is_include_path_check($ca['ca_include_head']))
-    @include_once($ca['ca_include_head']);
-else
-    include_once(G5_SHOP_PATH . '/_head.php');
+include_once(G5_SHOP_PATH . '/_head.php');
 
 // 스킨경로
 $skin_dir = G5_SHOP_SKIN_PATH;
 
-if ($ca['ca_skin_dir']) {
-    if (preg_match('#^theme/(.+)$#', $ca['ca_skin_dir'], $match))
-        $skin_dir = G5_THEME_PATH . '/' . G5_SKIN_DIR . '/shop/' . $match[1];
-    else
-        $skin_dir = G5_PATH . '/' . G5_SKIN_DIR . '/shop/' . $ca['ca_skin_dir'];
-
-    if (is_dir($skin_dir)) {
-        $skin_file = $skin_dir . '/' . $ca['ca_skin'];
-
-        if (!is_file($skin_file))
-            $skin_dir = G5_SHOP_SKIN_PATH;
-    } else {
-        $skin_dir = G5_SHOP_SKIN_PATH;
-    }
-}
+// 브랜드 상품 목록 출력 설정
+$list_mod = 2;
+$list_row = 4;
+$list_img_width = 400;
+$list_img_height = 600;
 
 define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
-
-if ($is_admin)
-    echo '<div class="sct_admin"><a href="' . G5_ADMIN_URL . '/shop_admin/categoryform.php?w=u&amp;ca_id=' . $ca_id . '" class="btn_admin btn"><span class="sound_only">분류 관리</span><i class="fa fa-cog fa-spin fa-fw"></i></a></div>';
 ?>
 
 <script>
-    var itemlist_ca_id = "<?php echo $ca_id; ?>";
+    // 브랜드별 상품 목록 보기 방식을 구분하는 쿠키 키로 사용
+    // shop.list.js 호환을 위해 기존 변수명 유지
+    const itemlist_ca_id = <?php echo json_encode($brand['brand_id'], JSON_UNESCAPED_UNICODE); ?>;
 </script>
-<script src="<?php echo G5_JS_URL; ?>/shop.list.js"></script>
 
-<!-- 브레드 크럼블 -->
-<?php
-$nav_skin = $skin_dir . '/navigation.skin.php';
-if (!is_file($nav_skin))
-    $nav_skin = G5_SHOP_SKIN_PATH . '/navigation.skin.php';
-include $nav_skin;
-?>
+<script src="<?php echo G5_JS_URL; ?>/shop.list.js"></script>
 
 <!-- 상품 목록 시작 { -->
 <div id="sct">
 
     <?php
-    // 상단 HTML
-    echo '<div id="sct_hhtml">' . conv_content($ca['ca_head_html'], 1) . '</div>';
-
-    // $cate_skin = $skin_dir . '/listcategory.skin.php';
-    // if (!is_file($cate_skin))
-    //     $cate_skin = G5_SHOP_SKIN_PATH . '/listcategory.skin.php';
-    // include $cate_skin;
-
     // 상품 출력순서가 있다면
     if ($sort != "")
         $order_by = $sort . ' ' . $sortodr . ' , it_order, it_id desc';
@@ -143,12 +97,8 @@ include $nav_skin;
     // 판매 중인 상품만 조회
     $count_where[] = " it_use = '1' ";
 
-    // 현재 카테고리에 포함된 상품 조회
-    $count_where[] = " (
-    ca_id like '{$ca['ca_id']}%'
-    or ca_id2 like '{$ca['ca_id']}%'
-    or ca_id3 like '{$ca['ca_id']}%'
-    ) ";
+    // 현재 브랜드에 등록된 상품 조회
+    $count_where[] = " it_brand = '" . sql_real_escape_string($brand['brand_id']) . "' ";
 
     // 상품 종류 필터 SQL
     $item_type_conditions = array();
@@ -189,7 +139,7 @@ include $nav_skin;
     $total_count = isset($count_row['cnt']) ? (int) $count_row['cnt'] : 0;
 
     // 리스트 스킨
-    $skin_file = is_include_path_check($skin_dir . '/' . $ca['ca_skin']) ? $skin_dir . '/' . $ca['ca_skin'] : $skin_dir . '/list.10.skin.php';
+    $skin_file = $skin_dir . '/brand.10.skin.php';
 
     if (file_exists($skin_file)) {
 
@@ -226,8 +176,6 @@ include $nav_skin;
             </div>
         </section>
 
-
-
     <?php
         // 상품 보기 타입 변경 버튼
         $sub_skin = $skin_dir . '/list.sub.skin.php';
@@ -236,25 +184,24 @@ include $nav_skin;
         include $sub_skin;
         echo '</div>';
 
-        // 총몇개 = 한줄에 몇개 * 몇줄
-        $items = $ca['ca_list_mod'] * $ca['ca_list_row'];
+        // 페이지 당 상품 수 
+        $items =  $list_mod * $list_row;
+
         // 페이지가 없으면 첫 페이지 (1 페이지)
         if ($page < 1)
             $page = 1;
-        // 시작 레코드 구함
+
+        // 시작 레코드
         $from_record = ($page - 1) * $items;
 
         $list = new item_list(
             $skin_file,
-            $ca['ca_list_mod'],
-            $ca['ca_list_row'],
-            $ca['ca_img_width'],
-            $ca['ca_img_height']
+            $list_mod,
+            $list_row,
+            $list_img_width,
+            $list_img_height
         );
 
-        $list->set_category($ca['ca_id'], 1);
-        $list->set_category($ca['ca_id'], 2);
-        $list->set_category($ca['ca_id'], 3);
         $list->set_is_page(true);
         $list->set_order_by($order_by);
         $list->set_from_record($from_record);
@@ -267,41 +214,30 @@ include $nav_skin;
         $list->set_view('it_icon', true);
         $list->set_view('sns', true);
 
-        // 가격 필터 또는 상품 종류 필터가 있으면 직접 만든 상품 SQL 사용
-        if ($price_where || $item_type_where) {
-            $list_where = array();
+        // 현재 브랜드 상품을 조회하는 SQL 조건
+        $list_where = array();
 
-            $list_where[] = " it_use = '1' ";
+        $list_where[] = " it_use = '1' ";
 
-            $list_where[] = " (
-        ca_id like '{$ca['ca_id']}%'
-        or ca_id2 like '{$ca['ca_id']}%'
-        or ca_id3 like '{$ca['ca_id']}%'
-        ) ";
+        $list_where[] = " it_brand = '" . sql_real_escape_string($brand['brand_id']) . "' ";
 
-            if ($item_type_where) {
-                $list_where[] = $item_type_where;
-            }
-
-            if ($price_where) {
-                $list_where[] = $price_where;
-            }
-
-            $list_sql = " select *
-                  from {$g5['g5_shop_item_table']}
-                  where " . implode(' and ', $list_where) . "
-                  order by {$order_by}
-                  limit {$from_record}, {$items} ";
-
-            $list->set_query($list_sql);
+        if ($item_type_where) {
+            $list_where[] = $item_type_where;
         }
+
+        if ($price_where) {
+            $list_where[] = $price_where;
+        }
+
+        $list_sql = " select *
+                      from {$g5['g5_shop_item_table']}
+                      where " . implode(' and ', $list_where) . "
+                      order by {$order_by}
+                      limit {$from_record}, {$items} ";
+
+        $list->set_query($list_sql);
 
         echo $list->run();
-
-        // 직접 만든 SQL을 사용하지 않았을 때만 item_list에서 계산한 개수 사용
-        if (!$price_where && !$item_type_where) {
-            $total_count = $list->total_count;
-        }
 
         // 전체 페이지 계산
         $total_page = ceil($total_count / $items);
@@ -309,7 +245,7 @@ include $nav_skin;
         echo '<div class="sct_nofile">' . str_replace(G5_PATH . '/', '', $skin_file) . ' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</div>';
     }
 
-    $qstr1 = 'ca_id=' . $ca_id;
+    $qstr1 = 'brand_id=' . urlencode($brand['brand_id']);
     $qstr1 .= '&amp;sort=' . $sort . '&amp;sortodr=' . $sortodr;
 
     // 상품 종류 필터 유지
@@ -335,18 +271,9 @@ include $nav_skin;
         $total_page,
         $_SERVER['SCRIPT_NAME'] . '?' . $qstr1 . '&amp;page='
     );
-
-    // 하단 HTML
-    echo '<div id="sct_thtml">' . conv_content($ca['ca_tail_html'], 1) . '</div>';
-
     ?>
 </div>
 <!-- } 상품 목록 끝 -->
 
 <?php
-if ($ca['ca_include_tail'] && is_include_path_check($ca['ca_include_tail']))
-    @include_once($ca['ca_include_tail']);
-else
-    include_once(G5_SHOP_PATH . '/_tail.php');
-
-echo "\n<!-- {$ca['ca_skin']} -->\n";
+include_once(G5_SHOP_PATH . '/_tail.php');

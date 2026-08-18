@@ -10,6 +10,10 @@ if (!defined('_GNUBOARD_'))
         <input type="hidden" name="type" value="<?php echo (int) $this->type; ?>">
     <?php } ?>
 
+    <?php if (isset($brand['brand_id']) && $brand['brand_id'] !== '') { ?>
+        <input type="hidden" name="brand_id" value="<?php echo get_text($brand['brand_id']); ?>">
+    <?php } ?>
+
     <?php if ($this->ca_id) { ?>
         <input type="hidden" name="ca_id" value="<?php echo get_text($this->ca_id); ?>">
     <?php } ?>
@@ -279,4 +283,3 @@ if (!defined('_GNUBOARD_'))
         })
     });
 </script>
-
