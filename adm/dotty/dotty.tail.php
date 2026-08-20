@@ -15,7 +15,9 @@ $print_version = ($is_admin == 'super') ? 'Version ' . G5_GNUBOARD_VER : '';
     </p>
 </noscript>
 </div>
-<footer id="ft">
+
+</div>
+<footer id="ft" class="text-xs">
     <p>
         Copyright &copy; <?php echo $_SERVER['HTTP_HOST']; ?>. All rights reserved. <?php echo $print_version; ?><br>
         <button type="button" class="scroll_top !hidden"><span class="top_img"></span><span class="top_txt">TOP</span></button>

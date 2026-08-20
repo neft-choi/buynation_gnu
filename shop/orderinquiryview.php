@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+include_once(G5_LIB_PATH . '/donuts_delivery_policy.lib.php');
 
 $od_id = isset($_REQUEST['od_id']) ? safe_replace_regex($_REQUEST['od_id'], 'od_id') : '';
 
@@ -26,6 +27,37 @@ $od = sql_fetch($sql);
 if (! (isset($od['od_id']) && $od['od_id']) || (!$is_member && md5($od['od_id'].$od['od_time'].$od['od_ip']) != get_session('ss_orderview_uid'))) {
     alert("조회하실 주문서가 없습니다.", G5_SHOP_URL);
 }
+
+
+// 엑셀과 동일한 최종 배송비 정책으로 주문상세 출력
+$inquiry_receiver_addr = trim(
+    $od['od_b_addr1'].' '.
+    $od['od_b_addr2'].' '.
+    $od['od_b_addr3']
+);
+
+$inquiry_receiver_zip =
+    (string)$od['od_b_zip1'].
+    (string)$od['od_b_zip2'];
+
+$inquiry_delivery_quote = donuts_delivery_policy_quote(
+    $od['od_id'],
+    '',
+    $inquiry_receiver_addr,
+    $inquiry_receiver_zip,
+    false
+);
+
+$inquiry_shipping_total = (int)$inquiry_delivery_quote['shipping_total'];
+$inquiry_item_total = (int)$inquiry_delivery_quote['item_total'];
+
+if ($inquiry_item_total <= 0) {
+    $inquiry_item_total = (int)$od['od_cart_price'];
+    $inquiry_shipping_total =
+        (int)$od['od_send_cost'] +
+        (int)$od['od_send_cost2'];
+}
+
 
 // nicepay 로 주문하고 가상계좌인 경우
 if ($od['od_pg'] === 'nicepay' && $od['od_settle_case'] === '가상계좌' && $od['od_deposit_name']){
@@ -207,7 +239,7 @@ if($od['od_pg'] == 'lg') {
         <h2>결제/배송 정보</h2>
         <?php
         // 총계 = 주문상품금액합계 + 배송비 - 상품할인 - 결제할인 - 배송비할인
-        $tot_price = $od['od_cart_price'] + $od['od_send_cost'] + $od['od_send_cost2']
+        $tot_price = $inquiry_item_total + $inquiry_shipping_total
                         - $od['od_cart_coupon'] - $od['od_coupon'] - $od['od_send_coupon']
                         - $od['od_cancel_price'];
 
@@ -603,10 +635,10 @@ if($od['od_pg'] == 'lg') {
                 
             </li>
             <?php } ?>
-            <?php if ($od['od_send_cost'] > 0) { ?>
+            <?php if ($inquiry_shipping_total > 0) { ?>
             <li class="sod_bsk_dvr">
                 <span>배송비</span>
-                <strong><?php echo number_format($od['od_send_cost']); ?> 원</strong>
+                <strong><?php echo number_format($inquiry_shipping_total); ?> 원</strong>
                 
             </li>
             <?php } ?>
@@ -617,7 +649,7 @@ if($od['od_pg'] == 'lg') {
                 
             </li>
             <?php } ?>
-            <?php if ($od['od_send_cost2'] > 0) { ?>
+            <?php if (false) { ?>
             <li class="sod_bsk_dvr">
                 <span>추가배송비</span>
                 <strong><?php echo number_format($od['od_send_cost2']); ?> 원</strong>

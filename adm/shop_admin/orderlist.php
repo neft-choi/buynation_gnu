@@ -332,8 +332,8 @@ if (function_exists('pg_setting_check')) {
             <tbody>
                 <?php
                 for ($i = 0; $row = sql_fetch_array($result); $i++) {
-                    // 현재 배송관리 정책 기준으로 상품금액/배송비 재계산
-                    $brand_delivery = null;
+                    // 엑셀과 동일한 최종 배송비 정책으로 관리자 주문목록 계산
+                    $display_brand_id = !empty($brand['brand_id']) ? $member['mb_id'] : '';
 
                     $receiver_addr_for_shipping = trim(
                         $row['od_b_addr1'].' '.
@@ -345,37 +345,25 @@ if (function_exists('pg_setting_check')) {
                         (string)$row['od_b_zip1'].
                         (string)$row['od_b_zip2'];
 
-                    if (!empty($brand['brand_id'])) {
-                        // 브랜드 계정은 자기 브랜드 상품/배송비만 표시
-                        $brand_delivery = donuts_delivery_policy_calc_by_cart_id(
-                            $row['od_id'],
-                            $member['mb_id'],
-                            $receiver_addr_for_shipping,
-                            $receiver_zip_for_shipping
-                        );
-                    } else {
-                        // 최고관리자는 주문 안의 모든 브랜드 배송정책을 합산
-                        $brand_delivery = donuts_delivery_policy_calc_all_brands_by_cart_id(
-                            $row['od_id'],
-                            $receiver_addr_for_shipping,
-                            $receiver_zip_for_shipping
-                        );
-                    }
+                    $delivery_quote = donuts_delivery_policy_quote(
+                        $row['od_id'],
+                        $display_brand_id,
+                        $receiver_addr_for_shipping,
+                        $receiver_zip_for_shipping,
+                        false
+                    );
 
-                    $display_shipping_total = (int)$brand_delivery['shipping_total'];
-                    $display_order_total =
-                        (int)$brand_delivery['item_total'] +
-                        $display_shipping_total;
+                    $display_shipping_total = (int)$delivery_quote['shipping_total'];
+                    $display_order_total = (int)$delivery_quote['order_total'];
 
-                    // 배송정책 계산 결과가 비어 있으면 기존 주문금액 fallback
-                    if ((int)$brand_delivery['item_total'] <= 0) {
-                        $display_order_total =
-                            (int)$row['od_cart_price'] +
-                            (int)$row['od_send_cost'] +
-                            (int)$row['od_send_cost2'];
+                    if ((int)$delivery_quote['item_total'] <= 0) {
                         $display_shipping_total =
                             (int)$row['od_send_cost'] +
                             (int)$row['od_send_cost2'];
+
+                        $display_order_total =
+                            (int)$row['od_cart_price'] +
+                            $display_shipping_total;
                     }
 
                     // 결제 수단

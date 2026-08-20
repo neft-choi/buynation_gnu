@@ -43,57 +43,49 @@ if (! (isset($od['od_id']) && $od['od_id'])) {
 
 $od['mb_id'] = $od['mb_id'] ? $od['mb_id'] : "비회원";
 
-/*
- * 현재 배송관리 정책 기준 표시 배송비/주문금액
- */
-$orderform_receiver_addr_for_shipping = trim(
-    $od['od_b_addr1'].' '.
-    $od['od_b_addr2'].' '.
-    $od['od_b_addr3']
-);
-
-$orderform_receiver_zip_for_shipping =
-    (string)$od['od_b_zip1'].
-    (string)$od['od_b_zip2'];
-
-$orderform_brand_id = '';
-$orderform_brand = sql_fetch("
+// 엑셀과 동일한 최종 배송비 정책으로 주문상세 표시
+$orderform_brand_row = sql_fetch("
     SELECT brand_id
     FROM donuts_brand
     WHERE TRIM(brand_id) = '".sql_real_escape_string($member['mb_id'])."'
     LIMIT 1
 ");
 
-if (!empty($orderform_brand['brand_id'])) {
-    $orderform_brand_id = trim($orderform_brand['brand_id']);
+$orderform_brand_id = !empty($orderform_brand_row['brand_id'])
+    ? trim($orderform_brand_row['brand_id'])
+    : '';
 
-    $orderform_delivery_policy = donuts_delivery_policy_calc_by_cart_id(
-        $od['od_id'],
-        $orderform_brand_id,
-        $orderform_receiver_addr_for_shipping,
-        $orderform_receiver_zip_for_shipping
-    );
-} else {
-    $orderform_delivery_policy = donuts_delivery_policy_calc_all_brands_by_cart_id(
-        $od['od_id'],
-        $orderform_receiver_addr_for_shipping,
-        $orderform_receiver_zip_for_shipping
-    );
-}
+$orderform_receiver_addr = trim(
+    $od['od_b_addr1'].' '.
+    $od['od_b_addr2'].' '.
+    $od['od_b_addr3']
+);
 
-$orderform_policy_item_total = (int)$orderform_delivery_policy['item_total'];
-$orderform_policy_shipping_total = (int)$orderform_delivery_policy['shipping_total'];
+$orderform_receiver_zip =
+    (string)$od['od_b_zip1'].
+    (string)$od['od_b_zip2'];
+
+$orderform_delivery_quote = donuts_delivery_policy_quote(
+    $od['od_id'],
+    $orderform_brand_id,
+    $orderform_receiver_addr,
+    $orderform_receiver_zip,
+    false
+);
+
+$orderform_policy_item_total = (int)$orderform_delivery_quote['item_total'];
+$orderform_policy_shipping_total = (int)$orderform_delivery_quote['shipping_total'];
+$orderform_policy_order_total = (int)$orderform_delivery_quote['order_total'];
 
 if ($orderform_policy_item_total <= 0) {
     $orderform_policy_item_total = (int)$od['od_cart_price'];
     $orderform_policy_shipping_total =
         (int)$od['od_send_cost'] +
         (int)$od['od_send_cost2'];
+    $orderform_policy_order_total =
+        $orderform_policy_item_total +
+        $orderform_policy_shipping_total;
 }
-
-$orderform_policy_order_total =
-    $orderform_policy_item_total +
-    $orderform_policy_shipping_total;
 
 //------------------------------------------------------------------------------
 
@@ -700,7 +692,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                             <tr>
                                 <th scope="row"><label for="od_send_cost2">추가배송비</label></th>
                                 <td>
-                                    <input type="text" name="od_send_cost2" value="<?php echo 0; ?>" id="od_send_cost2" class="frm_input" size="10"> 원
+                                    <input type="text" name="od_send_cost2" value="0" id="od_send_cost2" class="frm_input" size="10"> 원
                                 </td>
                             </tr>
                             <?php

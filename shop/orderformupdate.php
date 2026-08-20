@@ -1,6 +1,7 @@
 <?php
 include_once('./_common.php');
 include_once(G5_LIB_PATH.'/mailer.lib.php');
+include_once(G5_LIB_PATH . '/donuts_delivery_policy.lib.php');
 
 //이니시스 lpay 요청으로 왔다면 $default['de_pg_service'] 값을 이니시스로 변경합니다.
 if( in_array($od_settle_case, array('lpay', 'inicis_kakaopay')) ){
@@ -218,7 +219,26 @@ if ((int)($row['od_price'] - $tot_cp_price) !== $i_price) {
 }
 
 // 배송비가 상이함
-$send_cost = get_sendcost($tmp_cart_id);
+$delivery_receiver_addr = trim(
+    (isset($od_b_addr1) ? $od_b_addr1 : '').' '.
+    (isset($od_b_addr2) ? $od_b_addr2 : '').' '.
+    (isset($od_b_addr3) ? $od_b_addr3 : '')
+);
+
+$delivery_receiver_zip = isset($od_b_zip)
+    ? preg_replace('/[^0-9]/', '', $od_b_zip)
+    : (
+        preg_replace('/[^0-9]/', '', isset($od_b_zip1) ? $od_b_zip1 : '') .
+        preg_replace('/[^0-9]/', '', isset($od_b_zip2) ? $od_b_zip2 : '')
+    );
+
+$send_cost = donuts_delivery_policy_final_shipping(
+    $tmp_cart_id,
+    '',
+    $delivery_receiver_addr,
+    $delivery_receiver_zip,
+    true
+);
 
 $tot_sc_cp_price = 0;
 if($is_member && $send_cost > 0) {
@@ -260,22 +280,9 @@ if ((int)($send_cost - $tot_sc_cp_price) !== (int)($i_send_cost - $i_send_coupon
     die("Error..");
 }
 
-// 추가배송비가 상이함
-$od_b_zip   = preg_replace('/[^0-9]/', '', $od_b_zip);
-$od_b_zip1  = substr($od_b_zip, 0, 3);
-$od_b_zip2  = substr($od_b_zip, 3);
-$zipcode = $od_b_zip;
-$sql = " select sc_id, sc_price from {$g5['g5_shop_sendcost_table']} where sc_zip1 <= '$zipcode' and sc_zip2 >= '$zipcode' ";
-$tmp = sql_fetch($sql);
-if(! (isset($tmp['sc_id']) && $tmp['sc_id']))
-    $send_cost2 = 0;
-else
-    $send_cost2 = (int) $tmp['sc_price'];
-
-if($send_cost2 !== $i_send_cost2){
-    if(function_exists('add_order_post_log')) add_order_post_log('추가배송비 최종 계산 Error...');
-    die("Error...");
-}
+// 지역 추가배송비는 donuts 배송정책의 최종 배송비에 이미 포함됨
+$send_cost2 = 0;
+$i_send_cost2 = 0;
 
 // 결제포인트가 상이함
 // 회원이면서 포인트사용이면
@@ -601,6 +608,11 @@ $od_b_addr_jibeon = preg_match("/^(N|R)$/", $od_b_addr_jibeon) ? $od_b_addr_jibe
 $od_memo          = clean_xss_tags($od_memo, 1, 1, 0, 0);
 $od_deposit_name  = clean_xss_tags($od_deposit_name);
 $od_tax_flag      = $default['de_tax_flag_use'];
+
+// 실제 주문 DB에도 현재 배송관리 정책 배송비를 저장
+$od_send_cost = (int)$send_cost;
+$od_send_cost2 = 0;
+
 
 // 주문서에 입력
 $sql = " insert {$g5['g5_shop_order_table']}

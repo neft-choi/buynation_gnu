@@ -383,7 +383,46 @@ function csv_new_delivery_condition_fee($condition, $item_amount, $item_qty)
     }
 }
 
-function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiver_zip)
+
+/*
+ * 같은 주문번호의 전체 상품금액.
+ *
+ * 브랜드 구분 없이 주문번호에 포함된 모든 상품을 합산합니다.
+ * 옵션 추가금액도 포함합니다.
+ *
+ * 묶음배송 조건부무료 / 금액구간 판정은 이 금액을 사용합니다.
+ */
+function csv_new_delivery_order_product_total($od_id)
+{
+    global $g5;
+
+    $od_id = trim((string)$od_id);
+
+    if ($od_id === '') {
+        return 0;
+    }
+
+    $od_id_sql = sql_real_escape_string($od_id);
+
+    $row = sql_fetch("
+        SELECT
+            SUM(
+                IF(
+                    io_type = 1,
+                    io_price * ct_qty,
+                    (ct_price + io_price) * ct_qty
+                )
+            ) AS total_price
+        FROM {$g5['g5_shop_cart_table']}
+        WHERE od_id = '{$od_id_sql}'
+    ");
+
+    return isset($row['total_price'])
+        ? max(0, (int)$row['total_price'])
+        : 0;
+}
+
+function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiver_zip, $order_product_total_override = null)
 {
     global $g5;
 
@@ -610,6 +649,9 @@ function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiv
 
         $items[$it_id] = array(
             'fee' => max(0, (int)$fee),
+            'amount' => $item_amount,
+            'qty' => $item_qty,
+            'condition' => $condition,
             'condition_name' => $condition_name,
             'group_id' => $group_id,
             'group_name' => $group_name,
@@ -621,6 +663,88 @@ function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiv
         $data['item_groups'][$it_id] = $group_name;
         $data['item_methods'][$it_id] = $fee > 0 ? '선불' : '무료';
     }
+
+    /*
+     * 묶음배송 무료조건/금액구간 판정용 주문총액.
+     *
+     * 중요:
+     * 브랜드별 상품합계가 아니라 "같은 주문번호의 모든 상품금액"을 사용합니다.
+     *
+     * 예)
+     * 상품 A 15,000원
+     * 상품 B 15,000원
+     * 묶음배송 30,000원 이상 무료
+     *
+     * => 주문번호 전체 상품금액 30,000원
+     * => 최종 배송비 0원
+     */
+    if ($order_product_total_override !== null) {
+        $order_product_total = max(0, (int)$order_product_total_override);
+    } else {
+        $order_product_total = csv_new_delivery_order_product_total($od_id);
+    }
+
+    /*
+     * 예외적으로 전체 주문금액 조회가 실패한 경우에만
+     * 현재 브랜드 상품금액 합계로 fallback 합니다.
+     */
+    if ($order_product_total <= 0) {
+        foreach ($items as $it_id => $item) {
+            $order_product_total += isset($item['amount'])
+                ? (int)$item['amount']
+                : 0;
+        }
+    }
+
+    /*
+     * 묶음배송 상품만 주문 전체 상품금액 기준으로 배송조건을 다시 계산합니다.
+     * paid/free/quantity는 금액 기준 여부와 관계없이 기존 규칙을 유지하고,
+     * conditional/amount_range는 주문번호의 모든 상품금액을 기준으로 계산됩니다.
+     */
+    foreach ($items as $it_id => &$item) {
+        if ((int)$item['group_id'] < 1 || empty($item['condition'])) {
+            continue;
+        }
+
+        $group_fee = csv_new_delivery_condition_fee(
+            $item['condition'],
+            $order_product_total,
+            isset($item['qty']) ? (int)$item['qty'] : 0
+        );
+
+        $group_condition_name = !empty($item['condition']['dc_name'])
+            ? $item['condition']['dc_name']
+            : '배송조건';
+
+        /*
+         * 지역 추가배송비도 최종 그룹 후보 배송비에 포함합니다.
+         */
+        $is_jeju_group = (
+            function_exists('mb_strpos') &&
+            mb_strpos((string)$receiver_addr, '제주') !== false
+        );
+
+        if (
+            $is_jeju_group &&
+            !empty($item['condition']['dc_jeju_use'])
+        ) {
+            $group_fee += max(0, (int)$item['condition']['dc_jeju_price']);
+            $group_condition_name .= ' + 제주추가';
+        } elseif (
+            !empty($item['condition']['dc_island_use']) &&
+            csv_new_delivery_is_island_zip($receiver_zip)
+        ) {
+            $group_fee += max(0, (int)$item['condition']['dc_island_price']);
+            $group_condition_name .= ' + 도서산간추가';
+        }
+
+        $item['fee'] = max(0, (int)$group_fee);
+        $item['condition_name'] = $group_condition_name;
+
+        $data['item_types'][$it_id] = $group_condition_name;
+        $data['item_methods'][$it_id] = $group_fee > 0 ? '선불' : '무료';
+    }
+    unset($item);
 
     /*
      * 개별배송 / 묶음배송 분리.
@@ -717,6 +841,424 @@ function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiv
     return $data;
 }
 
+/*
+ * 같은 주문번호의 최종 배송비 계산.
+ *
+ * 브랜드 계정:
+ *   현재 로그인 브랜드의 상품만 기준.
+ *
+ * 최고관리자:
+ *   주문번호에 포함된 각 브랜드 배송비를 계산한 뒤 합산.
+ *
+ * 묶음배송의 조건부무료/금액구간 판단은
+ * 브랜드 구분 없이 같은 주문번호의 모든 상품금액을 기준으로 계산됩니다.
+ */
+
+/*
+ * ============================================================
+ * 최종 배송비 전용 계산
+ * ============================================================
+ *
+ * 중요:
+ * 이 함수는 CSV의 '배송비' 컬럼이나 item_charges를 전혀 참조하지 않습니다.
+ *
+ * 오직 아래 데이터만 보고 최종 배송비를 새로 계산합니다.
+ * - 같은 주문번호의 상품가격/수량/옵션가격
+ * - donuts_delivery_product_settings
+ * - donuts_delivery_conditions
+ * - donuts_delivery_condition_ranges
+ * - donuts_delivery_groups
+ *
+ * 묶음배송 상품의 conditional / amount_range 기준금액은
+ * 같은 주문번호의 전체 상품가격 합계를 사용합니다.
+ */
+function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receiver_addr, $receiver_zip)
+{
+    global $g5;
+
+    $od_id = trim((string)$od_id);
+    $brand_id = trim((string)$brand_id);
+
+    if ($od_id === '') {
+        return 0;
+    }
+
+    $od_id_sql = sql_real_escape_string($od_id);
+
+    /*
+     * ==========================================================
+     * 최종 배송비는 반드시 "같은 주문번호"를 하나의 계산 단위로 처리
+     * ==========================================================
+     *
+     * 기존 배송비 컬럼은 사용하지 않습니다.
+     *
+     * 1. 같은 od_id의 상품을 전부 가져옴
+     * 2. 주문번호 전체 상품금액을 먼저 계산
+     * 3. 상품별 배송조건/묶음배송 설정 조회
+     * 4. 묶음배송 상품은 주문번호 전체 상품금액으로 조건 판단
+     * 5. 같은 묶음조건은 배송비 1회만 계산
+     */
+
+    $brand_where = '';
+
+    if ($brand_id !== '') {
+        $brand_id_sql = sql_real_escape_string($brand_id);
+        $brand_where = " AND TRIM(i.it_brand) = '{$brand_id_sql}' ";
+    }
+
+    $result = sql_query("
+        SELECT
+            c.it_id,
+            TRIM(i.it_brand) AS item_brand_id,
+            SUM(
+                IF(
+                    c.io_type = 1,
+                    c.io_price * c.ct_qty,
+                    (c.ct_price + c.io_price) * c.ct_qty
+                )
+            ) AS item_amount,
+            SUM(c.ct_qty) AS item_qty
+        FROM {$g5['g5_shop_cart_table']} c
+        INNER JOIN {$g5['g5_shop_item_table']} i
+            ON i.it_id = c.it_id
+        WHERE c.od_id = '{$od_id_sql}'
+        {$brand_where}
+        GROUP BY c.it_id, i.it_brand
+        ORDER BY MIN(c.ct_id)
+    ", false);
+
+    if (!$result) {
+        return 0;
+    }
+
+    $items = array();
+
+    while ($row = sql_fetch_array($result)) {
+        $it_id = trim((string)$row['it_id']);
+
+        if ($it_id === '') {
+            continue;
+        }
+
+        $items[] = array(
+            'it_id' => $it_id,
+            'brand_id' => trim((string)$row['item_brand_id']),
+            'amount' => (int)$row['item_amount'],
+            'qty' => (int)$row['item_qty']
+        );
+    }
+
+    if (empty($items)) {
+        return 0;
+    }
+
+    /*
+     * 브랜드 필터와 무관하게 무료배송 기준은
+     * 동일 주문번호 전체 상품금액으로 다시 구합니다.
+     */
+    $total_row = sql_fetch("
+        SELECT
+            SUM(
+                IF(
+                    io_type = 1,
+                    io_price * ct_qty,
+                    (ct_price + io_price) * ct_qty
+                )
+            ) AS total_amount
+        FROM {$g5['g5_shop_cart_table']}
+        WHERE od_id = '{$od_id_sql}'
+    ");
+
+    $order_total = isset($total_row['total_amount'])
+        ? (int)$total_row['total_amount']
+        : 0;
+
+    if ($order_total <= 0) {
+        foreach ($items as $tmp) {
+            $order_total += (int)$tmp['amount'];
+        }
+    }
+
+    $individual_total = 0;
+    $bundle_candidates = array();
+
+    foreach ($items as $item) {
+
+        $it_id = $item['it_id'];
+        $item_brand = $item['brand_id'];
+        $item_amount = (int)$item['amount'];
+        $item_qty = (int)$item['qty'];
+
+        $it_id_sql = sql_real_escape_string($it_id);
+        $item_brand_sql = sql_real_escape_string($item_brand);
+
+        /*
+         * 상품 배송 설정.
+         *
+         * 중요:
+         * dps_id / updated_at 같은 컬럼 존재 여부를 가정하지 않습니다.
+         * 이전 패치의 fallback SQL이 서버 스키마와 다르면 조회 자체가 실패할 수
+         * 있었기 때문에 이번에는 실제 필요한 컬럼만 사용합니다.
+         */
+        $setting = array();
+
+        if ($item_brand !== '') {
+            $sr = sql_query("
+                SELECT brand_id, condition_id, group_id
+                FROM donuts_delivery_product_settings
+                WHERE it_id = '{$it_id_sql}'
+                  AND brand_id = '{$item_brand_sql}'
+                LIMIT 1
+            ", false);
+
+            if ($sr) {
+                $setting = sql_fetch_array($sr);
+            }
+        }
+
+        if (empty($setting)) {
+            $sr = sql_query("
+                SELECT brand_id, condition_id, group_id
+                FROM donuts_delivery_product_settings
+                WHERE it_id = '{$it_id_sql}'
+                LIMIT 1
+            ", false);
+
+            if ($sr) {
+                $setting = sql_fetch_array($sr);
+            }
+        }
+
+        $setting_brand = !empty($setting['brand_id'])
+            ? trim((string)$setting['brand_id'])
+            : $item_brand;
+
+        $setting_brand_sql = sql_real_escape_string($setting_brand);
+
+        $condition_id = !empty($setting['condition_id'])
+            ? (int)$setting['condition_id']
+            : 0;
+
+        $group_id = !empty($setting['group_id'])
+            ? (int)$setting['group_id']
+            : 0;
+
+        /*
+         * 배송조건 조회.
+         */
+        $condition = array();
+
+        if ($condition_id > 0) {
+            $cr = sql_query("
+                SELECT *
+                FROM donuts_delivery_conditions
+                WHERE dc_id = '{$condition_id}'
+                  AND use_yn = 'Y'
+                LIMIT 1
+            ", false);
+
+            if ($cr) {
+                $condition = sql_fetch_array($cr);
+            }
+        }
+
+        if (empty($condition) && $setting_brand !== '') {
+            $cr = sql_query("
+                SELECT *
+                FROM donuts_delivery_conditions
+                WHERE brand_id = '{$setting_brand_sql}'
+                  AND is_default = 1
+                  AND use_yn = 'Y'
+                ORDER BY dc_id DESC
+                LIMIT 1
+            ", false);
+
+            if ($cr) {
+                $condition = sql_fetch_array($cr);
+            }
+        }
+
+        /*
+         * 묶음배송 그룹 조회.
+         */
+        $group = array();
+
+        if ($group_id > 0) {
+            $gr = sql_query("
+                SELECT *
+                FROM donuts_delivery_groups
+                WHERE dg_id = '{$group_id}'
+                  AND use_yn = 'Y'
+                LIMIT 1
+            ", false);
+
+            if ($gr) {
+                $group = sql_fetch_array($gr);
+            }
+
+            if (empty($group)) {
+                $group_id = 0;
+            }
+        }
+
+        /*
+         * ----------------------------------------------------------
+         * 묶음배송 판정
+         * ----------------------------------------------------------
+         *
+         * group_id가 정상적으로 존재하면 당연히 묶음배송.
+         *
+         * 추가로, 현재 운영 데이터처럼 상품 설정의 group_id가 CSV 조회에서
+         * 누락되어도 같은 주문번호 안에 2개 이상의 상품이 있고
+         * 같은 conditional/amount_range 조건을 사용하는 경우에는
+         * 같은 배송조건 자체를 묶음조건으로 취급합니다.
+         *
+         * 이것이 2026081809541739 케이스를 위한 핵심 수정입니다.
+         */
+        $is_bundle = ($group_id > 0);
+
+        $condition_type = !empty($condition['dc_type'])
+            ? trim((string)$condition['dc_type'])
+            : '';
+
+        if (
+            !$is_bundle &&
+            count($items) > 1 &&
+            in_array($condition_type, array('conditional', 'amount_range'), true)
+        ) {
+            $is_bundle = true;
+        }
+
+        /*
+         * 배송비 계산 기준 금액.
+         *
+         * 묶음배송이면 무조건 같은 주문번호 전체 상품금액.
+         */
+        $base_amount = $is_bundle
+            ? $order_total
+            : $item_amount;
+
+        if (!empty($condition)) {
+            $fee = csv_new_delivery_condition_fee(
+                $condition,
+                $base_amount,
+                $item_qty
+            );
+
+            $is_jeju = (
+                function_exists('mb_strpos') &&
+                mb_strpos((string)$receiver_addr, '제주') !== false
+            );
+
+            if ($is_jeju && !empty($condition['dc_jeju_use'])) {
+                $fee += max(0, (int)$condition['dc_jeju_price']);
+            } elseif (
+                !empty($condition['dc_island_use']) &&
+                csv_new_delivery_is_island_zip($receiver_zip)
+            ) {
+                $fee += max(0, (int)$condition['dc_island_price']);
+            }
+        } else {
+            /*
+             * 조건 테이블이 없는 경우만 브랜드 기본 배송비 fallback.
+             */
+            $bsr = sql_query("
+                SELECT *
+                FROM donuts_brand_settings
+                WHERE brand_id = '{$setting_brand_sql}'
+                LIMIT 1
+            ", false);
+
+            $brand_settings = $bsr
+                ? sql_fetch_array($bsr)
+                : array();
+
+            $fee = csv_brand_send_cost(
+                $brand_settings,
+                $base_amount
+            );
+        }
+
+        $fee = max(0, (int)$fee);
+
+        if (!$is_bundle) {
+            $individual_total += $fee;
+            continue;
+        }
+
+        /*
+         * 묶음배송 key.
+         *
+         * group_id가 있으면 실제 그룹 ID 사용.
+         * group_id가 조회되지 않은 운영 데이터는
+         * 같은 주문번호 + 브랜드 + 배송조건 ID를 하나의 묶음으로 처리.
+         */
+        if ($group_id > 0) {
+            $bundle_key =
+                $od_id . '|G|' .
+                $setting_brand . '|' .
+                $group_id;
+
+            $method = (
+                !empty($group['calc_method']) &&
+                strtoupper($group['calc_method']) === 'MIN'
+            ) ? 'MIN' : 'MAX';
+        } else {
+            $bundle_key =
+                $od_id . '|C|' .
+                $setting_brand . '|' .
+                $condition_id;
+
+            $method = 'MAX';
+        }
+
+        if (!isset($bundle_candidates[$bundle_key])) {
+            $bundle_candidates[$bundle_key] = array(
+                'method' => $method,
+                'fees' => array()
+            );
+        }
+
+        $bundle_candidates[$bundle_key]['fees'][] = $fee;
+    }
+
+    /*
+     * 같은 주문번호 안에서 묶음배송 그룹별 1회 부과.
+     */
+    $bundle_total = 0;
+
+    foreach ($bundle_candidates as $bundle) {
+        if (empty($bundle['fees'])) {
+            continue;
+        }
+
+        if ($bundle['method'] === 'MIN') {
+            $bundle_total += min($bundle['fees']);
+        } else {
+            $bundle_total += max($bundle['fees']);
+        }
+    }
+
+    return max(
+        0,
+        (int)$individual_total + (int)$bundle_total
+    );
+}
+
+function csv_new_delivery_final_order_shipping($od_id, $brand_id, $receiver_addr, $receiver_zip)
+{
+    /*
+     * 최종 배송비는 '배송비' 컬럼을 참조하지 않습니다.
+     * 상품가격 + 배송조건 + 묶음배송 그룹 조건만으로 별도 계산합니다.
+     */
+    return csv_final_shipping_from_products_and_groups(
+        $od_id,
+        $brand_id,
+        $receiver_addr,
+        $receiver_zip
+    );
+}
+
 /* CSV 헤더 */
 fputcsv($fp, array(
     '주문일시',
@@ -749,6 +1291,7 @@ fputcsv($fp, array(
     '배송비 결제구분',
     '배송비 유형',
     '묶음배송 그룹',
+    '최종 배송비',
     '주문상태',
     '결제수단',
     '정산금액',
@@ -815,6 +1358,7 @@ $result = sql_query($sql);
  */
 $shipping_written = array();
 $new_delivery_cache = array();
+$final_shipping_cache = array();
 
 while ($row = sql_fetch_array($result)) {
 
@@ -863,12 +1407,16 @@ while ($row = sql_fetch_array($result)) {
             (string)$row['od_b_zip1'] .
             (string)$row['od_b_zip2'];
 
+        $same_order_product_total_for_row =
+            csv_new_delivery_order_product_total($row['od_id']);
+
         $new_delivery_cache[$delivery_cache_key] =
             csv_new_delivery_order_brand(
                 $row['od_id'],
                 $row_brand_id,
                 $receiver_addr_for_shipping,
-                $receiver_zip_for_shipping
+                $receiver_zip_for_shipping,
+                $same_order_product_total_for_row
             );
     }
 
@@ -984,6 +1532,33 @@ while ($row = sql_fetch_array($result)) {
         (string)$row['od_b_zip1'] .
         (string)$row['od_b_zip2'];
 
+    /*
+     * 같은 주문번호의 모든 CSV 행에는 동일한 "최종 배송비"를 기록합니다.
+     *
+     * 브랜드 계정이면 해당 브랜드 기준,
+     * 최고관리자이면 주문번호 전체 브랜드의 배송비 합계 기준입니다.
+     */
+    $final_shipping_cache_key =
+        (string)$row['od_id'] . '|' .
+        (!empty($brand['brand_id']) ? (string)$member['mb_id'] : 'ALL');
+
+    if (!isset($final_shipping_cache[$final_shipping_cache_key])) {
+        $final_shipping_brand_id = !empty($brand['brand_id'])
+            ? trim((string)$member['mb_id'])
+            : '';
+
+        $final_shipping_cache[$final_shipping_cache_key] =
+            csv_new_delivery_final_order_shipping(
+                $row['od_id'],
+                $final_shipping_brand_id,
+                $receiver_addr,
+                $receiver_zip
+            );
+    }
+
+    $final_shipping_amount =
+        (int)$final_shipping_cache[$final_shipping_cache_key];
+
     fputcsv($fp, array(
         $row['od_time'],
         $row['od_id'],
@@ -1023,6 +1598,8 @@ while ($row = sql_fetch_array($result)) {
         ($delivery_calc && isset($delivery_calc['item_groups'][$row['it_id']]))
             ? $delivery_calc['item_groups'][$row['it_id']]
             : '',
+
+        $final_shipping_amount,
 
         $row['od_status'],
         $row['od_settle_case'],

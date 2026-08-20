@@ -695,6 +695,9 @@
   .\!ml-auto {
     margin-left: auto !important;
   }
+  .ml-0 {
+    margin-left: calc(var(--spacing) * 0);
+  }
   .ml-0\.5 {
     margin-left: calc(var(--spacing) * 0.5);
   }
@@ -2936,9 +2939,6 @@
   .text-blue-500 {
     color: var(--color-blue-500);
   }
-  .text-blue-600 {
-    color: var(--color-blue-600);
-  }
   .text-emerald-600 {
     color: var(--color-emerald-600);
   }
@@ -2974,9 +2974,6 @@
   }
   .text-orange-500 {
     color: var(--color-orange-500);
-  }
-  .text-orange-600 {
-    color: var(--color-orange-600);
   }
   .text-red-400 {
     color: var(--color-red-400);
@@ -3638,6 +3635,11 @@
   .pc\:ml-16 {
     @media (width >= 1200px) {
       margin-left: calc(var(--spacing) * 16);
+    }
+  }
+  .pc\:ml-59 {
+    @media (width >= 1200px) {
+      margin-left: calc(var(--spacing) * 59);
     }
   }
   .pc\:block {

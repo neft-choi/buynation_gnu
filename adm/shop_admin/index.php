@@ -1,6 +1,7 @@
 <?php
 $sub_menu = '400010';
 include_once('./_common.php');
+include_once(G5_LIB_PATH . '/donuts_delivery_policy.lib.php');
 
 $brand = sql_fetch("
     SELECT brand_id
@@ -42,146 +43,30 @@ if ($is_brand) {
     ";
 }
 
-
-/**
- * 대시보드 실제 데이터
- *
- * 매출:
- * - 결제 이후 상태(입금/준비/배송/완료)의 상품금액 기준
- * - 브랜드 계정은 g5_shop_item.it_brand = 로그인 아이디 상품만 합산
- * - 최고관리자는 전체 상품 합산
- *
- * 상품문의:
- * - 답변 전(iq_answer = '') 문의 수
- *
- * 사용후기:
- * - 미확인(is_confirm = 0) 후기 수
- */
-function get_dashboard_sale_sum($from_datetime, $to_datetime)
+// 배송관리 정책 기준 대시보드 합계
+function donuts_dashboard_order_quote($row)
 {
-    global $g5, $is_brand, $member;
+    global $member, $is_brand;
 
-    $brand_where = '';
+    $brand_id = $is_brand ? $member['mb_id'] : '';
 
-    if ($is_brand) {
-        $brand_id = sql_real_escape_string($member['mb_id']);
-        $brand_where = " AND i.it_brand = '{$brand_id}' ";
-    }
+    $addr = trim(
+        $row['od_b_addr1'].' '.
+        $row['od_b_addr2'].' '.
+        $row['od_b_addr3']
+    );
 
-    $from_datetime = sql_real_escape_string($from_datetime);
-    $to_datetime = sql_real_escape_string($to_datetime);
+    $zip =
+        (string)$row['od_b_zip1'].
+        (string)$row['od_b_zip2'];
 
-    $sql = "
-        SELECT
-            COALESCE(
-                SUM(
-                    IF(
-                        c.io_type = 1,
-                        c.io_price * c.ct_qty,
-                        (c.ct_price + c.io_price) * c.ct_qty
-                    )
-                ),
-                0
-            ) AS sale_price
-        FROM {$g5['g5_shop_cart_table']} c
-        INNER JOIN {$g5['g5_shop_order_table']} o
-            ON c.od_id = o.od_id
-        INNER JOIN {$g5['g5_shop_item_table']} i
-            ON c.it_id = i.it_id
-        WHERE o.od_time BETWEEN '{$from_datetime}' AND '{$to_datetime}'
-          AND c.ct_status IN ('입금', '준비', '배송', '완료')
-          {$brand_where}
-    ";
-
-    $row = sql_fetch($sql);
-
-    return isset($row['sale_price']) ? (int)$row['sale_price'] : 0;
-}
-
-function get_dashboard_qna_count()
-{
-    global $g5, $is_brand, $member;
-
-    $brand_where = '';
-
-    if ($is_brand) {
-        $brand_id = sql_real_escape_string($member['mb_id']);
-        $brand_where = " AND i.it_brand = '{$brand_id}' ";
-    }
-
-    $sql = "
-        SELECT COUNT(*) AS cnt
-        FROM {$g5['g5_shop_item_qa_table']} q
-        INNER JOIN {$g5['g5_shop_item_table']} i
-            ON q.it_id = i.it_id
-        WHERE q.iq_answer = ''
-          {$brand_where}
-    ";
-
-    $row = sql_fetch($sql);
-
-    return isset($row['cnt']) ? (int)$row['cnt'] : 0;
-}
-
-function get_dashboard_review_count()
-{
-    global $g5, $is_brand, $member;
-
-    $brand_where = '';
-
-    if ($is_brand) {
-        $brand_id = sql_real_escape_string($member['mb_id']);
-        $brand_where = " AND i.it_brand = '{$brand_id}' ";
-    }
-
-    $sql = "
-        SELECT COUNT(*) AS cnt
-        FROM {$g5['g5_shop_item_use_table']} u
-        INNER JOIN {$g5['g5_shop_item_table']} i
-            ON u.it_id = i.it_id
-        WHERE u.is_confirm = '0'
-          {$brand_where}
-    ";
-
-    $row = sql_fetch($sql);
-
-    return isset($row['cnt']) ? (int)$row['cnt'] : 0;
-}
-
-// 오늘 00:00:00 ~ 현재
-$dashboard_today_from = date('Y-m-d 00:00:00', G5_SERVER_TIME);
-$dashboard_now = date('Y-m-d H:i:s', G5_SERVER_TIME);
-
-// 이번 주 월요일 00:00:00 ~ 현재
-$dashboard_week_from = date(
-    'Y-m-d 00:00:00',
-    strtotime('monday this week', G5_SERVER_TIME)
-);
-
-$dashboard_today_sales = get_dashboard_sale_sum(
-    $dashboard_today_from,
-    $dashboard_now
-);
-
-$dashboard_week_sales = get_dashboard_sale_sum(
-    $dashboard_week_from,
-    $dashboard_now
-);
-
-$dashboard_qna_count = get_dashboard_qna_count();
-$dashboard_review_count = get_dashboard_review_count();
-
-// 현재 donuts_brand 구조에는 별도 승인 컬럼이 없으므로
-// donuts_brand에 로그인 아이디가 등록되어 있으면 승인된 브랜드로 판단합니다.
-if ($is_admin === 'super') {
-    $dashboard_approval_text = '최고관리자';
-    $dashboard_approval_class = 'text-blue-600';
-} elseif ($is_brand) {
-    $dashboard_approval_text = '승인됨';
-    $dashboard_approval_class = 'text-green-600';
-} else {
-    $dashboard_approval_text = '승인대기';
-    $dashboard_approval_class = 'text-orange-600';
+    return donuts_delivery_policy_quote(
+        $row['od_id'],
+        $brand_id,
+        $addr,
+        $zip,
+        false
+    );
 }
 
 // 주문상태에 따른 합계 금액
@@ -189,19 +74,39 @@ function get_order_status_sum($status)
 {
     global $g5, $brand_order_where;
 
-    $sql = " select count(*) as cnt,
-                    sum(od_cart_price + od_send_cost + od_send_cost2 - od_cancel_price) as price
-                from {$g5['g5_shop_order_table']}
-                where od_status = '$status'
-                {$brand_order_where} ";
-    $row = sql_fetch($sql);
+    $status_sql = sql_real_escape_string($status);
 
-    $info = array();
-    $info['count'] = (int) $row['cnt'];
-    $info['price'] = (int) $row['price'];
-    $info['href'] = './orderlist.php?od_status=' . urlencode($status);
+    $result = sql_query("
+        SELECT *
+        FROM {$g5['g5_shop_order_table']}
+        WHERE od_status = '{$status_sql}'
+        {$brand_order_where}
+    ");
 
-    return $info;
+    $count = 0;
+    $price = 0;
+
+    while ($row = sql_fetch_array($result)) {
+        $quote = donuts_dashboard_order_quote($row);
+
+        $order_total = (int)$quote['order_total'];
+
+        if ((int)$quote['item_total'] <= 0) {
+            $order_total =
+                (int)$row['od_cart_price'] +
+                (int)$row['od_send_cost'] +
+                (int)$row['od_send_cost2'];
+        }
+
+        $price += $order_total - (int)$row['od_cancel_price'];
+        $count++;
+    }
+
+    return array(
+        'count' => $count,
+        'price' => $price,
+        'href' => './orderlist.php?od_status=' . urlencode($status)
+    );
 }
 
 // 일자별 주문 합계 금액
@@ -209,63 +114,118 @@ function get_order_date_sum($date)
 {
     global $g5, $brand_order_where;
 
-    $sql = " select sum(od_cart_price + od_send_cost + od_send_cost2) as orderprice,
-                    sum(od_cancel_price) as cancelprice
-                from {$g5['g5_shop_order_table']}
-                where SUBSTRING(od_time, 1, 10) = '$date'
-                {$brand_order_where} ";
-    $row = sql_fetch($sql);
+    $date_sql = sql_real_escape_string($date);
 
-    $info = array();
-    $info['order'] = (int) $row['orderprice'];
-    $info['cancel'] = (int) $row['cancelprice'];
+    $result = sql_query("
+        SELECT *
+        FROM {$g5['g5_shop_order_table']}
+        WHERE SUBSTRING(od_time, 1, 10) = '{$date_sql}'
+        {$brand_order_where}
+    ");
 
-    return $info;
+    $orderprice = 0;
+    $cancelprice = 0;
+
+    while ($row = sql_fetch_array($result)) {
+        $quote = donuts_dashboard_order_quote($row);
+
+        $order_total = (int)$quote['order_total'];
+
+        if ((int)$quote['item_total'] <= 0) {
+            $order_total =
+                (int)$row['od_cart_price'] +
+                (int)$row['od_send_cost'] +
+                (int)$row['od_send_cost2'];
+        }
+
+        $orderprice += $order_total;
+        $cancelprice += (int)$row['od_cancel_price'];
+    }
+
+    return array(
+        'order' => $orderprice,
+        'cancel' => $cancelprice
+    );
 }
 
 // 일자별 결제수단 주문 합계 금액
 function get_order_settle_sum($date)
 {
-    global $g5, $default, $brand_order_where;
+    global $g5, $brand_order_where;
 
     $case = array('신용카드', '계좌이체', '가상계좌', '무통장', '휴대폰');
     $info = array();
+    $date_sql = sql_real_escape_string($date);
 
-    // 결제수단별 합계
     foreach ($case as $val) {
-        $sql = " select sum(od_cart_price + od_send_cost + od_send_cost2 - od_receipt_point - od_cart_coupon - od_coupon - od_send_coupon) as price,
-                        count(*) as cnt
-                    from {$g5['g5_shop_order_table']}
-                    where SUBSTRING(od_time, 1, 10) = '$date'
-                      and od_settle_case = '$val' {$brand_order_where}";
+        $val_sql = sql_real_escape_string($val);
 
-        $row = sql_fetch($sql);
+        $result = sql_query("
+            SELECT *
+            FROM {$g5['g5_shop_order_table']}
+            WHERE SUBSTRING(od_time, 1, 10) = '{$date_sql}'
+              AND od_settle_case = '{$val_sql}'
+            {$brand_order_where}
+        ");
 
-        $info[$val]['price'] = (int) $row['price'];
-        $info[$val]['count'] = (int) $row['cnt'];
+        $price = 0;
+        $count = 0;
+
+        while ($row = sql_fetch_array($result)) {
+            $quote = donuts_dashboard_order_quote($row);
+
+            $order_total = (int)$quote['order_total'];
+
+            if ((int)$quote['item_total'] <= 0) {
+                $order_total =
+                    (int)$row['od_cart_price'] +
+                    (int)$row['od_send_cost'] +
+                    (int)$row['od_send_cost2'];
+            }
+
+            $price +=
+                $order_total -
+                (int)$row['od_receipt_point'] -
+                (int)$row['od_cart_coupon'] -
+                (int)$row['od_coupon'] -
+                (int)$row['od_send_coupon'];
+
+            $count++;
+        }
+
+        $info[$val] = array(
+            'price' => $price,
+            'count' => $count
+        );
     }
 
-    // 포인트 합계
-    $sql = " select sum(od_receipt_point) as price,
-                    count(*) as cnt
-                from {$g5['g5_shop_order_table']}
-                where SUBSTRING(od_time, 1, 10) = '$date'
-                {$brand_order_where}
-                  and od_receipt_point > 0 ";
-    $row = sql_fetch($sql);
-    $info['포인트']['price'] = (int) $row['price'];
-    $info['포인트']['count'] = (int) $row['cnt'];
+    // 포인트/쿠폰은 배송비 계산과 무관하므로 기존 DB값 그대로 합산
+    $row = sql_fetch("
+        SELECT SUM(od_receipt_point) AS price, COUNT(*) AS cnt
+        FROM {$g5['g5_shop_order_table']}
+        WHERE SUBSTRING(od_time, 1, 10) = '{$date_sql}'
+        {$brand_order_where}
+          AND od_receipt_point > 0
+    ");
 
-    // 쿠폰 합계
-    $sql = " select sum(od_cart_coupon + od_coupon + od_send_coupon) as price,
-                    count(*) as cnt
-                from {$g5['g5_shop_order_table']}
-                where SUBSTRING(od_time, 1, 10) = '$date'
-                {$brand_order_where}
-                  and ( od_cart_coupon > 0 or od_coupon > 0 or od_send_coupon > 0 ) ";
-    $row = sql_fetch($sql);
-    $info['쿠폰']['price'] = (int) $row['price'];
-    $info['쿠폰']['count'] = (int) $row['cnt'];
+    $info['포인트'] = array(
+        'price' => (int)$row['price'],
+        'count' => (int)$row['cnt']
+    );
+
+    $row = sql_fetch("
+        SELECT SUM(od_cart_coupon + od_coupon + od_send_coupon) AS price,
+               COUNT(*) AS cnt
+        FROM {$g5['g5_shop_order_table']}
+        WHERE SUBSTRING(od_time, 1, 10) = '{$date_sql}'
+        {$brand_order_where}
+          AND (od_cart_coupon > 0 OR od_coupon > 0 OR od_send_coupon > 0)
+    ");
+
+    $info['쿠폰'] = array(
+        'price' => (int)$row['price'],
+        'count' => (int)$row['cnt']
+    );
 
     return $info;
 }
@@ -289,50 +249,28 @@ function get_max_value($arr)
         <section class="text-sm">
             <div class="flex items-center gap-4">
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>금일 매출</p>
-                    <p class="self-end mt-auto">
-                        <a href="./sale1today.php?date=<?php echo G5_TIME_YMD; ?>">
-                            <?php echo number_format($dashboard_today_sales); ?>원
-                        </a>
-                    </p>
+                    <p>금일 매출(임시)</p>
+                    <p class="self-end mt-auto">1000원</p>
                 </div>
-
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>주간 매출</p>
-                    <p class="self-end mt-auto">
-                        <a href="./sale1date.php?fr_date=<?php echo substr($dashboard_week_from, 0, 10); ?>&amp;to_date=<?php echo G5_TIME_YMD; ?>">
-                            <?php echo number_format($dashboard_week_sales); ?>원
-                        </a>
-                    </p>
+                    <p>주간 매출(임시)</p>
+                    <p class="self-end mt-auto">1000원</p>
                 </div>
-
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>승인여부</p>
-                    <p class="self-end mt-auto <?php echo $dashboard_approval_class; ?>">
-                        <?php echo $dashboard_approval_text; ?>
-                    </p>
+                    <p>승인여부(임시)</p>
+                    <p class="self-end mt-auto text-green-600">승인됨</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-4 mt-4 mb-16">
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>미답변 상품문의</p>
-                    <p class="self-end mt-auto">
-                        <a href="./itemqalist.php?sort1=iq_answer&amp;sort2=asc">
-                            <?php echo number_format($dashboard_qna_count); ?>건
-                        </a>
-                    </p>
+                    <p>상품문의(임시)</p>
+                    <p class="self-end mt-auto">10</p>
                 </div>
-
                 <div class="flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
-                    <p>미확인 사용후기</p>
-                    <p class="self-end mt-auto">
-                        <a href="./itemuselist.php?sort1=is_confirm&amp;sort2=asc">
-                            <?php echo number_format($dashboard_review_count); ?>건
-                        </a>
-                    </p>
+                    <p>사용후기(임시)</p>
+                    <p class="self-end mt-auto">10</p>
                 </div>
-
                 <div class="invisible flex flex-col w-full h-30 pc:h-40 border border-gray-300 rounded-2xl px-6 pc:px-8 py-4">
                 </div>
             </div>
