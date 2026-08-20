@@ -19,7 +19,7 @@ if(isset($it['it_id']) && $it['it_id']) {
 ?>
 
 <div class="tbl_frm01 tbl_wrap">
-    <table>
+    <table class="!border-spacing-x-0 !border-spacing-y-4">
     <caption>상품요약정보 입력</caption>
     <colgroup>
         <col class="grid_4">
@@ -55,14 +55,6 @@ if(isset($it['it_id']) && $it['it_id']) {
             <?php if ($el_example != "") echo help($el_example); ?>
             <input type="text" name="ii_value[]" value="<?php echo get_text($el_value); ?>" id="ii_article_<?php echo $el_name; ?>" required class="frm_input required" />
         </td>
-        <?php if ($el_no == 0) { ?>
-        <td rowspan="<?php echo $el_length; ?>" class="td_grpset">
-            <input type="checkbox" name="chk_ca_it_info" value="1" id="chk_ca_it_info">
-            <label for="chk_ca_it_info">분류적용</label>
-            <input type="checkbox" name="chk_all_it_info" value="1" id="chk_all_it_info">
-            <label for="chk_all_it_info">전체적용</label>
-        </td>
-        <?php } $el_no++; ?>
     </tr>
     <?php
         }

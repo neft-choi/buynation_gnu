@@ -65,7 +65,7 @@ $adm_menu_cookie = array(
 );
 ?>
 
-<div id="wrapper">
+<div id="app-layout">
     <aside class="sidebar" id="sidebar">
         <a href="<?php echo correct_goto_url(G5_ADMIN_URL); ?>/dotty">
             <div class="logo">DONUTS<i>.</i></div>
@@ -82,45 +82,67 @@ $adm_menu_cookie = array(
         <div class="sidebar-bottom">
             <div class="side-user"><span class="avatar">D</span><span><b>도티 김도윤</b><small>대표 운영자</small></span></div><button data-action="account-switch">↔ 계정 전환</button>
         </div>
+        <script>
+            const g5_admin_csrf_token_key = "<?php echo (function_exists('admin_csrf_token_key')) ? admin_csrf_token_key() : ''; ?>";
+            let tempX = 0;
+            let tempY = 0;
+
+            function imageview(id, w, h) {
+
+                menu(id);
+
+                const el_id = document.getElementById(id);
+
+                //submenu = eval(name+".style");
+                const submenu = el_id.style;
+                submenu.left = tempX - (w + 11);
+                submenu.top = tempY - (h / 2);
+
+                selectBoxVisible();
+
+                if (el_id.style.display !== 'none')
+                    selectBoxHidden(id);
+            }
+        </script>
     </aside>
-    <script>
-        const g5_admin_csrf_token_key = "<?php echo (function_exists('admin_csrf_token_key')) ? admin_csrf_token_key() : ''; ?>";
-        let tempX = 0;
-        let tempY = 0;
 
-        function imageview(id, w, h) {
+    <div id="app-content" class="ml-0 pc:ml-59">
+        <header id="header" class="topbar">
+            <div class="header-mobile pc:hidden">
+                <!-- 모바일 헤더 -->
+            </div>
 
-            menu(id);
+            <div class="header-desktop hidden pc:flex items-center justify-between w-full">
+                <!-- PC 헤더 -->
+                <div class="content-title">
+                    <h1 class="text-xl font-semibold"><?php echo $g5['title'] ?></h1>
+                    <p class="text-xs text-(--muted) mt-1"><?php echo $title_sub ?></p>
+                </div>
 
-            const el_id = document.getElementById(id);
+                <div class="top-actions flex items-center gap-2">
+                    <button class="relative inline-flex items-center justify-center w-10 h-10 border border-(--line) rounded-lg" data-action="notifications">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-icon lucide-bell w-5 h-5">
+                            <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+                            <path d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+                        </svg>
+                        <span class="absolute -top-1 -right-1 inline-flex items-center justify-center w-4 h-4 text-[10px] text-white bg-red-500 rounded-full">5</span>
+                    </button>
 
-            //submenu = eval(name+".style");
-            const submenu = el_id.style;
-            submenu.left = tempX - (w + 11);
-            submenu.top = tempY - (h / 2);
+                    <button class="account-switch h-10 border border-(--line) rounded-lg text-xs font-bold px-4 py-2" data-action="account-switch">
+                        <span>계정 전환</span>
+                    </button>
+                    
+                    <div class="top-user text-right">
+                        <p class="text-xs font-bold">도티 김도윤</p>
+                        <p class="text-[10px]">러닝 메이트</p>
+                    </div>
+                </div>
+            </div>
 
-            selectBoxVisible();
-
-            if (el_id.style.display !== 'none')
-                selectBoxHidden(id);
-        }
-    </script>
-
-    <div class="ml-0 pc:ml-59">
-        <header class="topbar">
             <button class="mobile-menu" data-action="mobile-menu">☰</button>
 
-            <div class="title-wrap">
-                <h1 id="container_title"><?php echo $g5['title'] ?></h1>
-                <p><?php echo $title_sub ?></p>
-            </div>
 
-            <div class="top-actions">
-                <button class="icon-btn" data-action="notifications">♢<em>5</em></button>
-                <button class="account-switch" data-action="account-switch">↔ <span>계정 전환</span></button>
-                <div class="top-user"><b>도티 김도윤</b><small>러닝 메이트</small></div>
-            </div>
         </header>
 
-        <div id="container" class="min-h-[480px] w-full max-w-full bg-gray-50 p-4">
+        <main id="container" class="min-h-[480px] w-full max-w-full bg-gray-50 p-4">
             <div class="<?php echo $adm_menu_cookie['container']; ?> container_wr border border-gray-200 rounded-lg bg-white">

@@ -318,43 +318,43 @@
         font-size: 18px
     }
 
-    .title-wrap {
+    /* .title-wrap {
         flex: 1
-    }
+    } */
 
-    .title-wrap h1 {
+    /* .title-wrap h1 {
         margin: 0;
         font-size: 21px;
         letter-spacing: -.6px
-    }
+    } */
 
-    .title-wrap p {
+    /* .title-wrap p {
         margin: 4px 0 0;
         color: var(--muted);
         font-size: 11px
-    }
+    } */
 
-    .top-actions {
+    /* .top-actions {
         display: flex;
         align-items: center;
         gap: 10px
-    }
+    } */
 
-    .icon-btn,
+    /* .icon-btn,
     .account-switch {
         background: #fff;
         border: 1px solid var(--line);
         border-radius: 11px;
         height: 38px
-    }
+    } */
 
-    .icon-btn {
+    /* .icon-btn {
         width: 40px;
         font-size: 16px;
         position: relative
-    }
+    } */
 
-    .icon-btn em {
+    /* .icon-btn em {
         position: absolute;
         right: -4px;
         top: -5px;
@@ -367,36 +367,36 @@
         place-items: center;
         font-size: 9px;
         font-style: normal
-    }
+    } */
 
-    .account-switch {
+    /* .account-switch {
         padding: 0 13px;
         display: flex;
         align-items: center;
         gap: 8px;
         font-size: 12px;
         font-weight: 800
-    }
+    } */
 
-    .top-user {
+    /* .top-user {
         text-align: right;
         margin-left: 3px
-    }
+    } */
 
-    .top-user b,
+    /* .top-user b,
     .top-user small {
         display: block
-    }
+    } */
 
-    .top-user b {
+    /* .top-user b {
         font-size: 12px
-    }
+    } */
 
-    .top-user small {
+    /* .top-user small {
         color: #888;
         font-size: 10px;
         margin-top: 3px
-    }
+    } */
 
     .content {
         padding: 24px 28px 54px;

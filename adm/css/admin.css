@@ -30,7 +30,7 @@ body {margin:0;padding:0;height:100%;}
 /* article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {display:block} */
 
 ul{margin:0;padding:0;list-style:none}
-li,dt,dd,ol{margin:0;padding:0}
+/* li,dt,dd,ol{margin:0;padding:0} */
 ol{list-style-position:inside}
 legend {position:absolute;margin:0;padding:0;font-size:0;line-height:0;text-indent:-9999em;overflow:hidden}
 /* label, input, button, select, img {vertical-align:middle} */
