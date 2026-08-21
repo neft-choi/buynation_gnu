@@ -872,6 +872,98 @@ function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiv
  * 묶음배송 상품의 conditional / amount_range 기준금액은
  * 같은 주문번호의 전체 상품가격 합계를 사용합니다.
  */
+
+function csv_final_default_special_non_group_items($items)
+{
+    $default_ids = array();
+    $special_ids = array();
+
+    foreach ($items as $item) {
+        $it_id = isset($item['it_id']) ? trim((string)$item['it_id']) : '';
+        $brand_id = isset($item['brand_id']) ? trim((string)$item['brand_id']) : '';
+
+        if ($it_id === '') continue;
+
+        $it_id_sql = sql_real_escape_string($it_id);
+        $brand_sql = sql_real_escape_string($brand_id);
+        $setting = array();
+
+        if ($brand_id !== '') {
+            $r = sql_query("
+                SELECT brand_id, condition_id, group_id
+                FROM donuts_delivery_product_settings
+                WHERE it_id = '{$it_id_sql}'
+                  AND brand_id = '{$brand_sql}'
+                LIMIT 1
+            ", false);
+            if ($r) $setting = sql_fetch_array($r);
+        }
+
+        if (empty($setting)) {
+            $r = sql_query("
+                SELECT brand_id, condition_id, group_id
+                FROM donuts_delivery_product_settings
+                WHERE it_id = '{$it_id_sql}'
+                LIMIT 1
+            ", false);
+            if ($r) $setting = sql_fetch_array($r);
+        }
+
+        if (!empty($setting['group_id']) && (int)$setting['group_id'] > 0) {
+            continue;
+        }
+
+        $setting_brand = !empty($setting['brand_id'])
+            ? trim((string)$setting['brand_id'])
+            : $brand_id;
+
+        $setting_brand_sql = sql_real_escape_string($setting_brand);
+        $condition_id = !empty($setting['condition_id']) ? (int)$setting['condition_id'] : 0;
+        $condition = array();
+        $is_default = false;
+
+        if ($condition_id > 0) {
+            $r = sql_query("
+                SELECT *
+                FROM donuts_delivery_conditions
+                WHERE dc_id = '{$condition_id}'
+                  AND use_yn = 'Y'
+                LIMIT 1
+            ", false);
+            if ($r) $condition = sql_fetch_array($r);
+
+            if (!empty($condition) && !empty($condition['is_default'])) {
+                $is_default = true;
+            }
+        }
+
+        if (empty($condition) && $setting_brand !== '') {
+            $r = sql_query("
+                SELECT *
+                FROM donuts_delivery_conditions
+                WHERE brand_id = '{$setting_brand_sql}'
+                  AND is_default = 1
+                  AND use_yn = 'Y'
+                ORDER BY dc_id DESC
+                LIMIT 1
+            ", false);
+            if ($r) $condition = sql_fetch_array($r);
+            if (!empty($condition)) $is_default = true;
+        }
+
+        $type = !empty($condition['dc_type']) ? trim((string)$condition['dc_type']) : '';
+
+        if ($is_default) $default_ids[$it_id] = true;
+        if (!$is_default && in_array($type, array('paid', 'quantity', 'amount_range'), true)) $special_ids[$it_id] = true;
+    }
+
+    if (empty($default_ids) || empty($special_ids)) {
+        return array();
+    }
+
+    return $default_ids + $special_ids;
+}
+
 function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receiver_addr, $receiver_zip)
 {
     global $g5;
@@ -951,6 +1043,10 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
     if (empty($items)) {
         return 0;
     }
+
+    // 실제 묶음배송을 제외한 기본+유료/수량/금액구간 상품만 특례 대상으로 지정
+    $default_special_non_group_items =
+        csv_final_default_special_non_group_items($items);
 
     /*
      * 브랜드 필터와 무관하게 무료배송 기준은
@@ -1121,7 +1217,11 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
             ? trim((string)$condition['dc_type'])
             : '';
 
+        $is_default_paid_special_item =
+            isset($default_special_non_group_items[$it_id]);
+
         if (
+            !$is_default_paid_special_item &&
             !$is_bundle &&
             count($items) > 1 &&
             in_array($condition_type, array('conditional', 'amount_range'), true)

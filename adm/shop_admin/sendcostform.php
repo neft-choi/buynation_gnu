@@ -9,7 +9,7 @@ if ($item_delivery_brand_id === '') {
 $brand_id_sql = sql_real_escape_string($item_delivery_brand_id);
 
 $conditions = array();
-$condition_result = sql_query("SELECT c.*,
+$condition_result = sql_query(" SELECT c.*,
         (
             SELECT COUNT(*) 
             FROM donuts_delivery_product_settings ps 
@@ -18,9 +18,8 @@ $condition_result = sql_query("SELECT c.*,
         ) AS product_count
     FROM donuts_delivery_conditions c
     WHERE c.brand_id = '{$brand_id_sql}'
-    AND c.is_default = 1
     AND c.use_yn = 'Y'
-    LIMIT 1");
+    ORDER BY c.is_default DESC, c.dc_id ASC ");
 
 // SQL 결과 묶음에서 한 행을 꺼내서 $row 배열에 저장하는 것을 반복
 while ($row = sql_fetch_array($condition_result)) {
@@ -75,15 +74,15 @@ while ($row = sql_fetch_array($condition_result)) {
     }
 
     .section-title {
-        margin-bottom: 11px;
+        margin-bottom: 12px;
         display: flex;
         align-items: center;
         justify-content: space-between;
-        font-size: 13px;
-        font-weight: 800;
+        font-size: 14px;
+        font-weight: 700;
     }
 
-    .register-condition {
+    /* .register-condition {
         position: relative;
         min-height: 90px;
         padding: 14px 42px 14px 14px;
@@ -91,17 +90,17 @@ while ($row = sql_fetch_array($condition_result)) {
         border-radius: 11px;
         background: #fff;
         cursor: pointer;
-    }
+    } */
 
-    .register-condition:hover {
+    /* .register-condition:hover {
         border-color: #bfc4cc;
-    }
+    } */
 
-    .register-condition.selected {
+    /* .register-condition.selected {
         border-color: var(--brand);
         background: #fffaf8;
         box-shadow: 0 0 0 2px rgba(255, 106, 61, .08);
-    }
+    } */
 
     .badge {
         min-height: 22px;
@@ -127,73 +126,138 @@ while ($row = sql_fetch_array($condition_result)) {
         <h2>배송설정</h2>
         <p>배송조건으로 금액을 정하고, 배송그룹 선택 여부로 묶음·개별을 결정합니다.</p>
     </div>
-    <div class="section-title">배송조건</div>
-    <div id="registerConditions">
-        <?php foreach ($conditions as $index => $condition) { ?>
-            <button
-                class="register-condition<?php echo $index === 0 ? ' selected' : ''; ?> w-full"
-                type="button"
-                data-condition-id="<?php echo (int) $condition['dc_id']; ?>"
-                data-condition="<?php echo get_text($condition['dc_name']); ?>">
-                <span class="block text-sm font-bold mb-1">
-                    <?php echo get_text($condition['dc_name']); ?>
-                    <?php if ($condition['is_default']) { ?>
-                        <span class="badge badge-base">기본</span>
-                    <?php } ?>
-                </span>
 
-                <span class="block text-xs text-(--muted)">
-                    <?php echo delivery_type_label($condition['dc_type']); ?>
-                </span>
+    <section class="mt-4">
+        <div class="flex items-center justify-between">
+            <div class="section-title">
+                <span>배송조건<span class="text-red-500 ml-1">(필수)</span></span>
+            </div>
+        </div>
 
-                <div class="flex items-center justify-self-center gap-2 text-xs text-(--muted)">
-                    <span>
-                        배송비 <?php echo number_format((int) $condition['dc_price']); ?>원
+        <div id="registerConditions" class="grid grid-cols-2 gap-2">
+            <?php foreach ($conditions as $index => $condition) { ?>
+                <button
+                    class="register-condition <?php echo $index === 0 ? 'selected !border-(--brand) !bg-[#fffaf8] !shadow-[0_0_0_2px_rgba(255,106,61,.08)]' : ''; ?> relative min-h-20 border border-(--line-strong) rounded-xl bg-white px-10 py-3 space-y-1 cursor-pointer hover:border-[#bfc4cc]"
+                    type="button"
+                    data-condition-id="<?php echo (int) $condition['dc_id']; ?>"
+                    data-condition="<?php echo get_text($condition['dc_name']); ?>">
+                    <span class="block text-sm font-bold mb-1">
+                        <?php echo get_text($condition['dc_name']); ?>
+                        <?php if ($condition['is_default']) { ?>
+                            <span class="badge badge-base">기본</span>
+                        <?php } ?>
                     </span>
 
-                    <?php if ($condition['dc_type'] === 'conditional') { ?>
-                        <span>/</span>
+                    <span class="block text-xs text-(--muted)">
+                        <?php echo delivery_type_label($condition['dc_type']); ?>
+                    </span>
 
+                    <div class="flex items-center justify-self-center gap-2 text-xs text-(--muted)">
                         <span>
-                            <?php echo number_format((int) $condition['dc_minimum']); ?>원 이상 무료
+                            배송비 <?php echo number_format((int) $condition['dc_price']); ?>원
+                        </span>
+
+                        <?php if ($condition['dc_type'] === 'conditional') { ?>
+                            <span>/</span>
+
+                            <span>
+                                <?php echo number_format((int) $condition['dc_minimum']); ?>원 이상 무료
+                            </span>
+                        <?php } ?>
+                    </div>
+
+                    <?php if ((int) $condition['dc_jeju_use'] === 1) { ?>
+                        <span class="block text-xs text-(--muted) mt-2">
+                            제주 +<?php echo number_format((int) $condition['dc_jeju_price']); ?>원
                         </span>
                     <?php } ?>
-                </div>
 
-                <?php if ((int) $condition['dc_jeju_use'] === 1) { ?>
+                    <?php if ((int) $condition['dc_island_use'] === 1) { ?>
+                        <span class="block text-xs text-(--muted)">
+                            도서산간 +<?php echo number_format((int) $condition['dc_island_price']); ?>원
+                        </span>
+                    <?php } ?>
+
                     <span class="block text-xs text-(--muted) mt-2">
-                        제주 +<?php echo number_format((int) $condition['dc_jeju_price']); ?>원
+                        적용 상품 <span class="font-bold"><?php echo number_format((int) $condition['product_count']); ?>개</span>
                     </span>
-                <?php } ?>
-
-                <?php if ((int) $condition['dc_island_use'] === 1) { ?>
-                    <span class="block text-xs text-(--muted)">
-                        도서산간 +<?php echo number_format((int) $condition['dc_island_price']); ?>원
-                    </span>
-                <?php } ?>
-
-                <span class="block text-xs text-(--muted) mt-2">
-                    적용 상품 <span class="font-bold"><?php echo number_format((int) $condition['product_count']); ?>개</span>
-                </span>
-            </button>
-        <?php } ?>
-    </div>
-
-    <div class="flex items-start gap-3 border border-[#f0e2b0] rounded-lg text-xs text-[#69531a] bg-(--yellow-soft) px-4 py-3 mt-3" id="regCalcResult">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info-icon lucide-info w-5 h-5">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M12 16v-4" />
-            <path d="M12 8h.01" />
-        </svg>
-        <div>
-            <span class="block font-bold">합배송으로 등록됩니다.</span>
-            <span class="block">기본 택배 적용시 같은 조건에 대해 1회 배송비를 부과합니다.</span>
-            <span class="block">다른 조건을 적용시키려면 배송관리 > 배송조건 생성을 사용하십시오.</span>
+                </button>
+            <?php } ?>
         </div>
-    </div>
+
+        <div class="flex items-start gap-3 border border-[#f0e2b0] rounded-lg text-xs text-[#69531a] bg-(--yellow-soft) px-4 py-3 mt-3" id="regCalcResult">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info-icon lucide-info w-5 h-5">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+            </svg>
+            <div>
+                <span class="block">동일한 배송조건의 상품을 여러 개 주문하면 배송비는 1회만 부과됩니다.</span>
+            </div>
+        </div>
+    </section>
+
+    <?php
+    // 배송 그룹 SQL
+    $groups = array();
+
+    $group_result = sql_query("
+                        SELECT g.*
+                        FROM donuts_delivery_groups AS g
+                        WHERE g.brand_id = '{$brand_id_sql}'
+                        AND g.use_yn = 'Y'
+                        ORDER BY g.dg_id ASC
+                    ");
+
+    while ($row = sql_fetch_array($group_result)) {
+        $groups[] = $row;
+    }
+    ?>
+    <section class="mt-8">
+        <div class="section-title">
+            <span>배송그룹<span class="text-blue-500 ml-1">(선택)</span></span>
+        </div>
+
+        <select
+            name="group_id"
+            id="delivery_group_id"
+            class="w-full h-11 mt-3 px-3 border border-(--line-strong) rounded-lg bg-white">
+            <option value="0" selected>선택 안 함</option>
+
+            <?php foreach ($groups as $group) { ?>
+                <option value="<?php echo (int) $group['dg_id']; ?>">
+                    <?php echo get_text($group['dg_name']); ?> - 계산 방식 <?php echo get_text($group['calc_method']); ?>
+                </option>
+            <?php } ?>
+        </select>
+
+        <div class="flex items-start gap-3 border border-[#f0e2b0] rounded-lg text-xs text-[#69531a] bg-(--yellow-soft) px-4 py-3 mt-3" id="regCalcResult">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-info-icon lucide-info w-5 h-5">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4" />
+                <path d="M12 8h.01" />
+            </svg>
+            <div>
+                <span class="block">서로 다른 배송조건의 상품을 하나의 그룹으로 묶어 배송비를 1회만 부과합니다.</span>
+                <span class="block">그룹 내 배송비는 최고 배송비 또는 최저 배송비를 기준으로 부과할 수 있습니다.</span>
+            </div>
+        </div>
+    </section>
 </div>
 
 <script>
+    $(
+        // 배송조건 선택 시 UI 클래스 반영
+        function() {
+            const selectedClasses = "selected !border-(--brand) !bg-[#fffaf8] !shadow-[0_0_0_2px_rgba(255,106,61,.08)]";
+
+            $("#registerConditions .register-condition").on("click", function() {
+                $("#registerConditions .register-condition").removeClass(selectedClasses);
+                $(this).addClass(selectedClasses);
+            });
+        }
+    );
+
     // 배송 조건 카드 클릭 시, 기존 배송비 전송 필드에 동기화 (현재 수정 전)
     // function bindRegisterCondition(card) {
     //     $(card).on("click", function() {
