@@ -242,6 +242,58 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                     ADD `it_skin` varchar(255) NOT NULL DEFAULT '' AFTER `ca_id3`,
                     ADD `it_mobile_skin` varchar(255) NOT NULL DEFAULT '' AFTER `it_skin` ", true);
 }
+/*
+ * 현재 상품의 배송그룹 설정
+ *
+ * donuts_delivery_product_settings.group_id 를 기준으로 읽습니다.
+ */
+$delivery_group_brand_id = '';
+
+if ($w === 'u' && !empty($it['it_brand'])) {
+    $delivery_group_brand_id = trim($it['it_brand']);
+} else {
+    $delivery_group_brand_id = isset($member['mb_id'])
+        ? trim($member['mb_id'])
+        : '';
+}
+
+$delivery_group_brand_sql = sql_real_escape_string($delivery_group_brand_id);
+
+$current_delivery_group_id = 0;
+
+if ($w === 'u' && !empty($it['it_id']) && $delivery_group_brand_id !== '') {
+    $delivery_it_id_sql = sql_real_escape_string($it['it_id']);
+
+    $delivery_setting = sql_fetch("
+        SELECT group_id
+        FROM donuts_delivery_product_settings
+        WHERE brand_id = '{$delivery_group_brand_sql}'
+          AND it_id = '{$delivery_it_id_sql}'
+        LIMIT 1
+    ");
+
+    if (!empty($delivery_setting['group_id'])) {
+        $current_delivery_group_id = (int)$delivery_setting['group_id'];
+    }
+}
+
+$delivery_groups = array();
+
+if ($delivery_group_brand_id !== '') {
+    $delivery_group_result = sql_query("
+        SELECT dg_id, dg_name, calc_method
+        FROM donuts_delivery_groups
+        WHERE brand_id = '{$delivery_group_brand_sql}'
+          AND use_yn = 'Y'
+        ORDER BY dg_name ASC, dg_id ASC
+    ", false);
+
+    if ($delivery_group_result) {
+        while ($delivery_group_row = sql_fetch_array($delivery_group_result)) {
+            $delivery_groups[] = $delivery_group_row;
+        }
+    }
+}
 ?>
 
 <form name="fitemform" action="./itemformupdate.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
@@ -1233,6 +1285,45 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                 </colgroup>
                 <tbody>
                     <tr>
+                        <th scope="row"><label for="donuts_delivery_group_id">배송그룹</label></th>
+                        <td colspan="2">
+                            <?php echo help("배송그룹을 선택하면 이 상품이 실제 묶음배송 그룹에 즉시 반영됩니다. '그룹 없음'을 선택하면 묶음배송 그룹에서 제외됩니다."); ?>
+
+                            <select
+                                name="donuts_delivery_group_id"
+                                id="donuts_delivery_group_id"
+                                <?php echo ($w !== 'u') ? 'disabled' : ''; ?>
+                            >
+                                <option value="0">그룹 없음</option>
+
+                                <?php foreach ($delivery_groups as $delivery_group) { ?>
+                                    <option
+                                        value="<?php echo (int)$delivery_group['dg_id']; ?>"
+                                        <?php echo get_selected((string)$current_delivery_group_id, (string)$delivery_group['dg_id']); ?>
+                                    >
+                                        <?php
+                                        echo get_text($delivery_group['dg_name']);
+                                        echo ' (' . (strtoupper($delivery_group['calc_method']) === 'MIN' ? '최저 배송비' : '최고 배송비') . ')';
+                                        ?>
+                                    </option>
+                                <?php } ?>
+                            </select>
+
+                            <?php if ($w !== 'u') { ?>
+                                <span class="frm_info">
+                                    상품을 먼저 등록한 뒤 상품수정 화면에서 배송그룹을 선택할 수 있습니다.
+                                </span>
+                            <?php } else { ?>
+                                <span
+                                    id="delivery_group_save_status"
+                                    class="frm_info"
+                                    style="margin-left:8px;"
+                                ></span>
+                            <?php } ?>
+                        </td>
+                    </tr>
+
+                    <tr>
                         <th scope="row"><label for="it_sc_type">배송비 유형</label></th>
                         <td>
                             <?php echo help("배송비 유형을 선택하면 자동으로 항목이 변환됩니다."); ?>
@@ -1288,6 +1379,54 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
         <script>
             $(function() {
+                /*
+                 * 배송그룹 변경 즉시 donuts_delivery_product_settings.group_id 저장
+                 */
+                $("#donuts_delivery_group_id").on("change", function() {
+                    var $select = $(this);
+                    var groupId = parseInt($select.val(), 10) || 0;
+                    var $status = $("#delivery_group_save_status");
+
+                    $select.prop("disabled", true);
+                    $status.text("저장 중...");
+
+                    $.ajax({
+                        url: "./ajax.item_delivery_group.php",
+                        type: "POST",
+                        dataType: "json",
+                        data: {
+                            it_id: <?php echo json_encode(isset($it['it_id']) ? $it['it_id'] : '', JSON_UNESCAPED_UNICODE); ?>,
+                            group_id: groupId
+                        },
+                        success: function(res) {
+                            if (!res || !res.success) {
+                                alert((res && res.message) ? res.message : "배송그룹 저장에 실패했습니다.");
+
+                                if (res && typeof res.current_group_id !== "undefined") {
+                                    $select.val(String(res.current_group_id));
+                                }
+
+                                $status.text("저장 실패");
+                                return;
+                            }
+
+                            $status.text(
+                                groupId > 0
+                                    ? "배송그룹에 적용되었습니다."
+                                    : "배송그룹에서 제외되었습니다."
+                            );
+                        },
+                        error: function(xhr) {
+                            console.error("배송그룹 저장 오류:", xhr.responseText);
+                            alert("배송그룹 저장 중 오류가 발생했습니다.");
+                            $status.text("저장 실패");
+                        },
+                        complete: function() {
+                            $select.prop("disabled", false);
+                        }
+                    });
+                });
+
                 <?php
                 switch ($it['it_sc_type']) {
                     case 1:

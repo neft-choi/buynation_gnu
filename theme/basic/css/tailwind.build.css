@@ -355,9 +355,6 @@
   .top-5 {
     top: calc(var(--spacing) * 5);
   }
-  .top-10 {
-    top: calc(var(--spacing) * 10);
-  }
   .top-36 {
     top: calc(var(--spacing) * 36);
   }
@@ -474,9 +471,6 @@
   }
   .z-60 {
     z-index: 60;
-  }
-  .z-100 {
-    z-index: 100;
   }
   .z-1002 {
     z-index: 1002;
@@ -937,6 +931,9 @@
   .h-33 {
     height: calc(var(--spacing) * 33);
   }
+  .h-40 {
+    height: calc(var(--spacing) * 40);
+  }
   .h-48 {
     height: calc(var(--spacing) * 48);
   }
@@ -1024,12 +1021,6 @@
   .min-h-20 {
     min-height: calc(var(--spacing) * 20);
   }
-  .min-h-22 {
-    min-height: calc(var(--spacing) * 22);
-  }
-  .min-h-22\.5 {
-    min-height: calc(var(--spacing) * 22.5);
-  }
   .min-h-36 {
     min-height: calc(var(--spacing) * 36);
   }
@@ -1038,9 +1029,6 @@
   }
   .min-h-44 {
     min-height: calc(var(--spacing) * 44);
-  }
-  .min-h-\[90px\] {
-    min-height: 90px;
   }
   .min-h-\[480px\] {
     min-height: 480px;
@@ -1158,6 +1146,9 @@
   }
   .w-100 {
     width: calc(var(--spacing) * 100);
+  }
+  .w-200 {
+    width: calc(var(--spacing) * 200);
   }
   .w-\[45px\] {
     width: 45px;
@@ -1869,14 +1860,8 @@
   .\!border-\(--brand\) {
     border-color: var(--brand) !important;
   }
-  .\!border-\[\#fffaf8\] {
-    border-color: #fffaf8 !important;
-  }
   .\!border-gray-200 {
     border-color: var(--color-gray-200) !important;
-  }
-  .border-\(--brand\) {
-    border-color: var(--brand);
   }
   .border-\(--color-primary\) {
     border-color: var(--color-primary);
@@ -2024,9 +2009,6 @@
   }
   .\!bg-gray-900 {
     background-color: var(--color-gray-900) !important;
-  }
-  .\!bg-red-100 {
-    background-color: var(--color-red-100) !important;
   }
   .\!bg-red-500 {
     background-color: var(--color-red-500) !important;
@@ -2240,9 +2222,6 @@
   }
   .bg-red-50 {
     background-color: var(--color-red-50);
-  }
-  .bg-red-100 {
-    background-color: var(--color-red-100);
   }
   .bg-red-300 {
     background-color: var(--color-red-300);
@@ -2879,6 +2858,9 @@
   .text-wrap {
     text-wrap: wrap;
   }
+  .break-words {
+    overflow-wrap: break-word;
+  }
   .\!break-all {
     word-break: break-all !important;
   }
@@ -3203,10 +3185,6 @@
   .opacity-100 {
     opacity: 100%;
   }
-  .\!shadow {
-    --tw-shadow: 0 1px 3px 0 var(--tw-shadow-color, rgb(0 0 0 / 0.1)), 0 1px 2px -1px var(--tw-shadow-color, rgb(0 0 0 / 0.1)) !important;
-    box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
-  }
   .\!shadow-\[0_0_0_2px_rgba\(255\,106\,61\,\.08\)\] {
     --tw-shadow: 0 0 0 2px var(--tw-shadow-color, rgba(255,106,61,.08)) !important;
     box-shadow: var(--tw-inset-shadow), var(--tw-inset-ring-shadow), var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow) !important;
@@ -3325,6 +3303,10 @@
   .duration-300 {
     --tw-duration: 300ms;
     transition-duration: 300ms;
+  }
+  .duration-400 {
+    --tw-duration: 400ms;
+    transition-duration: 400ms;
   }
   .duration-1000 {
     --tw-duration: 1000ms;
@@ -4358,6 +4340,56 @@
   .md\:pb-0 {
     @media (width >= 48rem) {
       padding-bottom: calc(var(--spacing) * 0);
+    }
+  }
+  .\[\&_img\]\:h-auto {
+    & img {
+      height: auto;
+    }
+  }
+  .\[\&_img\]\:max-w-full {
+    & img {
+      max-width: 100%;
+    }
+  }
+  .\[\&_tbody\]\:divide-y {
+    & tbody {
+      :where(& > :not(:last-child)) {
+        --tw-divide-y-reverse: 0;
+        border-bottom-style: var(--tw-border-style);
+        border-top-style: var(--tw-border-style);
+        border-top-width: calc(1px * var(--tw-divide-y-reverse));
+        border-bottom-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
+      }
+    }
+  }
+  .\[\&_tbody\]\:divide-gray-200 {
+    & tbody {
+      :where(& > :not(:last-child)) {
+        border-color: var(--color-gray-200);
+      }
+    }
+  }
+  .\[\&_th\]\:border-r {
+    & th {
+      border-right-style: var(--tw-border-style);
+      border-right-width: 1px;
+    }
+  }
+  .\[\&_th\]\:border-gray-200 {
+    & th {
+      border-color: var(--color-gray-200);
+    }
+  }
+  .\[\&_tr\>td\:nth-child\(2\)\]\:border-r {
+    & tr>td:nth-child(2) {
+      border-right-style: var(--tw-border-style);
+      border-right-width: 1px;
+    }
+  }
+  .\[\&_tr\>td\:nth-child\(2\)\]\:border-gray-200 {
+    & tr>td:nth-child(2) {
+      border-color: var(--color-gray-200);
     }
   }
   .\[\&\:nth-child\(4n\+1\)\]\:border-l-0 {
