@@ -706,35 +706,9 @@ function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiv
             continue;
         }
 
-        /*
-         * 묶음배송 그룹 안에서도 브랜드 '기본 택배' 조건은
-         * 주문번호 전체금액으로 다시 계산하지 않습니다.
-         *
-         * - 기본 배송조건(is_default=1)
-         *   => 해당 상품금액 기준
-         *
-         * - 직접 만든 conditional / amount_range 조건
-         *   => 같은 주문번호 전체 상품금액 기준
-         *
-         * paid / quantity / free는 금액기준에 영향을 받지 않지만
-         * 기존 의미를 명확히 하기 위해 상품금액을 사용합니다.
-         */
-        $group_condition_type = isset($item['condition']['dc_type'])
-            ? trim((string)$item['condition']['dc_type'])
-            : '';
-
-        $group_condition_is_default = !empty($item['condition']['is_default']);
-
-        $group_base_amount = (
-            !$group_condition_is_default &&
-            in_array($group_condition_type, array('conditional', 'amount_range'), true)
-        )
-            ? $order_product_total
-            : (isset($item['amount']) ? (int)$item['amount'] : 0);
-
         $group_fee = csv_new_delivery_condition_fee(
             $item['condition'],
-            $group_base_amount,
+            $order_product_total,
             isset($item['qty']) ? (int)$item['qty'] : 0
         );
 
@@ -1104,6 +1078,21 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
     $individual_total = 0;
     $bundle_candidates = array();
 
+    /*
+     * 같은 주문번호가 '유료(paid) 상품만'으로 구성된 경우를 별도로 판정합니다.
+     *
+     * 이 경우 각 상품 배송비를 더하지 않고 가장 비싼 배송비 1회만 적용합니다.
+     *
+     * 예)
+     * 유료 4,000원 + 유료 4,000원
+     * => 최종 배송비 4,000원
+     *
+     * conditional / amount_range / 기본택배 / 수량배송 / 실제 묶음배송이
+     * 하나라도 섞이면 이 특례는 적용하지 않고 기존 계산을 그대로 사용합니다.
+     */
+    $paid_only_order = true;
+    $paid_only_fees = array();
+
     foreach ($items as $item) {
 
         $it_id = $item['it_id'];
@@ -1258,30 +1247,9 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         /*
          * 배송비 계산 기준 금액.
          *
-         * 묶음배송이라도 '기본 택배'(is_default=1)는
-         * 해당 상품금액을 기준으로 계산합니다.
-         *
-         * 직접 생성한 conditional / amount_range 조건만
-         * 같은 주문번호 전체 상품금액을 기준으로 계산합니다.
-         *
-         * 예)
-         * 그룹 내
-         * - 기본 택배 5,000원
-         * - 유료 4,000원
-         * - 수량 3,000원
-         *
-         * MAX 그룹이면 기본 택배가 주문전체금액 때문에
-         * 무료로 바뀌지 않고 5,000원이 후보가 됩니다.
+         * 묶음배송이면 무조건 같은 주문번호 전체 상품금액.
          */
-        $condition_is_default = !empty($condition['is_default']);
-
-        $use_order_total_for_bundle = (
-            $is_bundle &&
-            !$condition_is_default &&
-            in_array($condition_type, array('conditional', 'amount_range'), true)
-        );
-
-        $base_amount = $use_order_total_for_bundle
+        $base_amount = $is_bundle
             ? $order_total
             : $item_amount;
 
@@ -1328,6 +1296,18 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
 
         $fee = max(0, (int)$fee);
 
+        /*
+         * 유료 상품만 구성된 주문 판정.
+         *
+         * - 실제 묶음배송(group_id > 0)이면 paid-only 특례 제외
+         * - 조건 타입이 paid가 아니면 특례 제외
+         */
+        if ($is_bundle || $condition_type !== 'paid') {
+            $paid_only_order = false;
+        } else {
+            $paid_only_fees[] = $fee;
+        }
+
         if (!$is_bundle) {
             $individual_total += $fee;
             continue;
@@ -1367,6 +1347,20 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         }
 
         $bundle_candidates[$bundle_key]['fees'][] = $fee;
+    }
+
+    /*
+     * 같은 주문번호가 유료(paid) 상품으로만 구성된 경우:
+     * 가장 비싼 배송비 1회만 최종 배송비로 사용합니다.
+     *
+     * 상품이 2개 이상일 때만 적용합니다.
+     */
+    if (
+        $paid_only_order &&
+        count($items) > 1 &&
+        count($paid_only_fees) === count($items)
+    ) {
+        return max($paid_only_fees);
     }
 
     /*

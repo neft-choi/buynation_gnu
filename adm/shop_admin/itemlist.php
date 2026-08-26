@@ -1,6 +1,7 @@
 <?php
 $sub_menu = '400300';
 include_once('./_common.php');
+include_once(G5_LIB_PATH . '/donuts_item_inspection.lib.php');
 
 $brand_member = false;
 
@@ -61,8 +62,9 @@ $sql_common = " from {$g5['g5_shop_item_table']} a ,
                      {$g5['g5_shop_category_table']} b
                where (a.ca_id = b.ca_id";
 
-if ($is_admin != 'super' && $brand_member) {
+if ($is_admin != 'super') {
     $sql_common .= " and a.it_brand = '{$member['mb_id']}'"; 
+    // $sql_common .= " and a.it_brand = '{$brand['brand_id']}'"; 예시
 }
 $sql_common .= ") ";
 $sql_common .= $sql_search;
@@ -297,6 +299,9 @@ $listall .= ' <a href="./itemlist_csv.php?'.$qstr.'" class="btn btn_02" style="b
         </div>
 
         <div class="btn_fixed_top">
+    <?php if (!empty($brand_member)) { ?>
+    <a href="./iteminspectresult.php" class="btn btn_03">상품 검수</a>
+    <?php } ?>
             <input type="submit" name="act_button" value="승인요청" onclick="document.pressed=this.value" class="btn bg-green-700 text-white">
             <a href="./itemform.php" class="btn btn_04">상품등록</a>
             <a href="./itemexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn btn_05 !hidden">상품일괄등록</a>

@@ -51,6 +51,10 @@ $admin = get_admin("super");
                 <span>고객센터 : <?php echo $default['de_admin_company_tel']; ?></span>
                 <span class="mx-2">|</span>
                 <span>상담가능시간 : 평일 09:00 ~ 18:00</span>
+                 <span class="mx-2">|</span>
+                <span>통신판매업신고 : 2026-성남분당A-0745</span>
+
+                
             </div>
         </div>
 

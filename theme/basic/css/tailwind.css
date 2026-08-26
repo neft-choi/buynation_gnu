@@ -5,7 +5,6 @@
 }
 
 @layer components {
-
   /* input */
   .input-text {
     border: 1px solid var(--color-semantic-border-normal-default);
@@ -47,7 +46,7 @@
     color: var(--color-semantic-border-normal-strong);
   }
 
-  .input-checkbox:checked+.input-checkbox-icon {
+  .input-checkbox:checked + .input-checkbox-icon {
     color: var(--color-semantic-static-white);
   }
 }
@@ -55,5 +54,10 @@
 @layer utilities {
   .gutter-stable {
     scrollbar-gutter: stable;
+  }
+
+  .text-2xs {
+    font-size: 0.625rem;
+    line-height: calc(1 / 0.625);
   }
 }

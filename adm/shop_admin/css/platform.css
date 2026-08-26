@@ -1221,6 +1221,7 @@
     }
 
     .modal {
+        max-width: 800px;
         max-height: 88vh;
         overflow: auto;
         background: #fff;
