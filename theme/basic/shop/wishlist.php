@@ -405,6 +405,10 @@ include_once(G5_SHOP_PATH . '/_head.php');
                 type: 'POST',
                 data: $.param(payload),
                 success: function() {
+                    if (typeof window.refreshCartCount === 'function') {
+                        window.refreshCartCount();
+                    }
+                    
                     alert('해당 상품을 장바구니에 담았습니다.');
                 },
                 error: function(request) {

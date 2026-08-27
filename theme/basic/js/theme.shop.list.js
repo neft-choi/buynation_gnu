@@ -21,7 +21,7 @@ jQuery(function ($) {
 
     $.post(
       g5_theme_shop_url + "/ajax.action.php",
-      {it_id: it_id, action: "wish_update"},
+      { it_id: it_id, action: "wish_update" },
       function (error) {
         if (error != "OK") {
           alert(error.replace(/\\n/g, "\n"));
@@ -114,6 +114,10 @@ jQuery(function ($) {
           return false;
         }
 
+        if (data.cart_count !== undefined) {
+          $("#cart").text(data.cart_count);
+        }
+
         mainCart.update_cart_side();
         alert("상품을 장바구니에 담았습니다.");
       },
@@ -133,7 +137,7 @@ jQuery(function ($) {
     $.ajax({
       url: ajax_url + "/ajax.action.php",
       type: "GET",
-      data: {action: "refresh_cart"},
+      data: { action: "refresh_cart" },
       dataType: "html",
       async: true,
       cache: false,
@@ -143,6 +147,7 @@ jQuery(function ($) {
 
         $(".qk_con_wr .sbsk").html(inner_html);
         $(".hd_login .shop_cart .count").text(cart_count);
+        $("#cart").text(cart_count);
       },
       error: function (request, status, error) {
         alert("false ajax :" + request.responseText);
@@ -162,7 +167,7 @@ jQuery(function ($) {
     $.ajax({
       url: ajax_url + "/ajax.action.php",
       type: "GET",
-      data: {action: "refresh_wish"},
+      data: { action: "refresh_wish" },
       dataType: "html",
       async: true,
       cache: false,
@@ -274,7 +279,7 @@ jQuery(function ($) {
 
       $.post(
         g5_shop_url + "/itemoption.php",
-        {it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count},
+        { it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count },
         function (data) {
           $sel
             .eq(idx + 1)

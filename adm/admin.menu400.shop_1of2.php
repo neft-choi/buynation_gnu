@@ -23,5 +23,7 @@ $menu['menu400'] = array(
     array('400810', '쿠폰존관리', G5_ADMIN_URL . '/shop_admin/couponzonelist.php', 'scf_coupon_zone'),
     array('400750', '추가배송비관리', G5_ADMIN_URL . '/shop_admin/sendcostlist.php', 'scf_sendcost', 1),
     array('400760', '배송관리', G5_ADMIN_URL . '/shop_admin/deliverymanage.php', 'scf_delivery_manage', 1),
+    array('400770', '입점 사업자 서류', G5_ADMIN_URL . '/shop_admin/seller_documents.php', 'scf_seller_documents', 1),
+    array('400780', '담당자 권한', G5_ADMIN_URL . '/shop_admin/authorized_users.php', 'scf_authorized_users', 1),
     array('400410', '미완료주문', G5_ADMIN_URL . '/shop_admin/inorderlist.php', 'scf_inorder', 1),
 );

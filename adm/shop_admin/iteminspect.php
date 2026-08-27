@@ -216,6 +216,16 @@ function inspect_status_sub($status)
             href="./iteminspect.php?status=all">
             전체 <?php echo number_format($all_count); ?>
         </a>
+
+        <div role="search">
+            <label for="inspection-search-input" class="sound_only">상품 검색</label>
+            <input
+                type="search"
+                id="inspection-search-input"
+                class="border border-[#ddd] rounded-lg p-3 bg-white"
+                placeholder="상품 검색"
+                autocomplete="off">
+        </div>
     </div>
 
     <article class="card">
@@ -232,7 +242,7 @@ function inspect_status_sub($status)
                         <th>검수</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="inspection-list-body">
                     <?php if (!$rows) { ?>
                         <tr>
                             <td colspan="7" style="text-align:center;padding:32px;">
@@ -260,7 +270,7 @@ function inspect_status_sub($status)
                         $delivery_label = donuts_item_inspection_delivery_label($row_brand_id, $row['it_id']);
                         $badge = donuts_item_inspection_status_badge($row['status']);
                     ?>
-                        <tr>
+                        <tr class="js-inspection-search-row">
                             <td class="name">
                                 <?php echo get_text($row['it_name'] ?: '(삭제된 상품)'); ?>
                                 <span class="sub">
@@ -283,6 +293,11 @@ function inspect_status_sub($status)
                             </td>
                         </tr>
                     <?php } ?>
+                    <tr id="inspection-search-empty" hidden>
+                        <td colspan="7" class="text-center text-xs text-gray-500">
+                            검색 결과가 없습니다.
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -474,6 +489,33 @@ function inspect_status_sub($status)
 
             $('#inspection-decision').val(decision);
             $('#inspection-decision-form').submit();
+        });
+
+        // 상품 목록 검색
+        const $searchInput = $('#inspection-search-input');
+        const $searchRows = $('#inspection-list-body .js-inspection-search-row');
+        const $searchEmpty = $('#inspection-search-empty');
+
+        $searchInput.on('input', function() {
+            const keyword = $.trim($(this).val()).toLowerCase();
+            let matchedCount = 0;
+
+            if (!$searchRows.length) {
+                return;
+            }
+
+            $searchRows.each(function() {
+                const searchText = $(this).text().toLowerCase();
+                const isMatched = searchText.includes(keyword);
+
+                $(this).toggle(isMatched);
+
+                if (isMatched) {
+                    matchedCount += 1;
+                }
+            });
+
+            $searchEmpty.prop('hidden', matchedCount !== 0);
         });
     });
 </script>

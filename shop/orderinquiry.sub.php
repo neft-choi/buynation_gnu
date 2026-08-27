@@ -710,9 +710,14 @@ if (!empty($order_ids)) {
             });
 
             const data = await response.json();
+
             if (data.error) {
                 alert(String(data.error).replace(/\\n/g, '\n'));
                 return;
+            }
+
+            if (typeof window.refreshCartCount === 'function') {
+                window.refreshCartCount();
             }
 
             alert('상품을 장바구니에 담았습니다.');

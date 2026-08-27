@@ -292,6 +292,89 @@ if ($action === 'apply_products') {
     delivery_redirect('선택 상품의 배송설정을 저장했습니다.', $return_url . '&tab=individual');
 }
 
+if ($action === 'remove_group_product') {
+    $group_id = isset($_POST['group_id']) ? (int)$_POST['group_id'] : 0;
+    $it_id = isset($_POST['it_id']) ? trim((string)$_POST['it_id']) : '';
+
+    if ($group_id <= 0 || $it_id === '') {
+        delivery_redirect(
+            '적용 해제할 상품 또는 묶음배송 그룹 정보가 올바르지 않습니다.',
+            $return_url . '&tab=groups'
+        );
+    }
+
+    $it_id_sql = sql_real_escape_string($it_id);
+
+    /*
+     * 선택 그룹이 현재 관리 브랜드의 그룹인지 확인
+     */
+    $group = sql_fetch("
+        SELECT dg_id
+        FROM donuts_delivery_groups
+        WHERE dg_id = '{$group_id}'
+          AND brand_id = '{$brand_id_sql}'
+        LIMIT 1
+    ");
+
+    if (empty($group['dg_id'])) {
+        delivery_redirect(
+            '묶음배송 그룹이 올바르지 않습니다.',
+            $return_url . '&tab=groups'
+        );
+    }
+
+    /*
+     * 상품이 현재 브랜드 소유인지 확인
+     */
+    $item = sql_fetch("
+        SELECT it_id
+        FROM {$g5['g5_shop_item_table']}
+        WHERE it_id = '{$it_id_sql}'
+          AND TRIM(it_brand) = '{$brand_id_sql}'
+        LIMIT 1
+    ");
+
+    if (empty($item['it_id'])) {
+        delivery_redirect(
+            '해제할 상품이 없거나 다른 브랜드의 상품입니다.',
+            $return_url . '&tab=groups'
+        );
+    }
+
+    /*
+     * condition_id는 그대로 유지하고 group_id만 NULL로 변경.
+     * 즉 배송조건은 유지되고 묶음배송에서만 빠집니다.
+     */
+    $setting = sql_fetch("
+        SELECT condition_id, group_id
+        FROM donuts_delivery_product_settings
+        WHERE brand_id = '{$brand_id_sql}'
+          AND it_id = '{$it_id_sql}'
+        LIMIT 1
+    ");
+
+    if (empty($setting) || (int)$setting['group_id'] !== $group_id) {
+        delivery_redirect(
+            '해당 상품은 현재 선택한 묶음배송 그룹에 적용되어 있지 않습니다.',
+            $return_url . '&tab=groups'
+        );
+    }
+
+    sql_query("
+        UPDATE donuts_delivery_product_settings
+        SET group_id = NULL,
+            updated_at = NOW()
+        WHERE brand_id = '{$brand_id_sql}'
+          AND it_id = '{$it_id_sql}'
+          AND group_id = '{$group_id}'
+    ");
+
+    delivery_redirect(
+        '묶음배송 그룹 적용을 해제했습니다.',
+        $return_url . '&tab=groups'
+    );
+}
+
 if ($action === 'move_products') {
     $group_id = isset($_POST['group_id']) ? (int)$_POST['group_id'] : 0;
     $it_ids = isset($_POST['it_ids']) && is_array($_POST['it_ids']) ? $_POST['it_ids'] : array();

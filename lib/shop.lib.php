@@ -3008,7 +3008,7 @@ function get_header_actions($mode)
         : 0;
 
     ob_start();
-    ?>
+?>
     <div id="hd_actions" class="flex items-center gap-2">
         <a href="<?php echo G5_BBS_URL; ?>/mypage.php" class="inline-flex h-9 w-9 items-center justify-center text-gray-800"
             aria-label="커뮤니티 마이페이지">
@@ -3066,12 +3066,12 @@ function get_header_actions($mode)
         const notificationBadge = document.getElementById("community_noti_count");
 
         if (notificationBadge) {
-            notificationBadge.textContent = g5_is_member
-                ? Math.max(0, totalNotificationCount - unreadCount.length)
-                : 0;
+            notificationBadge.textContent = g5_is_member ?
+                Math.max(0, totalNotificationCount - unreadCount.length) :
+                0;
         }
     </script>
-    <?php
+<?php
 
     return ob_get_clean();
 }
@@ -3101,7 +3101,7 @@ function get_notification()
     // $total_noti = get_total_noti_count($member, get_table());
 
     ob_start();
-    ?>
+?>
     <a href="<?php echo G5_SHOP_URL; ?>/mypage.php" class="hidden pc:inline-flex items-center justify-center text-gray-800"
         aria-label="마이페이지">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -3142,6 +3142,18 @@ function get_notification()
         </span>
     </a>
 
+    <script>
+        window.refreshCartCount = function() {
+            $.get('<?php echo G5_SHOP_URL; ?>/cart.php', function(html) {
+                const nextCartCount = $(html).find('#cart').text().trim();
+
+                if (nextCartCount !== '') {
+                    $('#cart').text(nextCartCount);
+                }
+            });
+        };
+    </script>
+
     <button type="button" id="recent-viewed-open"
         class="inline-flex flex-col items-center justify-center gap-[1px] text-gray-800 ml-2" aria-label="최근 본 상품 열기">
         <?php if (!empty($latest_viewed_item['it_id'])) { ?>
@@ -3162,7 +3174,7 @@ function get_notification()
         let noti = document.getElementById('noti')
         noti.innerText = g5_is_member ? "<?= get_total_noti_count($member, get_table()); ?>" - unreadCount.length : 0
     </script>
-    <?php
+<?php
     return ob_get_clean();
 }
 //==============================================================================

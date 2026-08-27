@@ -130,6 +130,176 @@ if ($result) {
     }
 }
 
+/*
+ * 상세 모달용 실제 데이터
+ *
+ * 프론트에 하드코딩되어 있던 상품정보/보완요청/처리이력을
+ * 실제 상품 + 검수 DB 기준으로 구성합니다.
+ */
+$inspection_details = array();
+
+foreach ($rows as $detail_row) {
+    $detail_it_id = !empty($detail_row['it_id'])
+        ? trim((string)$detail_row['it_id'])
+        : '';
+
+    if ($detail_it_id === '') {
+        continue;
+    }
+
+    $detail_it_sql = sql_real_escape_string($detail_it_id);
+
+    $detail_item = sql_fetch("
+        SELECT
+            it_id,
+            it_name,
+            it_basic,
+            it_brand,
+            it_model,
+            it_price,
+            it_stock_qty,
+            it_explan,
+            it_use,
+            it_time,
+            it_img1,
+            ca_id
+        FROM {$g5['g5_shop_item_table']}
+        WHERE it_id = '{$detail_it_sql}'
+        LIMIT 1
+    ");
+
+    if (empty($detail_item['it_id'])) {
+        continue;
+    }
+
+    $category_name = '';
+
+    if (!empty($detail_item['ca_id'])) {
+        $detail_ca_sql = sql_real_escape_string($detail_item['ca_id']);
+
+        $category = sql_fetch("
+            SELECT ca_name
+            FROM {$g5['g5_shop_category_table']}
+            WHERE ca_id = '{$detail_ca_sql}'
+            LIMIT 1
+        ");
+
+        if (!empty($category['ca_name'])) {
+            $category_name = $category['ca_name'];
+        }
+    }
+
+    $review_fields = array();
+
+    if (!empty($detail_row['review_fields'])) {
+        $decoded_fields = json_decode($detail_row['review_fields'], true);
+
+        if (is_array($decoded_fields)) {
+            foreach ($decoded_fields as $field_name) {
+                $field_name = trim((string)$field_name);
+
+                if ($field_name !== '') {
+                    $review_fields[] = $field_name;
+                }
+            }
+        }
+    }
+
+    $detail_logs = array();
+
+    if (!empty($detail_row['inspection_id'])) {
+        $detail_inspection_id = (int)$detail_row['inspection_id'];
+
+        $log_result = sql_query("
+            SELECT
+                from_status,
+                to_status,
+                action_by,
+                message,
+                review_fields,
+                created_at
+            FROM donuts_item_inspection_logs
+            WHERE inspection_id = '{$detail_inspection_id}'
+            ORDER BY log_id ASC
+        ", false);
+
+        if ($log_result) {
+            while ($log = sql_fetch_array($log_result)) {
+                $detail_logs[] = array(
+                    'from_status' => (string)$log['from_status'],
+                    'to_status' => (string)$log['to_status'],
+                    'to_status_label' => donuts_item_inspection_status_label($log['to_status']),
+                    'action_by' => (string)$log['action_by'],
+                    'message' => (string)$log['message'],
+                    'created_at' => (string)$log['created_at']
+                );
+            }
+        }
+    }
+
+    $delivery_label = donuts_item_inspection_delivery_label(
+        $brand_id,
+        $detail_it_id
+    );
+
+    $image_html = '';
+
+    if (function_exists('get_it_image')) {
+        $image_html = get_it_image(
+            $detail_it_id,
+            360,
+            360,
+            false,
+            'inspection-detail-image',
+            'class="max-h-full max-w-full object-contain" alt="' . get_text($detail_item['it_name']) . '"',
+            true
+        );
+    }
+
+    $inspection_details[$detail_it_id] = array(
+        'it_id' => $detail_it_id,
+        'it_name' => (string)$detail_item['it_name'],
+        'it_basic' => (string)$detail_item['it_basic'],
+        'it_brand' => (string)$detail_item['it_brand'],
+        'it_model' => (string)$detail_item['it_model'],
+        'it_price' => (int)$detail_item['it_price'],
+        'it_stock_qty' => (int)$detail_item['it_stock_qty'],
+        'it_explan' => conv_content((string) $detail_item['it_explan'], 1),
+        'it_use' => (int)$detail_item['it_use'],
+        'it_time' => (string)$detail_item['it_time'],
+        'ca_id' => (string)$detail_item['ca_id'],
+        'category_name' => $category_name,
+        'inspect_no' => !empty($detail_row['inspect_no'])
+            ? (string)$detail_row['inspect_no']
+            : '',
+        'request_type' => !empty($detail_row['request_type'])
+            ? (string)$detail_row['request_type']
+            : 'new',
+        'status' => !empty($detail_row['status'])
+            ? (string)$detail_row['status']
+            : 'draft',
+        'status_label' => donuts_item_inspection_status_label(
+            !empty($detail_row['status']) ? $detail_row['status'] : 'draft'
+        ),
+        'requested_at' => !empty($detail_row['requested_at'])
+            ? (string)$detail_row['requested_at']
+            : '',
+        'reviewed_at' => !empty($detail_row['reviewed_at'])
+            ? (string)$detail_row['reviewed_at']
+            : '',
+        'admin_message' => !empty($detail_row['admin_message'])
+            ? (string)$detail_row['admin_message']
+            : '',
+        'brand_message' => !empty($detail_row['brand_message'])
+            ? (string)$detail_row['brand_message']
+            : '',
+        'review_fields' => $review_fields,
+        'delivery_label' => (string)$delivery_label,
+        'image_html' => $image_html,
+        'logs' => $detail_logs
+    );
+}
+
 $counts = array(
     'draft' => 0,
     'pending' => 0,
@@ -286,7 +456,10 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
                                 </span>
                             </td>
                             <td>
-                                <button type="button" class="btn sm js-inspection-detail">상세</button>
+                                <button
+                                    type="button"
+                                    class="btn sm js-inspection-detail"
+                                    data-it-id="<?php echo get_text($row['it_id']); ?>">상세</button>
 
                                 <?php if (in_array($row['status'], array('draft', 'revision', 'rejected'), true)) { ?>
                                     <a class="btn sm" href="./itemform.php?w=u&amp;it_id=<?php echo urlencode($row['it_id']); ?>">수정</a>
@@ -325,30 +498,32 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
             </div>
 
             <div class="modal-body">
-                <span class="text-xs text-gray-500">상품코드</span>
-                <h3 class="my-2 text-base font-bold">상품명</h3>
+                <span id="inspection-detail-code" class="text-xs text-gray-500">상품코드</span>
+                <h3 id="inspection-detail-name" class="my-2 text-base font-bold">상품명</h3>
 
-                <div class="mb-4 flex aspect-square w-40 items-center justify-center rounded-xl border border-gray-200 bg-gray-50 text-xs text-gray-400">
+                <div
+                    id="inspection-detail-image"
+                    class="mb-4 flex aspect-square w-40 items-center justify-center overflow-hidden rounded-xl border border-gray-200 bg-gray-50 text-xs text-gray-400">
                     상품 이미지
                 </div>
 
                 <dl class="grid grid-cols-[115px_1fr] overflow-hidden rounded-xl border border-gray-200 text-xs [&>dt]:border-b [&>dt]:border-gray-200 [&>dt]:bg-gray-50 [&>dt]:p-3 [&>dt]:text-gray-500 [&>dt:last-of-type]:border-b-0 [&>dd]:m-0 [&>dd]:border-b [&>dd]:border-gray-200 [&>dd]:p-3 [&>dd]:font-bold [&>dd:last-child]:border-b-0">
                     <dt>상품 ID</dt>
-                    <dd>상품 ID</dd>
+                    <dd id="inspection-detail-id">-</dd>
                     <dt>브랜드</dt>
-                    <dd>브랜드명</dd>
+                    <dd id="inspection-detail-brand">-</dd>
                     <dt>판매가</dt>
-                    <dd>0원</dd>
+                    <dd id="inspection-detail-price">0원</dd>
                     <dt>요청 유형</dt>
-                    <dd>신규</dd>
+                    <dd id="inspection-detail-request-type">-</dd>
                     <dt>배송그룹</dt>
-                    <dd>배송그룹</dd>
+                    <dd id="inspection-detail-delivery">-</dd>
                     <dt>판매 상태</dt>
-                    <dd>판매 대기</dd>
+                    <dd id="inspection-detail-sale-status">-</dd>
                     <dt>검수 상태</dt>
-                    <dd>검수 요청 전</dd>
+                    <dd id="inspection-detail-status">-</dd>
                     <dt>요청일</dt>
-                    <dd>-</dd>
+                    <dd id="inspection-detail-requested-at">-</dd>
                 </dl>
 
                 <section class="mt-4">
@@ -360,76 +535,38 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
                                 <col>
                                 <col class="grid_2">
                             </colgroup>
-                            <tbody>
-                                <tr>
-                                    <th>기본분류</th>
-                                    <td class="bg-red-200">분류명</td>
-                                    <td class="text-center font-semibold text-red-500">보완 요청</td>
-                                </tr>
-                                <tr>
-                                    <th>상품명</th>
-                                    <td class="bg-red-200">상품명</td>
-                                    <td class="text-center font-semibold text-red-500">보완 요청</td>
-                                </tr>
-                                <tr>
-                                    <th>기본설명</th>
-                                    <td>기본설명</td>
-                                </tr>
-                                <tr>
-                                    <th>브랜드</th>
-                                    <td>브랜드명</td>
-                                </tr>
-                                <tr>
-                                    <th>모델</th>
-                                    <td>모델명</td>
-                                </tr>
-                                <tr>
-                                    <th>판매가격</th>
-                                    <td>0원</td>
-                                </tr>
-                                <tr>
-                                    <th>재고수량</th>
-                                    <td>0개</td>
-                                </tr>
-                                <tr>
-                                    <th>상품설명</th>
-                                    <td>상품설명</td>
-                                </tr>
-                            </tbody>
+                            <tbody id="inspection-detail-fields"></tbody>
                         </table>
                     </div>
                 </section>
 
-                <section class="mt-4">
-                    <h3 class="text-sm font-semibold">검수 의견</h3>
-                    <div class="mt-3 rounded-xl border border-gray-200 p-4 text-sm text-gray-700">
-                        <p class="whitespace-pre-line text-xs text-red-500">[기본분류]가 정확하지 않습니다.
-                            [상품명]에 부적절한 문장이 있습니다. → "완전 공짜"
-                        </p>
+                <section id="inspection-review-section" class="mt-4">
+                    <h3 class="text-sm font-semibold">보완 요청 사항</h3>
+                    <div class="mt-3 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-gray-700">
+                        <div id="inspection-review-fields" class="mb-3"></div>
+                        <p id="inspection-review-message" class="whitespace-pre-line text-xs text-red-500"></p>
+                    </div>
+                </section>
+
+                <section id="inspection-brand-message-section" class="mt-4" hidden>
+                    <h3 class="text-sm font-semibold">브랜드 검수 요청 메모</h3>
+                    <div class="mt-3 rounded-xl border border-gray-200 p-4">
+                        <p id="inspection-brand-message" class="whitespace-pre-line text-xs text-gray-600"></p>
                     </div>
                 </section>
 
                 <section class="mt-4">
                     <h3 class="text-sm font-semibold">처리 이력</h3>
-
-                    <div class="timeline mt-3">
-                        <div class="timeline-item">
-                            <b>임시저장</b>
-                            <small>2026-08-25 10:30 · 브랜드명</small>
-                        </div>
-                        <div class="timeline-item">
-                            <b>검수 요청</b>
-                            <small>2026-08-26 09:15 · 브랜드명</small>
-                        </div>
-                        <div class="timeline-item">
-                            <b>보완 요청</b>
-                            <small>2026-08-26 14:20 · 플랫폼 관리자 · 기본분류와 상품명을 확인해 주세요.</small>
-                        </div>
-                    </div>
+                    <div id="inspection-detail-timeline" class="timeline mt-3"></div>
                 </section>
             </div>
 
             <div class="modal-foot">
+                <a
+                    id="inspection-detail-edit"
+                    class="btn primary"
+                    href="#"
+                    hidden>상품 수정</a>
                 <button type="button" class="btn" data-action="close-inspection-detail">닫기</button>
             </div>
         </section>
@@ -437,11 +574,250 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 
     <script>
         $(function() {
-            // 상품 검수 상세 모달
+            const inspectionDetails = <?php echo json_encode(
+                                            $inspection_details,
+                                            JSON_UNESCAPED_UNICODE |
+                                                JSON_UNESCAPED_SLASHES |
+                                                JSON_HEX_TAG |
+                                                JSON_HEX_AMP |
+                                                JSON_HEX_APOS |
+                                                JSON_HEX_QUOT
+                                        ); ?>;
+
+            const fieldLabels = {
+                ca_id: '기본분류',
+                it_name: '상품명',
+                it_basic: '기본설명',
+                it_brand: '브랜드',
+                it_model: '모델',
+                it_price: '판매가격',
+                it_stock_qty: '재고수량',
+                it_explan: '상품설명'
+            };
+
             const $modal = $('#inspection-detail-modal');
 
-            $('.js-inspection-detail').on('click', function() {
+            function escapeHtml(value) {
+                return $('<div>').text(value == null ? '' : String(value)).html();
+            }
+
+            function formatNumber(value) {
+                return Number(value || 0).toLocaleString('ko-KR');
+            }
+
+            function fieldValue(detail, field) {
+                switch (field) {
+                    case 'ca_id':
+                        if (detail.category_name) {
+                            return detail.category_name + ' (' + detail.ca_id + ')';
+                        }
+                        return detail.ca_id || '-';
+
+                    case 'it_price':
+                        return formatNumber(detail.it_price) + '원';
+
+                    case 'it_stock_qty':
+                        return formatNumber(detail.it_stock_qty) + '개';
+
+                    case 'it_basic':
+                    case 'it_model':
+                    case 'it_explan':
+                        return detail[field] || '-';
+
+                    default:
+                        return detail[field] || '-';
+                }
+            }
+
+            function renderDetailFields(detail) {
+                const reviewFields = Array.isArray(detail.review_fields) ?
+                    detail.review_fields :
+                    [];
+
+                let html = '';
+
+                Object.keys(fieldLabels).forEach(field => {
+                    const needsRevision = reviewFields.includes(field);
+                    const isHtmlField = field === 'it_explan';
+                    const value = isHtmlField ?
+                        fieldValue(detail, field) :
+                        escapeHtml(fieldValue(detail, field));
+
+                    html += '<tr>';
+
+                    html += '<th>' + escapeHtml(fieldLabels[field]) + '</th>';
+
+                    if (isHtmlField) {
+                        html += '<td' +
+                            (needsRevision ? ' class="bg-red-100"' : '') +
+                            '><div class="max-w-full overflow-x-auto break-words [&_img]:h-auto [&_img]:max-w-full">' +
+                            value +
+                            '</div></td>';
+                    } else {
+                        html += '<td' +
+                            (needsRevision ? ' class="bg-red-100"' : '') +
+                            '><span class="block whitespace-pre-line">' +
+                            value +
+                            '</span></td>';
+                    }
+
+                    if (needsRevision) {
+                        html += '<td class="text-center font-semibold text-red-500">보완 요청</td>';
+                    } else {
+                        html += '<td class="text-center text-gray-400">-</td>';
+                    }
+
+                    html += '</tr>';
+                });
+
+                $('#inspection-detail-fields').html(html);
+            }
+
+            function renderReview(detail) {
+                const reviewFields = Array.isArray(detail.review_fields) ?
+                    detail.review_fields :
+                    [];
+
+                const labels = reviewFields
+                    .map(field => fieldLabels[field] || field);
+
+                if (labels.length) {
+                    $('#inspection-review-fields').html(
+                        '<div class="flex flex-wrap gap-2">' +
+                        labels.map(label =>
+                            '<span class="badge red">' +
+                            escapeHtml(label) +
+                            '</span>'
+                        ).join('') +
+                        '</div>'
+                    );
+                } else {
+                    $('#inspection-review-fields').html(
+                        '<span class="text-xs text-gray-500">지정된 보완 항목이 없습니다.</span>'
+                    );
+                }
+
+                const adminMessage = detail.admin_message || '';
+
+                $('#inspection-review-message').text(
+                    adminMessage || '플랫폼 관리자가 별도 검수 의견을 입력하지 않았습니다.'
+                );
+
+                /*
+                 * 보완요청/거절일 때는 항상 보이고,
+                 * 다른 상태에서는 실제 의견이 있을 때만 표시합니다.
+                 */
+                const showReview = (
+                    detail.status === 'revision' ||
+                    detail.status === 'rejected' ||
+                    labels.length > 0 ||
+                    adminMessage !== ''
+                );
+
+                $('#inspection-review-section').prop('hidden', !showReview);
+            }
+
+            function renderTimeline(detail) {
+                const logs = Array.isArray(detail.logs) ?
+                    detail.logs :
+                    [];
+
+                if (!logs.length) {
+                    $('#inspection-detail-timeline').html(
+                        '<div class="timeline-item">' +
+                        '<b>처리 이력이 없습니다.</b>' +
+                        '</div>'
+                    );
+                    return;
+                }
+
+                const html = logs.map(log => {
+                    let meta = escapeHtml(log.created_at || '-');
+
+                    if (log.action_by) {
+                        meta += ' · ' + escapeHtml(log.action_by);
+                    }
+
+                    if (log.message) {
+                        meta += ' · ' + escapeHtml(log.message);
+                    }
+
+                    return (
+                        '<div class="timeline-item">' +
+                        '<b>' + escapeHtml(log.to_status_label || log.to_status || '-') + '</b>' +
+                        '<small>' + meta + '</small>' +
+                        '</div>'
+                    );
+                }).join('');
+
+                $('#inspection-detail-timeline').html(html);
+            }
+
+            function openInspectionDetail(itId) {
+                const detail = inspectionDetails[itId];
+
+                if (!detail) {
+                    alert('상품 검수 상세 정보를 불러올 수 없습니다.');
+                    return;
+                }
+
+                $('#inspection-detail-code').text(
+                    (detail.inspect_no ? detail.inspect_no + ' · ' : '') +
+                    detail.it_id
+                );
+
+                $('#inspection-detail-name').text(detail.it_name || '(상품명 없음)');
+                $('#inspection-detail-id').text(detail.it_id || '-');
+                $('#inspection-detail-brand').text(detail.it_brand || '-');
+                $('#inspection-detail-price').text(formatNumber(detail.it_price) + '원');
+                $('#inspection-detail-request-type').text(
+                    detail.request_type === 'update' ? '정보 변경' : '신규'
+                );
+                $('#inspection-detail-delivery').text(detail.delivery_label || '미지정');
+                $('#inspection-detail-sale-status').text(
+                    Number(detail.it_use) === 1 ? '판매중' : '판매 대기'
+                );
+                $('#inspection-detail-status').text(detail.status_label || detail.status || '-');
+                $('#inspection-detail-requested-at').text(detail.requested_at || '-');
+
+                if (detail.image_html) {
+                    $('#inspection-detail-image').html(detail.image_html);
+                } else {
+                    $('#inspection-detail-image').text('상품 이미지 없음');
+                }
+
+                renderDetailFields(detail);
+                renderReview(detail);
+                renderTimeline(detail);
+
+                if (detail.brand_message) {
+                    $('#inspection-brand-message').text(detail.brand_message);
+                    $('#inspection-brand-message-section').prop('hidden', false);
+                } else {
+                    $('#inspection-brand-message').text('');
+                    $('#inspection-brand-message-section').prop('hidden', true);
+                }
+
+                /*
+                 * 보완 요청/거절/임시저장 상태에서는 상세창에서 바로 수정 가능.
+                 */
+                const canEdit = ['draft', 'revision', 'rejected'].includes(detail.status);
+
+                $('#inspection-detail-edit')
+                    .prop('hidden', !canEdit)
+                    .attr(
+                        'href',
+                        canEdit ?
+                        './itemform.php?w=u&it_id=' + encodeURIComponent(detail.it_id) :
+                        '#'
+                    );
+
                 $modal.removeAttr('hidden');
+            }
+
+            $('.js-inspection-detail').on('click', function() {
+                const itId = String($(this).data('it-id') || '');
+                openInspectionDetail(itId);
             });
 
             $modal.on('click', function(event) {
@@ -452,6 +828,12 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 
             $modal.find('[data-action="close-inspection-detail"]').on('click', function() {
                 $modal.attr('hidden', true);
+            });
+
+            $(document).on('keydown', function(event) {
+                if (event.key === 'Escape' && !$modal.is('[hidden]')) {
+                    $modal.attr('hidden', true);
+                }
             });
 
             // 상품 목록 검색

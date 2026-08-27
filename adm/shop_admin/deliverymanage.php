@@ -3453,6 +3453,8 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
 
                 const price = Number(item.it_price || 0).toLocaleString();
 
+                row.dataset.itId = String(item.it_id || '');
+
                 row.innerHTML = `
                  <span class="product-thumb">${item.it_image || ''}</span>
                 <span class="product-pick-copy">
@@ -3463,7 +3465,11 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                         ${escapeMoveHtml(item.dc_name || '배송조건 미설정')}
                     </small>
                 </span>
-                <button type="button" class="btn btn-small">적용 해제</button>
+                <button
+                    type="button"
+                    class="btn btn-small group-applied-remove"
+                    data-it-id="${escapeMoveHtml(item.it_id || '')}"
+                >적용 해제</button>
             `;
 
                 groupAppliedList.appendChild(row);
@@ -3524,6 +3530,58 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                     '현재 적용 상품 조회 중 오류가 발생했습니다.';
                 if (groupAppliedCount) groupAppliedCount.textContent = '0';
             }
+        }
+
+        /*
+         * 묶음배송 현재 적용상품 -> 적용 해제
+         *
+         * 상품의 배송조건(condition_id)은 유지하고
+         * group_id만 NULL로 변경합니다.
+         */
+        if (groupAppliedList) {
+            groupAppliedList.addEventListener('click', event => {
+                const button = event.target.closest('.group-applied-remove');
+                if (!button) return;
+
+                event.preventDefault();
+                event.stopPropagation();
+
+                const itId = String(button.dataset.itId || '').trim();
+                const groupId = moveGroupId ? String(moveGroupId.value || '').trim() : '';
+
+                if (!itId || !groupId) {
+                    alert('해제할 상품 또는 묶음배송 그룹 정보가 없습니다.');
+                    return;
+                }
+
+                if (!confirm('이 상품을 현재 묶음배송 그룹에서 해제하시겠습니까?\\n배송조건은 유지되고 묶음배송 그룹만 해제됩니다.')) {
+                    return;
+                }
+
+                const form = document.createElement('form');
+                form.method = 'post';
+                form.action = './deliverymanage_update.php';
+                form.style.display = 'none';
+
+                const fields = {
+                    token: <?php echo json_encode($admin_token, JSON_UNESCAPED_UNICODE); ?>,
+                    brand_id: <?php echo json_encode($manage_brand_id, JSON_UNESCAPED_UNICODE); ?>,
+                    action: 'remove_group_product',
+                    group_id: groupId,
+                    it_id: itId
+                };
+
+                Object.keys(fields).forEach(name => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = name;
+                    input.value = fields[name];
+                    form.appendChild(input);
+                });
+
+                document.body.appendChild(form);
+                form.submit();
+            });
         }
 
         async function searchMoveProducts() {

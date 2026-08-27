@@ -2,12 +2,43 @@
 $sub_menu = '500110';
 include_once('./_common.php');
 
+$sale1_brand_id = '';
+$sale1_is_brand = false;
+
+if ($is_admin !== 'super' && !empty($member['mb_id'])) {
+    $sale1_login_id = trim((string)$member['mb_id']);
+    $sale1_login_sql = sql_real_escape_string($sale1_login_id);
+
+    $sale1_brand = sql_fetch("
+        SELECT brand_id
+        FROM donuts_brand
+        WHERE LOWER(TRIM(brand_id)) = LOWER('{$sale1_login_sql}')
+        LIMIT 1
+    ");
+
+    if (!empty($sale1_brand['brand_id'])) {
+        $sale1_is_brand = true;
+        $sale1_brand_id = $sale1_login_id;
+    }
+}
+
+
 auth_check_menu($auth, $sub_menu, "r");
 
 $g5['title'] = '매출현황';
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 include_once(G5_PLUGIN_PATH.'/jquery-ui/datepicker.php');
 ?>
+
+<?php if ($sale1_is_brand) { ?>
+<div class="local_desc01 local_desc">
+    <p>
+        <strong><?php echo get_text($sale1_brand_id); ?></strong>
+        계정의 매출현황만 조회합니다.
+        혼합 주문의 경우 다른 브랜드 상품금액은 매출합계에서 제외됩니다.
+    </p>
+</div>
+<?php } ?>
 
 <div class="local_sch03 local_sch">
 
