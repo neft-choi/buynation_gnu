@@ -716,12 +716,12 @@ if ($is_kakaopay_use) {
         }
         $buycle_arr = [
             [
-                '바이클' => '조인성',
+                '도티' => '조인성',
                 '기여금' => 5,
                 '할인율' => 10
             ],
             [
-                '바이클' => '김우빈',
+                '도티' => '김우빈',
                 '기여금' => 5,
                 '할인율' => 10
             ]
@@ -854,12 +854,12 @@ if ($is_kakaopay_use) {
             </section>
             <!-- 포인트 섹션 끝 -->
 
-            <!-- 기여할 바이클 선택 섹션 -->
+            <!-- 기여할 도티 선택 섹션 -->
             <section id="sod_buycle_apply" class="space-y-4 p-4 mb-3 bg-white">
                 <div class="flex items-center justify-between pc:border-b border-gray-900 pc:pb-4">
-                    <h2 class="text-lg pc:text-2xl font-bold">기여할 바이클</h2>
+                    <h2 class="text-lg pc:text-2xl font-bold">기여할 도티</h2>
                     <div class="flex items-center gap-2 font-semibold">
-                        <span>구독한 바이클 <?php echo number_format(count($buycle_arr)); ?>개</span>
+                        <span>구독한 도티 <?php echo number_format(count($buycle_arr)); ?>개</span>
                         <button type="button" id="buycle_accordion_btn"
                             class="inline-flex pc:hidden h-8 w-8 items-center justify-center text-[#222]"
                             aria-expanded="true" aria-controls="sod_buycle_apply_body">
@@ -880,12 +880,12 @@ if ($is_kakaopay_use) {
                         if ((int) $buycle_arr > 0) {
 
                             ?>
-                            <!-- <span id="od_buycle_btn_label" class="text-sm">바이클 선택</span> -->
+                            <!-- <span id="od_buycle_btn_label" class="text-sm">도티 선택</span> -->
                             <span class="items-center w-full">
                                 <select class="w-full">
                                     <?php foreach ($buycle_arr as $item): ?>
                                         <option class="item">
-                                            이름: <?= $item['바이클'] ?>
+                                            이름: <?= $item['도티'] ?>
                                             기여금: <?= $item['기여금'] ?>%
                                             할인율: <?= $item['할인율'] ?>%
                                         </option>
@@ -893,7 +893,7 @@ if ($is_kakaopay_use) {
                                 </select>
                             </span>
                         <?php } else { ?>
-                            <span class="text-sm">아직 구독한 바이클이 없습니다1.</span>
+                            <span class="text-sm">아직 구독한 도티이 없습니다1.</span>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                 class="lucide lucide-chevron-right-icon lucide-chevron-right w-4 h-4">
@@ -912,7 +912,7 @@ if ($is_kakaopay_use) {
                     </div>
                 </div>
             </section>
-            <!-- 기여할 바이클 선택 섹션 -->
+            <!-- 기여할 도티 선택 섹션 -->
 
             <!-- 결제수단 섹션 시작 -->
             <section id="sod_settle_ui" class="space-y-4 p-4 mb-3 bg-white">

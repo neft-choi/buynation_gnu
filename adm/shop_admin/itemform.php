@@ -271,7 +271,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 </div>
 <?php } ?>
 
-<form name="fitemform" action="./itemformupdate_inspect.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
+<form name="fitemform" action="./itemformupdate_delivery.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
 
     <input type="hidden" name="w" value="<?php echo $w; ?>">
     <input type="hidden" name="sca" value="<?php echo $sca; ?>">
@@ -280,6 +280,11 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
     <input type="hidden" name="sfl" value="<?php echo $sfl; ?>">
     <input type="hidden" name="stx" value="<?php echo $stx; ?>">
     <input type="hidden" name="page" value="<?php echo $page; ?>">
+
+    <!-- deliverymanage 연동 저장값 -->
+    <input type="hidden" name="dm_condition_id" id="dm_condition_id" value="0">
+    <input type="hidden" name="dm_group_id" id="dm_group_id" value="0">
+
     <?php echo $pg_anchor; ?>
 
     <section id="anc_sitfrm_cate">
@@ -1269,7 +1274,789 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
     </section>
 
     <section id="anc_sitfrm_sendcost">
-        <?php include_once G5_ADMIN_PATH . '/shop_admin/sendcostform.php' ?>
+        <?php
+        /*
+         * 기존 배송비 퍼블리싱(sendcostform.php)은 그대로 둡니다.
+         * 여기서는 deliverymanage.php에서 저장한 "현재 상품의 실제 설정값"만
+         * 읽어서 기존 퍼블리싱의 선택 상태에 주입합니다.
+         */
+        $dm_selected_condition_id = 0;
+        $dm_selected_condition_name = '';
+        $dm_selected_group_id = 0;
+        $dm_selected_group_name = '';
+        $dm_selected_group_method = '';
+        $dm_selected_brand_id = '';
+
+        if (!empty($it['it_brand'])) {
+            $dm_selected_brand_id = trim((string)$it['it_brand']);
+        } elseif (!empty($member['mb_id'])) {
+            $dm_selected_brand_id = trim((string)$member['mb_id']);
+        }
+
+        if ($w === 'u' && !empty($it['it_id'])) {
+            $dm_it_sql = sql_real_escape_string(trim((string)$it['it_id']));
+            $dm_brand_sql = sql_real_escape_string($dm_selected_brand_id);
+
+            /*
+             * deliverymanage_update.php가 실제 저장하는 테이블.
+             *
+             * condition_id / group_id를 상품코드 기준으로 그대로 읽습니다.
+             * brand_id 대소문자 차이도 허용합니다.
+             */
+            $dm_setting = array();
+
+            $dm_sr = sql_query("
+                SELECT
+                    brand_id,
+                    condition_id,
+                    group_id
+                FROM donuts_delivery_product_settings
+                WHERE it_id = '{$dm_it_sql}'
+                  AND LOWER(TRIM(brand_id)) = LOWER('{$dm_brand_sql}')
+                LIMIT 1
+            ", false);
+
+            if ($dm_sr) {
+                $dm_setting = sql_fetch_array($dm_sr);
+            }
+
+            /*
+             * 과거 데이터에서 brand_id가 다른 표기로 저장된 경우
+             * it_id 기준 fallback.
+             */
+            if (empty($dm_setting)) {
+                $dm_sr = sql_query("
+                    SELECT
+                        brand_id,
+                        condition_id,
+                        group_id
+                    FROM donuts_delivery_product_settings
+                    WHERE it_id = '{$dm_it_sql}'
+                    LIMIT 1
+                ", false);
+
+                if ($dm_sr) {
+                    $dm_setting = sql_fetch_array($dm_sr);
+                }
+            }
+
+            if (!empty($dm_setting['brand_id'])) {
+                $dm_selected_brand_id =
+                    trim((string)$dm_setting['brand_id']);
+                $dm_brand_sql =
+                    sql_real_escape_string($dm_selected_brand_id);
+            }
+
+            $dm_selected_condition_id =
+                !empty($dm_setting['condition_id'])
+                ? (int)$dm_setting['condition_id']
+                : 0;
+
+            $dm_selected_group_id =
+                !empty($dm_setting['group_id'])
+                ? (int)$dm_setting['group_id']
+                : 0;
+
+            /*
+             * 상품별 condition_id가 없으면 deliverymanage와 동일하게
+             * 브랜드 기본 배송조건으로 표시합니다.
+             */
+            if ($dm_selected_condition_id <= 0 && $dm_selected_brand_id !== '') {
+                $dm_default = sql_fetch("
+                    SELECT dc_id
+                    FROM donuts_delivery_conditions
+                    WHERE LOWER(TRIM(brand_id)) = LOWER('{$dm_brand_sql}')
+                      AND is_default = 1
+                      AND use_yn = 'Y'
+                    ORDER BY dc_id DESC
+                    LIMIT 1
+                ");
+
+                if (!empty($dm_default['dc_id'])) {
+                    $dm_selected_condition_id = (int)$dm_default['dc_id'];
+                }
+            }
+
+            /*
+             * condition_id 숫자만 가지고 퍼블리싱을 선택하면 안 되므로
+             * 실제 배송조건명을 조회합니다.
+             */
+            if ($dm_selected_condition_id > 0) {
+                $dm_condition = sql_fetch("
+                    SELECT dc_id, dc_name
+                    FROM donuts_delivery_conditions
+                    WHERE dc_id = '{$dm_selected_condition_id}'
+                      AND use_yn = 'Y'
+                    LIMIT 1
+                ");
+
+                if (!empty($dm_condition['dc_id'])) {
+                    $dm_selected_condition_name =
+                        trim((string)$dm_condition['dc_name']);
+                }
+            }
+
+            /*
+             * 묶음배송도 실제 그룹명과 계산방식을 읽습니다.
+             */
+            if ($dm_selected_group_id > 0) {
+                $dm_group = sql_fetch("
+                    SELECT dg_id, dg_name, calc_method
+                    FROM donuts_delivery_groups
+                    WHERE dg_id = '{$dm_selected_group_id}'
+                      AND use_yn = 'Y'
+                    LIMIT 1
+                ");
+
+                if (!empty($dm_group['dg_id'])) {
+                    $dm_selected_group_name =
+                        trim((string)$dm_group['dg_name']);
+                    $dm_selected_group_method =
+                        strtoupper(trim((string)$dm_group['calc_method']));
+                } else {
+                    $dm_selected_group_id = 0;
+                }
+            }
+        }
+
+        /*
+         * 퍼블리싱 HTML/CSS는 원래 파일 그대로 출력.
+         */
+        include_once G5_ADMIN_PATH . '/shop_admin/sendcostform.php';
+        ?>
+
+        <?php if ($w === 'u') {
+            /*
+             * 기존 퍼블리싱 카드/option이 ID가 아니라 이름을 value로 쓰는 경우
+             * 저장 시 실제 condition_id / group_id로 변환하기 위한 매핑.
+             */
+            $dm_condition_name_map = array();
+            $dm_group_name_map = array();
+
+            if ($dm_selected_brand_id !== '') {
+                $dm_map_brand_sql = sql_real_escape_string($dm_selected_brand_id);
+
+                $dm_map_cr = sql_query("
+                    SELECT dc_id, dc_name
+                    FROM donuts_delivery_conditions
+                    WHERE LOWER(TRIM(brand_id)) = LOWER('{$dm_map_brand_sql}')
+                      AND use_yn = 'Y'
+                    ORDER BY dc_id ASC
+                ", false);
+
+                if ($dm_map_cr) {
+                    while ($dm_map_row = sql_fetch_array($dm_map_cr)) {
+                        $dm_map_name = trim((string)$dm_map_row['dc_name']);
+                        if ($dm_map_name !== '') {
+                            $dm_condition_name_map[$dm_map_name] =
+                                (int)$dm_map_row['dc_id'];
+                        }
+                    }
+                }
+
+                $dm_map_gr = sql_query("
+                    SELECT dg_id, dg_name
+                    FROM donuts_delivery_groups
+                    WHERE LOWER(TRIM(brand_id)) = LOWER('{$dm_map_brand_sql}')
+                      AND use_yn = 'Y'
+                    ORDER BY dg_id ASC
+                ", false);
+
+                if ($dm_map_gr) {
+                    while ($dm_map_row = sql_fetch_array($dm_map_gr)) {
+                        $dm_map_name = trim((string)$dm_map_row['dg_name']);
+                        if ($dm_map_name !== '') {
+                            $dm_group_name_map[$dm_map_name] =
+                                (int)$dm_map_row['dg_id'];
+                        }
+                    }
+                }
+            }
+        ?>
+        <script>
+        (function() {
+            const root = document.getElementById('anc_sitfrm_sendcost');
+            if (!root) return;
+
+            const conditionId =
+                <?php echo (int)$dm_selected_condition_id; ?>;
+            const conditionName =
+                <?php echo json_encode(
+                    $dm_selected_condition_name,
+                    JSON_UNESCAPED_UNICODE |
+                    JSON_UNESCAPED_SLASHES
+                ); ?>;
+
+            const groupId =
+                <?php echo (int)$dm_selected_group_id; ?>;
+            const groupName =
+                <?php echo json_encode(
+                    $dm_selected_group_name,
+                    JSON_UNESCAPED_UNICODE |
+                    JSON_UNESCAPED_SLASHES
+                ); ?>;
+
+            const conditionNameMap =
+                <?php echo json_encode(
+                    $dm_condition_name_map,
+                    JSON_UNESCAPED_UNICODE |
+                    JSON_UNESCAPED_SLASHES
+                ); ?>;
+
+            const groupNameMap =
+                <?php echo json_encode(
+                    $dm_group_name_map,
+                    JSON_UNESCAPED_UNICODE |
+                    JSON_UNESCAPED_SLASHES
+                ); ?>;
+
+            const conditionHidden =
+                document.getElementById('dm_condition_id');
+            const groupHidden =
+                document.getElementById('dm_group_id');
+
+            if (conditionHidden) {
+                conditionHidden.value = String(conditionId || 0);
+            }
+
+            if (groupHidden) {
+                groupHidden.value = String(groupId || 0);
+            }
+
+            function normalize(value) {
+                return String(value || '')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+            }
+
+            /*
+             * 기존 버전 문제:
+             * "테스트"처럼 짧은 이름을 text.indexOf()로 비교하면
+             * "테스트 복사본", "테스트 2", "유료 테스트"까지 모두 일치하여
+             * 마지막 카드/옵션이 선택되는 문제가 있었습니다.
+             *
+             * 이번에는 ID 또는 "정확한 이름"만 일치시킵니다.
+             */
+            function getConditionCardName(card) {
+                if (!card) return '';
+
+                const dataName =
+                    card.getAttribute('data-condition-name') ||
+                    card.getAttribute('data-condition') ||
+                    card.getAttribute('data-name');
+
+                if (dataName) {
+                    return normalize(dataName);
+                }
+
+                const strong = card.querySelector('strong');
+
+                if (strong) {
+                    /*
+                     * "기본" 배지 등의 텍스트는 조건명에 포함시키지 않습니다.
+                     */
+                    const clone = strong.cloneNode(true);
+
+                    clone.querySelectorAll(
+                        '.badge, .tag, .label, small, span.badge'
+                    ).forEach(function(el) {
+                        el.remove();
+                    });
+
+                    return normalize(clone.textContent);
+                }
+
+                return '';
+            }
+
+            function getConditionCardId(card) {
+                if (!card) return 0;
+
+                const raw =
+                    card.getAttribute('data-condition-id') ||
+                    card.getAttribute('data-dc-id') ||
+                    card.getAttribute('data-id') ||
+                    '';
+
+                const id = parseInt(raw, 10);
+                return Number.isFinite(id) ? id : 0;
+            }
+
+            function findExactConditionCard() {
+                const candidates = Array.from(
+                    root.querySelectorAll(
+                        [
+                            '[data-condition-id]',
+                            '[data-dc-id]',
+                            '[data-condition]',
+                            '.condition-card',
+                            '.shipping-card',
+                            '.delivery-card',
+                            '.register-condition'
+                        ].join(',')
+                    )
+                );
+
+                /*
+                 * 1순위: condition_id 정확히 일치.
+                 */
+                if (conditionId > 0) {
+                    const byId = candidates.find(function(card) {
+                        return getConditionCardId(card) === conditionId;
+                    });
+
+                    if (byId) {
+                        return byId;
+                    }
+                }
+
+                /*
+                 * 2순위: 조건명 정확히 일치.
+                 * substring 비교는 절대 하지 않습니다.
+                 */
+                if (conditionName) {
+                    const wanted = normalize(conditionName);
+
+                    const byName = candidates.find(function(card) {
+                        return getConditionCardName(card) === wanted;
+                    });
+
+                    if (byName) {
+                        return byName;
+                    }
+                }
+
+                return null;
+            }
+
+            function applyConditionSelection() {
+                const cards = Array.from(
+                    root.querySelectorAll(
+                        [
+                            '[data-condition-id]',
+                            '[data-dc-id]',
+                            '[data-condition]',
+                            '.condition-card',
+                            '.shipping-card',
+                            '.delivery-card',
+                            '.register-condition'
+                        ].join(',')
+                    )
+                );
+
+                const target = findExactConditionCard();
+
+                if (!target) {
+                    return;
+                }
+
+                /*
+                 * 현재 카드의 실제 condition_id를 hidden에 저장.
+                 * 카드가 이름만 가지고 있어도 서버에서 만든 name -> id 맵으로 변환.
+                 */
+                let selectedConditionId = getConditionCardId(target);
+
+                if (selectedConditionId <= 0) {
+                    const selectedConditionName =
+                        getConditionCardName(target);
+
+                    if (
+                        selectedConditionName &&
+                        Object.prototype.hasOwnProperty.call(
+                            conditionNameMap,
+                            selectedConditionName
+                        )
+                    ) {
+                        selectedConditionId =
+                            parseInt(
+                                conditionNameMap[selectedConditionName],
+                                10
+                            ) || 0;
+                    }
+                }
+
+                if (conditionHidden && selectedConditionId > 0) {
+                    conditionHidden.value =
+                        String(selectedConditionId);
+                }
+
+                /*
+                 * 배송조건 카드들만 선택 해제.
+                 * 페이지 전체의 active/selected는 건드리지 않습니다.
+                 */
+                cards.forEach(function(card) {
+                    const selected = card === target;
+
+                    card.classList.toggle('selected', selected);
+                    card.classList.toggle('active', selected);
+                    card.setAttribute(
+                        'aria-checked',
+                        selected ? 'true' : 'false'
+                    );
+
+                    const input = card.querySelector(
+                        'input[type="radio"], input[type="checkbox"]'
+                    );
+
+                    if (input) {
+                        input.checked = selected;
+                    }
+                });
+
+                /*
+                 * 기존 퍼블리싱의 실제 저장용 hidden 값이 있으면 동기화.
+                 */
+                root.querySelectorAll(
+                    'input[type="hidden"][name*="condition"],' +
+                    'input[type="hidden"][name="dc_id"]'
+                ).forEach(function(input) {
+                    input.value = String(conditionId);
+                });
+
+                /*
+                 * 클릭 이벤트는 "정확히 찾은 카드 1개"에만 한 번 발생시킵니다.
+                 * 반복 타이머마다 클릭하지 않도록 플래그 사용.
+                 */
+                if (!target.dataset.dmSelectionApplied) {
+                    target.dataset.dmSelectionApplied = '1';
+
+                    try {
+                        target.dispatchEvent(
+                            new MouseEvent('click', {
+                                bubbles: true,
+                                cancelable: true,
+                                view: window
+                            })
+                        );
+                    } catch (e) {}
+
+                    /*
+                     * 기존 클릭 핸들러가 다른 카드를 선택하는 경우를 막기 위해
+                     * 클릭 직후 최종 상태를 한 번 다시 확정합니다.
+                     */
+                    cards.forEach(function(card) {
+                        const selected = card === target;
+                        card.classList.toggle('selected', selected);
+                        card.classList.toggle('active', selected);
+
+                        const input = card.querySelector(
+                            'input[type="radio"], input[type="checkbox"]'
+                        );
+                        if (input) input.checked = selected;
+                    });
+                }
+            }
+
+            function optionGroupName(option) {
+                if (!option) return '';
+
+                const explicit =
+                    option.getAttribute('data-group-name') ||
+                    option.getAttribute('data-name');
+
+                if (explicit) {
+                    return normalize(explicit);
+                }
+
+                /*
+                 * "그룹명 · MAX", "그룹명 — MAX" 형식이면
+                 * 구분자 앞쪽만 정확한 그룹명으로 사용합니다.
+                 */
+                const text = normalize(option.textContent);
+
+                return normalize(
+                    text.split(/\s+[·—-]\s+/)[0]
+                );
+            }
+
+            function optionGroupId(option) {
+                if (!option) return 0;
+
+                const explicit =
+                    option.getAttribute('data-group-id') ||
+                    option.getAttribute('data-dg-id');
+
+                if (explicit) {
+                    const id = parseInt(explicit, 10);
+                    if (Number.isFinite(id)) return id;
+                }
+
+                /*
+                 * option value가 정수 ID인 경우만 ID로 사용.
+                 * "none", "그룹명|..." 같은 값은 이름 비교로 넘깁니다.
+                 */
+                const value = String(option.value || '').trim();
+
+                if (/^\d+$/.test(value)) {
+                    return parseInt(value, 10);
+                }
+
+                return 0;
+            }
+
+            function findGroupSelect() {
+                const selects = Array.from(root.querySelectorAll('select'));
+
+                return selects.find(function(select) {
+                    const name = String(select.name || '').toLowerCase();
+                    const id = String(select.id || '').toLowerCase();
+
+                    if (
+                        name.indexOf('group') !== -1 ||
+                        name === 'dg_id' ||
+                        id.indexOf('group') !== -1 ||
+                        id === 'dg_id'
+                    ) {
+                        return true;
+                    }
+
+                    /*
+                     * 마지막 fallback도 select 자체의 label만 확인.
+                     * 상위 큰 div의 전체 텍스트는 사용하지 않습니다.
+                     */
+                    if (select.id) {
+                        const label = root.querySelector(
+                            'label[for="' +
+                            CSS.escape(select.id) +
+                            '"]'
+                        );
+
+                        if (label) {
+                            const labelText = normalize(label.textContent);
+
+                            return (
+                                labelText.indexOf('배송그룹') !== -1 ||
+                                labelText.indexOf('묶음배송') !== -1
+                            );
+                        }
+                    }
+
+                    return false;
+                }) || null;
+            }
+
+            function applyGroupSelection() {
+                const select = findGroupSelect();
+                if (!select) return;
+
+                const options = Array.from(select.options || []);
+                let target = null;
+
+                if (groupId > 0) {
+                    /*
+                     * 1순위: group_id 정확히 일치
+                     */
+                    target = options.find(function(option) {
+                        return optionGroupId(option) === groupId;
+                    });
+
+                    /*
+                     * 2순위: dg_name 정확히 일치
+                     */
+                    if (!target && groupName) {
+                        const wanted = normalize(groupName);
+
+                        target = options.find(function(option) {
+                            return optionGroupName(option) === wanted;
+                        });
+                    }
+                } else {
+                    target = options.find(function(option) {
+                        const value = normalize(option.value).toLowerCase();
+                        const text = normalize(option.textContent);
+
+                        return (
+                            value === '' ||
+                            value === '0' ||
+                            value === 'none' ||
+                            text === '선택 안 함' ||
+                            text.indexOf('선택 안 함') === 0 ||
+                            text.indexOf('개별배송') !== -1
+                        );
+                    });
+                }
+
+                if (!target) {
+                    return;
+                }
+
+                /*
+                 * 현재 option의 실제 group_id를 hidden에 저장.
+                 * value가 그룹명인 퍼블리싱도 name -> id로 변환.
+                 */
+                let selectedGroupId = 0;
+
+                if (groupId > 0) {
+                    selectedGroupId = optionGroupId(target);
+
+                    if (selectedGroupId <= 0) {
+                        const selectedGroupName =
+                            optionGroupName(target);
+
+                        if (
+                            selectedGroupName &&
+                            Object.prototype.hasOwnProperty.call(
+                                groupNameMap,
+                                selectedGroupName
+                            )
+                        ) {
+                            selectedGroupId =
+                                parseInt(
+                                    groupNameMap[selectedGroupName],
+                                    10
+                                ) || 0;
+                        }
+                    }
+                }
+
+                if (groupHidden) {
+                    groupHidden.value =
+                        String(selectedGroupId);
+                }
+
+                options.forEach(function(option) {
+                    option.selected = option === target;
+                });
+
+                select.value = target.value;
+
+                /*
+                 * 동일 select에 반복 change가 발생하여 마지막 option으로
+                 * 다시 바뀌는 문제를 막기 위해 실제 값이 달라질 때만 1회 호출.
+                 */
+                if (select.dataset.dmGroupApplied !== String(target.value)) {
+                    select.dataset.dmGroupApplied = String(target.value);
+
+                    try {
+                        select.dispatchEvent(
+                            new Event('change', { bubbles: true })
+                        );
+                    } catch (e) {}
+
+                    /*
+                     * 기존 change 핸들러가 값을 덮어쓸 수 있어 즉시 재확정.
+                     */
+                    options.forEach(function(option) {
+                        option.selected = option === target;
+                    });
+                    select.value = target.value;
+                }
+
+                root.querySelectorAll(
+                    'input[type="hidden"][name*="group"],' +
+                    'input[type="hidden"][name="dg_id"]'
+                ).forEach(function(input) {
+                    input.value = String(groupId);
+                });
+            }
+
+            function syncDeliveryManageSelection() {
+                applyConditionSelection();
+                applyGroupSelection();
+            }
+
+            /*
+             * 사용자가 배송조건 카드를 직접 변경했을 때
+             * 저장용 condition_id를 즉시 갱신합니다.
+             */
+            root.addEventListener('click', function(event) {
+                const card = event.target.closest(
+                    '[data-condition-id], [data-dc-id], [data-condition], ' +
+                    '.condition-card, .shipping-card, .delivery-card, ' +
+                    '.register-condition'
+                );
+
+                if (!card || !root.contains(card)) {
+                    return;
+                }
+
+                let id = getConditionCardId(card);
+
+                if (id <= 0) {
+                    const name = getConditionCardName(card);
+
+                    if (
+                        name &&
+                        Object.prototype.hasOwnProperty.call(
+                            conditionNameMap,
+                            name
+                        )
+                    ) {
+                        id = parseInt(conditionNameMap[name], 10) || 0;
+                    }
+                }
+
+                if (conditionHidden && id > 0) {
+                    conditionHidden.value = String(id);
+                }
+            });
+
+            /*
+             * 사용자가 배송그룹 select를 변경했을 때
+             * 저장용 group_id를 즉시 갱신합니다.
+             */
+            root.addEventListener('change', function(event) {
+                const select = event.target;
+
+                if (
+                    !select ||
+                    select.tagName !== 'SELECT'
+                ) {
+                    return;
+                }
+
+                const groupSelect = findGroupSelect();
+
+                if (select !== groupSelect) {
+                    return;
+                }
+
+                const option =
+                    select.options[select.selectedIndex];
+
+                if (!option) {
+                    return;
+                }
+
+                let id = optionGroupId(option);
+
+                if (id <= 0) {
+                    const name = optionGroupName(option);
+
+                    if (
+                        name &&
+                        Object.prototype.hasOwnProperty.call(
+                            groupNameMap,
+                            name
+                        )
+                    ) {
+                        id = parseInt(groupNameMap[name], 10) || 0;
+                    }
+                }
+
+                if (groupHidden) {
+                    groupHidden.value = String(id);
+                }
+            });
+
+            if (document.readyState === 'loading') {
+                document.addEventListener(
+                    'DOMContentLoaded',
+                    syncDeliveryManageSelection
+                );
+            } else {
+                syncDeliveryManageSelection();
+            }
+
+            /*
+             * 기존 퍼블리싱 초기화가 늦게 끝나는 경우만 보정.
+             * 클릭/change는 플래그 때문에 실제로 한 번만 발생합니다.
+             */
+            window.setTimeout(syncDeliveryManageSelection, 100);
+            window.setTimeout(syncDeliveryManageSelection, 400);
+        })();
+        </script>
+        <?php } ?>
     </section>
 
     <section id="anc_sitfrm_sendcost" class="hidden">

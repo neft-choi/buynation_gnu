@@ -20,47 +20,16 @@ include_once(G5_THEME_SHOP_PATH . '/shop.head.php');
 <?php echo display_banner('메인', 'mainbanner.10.skin.php'); ?>
 <!-- } 메인이미지 끝 -->
 
-<?php if ($default['de_type1_list_use']) { ?>
-    <!-- 히트상품 시작 { -->
-    <section id="idx_hit" class="sct_wrap idx_product">
-        <header class="flex flex-col gap-2 items-start pc:items-center">
-            <p class="text-base text-[var(--color-primary-strong)] font-semibold">BUYNATION BEST ITEM</p>
-            <h2>
-                <a href="<?php echo shop_type_url('1'); ?>" class="flex items-center gap-2 justify-between">
-                    지금 인기있는 상품을 만나보세요!
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
-                        <path d="m9 18 6-6-6-6" />
-                    </svg>
-                </a>
-            </h2>
-        </header>
-        <?php
-        $list = new item_list();
-        $list->set_type(1); // 히트 상품
-        $list->set_view('it_img', true);
-        $list->set_view('it_id', false);
-        $list->set_view('it_name', true);
-        $list->set_view('it_basic', false);
-        $list->set_view('it_cust_price', true); // 시중가격, 정가
-        $list->set_view('it_price', true); // 실제 판매가격
-        $list->set_view('it_icon', true); // 뱃지 출력 여부
-        $list->set_view('sns', false);
-        $list->set_view('star', true);
-        echo $list->run();
-        ?>
-    </section>
-    <!-- } 히트상품 끝 -->
-<?php } ?>
+
 
 <?php if ($default['de_type2_list_use']) { ?>
     <!-- 추천상품 시작 { -->
     <section id="idx_recommend" class="sct_wrap idx_product">
         <header class="flex flex-col gap-2 items-start pc:items-center">
-            <p class="text-base text-[var(--color-primary-strong)] font-semibold">BUYCLE RECOMMEND</p>
             <h2>
                 <a href="<?php echo shop_type_url('2'); ?>" class="flex items-center gap-2 justify-between">
                     <div>
-                        바이클의 추천 제품
+                        도너츠의 추천 제품
                         <span class="text-[var(--color-primary-strong)]">Pick</span>
                     </div>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
@@ -273,13 +242,13 @@ $promo_banner = array(
         <header class="flex flex-col gap-2 items-start pc:items-center">
             <h2>
                 <a href="<?php echo shop_type_url('2'); ?>" class="flex items-center gap-2 justify-between">
-                    바이클 추천 상품
+                    도너츠 추천 상품
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
                         <path d="m9 18 6-6-6-6" />
                     </svg>
                 </a>
             </h2>
-            <p class="text-sm text-gray-400">바이머를 위한 바이클 추천 상품!</p>
+            <p class="text-sm text-gray-400">도너츠 추천 상품!</p>
         </header>
         <?php
         $list = new item_list();
@@ -353,12 +322,12 @@ $promo_banner = array(
         }
 
         initSectionSlider('#idx_hit'); // 인기 상품
-        initSectionSlider('#idx_recommend'); // 바이클 추천 상품
+        initSectionSlider('#idx_recommend'); // 도티 추천 상품
         initSectionSlider('#idx_new'); // New 신상품
         initSectionSlider('#idx_value_pick'); // 가치소비 Pick
         initSectionSlider('#idx_timedeal'); // 특가 혜택 상품
         initSectionSlider('#idx_category_best'); // 카테고리 별 Best 상품
-        initSectionSlider('#idx_buycle') // 바이클 추천 상품
+        initSectionSlider('#idx_buycle') // 도티 추천 상품
 
         function formatTwoDigits(num) {
             return (num < 10 ? '0' : '') + num;

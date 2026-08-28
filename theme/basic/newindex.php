@@ -1198,14 +1198,14 @@ include_once(G5_THEME_PATH . '/head.php');
     $result_rank_board = sql_query($sql_rank_board);
     ?>
 
-    <section id="rank-section" aria-label="인기 바이클 랭킹" class="mx-4 space-y-2 !hidden">
+    <section id="rank-section" aria-label="인기 도티 랭킹" class="mx-4 space-y-2 !hidden">
         <div>
             <!-- <p class="text-sm text-gray-500">25분 전 업데이트</p> -->
-            <h3 class="mt-1 text-base font-bold text-gray-900">인기 바이클 랭킹</h3>
+            <h3 class="mt-1 text-base font-bold text-gray-900">인기 도티 랭킹</h3>
         </div>
 
         <div class="-mx-4 mb-4 overflow-x-auto px-4 scrollbar-hidden">
-            <div class="grid w-max grid-flow-col gap-2" role="tablist" aria-label="인기 바이클 랭킹 카테고리">
+            <div class="grid w-max grid-flow-col gap-2" role="tablist" aria-label="인기 도티 랭킹 카테고리">
                 <?php for ($rt = 0; $rt < count($rank_tabs); $rt++) { ?>
                     <?php
                     $rank_tab = $rank_tabs[$rt];
@@ -1352,7 +1352,7 @@ include_once(G5_THEME_PATH . '/head.php');
             });
         </script>
 
-        <div id="rank-panel" class="space-y-4" role="tabpanel" aria-label="인기 바이클 랭킹 목록">
+        <div id="rank-panel" class="space-y-4" role="tabpanel" aria-label="인기 도티 랭킹 목록">
             <?php for ($r = 0; $rank_row = sql_fetch_array($result_rank_board); $r++) { ?>
                 <?php
                 $rank_card = board_card($rank_row);

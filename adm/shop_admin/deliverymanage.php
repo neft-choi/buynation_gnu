@@ -6,6 +6,22 @@ include_once(G5_LIB_PATH . '/donuts_delivery.lib.php');
 auth_check_menu($auth, $sub_menu, 'r');
 donuts_delivery_install();
 
+/*
+ * 배송조건 <-> 추가배송비(sendcostlist) 연결 테이블
+ *
+ * sendcostlist.php의 실제 추가배송비 항목(g5_shop_sendcost_table)을
+ * 배송조건별로 여러 개 선택해서 저장합니다.
+ */
+sql_query("
+    CREATE TABLE IF NOT EXISTS donuts_delivery_condition_sendcosts (
+        dc_id BIGINT UNSIGNED NOT NULL,
+        sc_id BIGINT UNSIGNED NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (dc_id, sc_id),
+        KEY idx_sc_id (sc_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+", false);
+
 $brand_rows = array();
 $brand_result = sql_query("SELECT brand_id FROM donuts_brand ORDER BY brand_id");
 while ($br = sql_fetch_array($brand_result)) $brand_rows[] = $br['brand_id'];
@@ -67,6 +83,45 @@ while ($row = sql_fetch_array($condition_result)) {
     $row['ranges_json'] = json_encode(array_map(function ($r) {
         return array('min' => (int)$r['min_amount'], 'max' => ($r['max_amount'] === '' || $r['max_amount'] === null) ? null : (int)$r['max_amount'], 'fee' => (int)$r['dr_price']);
     }, $ranges), JSON_UNESCAPED_UNICODE);
+
+    /*
+     * 이 배송조건에 선택된 sendcostlist 항목.
+     * 수정 버튼을 눌렀을 때 기존 선택을 다시 체크하기 위해 사용합니다.
+     */
+    $row['sendcost_ids'] = array();
+    $row['sendcost_items'] = array();
+
+    $sendcost_map_result = sql_query("
+    SELECT m.sc_id, s.sc_name, s.sc_zip1, s.sc_zip2, s.sc_price
+    FROM donuts_delivery_condition_sendcosts m
+    INNER JOIN {$g5['g5_shop_sendcost_table']} s ON m.sc_id = s.sc_id
+    WHERE m.dc_id = '" . (int)$row['dc_id'] . "'
+    ORDER BY m.sc_id ASC
+", false);
+
+    if ($sendcost_map_result) {
+        while ($sendcost_map = sql_fetch_array($sendcost_map_result)) {
+            $row['sendcost_ids'][] = (int)$sendcost_map['sc_id'];
+            $row['sendcost_items'][] = array(
+                'id' => (int)$sendcost_map['sc_id'],
+                'name' => get_text($sendcost_map['sc_name']),
+                'zip1' => get_text($sendcost_map['sc_zip1']),
+                'zip2' => get_text($sendcost_map['sc_zip2']),
+                'price' => (int)$sendcost_map['sc_price']
+            );
+        }
+    }
+
+    $row['sendcost_ids_json'] = json_encode(
+        $row['sendcost_ids'],
+        JSON_UNESCAPED_UNICODE
+    );
+
+    $row['sendcost_items_json'] = json_encode(
+        $row['sendcost_items'],
+        JSON_UNESCAPED_UNICODE
+    );
+
     $conditions[] = $row;
 }
 
@@ -2321,19 +2376,35 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                                         <td>
                                             <div class="condition-name"><strong><?php echo get_text($c['dc_name']); ?></strong><?php if ($c['is_default']) { ?><span class="badge badge-base">기본</span><?php } ?></div><span class="condition-desc"><?php echo $c['is_default'] ? '브랜드 기본 배송조건' : '직접 추가한 배송조건'; ?></span>
                                         </td>
+
                                         <td><?php echo delivery_type_label($c['dc_type']); ?></td>
+
                                         <td><strong><?php echo delivery_condition_main($c); ?></strong><?php $sub = delivery_condition_sub($c);
                                                                                                         if ($sub) { ?><span class="condition-desc"><?php echo get_text($sub); ?></span><?php } ?></td>
-                                        <td><button class="usage condition-products-btn"
+                                        <td>
+                                            <button class="usage condition-products-btn"
                                                 type="button"
                                                 data-condition-id="<?php echo (int)$c['dc_id']; ?>"
                                                 data-condition-name="<?php echo get_text($c['dc_name']); ?>"
-                                                title="이 배송조건을 적용할 상품 선택"><?php echo number_format((int)$c['product_count']); ?>개</button></td>
-                                        <td><span class="condition-desc">제주 <?php echo $c['dc_jeju_use'] ? '+' . number_format((int)$c['dc_jeju_price']) . '원' : '미사용'; ?><br>도서산간 <?php echo $c['dc_island_use'] ? '+' . number_format((int)$c['dc_island_price']) . '원' : '미사용'; ?></span></td>
+                                                title="이 배송조건을 적용할 상품 선택"><?php echo number_format((int)$c['product_count']); ?>개</button>
+                                        </td>
+
+                                        <td>
+                                            <?php if (!empty($c['sendcost_items'])) { ?>
+                                                <button
+                                                    class="text-btn view-sendcosts"
+                                                    type="button"
+                                                    data-condition-id="<?php echo (int)$c['dc_id']; ?>"
+                                                    data-sendcost-items='<?php echo htmlspecialchars($c['sendcost_items_json'], ENT_QUOTES); ?>'>보기</button>
+                                            <?php } else { ?>
+                                                <span class="condition-desc">미사용</span>
+                                            <?php } ?>
+                                        </td>
+
                                         <td>
                                             <div class="row-actions">
                                                 <button class="text-btn edit-condition" type="button"
-                                                    data-id="<?php echo (int)$c['dc_id']; ?>" data-name="<?php echo get_text($c['dc_name']); ?>" data-type="<?php echo get_text($c['dc_type']); ?>" data-price="<?php echo (int)$c['dc_price']; ?>" data-minimum="<?php echo (int)$c['dc_minimum']; ?>" data-qty="<?php echo (int)$c['dc_qty']; ?>" data-jeju-use="<?php echo (int)$c['dc_jeju_use']; ?>" data-jeju-price="<?php echo (int)$c['dc_jeju_price']; ?>" data-island-use="<?php echo (int)$c['dc_island_use']; ?>" data-island-price="<?php echo (int)$c['dc_island_price']; ?>" data-ranges='<?php echo htmlspecialchars($c['ranges_json'], ENT_QUOTES); ?>'>수정</button>
+                                                    data-id="<?php echo (int)$c['dc_id']; ?>" data-name="<?php echo get_text($c['dc_name']); ?>" data-type="<?php echo get_text($c['dc_type']); ?>" data-price="<?php echo (int)$c['dc_price']; ?>" data-minimum="<?php echo (int)$c['dc_minimum']; ?>" data-qty="<?php echo (int)$c['dc_qty']; ?>" data-jeju-use="<?php echo (int)$c['dc_jeju_use']; ?>" data-jeju-price="<?php echo (int)$c['dc_jeju_price']; ?>" data-island-use="<?php echo (int)$c['dc_island_use']; ?>" data-island-price="<?php echo (int)$c['dc_island_price']; ?>" data-ranges='<?php echo htmlspecialchars($c['ranges_json'], ENT_QUOTES); ?>' data-sendcosts='<?php echo htmlspecialchars($c['sendcost_ids_json'], ENT_QUOTES); ?>'>수정</button>
                                                 <form method="post" action="./deliverymanage_update.php" style="display:inline"><input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>"><input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>"><input type="hidden" name="action" value="clone_condition"><input type="hidden" name="dc_id" value="<?php echo (int)$c['dc_id']; ?>"><button class="text-btn" type="submit">복제</button></form>
                                                 <?php if (!$c['is_default']) { ?><form method="post" action="./deliverymanage_update.php" style="display:inline" onsubmit="return confirm('이 배송조건을 삭제하시겠습니까?');"><input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>"><input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>"><input type="hidden" name="action" value="delete_condition"><input type="hidden" name="dc_id" value="<?php echo (int)$c['dc_id']; ?>"><button class="text-btn" type="submit">삭제</button></form><?php } ?>
                                             </div>
@@ -2447,7 +2518,10 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
 
                 <div class="product-list mt-4">
                     <?php for ($i = 0; $sendcost = sql_fetch_array($sendcost_result); $i++) { ?>
-                        <label class="product-row" style="cursor:pointer">
+                        <label
+                            class="product-row sendcost-row"
+                            data-sendcost-id="<?php echo (int)$sendcost['sc_id']; ?>"
+                            style="cursor:pointer">
                             <input
                                 class="sendcost-check"
                                 type="checkbox"
@@ -2464,6 +2538,8 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                                     </div>
                                 </div>
                             </div>
+
+                            <span class="badge badge-base sendcost-selected-badge" style="display:none;">선택됨</span>
                         </label>
                     <?php } ?>
 
@@ -2830,6 +2906,43 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
 
         if (addAmountRange) addAmountRange.addEventListener('click', () => addRange());
 
+        function syncSendcostRowState() {
+            document.querySelectorAll('#conditionDrawer .sendcost-row').forEach(row => {
+                const checkbox = row.querySelector('.sendcost-check');
+                const badge = row.querySelector('.sendcost-selected-badge');
+                const selected = !!(checkbox && checkbox.checked);
+
+                row.classList.toggle('selected', selected);
+
+                if (badge) {
+                    badge.style.display = selected ? 'inline-flex' : 'none';
+                }
+            });
+        }
+
+        function clearSendcostSelection() {
+            document.querySelectorAll('#conditionDrawer .sendcost-check').forEach(check => {
+                check.checked = false;
+            });
+            syncSendcostRowState();
+        }
+
+        function applySendcostSelection(ids) {
+            const selected = new Set(
+                (Array.isArray(ids) ? ids : []).map(v => String(v))
+            );
+
+            document.querySelectorAll('#conditionDrawer .sendcost-check').forEach(check => {
+                check.checked = selected.has(String(check.value));
+            });
+
+            syncSendcostRowState();
+        }
+
+        document.querySelectorAll('#conditionDrawer .sendcost-check').forEach(check => {
+            check.addEventListener('change', syncSendcostRowState);
+        });
+
         function resetCondition() {
             if (dcId) dcId.value = '';
             if (conditionName) conditionName.value = '';
@@ -2842,6 +2955,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             if (islandPrice) islandPrice.value = 5000;
             if (amountRangeRows) amountRangeRows.innerHTML = '';
             addRange(0, '', 0);
+            clearSendcostSelection();
             if (drawerTitle) drawerTitle.textContent = '배송조건 추가';
             setFeeType('conditional');
         }
@@ -2872,6 +2986,19 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                 max: null,
                 fee: 0
             }]).forEach(r => addRange(r.min, r.max ?? '', r.fee));
+
+            let sendcostIds = [];
+            try {
+                sendcostIds = JSON.parse(b.dataset.sendcosts || '[]');
+            } catch (e) {
+                sendcostIds = [];
+            }
+
+            /*
+             * 수정 시 기존에 저장된 sendcostlist 선택값을 그대로 체크.
+             */
+            applySendcostSelection(sendcostIds);
+
             if (drawerTitle) drawerTitle.textContent = '배송조건 수정';
             setFeeType(b.dataset.type);
             openDrawer(conditionDrawer);

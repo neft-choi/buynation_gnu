@@ -9,6 +9,19 @@ check_admin_token();
 
 donuts_delivery_install();
 
+/*
+ * 배송조건 <-> 추가배송비(sendcostlist) 연결 테이블
+ */
+sql_query("
+    CREATE TABLE IF NOT EXISTS donuts_delivery_condition_sendcosts (
+        dc_id BIGINT UNSIGNED NOT NULL,
+        sc_id BIGINT UNSIGNED NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (dc_id, sc_id),
+        KEY idx_sc_id (sc_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+", false);
+
 $action = isset($_POST['action']) ? trim($_POST['action']) : '';
 $requested_brand_id = isset($_POST['brand_id']) ? trim($_POST['brand_id']) : '';
 
@@ -125,6 +138,52 @@ if ($action === 'save_condition') {
         if ($prev_max !== null) delivery_redirect('마지막 구간은 종료 금액을 비워 상한 없음으로 설정해 주세요.', $return_url);
     }
 
+    /*
+     * 추가배송비 적용(sendcostlist) 선택값 저장.
+     * 저장할 때마다 현재 체크 상태를 기준으로 전체 동기화합니다.
+     */
+    $sendcost_ids = isset($_POST['sendcost_ids']) && is_array($_POST['sendcost_ids'])
+        ? $_POST['sendcost_ids']
+        : array();
+
+    sql_query("
+        DELETE FROM donuts_delivery_condition_sendcosts
+        WHERE dc_id = '{$dc_id}'
+    ");
+
+    $saved_sendcost_ids = array();
+
+    foreach ($sendcost_ids as $raw_sc_id) {
+        $sc_id = (int)$raw_sc_id;
+
+        if ($sc_id <= 0 || isset($saved_sendcost_ids[$sc_id])) {
+            continue;
+        }
+
+        /*
+         * sendcostlist.php에 실제 존재하는 항목만 저장.
+         */
+        $sendcost_row = sql_fetch("
+            SELECT sc_id
+            FROM {$g5['g5_shop_sendcost_table']}
+            WHERE sc_id = '{$sc_id}'
+            LIMIT 1
+        ");
+
+        if (empty($sendcost_row['sc_id'])) {
+            continue;
+        }
+
+        sql_query("
+            INSERT IGNORE INTO donuts_delivery_condition_sendcosts
+                (dc_id, sc_id, created_at)
+            VALUES
+                ('{$dc_id}', '{$sc_id}', NOW())
+        ");
+
+        $saved_sendcost_ids[$sc_id] = true;
+    }
+
     delivery_redirect('배송조건이 저장되었습니다.', $return_url);
 }
 
@@ -158,6 +217,28 @@ if ($action === 'clone_condition') {
         sql_query("INSERT INTO donuts_delivery_condition_ranges SET dc_id = '{$new_id}', min_amount = '" . (int)$r['min_amount'] . "', max_amount = {$max_sql}, dr_price = '" . (int)$r['dr_price'] . "', sort_order = '" . (int)$r['sort_order'] . "'");
     }
 
+    /*
+     * 복제 시 추가배송비 선택도 함께 복제.
+     */
+    $sendcost_maps = sql_query("
+        SELECT sc_id
+        FROM donuts_delivery_condition_sendcosts
+        WHERE dc_id = '{$dc_id}'
+    ", false);
+
+    if ($sendcost_maps) {
+        while ($sendcost_map = sql_fetch_array($sendcost_maps)) {
+            $sc_id = (int)$sendcost_map['sc_id'];
+
+            sql_query("
+                INSERT IGNORE INTO donuts_delivery_condition_sendcosts
+                    (dc_id, sc_id, created_at)
+                VALUES
+                    ('{$new_id}', '{$sc_id}', NOW())
+            ");
+        }
+    }
+
     delivery_redirect('배송조건을 복제했습니다.', $return_url);
 }
 
@@ -171,6 +252,7 @@ if ($action === 'delete_condition') {
     if ((int)$used['cnt'] > 0) delivery_redirect('상품에 적용 중인 배송조건은 삭제할 수 없습니다.', $return_url);
 
     sql_query("DELETE FROM donuts_delivery_condition_ranges WHERE dc_id = '{$dc_id}'");
+    sql_query("DELETE FROM donuts_delivery_condition_sendcosts WHERE dc_id = '{$dc_id}'");
     sql_query("DELETE FROM donuts_delivery_conditions WHERE dc_id = '{$dc_id}' AND brand_id = '{$brand_id_sql}'");
     delivery_redirect('배송조건을 삭제했습니다.', $return_url);
 }

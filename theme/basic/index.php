@@ -141,7 +141,7 @@ include_once(G5_THEME_PATH . '/head.php');
                     </svg>
                 </span>
                 <div class="w-40">
-                    <p class="text-sm font-semibold">바이클과 함께하는 온오프라인 커뮤니티</p>
+                    <p class="text-sm font-semibold">도티과 함께하는 온오프라인 커뮤니티</p>
                 </div>
             </div>
 
@@ -155,7 +155,7 @@ include_once(G5_THEME_PATH . '/head.php');
     </section> -->
 
     <?php
-    // [추천 바이클] 섹션 데이터 준비
+    // [추천 도티] 섹션 데이터 준비
     // - 현재는 그룹(gr_id) 제한 없이 전체 게시판을 조회
     // - 로그인 회원 레벨로 볼 수 있는 게시판만 노출
     // - mobile 전용 게시판 제외
@@ -176,10 +176,10 @@ include_once(G5_THEME_PATH . '/head.php');
     $result_pick_board = sql_query($sql_pick_board);
     ?>
 
-    <section aria-label="놓치면 아쉬운 추천 바이클" class="bg-gray-100 py-8 space-y-4">
+    <section aria-label="놓치면 아쉬운 추천 도티" class="bg-gray-100 py-8 space-y-4">
         <div class="px-4">
-            <h3 class="!text-base font-bold text-gray-900">놓치면 아쉬운 추천 바이클</h3>
-            <p class="mt-1 text-sm text-gray-500">꼼꼼하게 선정한 이달의 바이클을 만나보세요</p>
+            <h3 class="!text-base font-bold text-gray-900">놓치면 아쉬운 추천 도티</h3>
+            <p class="mt-1 text-sm text-gray-500">꼼꼼하게 선정한 이달의 도티을 만나보세요</p>
         </div>
 
         <div class="px-4">
@@ -410,14 +410,14 @@ include_once(G5_THEME_PATH . '/head.php');
     $result_rank_board = sql_query($sql_rank_board);
     ?>
 
-    <section id="rank-section" aria-label="인기 바이클 랭킹" class="mx-4 space-y-2">
+    <section id="rank-section" aria-label="인기 도티 랭킹" class="mx-4 space-y-2">
         <div>
             <!-- <p class="text-sm text-gray-500">25분 전 업데이트</p> -->
-            <h3 class="mt-1 text-base font-bold text-gray-900">인기 바이클 랭킹</h3>
+            <h3 class="mt-1 text-base font-bold text-gray-900">인기 도티 랭킹</h3>
         </div>
 
         <div class="-mx-4 mb-4 overflow-x-auto px-4 scrollbar-hidden">
-            <div class="grid w-max grid-flow-col gap-2" role="tablist" aria-label="인기 바이클 랭킹 카테고리">
+            <div class="grid w-max grid-flow-col gap-2" role="tablist" aria-label="인기 도티 랭킹 카테고리">
                 <?php for ($rt = 0; $rt < count($rank_tabs); $rt++) { ?>
                     <?php
                     $rank_tab = $rank_tabs[$rt];
@@ -564,7 +564,7 @@ include_once(G5_THEME_PATH . '/head.php');
             });
         </script>
 
-        <div id="rank-panel" class="space-y-4" role="tabpanel" aria-label="인기 바이클 랭킹 목록">
+        <div id="rank-panel" class="space-y-4" role="tabpanel" aria-label="인기 도티 랭킹 목록">
             <?php for ($r = 0; $rank_row = sql_fetch_array($result_rank_board); $r++) { ?>
                 <?php
                 $rank_card = board_card($rank_row);

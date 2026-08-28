@@ -4378,7 +4378,7 @@ function option_array_checked($option, $arr = array())
     return $checked;
 }
 
-/* 바이클 카드 생성 관련 */
+/* 도티 카드 생성 관련 */
 // 게시판 썸네일
 if (!function_exists('board_thumbnail')) {
     function board_thumbnail($row)
@@ -4443,7 +4443,7 @@ if (!function_exists('board_desc')) {
 if (!function_exists('board_group')) {
     function board_group($row)
     {
-        return !empty($row['gr_subject']) ? $row['gr_subject'] : '바이클';
+        return !empty($row['gr_subject']) ? $row['gr_subject'] : '도티';
     }
 }
 

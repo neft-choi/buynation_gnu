@@ -31,29 +31,32 @@ $admin = get_admin("super");
         <div id="ft_company" class="ft_cnt w-full">
             <h2 class="sr-only">사이트 정보</h2>
             <div class="ft_info text-sm text-[#8D8D8D]/88 font-normal">
-                <span>법인명(상호) : <?php echo $default['de_admin_company_name']; ?></span>
+                <span><?php echo $default['de_admin_company_name']; ?> 대표이사 <?php echo $default['de_admin_company_owner']; ?></span>
                 <span class="mx-2">|</span>
                 <span>주소 : <?php echo $default['de_admin_company_addr']; ?></span>
+                                <span class="mx-2">|</span>
+                <span>사업자 등록번호 : <?php echo $default['de_admin_company_saupja_no']; ?></span>
+                <span class="mx-2">|</span>
+
+                <span>호스팅서비스사업자 : <?php echo $default['de_admin_company_name']; ?></span>
+
                 <br>
 
-                <span>대표자 : <?php echo $default['de_admin_company_owner']; ?></span>
-                <span class="mx-2">|</span>
+
                 <!-- <span><b>팩스</b> <?php echo $default['de_admin_company_fax']; ?></span>-->
                 <!-- <span><b>운영자</b> <?php echo $admin['mb_name']; ?></span> -->
                 <!-- <span><b>통신판매업신고번호</b> <?php echo $default['de_admin_tongsin_no']; ?></span> -->
                 <!-- <span><b>개인정보 보호책임자</b> <?php echo $default['de_admin_info_name']; ?></span> -->
-                <span>사업자 등록번호 : <?php echo $default['de_admin_company_saupja_no']; ?></span>
-                <span class="mx-2">|</span>
                 <!-- <?php if ($default['de_admin_buga_no'])
                             echo '<span><b>부가통신사업신고번호</b> ' . $default['de_admin_buga_no'] . '</span>'; ?> -->
-                <span>호스팅서비스사업자 : <?php echo $default['de_admin_company_name']; ?></span>
-                <br>
+   
                 <span>고객센터 : <?php echo $default['de_admin_company_tel']; ?></span>
                 <span class="mx-2">|</span>
                 <span>상담가능시간 : 평일 09:00 ~ 18:00</span>
                  <span class="mx-2">|</span>
                 <span>통신판매업신고 : 2026-성남분당A-0745</span>
-
+                <span class="mx-2">|</span>
+                <span>e-mail : <?php echo $default['de_admin_info_email']; ?></span>
                 
             </div>
         </div>

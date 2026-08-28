@@ -105,6 +105,11 @@ $listall .= ' <a href="./itemlist_csv.php?'.$qstr.'" class="btn btn_02" style="b
         <?php echo $listall; ?>
         <span class="btn_ov01"><span class="ov_txt">등록된 상품</span><span class="ov_num"> <?php echo $total_count; ?>건</span></span>
     </div>
+    <?php if ($is_admin !== 'super') { ?>
+    <div class="local_desc01 local_desc">
+        <p><strong>판매 / 품절 상태는 최고관리자만 변경할 수 있습니다.</strong> 브랜드 계정에서는 확인만 가능합니다.</p>
+    </div>
+    <?php } ?>
 
     <form name="flist" class="local_sch01 local_sch !flex md:flex-row flex-col items-center gap-2 !m-0 p-4 md:border border-y border-gray-200 md:rounded rounded-none bg-white !mb-4  mx-[-8px]">
         <input type="hidden" name="save_stx" value="<?php echo $stx; ?>">
@@ -220,11 +225,21 @@ $listall .= ' <a href="./itemlist_csv.php?'.$qstr.'" class="btn btn_02" style="b
                             </td>
                             <td rowspan="3">
                                 <label for="use_<?php echo $i; ?>" class="sound_only">판매여부</label>
-                                <input type="checkbox" name="it_use[<?php echo $i; ?>]" <?php echo ($row['it_use'] ? 'checked' : ''); ?> value="1" id="use_<?php echo $i; ?>">
+                                <?php if ($is_admin === 'super') { ?>
+<input type="checkbox" name="it_use[<?php echo $i; ?>]" <?php echo ($row['it_use'] ? 'checked' : ''); ?> value="1" id="use_<?php echo $i; ?>">
+<?php } else { ?>
+<input type="checkbox" <?php echo ($row['it_use'] ? 'checked' : ''); ?> value="1" id="use_<?php echo $i; ?>" disabled title="판매 상태는 최고관리자만 변경할 수 있습니다.">
+<input type="hidden" name="it_use[<?php echo $i; ?>]" value="<?php echo (int)$row['it_use']; ?>">
+<?php } ?>
                             </td>
                             <td rowspan="3">
                                 <label for="soldout_<?php echo $i; ?>" class="sound_only">품절</label>
-                                <input type="checkbox" name="it_soldout[<?php echo $i; ?>]" <?php echo ($row['it_soldout'] ? 'checked' : ''); ?> value="1" id="soldout_<?php echo $i; ?>">
+                                <?php if ($is_admin === 'super') { ?>
+<input type="checkbox" name="it_soldout[<?php echo $i; ?>]" <?php echo ($row['it_soldout'] ? 'checked' : ''); ?> value="1" id="soldout_<?php echo $i; ?>">
+<?php } else { ?>
+<input type="checkbox" <?php echo ($row['it_soldout'] ? 'checked' : ''); ?> value="1" id="soldout_<?php echo $i; ?>" disabled title="품절 상태는 최고관리자만 변경할 수 있습니다.">
+<input type="hidden" name="it_soldout[<?php echo $i; ?>]" value="<?php echo (int)$row['it_soldout']; ?>">
+<?php } ?>
                             </td>
                             <td rowspan="3" class="td_num"><?php echo $row['it_hit']; ?></td>
                             <td rowspan="3" class="td_mng td_mng_s">
