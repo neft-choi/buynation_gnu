@@ -1111,6 +1111,104 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
         background: #fffaf8;
     }
 
+
+    /* 지역 추가비 보기 모달 */
+    .sendcost-view-overlay {
+        position: fixed;
+        z-index: 1200;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(20, 24, 31, .42);
+    }
+
+    .sendcost-view-overlay.open {
+        display: flex;
+    }
+
+    .sendcost-view-modal {
+        width: min(620px, 100%);
+        max-height: min(760px, calc(100vh - 48px));
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-radius: 14px;
+        background: #fff;
+        box-shadow: 0 24px 60px rgba(20, 25, 33, .18);
+    }
+
+    .sendcost-view-head {
+        min-height: 68px;
+        padding: 0 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        border-bottom: 1px solid var(--line);
+    }
+
+    .sendcost-view-head h3 {
+        margin: 0;
+        font-size: 17px;
+    }
+
+    .sendcost-view-head p {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .sendcost-view-body {
+        padding: 18px 20px 22px;
+        overflow-y: auto;
+    }
+
+    .sendcost-view-list {
+        display: grid;
+        gap: 9px;
+    }
+
+    .sendcost-view-item {
+        padding: 14px 15px;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 16px;
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        background: #fff;
+    }
+
+    .sendcost-view-item strong {
+        display: block;
+        font-size: 13px;
+    }
+
+    .sendcost-view-item small {
+        display: block;
+        margin-top: 3px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+
+    .sendcost-view-price {
+        color: var(--brand-dark);
+        font-size: 13px;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    .sendcost-view-empty {
+        padding: 34px 16px;
+        border: 1px dashed var(--line-strong);
+        border-radius: 10px;
+        color: var(--muted);
+        text-align: center;
+        font-size: 12px;
+    }
+
     .choice-card strong {
         display: block;
         margin-bottom: 3px;
@@ -2395,6 +2493,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                                                     class="text-btn view-sendcosts"
                                                     type="button"
                                                     data-condition-id="<?php echo (int)$c['dc_id']; ?>"
+                                                    data-condition-name="<?php echo get_text($c['dc_name']); ?>"
                                                     data-sendcost-items='<?php echo htmlspecialchars($c['sendcost_items_json'], ENT_QUOTES); ?>'>보기</button>
                                             <?php } else { ?>
                                                 <span class="condition-desc">미사용</span>
@@ -2471,6 +2570,34 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
 
         </div>
     </main>
+</div>
+
+<!-- 지역 추가비 보기 -->
+<div class="sendcost-view-overlay" id="sendcostViewOverlay" aria-hidden="true">
+    <section
+        class="sendcost-view-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="sendcostViewTitle">
+        <div class="sendcost-view-head">
+            <div>
+                <h3 id="sendcostViewTitle">지역 추가비</h3>
+                <p id="sendcostViewSub">선택된 추가배송비 내역입니다.</p>
+            </div>
+            <button
+                class="close-btn"
+                id="closeSendcostView"
+                type="button"
+                aria-label="닫기">×</button>
+        </div>
+
+        <div class="sendcost-view-body">
+            <div class="sendcost-view-list" id="sendcostViewList"></div>
+            <div class="sendcost-view-empty" id="sendcostViewEmpty" style="display:none;">
+                적용된 지역 추가비가 없습니다.
+            </div>
+        </div>
+    </section>
 </div>
 
 <div class="overlay" id="overlay"></div>
@@ -2872,6 +2999,141 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             if (quantityWrap) quantityWrap.style.display = type === 'quantity' ? 'block' : 'none';
             updatePreview();
         }
+
+        /*
+         * 배송조건 목록 > 지역 추가비 > 보기
+         *
+         * 서버에서 미리 조회한 sendcost_items_json을 그대로 사용하므로
+         * 보기 클릭 시 별도 AJAX 없이 즉시 표시합니다.
+         */
+        const sendcostViewOverlay = $('sendcostViewOverlay');
+        const sendcostViewTitle = $('sendcostViewTitle');
+        const sendcostViewSub = $('sendcostViewSub');
+        const sendcostViewList = $('sendcostViewList');
+        const sendcostViewEmpty = $('sendcostViewEmpty');
+        const closeSendcostView = $('closeSendcostView');
+
+        function escapeSendcostHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function closeSendcostViewModal() {
+            if (!sendcostViewOverlay) return;
+
+            sendcostViewOverlay.classList.remove('open');
+            sendcostViewOverlay.setAttribute('aria-hidden', 'true');
+        }
+
+        function openSendcostViewModal(button) {
+            if (
+                !sendcostViewOverlay ||
+                !sendcostViewList ||
+                !sendcostViewEmpty
+            ) {
+                return;
+            }
+
+            let items = [];
+
+            try {
+                items = JSON.parse(
+                    button.dataset.sendcostItems || '[]'
+                );
+            } catch (e) {
+                items = [];
+            }
+
+            if (!Array.isArray(items)) {
+                items = [];
+            }
+
+            const conditionName =
+                String(button.dataset.conditionName || '').trim();
+
+            if (sendcostViewTitle) {
+                sendcostViewTitle.textContent =
+                    conditionName
+                        ? conditionName + ' · 지역 추가비'
+                        : '지역 추가비';
+            }
+
+            if (sendcostViewSub) {
+                sendcostViewSub.textContent =
+                    '적용된 지역 추가비 ' +
+                    items.length.toLocaleString('ko-KR') +
+                    '건';
+            }
+
+            sendcostViewList.innerHTML = '';
+
+            if (items.length === 0) {
+                sendcostViewEmpty.style.display = 'block';
+            } else {
+                sendcostViewEmpty.style.display = 'none';
+
+                items.forEach(item => {
+                    const row = document.createElement('div');
+                    row.className = 'sendcost-view-item';
+
+                    const name = escapeSendcostHtml(item.name || '-');
+                    const zip1 = escapeSendcostHtml(item.zip1 || '');
+                    const zip2 = escapeSendcostHtml(item.zip2 || '');
+                    const price = Number(item.price || 0)
+                        .toLocaleString('ko-KR');
+
+                    row.innerHTML = `
+                        <div>
+                            <strong>${name}</strong>
+                            <small>우편번호 ${zip1} ~ ${zip2}</small>
+                        </div>
+                        <div class="sendcost-view-price">
+                            + ${price}원
+                        </div>
+                    `;
+
+                    sendcostViewList.appendChild(row);
+                });
+            }
+
+            sendcostViewOverlay.classList.add('open');
+            sendcostViewOverlay.setAttribute('aria-hidden', 'false');
+        }
+
+        document.querySelectorAll('.view-sendcosts').forEach(button => {
+            button.addEventListener('click', () => {
+                openSendcostViewModal(button);
+            });
+        });
+
+        if (closeSendcostView) {
+            closeSendcostView.addEventListener(
+                'click',
+                closeSendcostViewModal
+            );
+        }
+
+        if (sendcostViewOverlay) {
+            sendcostViewOverlay.addEventListener('click', event => {
+                if (event.target === sendcostViewOverlay) {
+                    closeSendcostViewModal();
+                }
+            });
+        }
+
+        document.addEventListener('keydown', event => {
+            if (
+                event.key === 'Escape' &&
+                sendcostViewOverlay &&
+                sendcostViewOverlay.classList.contains('open')
+            ) {
+                closeSendcostViewModal();
+            }
+        });
 
         document.querySelectorAll('.fee-type').forEach(b => b.addEventListener('click', () => setFeeType(b.dataset.fee)));
 

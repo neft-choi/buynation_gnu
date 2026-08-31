@@ -4,6 +4,20 @@ include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, "r");
 
+/*
+ * 배송조건 <-> 지역 추가비(sendcostlist) 연결 테이블
+ * deliverymanage.php에서 만든 테이블을 CSV에서도 안전하게 참조합니다.
+ */
+sql_query("
+    CREATE TABLE IF NOT EXISTS donuts_delivery_condition_sendcosts (
+        dc_id BIGINT UNSIGNED NOT NULL,
+        sc_id BIGINT UNSIGNED NOT NULL,
+        created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (dc_id, sc_id),
+        KEY idx_sc_id (sc_id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+", false);
+
 /*************************************************
  * orderlist.php 와 동일한 검색조건 처리
  *************************************************/
@@ -964,7 +978,79 @@ function csv_final_default_special_non_group_items($items)
     return $default_ids + $special_ids;
 }
 
-function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receiver_addr, $receiver_zip)
+
+/*
+ * deliverymanage.php에서 배송조건별로 선택한 지역 추가비 계산.
+ *
+ * 데이터:
+ * donuts_delivery_condition_sendcosts
+ *   -> g5_shop_sendcost_table
+ *
+ * 수취인 우편번호가 선택된 지역 범위에 들어오면 해당 추가비를 반환합니다.
+ * 잘못 겹친 우편번호 범위가 여러 개 있을 경우 중복 가산하지 않고
+ * 가장 큰 추가비 1건만 적용합니다.
+ */
+function csv_delivery_condition_region_extra($condition_id, $receiver_zip)
+{
+    global $g5;
+
+    $condition_id = (int)$condition_id;
+
+    if ($condition_id <= 0) {
+        return 0;
+    }
+
+    $zip = preg_replace('/[^0-9]/', '', (string)$receiver_zip);
+
+    if ($zip === '') {
+        return 0;
+    }
+
+    $zip_num = (int)$zip;
+    $matched_fee = 0;
+
+    $result = sql_query("
+        SELECT
+            s.sc_id,
+            s.sc_zip1,
+            s.sc_zip2,
+            s.sc_price
+        FROM donuts_delivery_condition_sendcosts m
+        INNER JOIN {$g5['g5_shop_sendcost_table']} s
+            ON s.sc_id = m.sc_id
+        WHERE m.dc_id = '{$condition_id}'
+        ORDER BY s.sc_id ASC
+    ", false);
+
+    if (!$result) {
+        return 0;
+    }
+
+    while ($row = sql_fetch_array($result)) {
+        $from = (int)preg_replace(
+            '/[^0-9]/',
+            '',
+            (string)$row['sc_zip1']
+        );
+
+        $to = (int)preg_replace(
+            '/[^0-9]/',
+            '',
+            (string)$row['sc_zip2']
+        );
+
+        if ($from <= $zip_num && $zip_num <= $to) {
+            $matched_fee = max(
+                $matched_fee,
+                max(0, (int)$row['sc_price'])
+            );
+        }
+    }
+
+    return $matched_fee;
+}
+
+function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receiver_addr, $receiver_zip, $return_detail = false)
 {
     global $g5;
 
@@ -972,7 +1058,9 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
     $brand_id = trim((string)$brand_id);
 
     if ($od_id === '') {
-        return 0;
+        return $return_detail
+            ? array('shipping_total' => 0, 'region_extra' => 0)
+            : 0;
     }
 
     $od_id_sql = sql_real_escape_string($od_id);
@@ -1020,7 +1108,9 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
     ", false);
 
     if (!$result) {
-        return 0;
+        return $return_detail
+            ? array('shipping_total' => 0, 'region_extra' => 0)
+            : 0;
     }
 
     $items = array();
@@ -1041,7 +1131,9 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
     }
 
     if (empty($items)) {
-        return 0;
+        return $return_detail
+            ? array('shipping_total' => 0, 'region_extra' => 0)
+            : 0;
     }
 
     // 실제 묶음배송을 제외한 기본+유료/수량/금액구간 상품만 특례 대상으로 지정
@@ -1076,6 +1168,7 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
     }
 
     $individual_total = 0;
+    $individual_region_extra = 0;
     $bundle_candidates = array();
 
     /*
@@ -1273,7 +1366,19 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
             ) {
                 $fee += max(0, (int)$condition['dc_island_price']);
             }
+
+            /*
+             * deliverymanage에서 이 배송조건에 선택한 "지역 추가비".
+             * 기존 제주/도서산간 필드와 별도로 계산합니다.
+             */
+            $region_extra = csv_delivery_condition_region_extra(
+                isset($condition['dc_id']) ? (int)$condition['dc_id'] : 0,
+                $receiver_zip
+            );
+
+            $fee += $region_extra;
         } else {
+            $region_extra = 0;
             /*
              * 조건 테이블이 없는 경우만 브랜드 기본 배송비 fallback.
              */
@@ -1295,6 +1400,9 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         }
 
         $fee = max(0, (int)$fee);
+        $region_extra = isset($region_extra)
+            ? max(0, (int)$region_extra)
+            : 0;
 
         /*
          * 유료 상품만 구성된 주문 판정.
@@ -1305,11 +1413,15 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         if ($is_bundle || $condition_type !== 'paid') {
             $paid_only_order = false;
         } else {
-            $paid_only_fees[] = $fee;
+            $paid_only_fees[] = array(
+                'fee' => $fee,
+                'region_extra' => $region_extra
+            );
         }
 
         if (!$is_bundle) {
             $individual_total += $fee;
+            $individual_region_extra += $region_extra;
             continue;
         }
 
@@ -1346,7 +1458,10 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
             );
         }
 
-        $bundle_candidates[$bundle_key]['fees'][] = $fee;
+        $bundle_candidates[$bundle_key]['fees'][] = array(
+            'fee' => $fee,
+            'region_extra' => $region_extra
+        );
     }
 
     /*
@@ -1360,43 +1475,116 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         count($items) > 1 &&
         count($paid_only_fees) === count($items)
     ) {
-        return max($paid_only_fees);
+        $selected_paid = array(
+            'fee' => 0,
+            'region_extra' => 0
+        );
+
+        foreach ($paid_only_fees as $candidate) {
+            if ((int)$candidate['fee'] > (int)$selected_paid['fee']) {
+                $selected_paid = $candidate;
+            }
+        }
+
+        $paid_shipping_total = max(0, (int)$selected_paid['fee']);
+        $paid_region_extra = max(
+            0,
+            (int)$selected_paid['region_extra']
+        );
+
+        return $return_detail
+            ? array(
+                'shipping_total' => $paid_shipping_total,
+                'region_extra' => $paid_region_extra
+            )
+            : $paid_shipping_total;
     }
 
     /*
      * 같은 주문번호 안에서 묶음배송 그룹별 1회 부과.
      */
     $bundle_total = 0;
+    $bundle_region_extra = 0;
 
     foreach ($bundle_candidates as $bundle) {
         if (empty($bundle['fees'])) {
             continue;
         }
 
-        if ($bundle['method'] === 'MIN') {
-            $bundle_total += min($bundle['fees']);
-        } else {
-            $bundle_total += max($bundle['fees']);
+        $selected = null;
+
+        foreach ($bundle['fees'] as $candidate) {
+            if ($selected === null) {
+                $selected = $candidate;
+                continue;
+            }
+
+            if (
+                $bundle['method'] === 'MIN' &&
+                (int)$candidate['fee'] < (int)$selected['fee']
+            ) {
+                $selected = $candidate;
+            }
+
+            if (
+                $bundle['method'] !== 'MIN' &&
+                (int)$candidate['fee'] > (int)$selected['fee']
+            ) {
+                $selected = $candidate;
+            }
+        }
+
+        if ($selected !== null) {
+            $bundle_total += max(0, (int)$selected['fee']);
+            $bundle_region_extra += max(
+                0,
+                (int)$selected['region_extra']
+            );
         }
     }
 
-    return max(
+    $shipping_total = max(
         0,
         (int)$individual_total + (int)$bundle_total
     );
+
+    $region_extra_total = max(
+        0,
+        (int)$individual_region_extra +
+        (int)$bundle_region_extra
+    );
+
+    return $return_detail
+        ? array(
+            'shipping_total' => $shipping_total,
+            'region_extra' => $region_extra_total
+        )
+        : $shipping_total;
 }
 
 function csv_new_delivery_final_order_shipping($od_id, $brand_id, $receiver_addr, $receiver_zip)
 {
     /*
      * 최종 배송비는 '배송비' 컬럼을 참조하지 않습니다.
-     * 상품가격 + 배송조건 + 묶음배송 그룹 조건만으로 별도 계산합니다.
+     * 상품가격 + 배송조건 + 묶음배송 그룹 + 지역 추가비로 계산합니다.
      */
     return csv_final_shipping_from_products_and_groups(
         $od_id,
         $brand_id,
         $receiver_addr,
-        $receiver_zip
+        $receiver_zip,
+        false
+    );
+}
+
+function csv_new_delivery_final_order_shipping_detail($od_id, $brand_id, $receiver_addr, $receiver_zip)
+{
+    return csv_final_shipping_from_products_and_groups(
+        $od_id,
+        $brand_id,
+        $receiver_addr,
+        $receiver_zip,
+        true
     );
 }
 
@@ -1432,6 +1620,7 @@ fputcsv($fp, array(
     '배송비 결제구분',
     '배송비 유형',
     '묶음배송 그룹',
+    '지역 추가비',
     '최종 배송비',
     '주문상태',
     '결제수단',
@@ -1689,7 +1878,7 @@ while ($row = sql_fetch_array($result)) {
             : '';
 
         $final_shipping_cache[$final_shipping_cache_key] =
-            csv_new_delivery_final_order_shipping(
+            csv_new_delivery_final_order_shipping_detail(
                 $row['od_id'],
                 $final_shipping_brand_id,
                 $receiver_addr,
@@ -1697,8 +1886,18 @@ while ($row = sql_fetch_array($result)) {
             );
     }
 
+    $final_shipping_detail =
+        $final_shipping_cache[$final_shipping_cache_key];
+
+    $region_extra_amount =
+        isset($final_shipping_detail['region_extra'])
+        ? (int)$final_shipping_detail['region_extra']
+        : 0;
+
     $final_shipping_amount =
-        (int)$final_shipping_cache[$final_shipping_cache_key];
+        isset($final_shipping_detail['shipping_total'])
+        ? (int)$final_shipping_detail['shipping_total']
+        : 0;
 
     fputcsv($fp, array(
         $row['od_time'],
@@ -1740,6 +1939,7 @@ while ($row = sql_fetch_array($result)) {
             ? $delivery_calc['item_groups'][$row['it_id']]
             : '',
 
+        $region_extra_amount,
         $final_shipping_amount,
 
         $row['od_status'],

@@ -11,6 +11,7 @@ $menu['menu400'] = array(
     array('400100', '쇼핑몰설정', G5_ADMIN_URL . '/shop_admin/configform.php', 'scf_config'),
     array('400400', '주문내역', G5_ADMIN_URL . '/shop_admin/orderlist.php', 'scf_order', 1),
     array('400440', '개인결제관리', G5_ADMIN_URL . '/shop_admin/personalpaylist.php', 'scf_personalpay', 1),
+    array('400450', '정산관리', G5_ADMIN_URL . '/shop_admin/adjustment.php', 'scf_adjustment', 1),
     array('400200', '분류관리', G5_ADMIN_URL . '/shop_admin/categorylist.php', 'scf_cate'),
     array('400210', '브랜드정보', G5_ADMIN_URL . '/shop_admin/brand_config.php', 'scf_brand'),
     array('400300', '상품관리', G5_ADMIN_URL . '/shop_admin/itemlist.php', 'scf_item'),

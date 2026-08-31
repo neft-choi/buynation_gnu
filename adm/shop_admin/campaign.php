@@ -11,7 +11,7 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 <section>
     <div class="flex items-center justify-between gap-3">
         <p class="mt-1 text-2xs text-gray-400">가격 프로모션과 추가 기여 상품을 DONUTS 정책에 맞게 분리해 관리합니다.</p>
-        <button type="button" class="shrink-0 rounded-lg bg-gray-900 px-3 py-2 text-2xs font-bold text-white">
+        <button type="button" id="campaign-modal-open" class="shrink-0 rounded-lg bg-gray-900 px-3 py-2 text-2xs font-bold text-white">
             + 캠페인 등록
         </button>
     </div>
@@ -135,5 +135,107 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
     </div>
 </section>
 
+<div id="campaign-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4" hidden>
+    <div id="campaign-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+    <div id="campaign-modal-container" class="relative z-10 w-full max-w-180 bg-white rounded-lg">
+        <div id="campaign-modal-header" class="flex items-center justify-between border-b border-gray-300 p-4">
+            <h3 class="text-sm font-bold">캠페인 등록</h3>
+            <button type="button" id="campaign-modal-close" class="flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x w-5 h-5">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form id="campaign-modal-form" class="grid grid-cols-1 pc:grid-cols-2 gap-4 p-4">
+            <div class="col-span-full">
+                <label for="campaign-name" class="mb-2 block text-xs font-bold">캠페인명</label>
+                <input type="text" id="campaign-name" class="w-full border border-gray-300 rounded-lg text-xs px-3 py-2">
+            </div>
+
+            <div>
+                <label for="campaign-type" class="mb-2 block text-xs font-bold">유형</label>
+                <select id="campaign-type" class="w-full border border-gray-300 rounded-lg text-xs px-3 py-2">
+                    <option value="">핫딜</option>
+                    <option value="">추가토핑</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="campaign-product" class="mb-2 block text-xs font-bold">대상 상품</label>
+                <select id="campaign-product" class="w-full border border-gray-300 rounded-lg text-xs px-3 py-2">
+                    <option value="">유기농 그래놀라 500g</option>
+                    <option value="">저당 단백질바 12개입</option>
+                    <option value="">프리미엄 냉장 샐러드 6팩</option>
+                    <option value="">선물용 대형 패키지</option>
+                </select>
+            </div>
+
+            <div>
+                <label for="campaign-sale-price" class="mb-2 block text-xs font-bold">핫딜 판매가</label>
+                <input type="number" id="campaign-sale-price" value="0" min="0" step="1" class="w-full border border-gray-300 rounded-lg text-xs px-3 py-2">
+            </div>
+
+            <div>
+                <label for="campaign-contribution-rate" class="mb-2 block text-xs font-bold">추가 기여율(%)</label>
+                <input type="number" id="campaign-contribution-rate" value="0" min="0" step="1" class="w-full border border-gray-300 rounded-lg text-xs px-3 py-2">
+            </div>
+
+            <div>
+                <label for="campaign-start-date" class="mb-2 block text-xs font-bold">시작일</label>
+                <input type="date" id="campaign-start-date" class="w-full border border-gray-300 rounded-lg text-xs px-3 py-2">
+            </div>
+
+            <div>
+                <label for="campaign-end-date" class="mb-2 block text-xs font-bold">종료일</label>
+                <input type="date" id="campaign-end-date" class="w-full border border-gray-300 rounded-lg text-xs px-3 py-2">
+            </div>
+
+            <div class="col-span-full">
+                <label for="campaign-dotty-recommend" class="mb-2 block text-xs font-bold">도티 추천 자격</label>
+                <select id="campaign-dotty-recommend" class="w-full border border-gray-300 rounded-lg text-xs px-3 py-2">
+                    <option value="">전체</option>
+                </select>
+            </div>
+        </form>
+
+        <div id="campaign-modal-footer" class="flex items-center justify-end gap-2 border-t border-gray-300 p-4">
+            <button type="button" id="campaign-modal-cancel" class="border border-gray-300 rounded-lg bg-white px-3 py-2 text-xs font-bold text-gray-900">
+                닫기
+            </button>
+
+            <button type="button" id="campaign-modal-save" class="rounded-lg bg-amber-400 px-3 py-2 text-xs font-bold text-gray-900">
+                저장
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        const $campaign_modal = $("#campaign-modal");
+
+        // 캠페인 등록 버튼 클릭 시 모달 열기
+        $("#campaign-modal-open").on("click", function() {
+            $campaign_modal.prop("hidden", false);
+        });
+
+        // 배경 클릭 시 모달 닫기
+        $("#campaign-modal-backdrop").on("click", function() {
+            $campaign_modal.prop("hidden", true);
+        });
+
+        // X 버튼 클릭 시 모달 닫기
+        $("#campaign-modal-close").on("click", function() {
+            $campaign_modal.prop("hidden", true);
+        });
+
+        // 닫기 버튼 클릭 시 모달 닫기
+        $("#campaign-modal-cancel").on("click", function() {
+            $campaign_modal.prop("hidden", true);
+        });
+    });
+</script>
 <?php
 include_once(G5_ADMIN_PATH . '/admin.tail.php');
