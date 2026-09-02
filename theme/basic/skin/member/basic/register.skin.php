@@ -200,7 +200,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 
     <div id="termsModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/40" data-modal-close="termsModal"></div>
-        <div class="relative mx-auto mt-10 w-full rounded-t-2xl bg-white px-5 pb-6 pt-4" style="max-width: 375px;">
+        <div class="relative mx-auto mt-10 w-full rounded-t-2xl bg-white px-5 pb-6 pt-4" style="max-width: 768px;">
             <div class="mb-4 flex items-center justify-between">
                 <h3 class="text-base font-semibold text-zinc-900">도너츠 이용약관(임시)</h3>
                 <button type="button" class="inline-flex h-8 w-8 items-center justify-center text-zinc-500"
@@ -213,7 +213,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                 </button>
             </div>
             <div
-                class="max-h-[70vh] overflow-y-auto rounded border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700 whitespace-pre-wrap">
+                class="max-h-[70vh] overflow-y-auto rounded border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700 whitespace-pre-line">
                 <?php echo get_text($config['cf_stipulation']); ?>
             </div>
         </div>
@@ -221,7 +221,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 
     <div id="financeModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/40" data-modal-close="financeModal"></div>
-        <div class="relative mx-auto mt-10 w-full rounded-t-2xl bg-white px-5 pb-6 pt-4" style="max-width: 375px;">
+        <div class="relative mx-auto mt-10 w-full rounded-t-2xl bg-white px-5 pb-6 pt-4" style="max-width: 768px;">
             <div class="mb-4 flex items-center justify-between">
                 <h3 class="text-base font-semibold text-zinc-900">전자금융서비스 이용약관</h3>
                 <button type="button" class="inline-flex h-8 w-8 items-center justify-center text-zinc-500"
@@ -234,7 +234,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                 </button>
             </div>
             <div
-                class="max-h-[70vh] overflow-y-auto rounded border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700 whitespace-pre-wrap">
+                class="max-h-[70vh] overflow-y-auto rounded border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700 whitespace-pre-line">
                 [전자금융서비스 이용약관 동의]
             </div>
         </div>
@@ -242,7 +242,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
 
     <div id="privacyModal" class="fixed inset-0 z-50 hidden">
         <div class="absolute inset-0 bg-black/40" data-modal-close="privacyModal"></div>
-        <div class="relative mx-auto mt-10 w-full rounded-t-2xl bg-white px-5 pb-6 pt-4" style="max-width: 375px;">
+        <div class="relative mx-auto mt-10 w-full rounded-t-2xl bg-white px-5 pb-6 pt-4" style="max-width: 768px;">
             <div class="mb-4 flex items-center justify-between">
                 <h3 class="text-base font-semibold text-zinc-900">개인정보 수집 및 이용</h3>
                 <button type="button" class="inline-flex h-8 w-8 items-center justify-center text-zinc-500"
@@ -255,7 +255,7 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                 </button>
             </div>
             <div
-                class="max-h-[70vh] overflow-y-auto rounded border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700 whitespace-pre-wrap">
+                class="max-h-[70vh] overflow-y-auto rounded border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-700 whitespace-pre-line">
                 <?php echo get_text($config['cf_privacy']); ?>
             </div>
         </div>

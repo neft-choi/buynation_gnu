@@ -9,8 +9,8 @@ add_stylesheet('<link rel="stylesheet" href="'.$content_skin_url.'/style.css">',
     <header>
         <h1><?php echo $g5['title']; ?></h1>
     </header>
-
-    <div id="ctt_con">
+    <h1><?php echo $g5['title']; ?></h1>
+    <div id="ctt_con" class="p-0 md:p-4">
         <?php echo $str; ?>
     </div>
 

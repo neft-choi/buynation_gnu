@@ -226,12 +226,12 @@ $delivery_receiver_addr = trim(
 );
 
 $delivery_receiver_zip = isset($od_b_zip)
-    ? preg_replace('/[^0-9]/', '', $od_b_zip)
+     ? preg_replace('/[^0-9]/', '', $od_b_zip)
     : (
         preg_replace('/[^0-9]/', '', isset($od_b_zip1) ? $od_b_zip1 : '') .
         preg_replace('/[^0-9]/', '', isset($od_b_zip2) ? $od_b_zip2 : '')
     );
-
+// die($od_b_zip);
 $send_cost = donuts_delivery_policy_final_shipping(
     $tmp_cart_id,
     '',
@@ -672,8 +672,9 @@ $sql = " insert {$g5['g5_shop_order_table']}
                 od_cash_info      = '{$pg_receipt_infos['od_cash_info']}',
                 od_test           = '{$default['de_card_test']}'
                 ";
-$result = sql_query($sql, false);
 
+
+$result = sql_query($sql, false);
 // 정말로 insert 가 되었는지 한번더 체크한다.
 $exists_sql = "select od_id, od_tno, od_ip from {$g5['g5_shop_order_table']} where od_id = '$od_id'";
 $exists_order = sql_fetch($exists_sql);

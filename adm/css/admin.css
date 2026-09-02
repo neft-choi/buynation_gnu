@@ -2515,6 +2515,10 @@ html {
     text-align: left !important;
   }
 
+  .th_center {
+    text-align: center !important;
+  }
+
   .th_right {
     text-align: right !important;
   }

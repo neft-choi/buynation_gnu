@@ -7,6 +7,7 @@ $amenu = array();
 $menu['menu710'] = array(
     array('710000', '도티 관리', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty'),
     array('710100', '대시보드', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty_dashboard'),
+    array('710110', '통합 관리', G5_ADMIN_URL . '/dotty/management.php', 'dotty_management'),
     array('710800', '도티 설정', G5_ADMIN_URL . '/dotty/settings.php', 'dotty_cf_settings'),
     array('710200', '상품등록', G5_ADMIN_URL . '/dotty/itemform.php', 'dotty_item_form'),
     array('710300', '등록상품관리', G5_ADMIN_URL . '/dotty/item_list.php', 'dotty_item_list'),
@@ -24,6 +25,7 @@ $menu['menu710'] = array(
 
 // 메뉴 권한 (admin.head.php 에서 auth_check_menu 필터 통과를 위해)
 $auth['710100'] = 'r,w,d';
+$auth['710110'] = 'r,w,d';
 $auth['710200'] = 'r,w,d';
 $auth['710300'] = 'r,w,d';
 $auth['710400'] = 'r,w,d';
