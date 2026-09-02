@@ -4,6 +4,10 @@ include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, "r");
 
+if (!sql_query(" SELECT ct_delivery_company FROM {$g5['g5_shop_cart_table']} LIMIT 1 ", false)) {
+    sql_query("ALTER TABLE `{$g5['g5_shop_cart_table']}` ADD `ct_delivery_company` VARCHAR(100) NOT NULL DEFAULT '' AFTER `ct_status`, ADD `ct_invoice` VARCHAR(100) NOT NULL DEFAULT '' AFTER `ct_delivery_company`, ADD `ct_invoice_time` DATETIME NULL DEFAULT NULL AFTER `ct_invoice`", true);
+}
+
 /*
  * 배송조건 <-> 지역 추가비(sendcostlist) 연결 테이블
  * deliverymanage.php에서 만든 테이블을 CSV에서도 안전하게 참조합니다.
@@ -1622,6 +1626,9 @@ fputcsv($fp, array(
     '묶음배송 그룹',
     '지역 추가비',
     '최종 배송비',
+    '택배사',
+    '운송장 번호',
+    '운송장 등록일시',
     '주문상태',
     '결제수단',
     '정산금액',
@@ -1659,6 +1666,9 @@ SELECT
     c.ct_status,
     c.io_type,
     c.io_price,
+    c.ct_delivery_company,
+    c.ct_invoice,
+    c.ct_invoice_time,
 
     i.it_brand,
     i.it_sc_type,
@@ -1859,8 +1869,15 @@ while ($row = sql_fetch_array($result)) {
         (string)$row['od_zip2'];
 
     $receiver_zip =
-        (string)$row['od_b_zip1'] .
-        (string)$row['od_b_zip2'];
+        trim((string)$row['od_b_zip1']) .
+        trim((string)$row['od_b_zip2']);
+
+    // 수취인 우편번호는 숫자만 정리해서 그대로 출력합니다.
+    // 예: 12661 -> 12661
+    $receiver_zip = preg_replace('/[^0-9]/', '', $receiver_zip);
+    $receiver_zip_csv = ($receiver_zip !== '')
+        ? (int)$receiver_zip
+        : '';
 
     /*
      * 같은 주문번호의 모든 CSV 행에는 동일한 "최종 배송비"를 기록합니다.
@@ -1926,7 +1943,7 @@ while ($row = sql_fetch_array($result)) {
         $row['od_b_tel'],
         $row['od_b_hp'],
         $receiver_addr,
-        $receiver_zip,
+        $receiver_zip_csv,
 
         '', // 통관번호: 현재 확인한 테이블/파일에 전용 필드를 확인하지 못해 비움
 
@@ -1941,6 +1958,10 @@ while ($row = sql_fetch_array($result)) {
 
         $region_extra_amount,
         $final_shipping_amount,
+
+        $row['ct_delivery_company'],
+        $row['ct_invoice'],
+        $row['ct_invoice_time'],
 
         $row['od_status'],
         $row['od_settle_case'],

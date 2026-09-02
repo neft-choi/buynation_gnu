@@ -43,6 +43,17 @@ if (! (isset($od['od_id']) && $od['od_id'])) {
 $od['mb_id'] = $od['mb_id'] ? $od['mb_id'] : "비회원";
 //------------------------------------------------------------------------------
 
+// 상품 옵션별 택배사/운송장번호 필드가 없으면 자동 생성
+if (!sql_query(" SELECT ct_delivery_company FROM {$g5['g5_shop_cart_table']} LIMIT 1 ", false)) {
+    sql_query("
+        ALTER TABLE `{$g5['g5_shop_cart_table']}`
+            ADD `ct_delivery_company` VARCHAR(100) NOT NULL DEFAULT '' AFTER `ct_status`,
+            ADD `ct_invoice` VARCHAR(100) NOT NULL DEFAULT '' AFTER `ct_delivery_company`,
+            ADD `ct_invoice_time` DATETIME NULL DEFAULT NULL AFTER `ct_invoice`
+    ", true);
+}
+//------------------------------------------------------------------------------
+
 /*
  * 브랜드 계정 주문상세 필터
  * - 브랜드: 현재 로그인 계정의 it_brand 상품만 표시
@@ -205,6 +216,8 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             <th scope="col">쿠폰</th>
             <th scope="col">포인트</th>
             <th scope="col">배송비</th>
+            <th scope="col">택배사</th>
+            <th scope="col">운송장 번호</th>
             <th scope="col">포인트반영</th>
             <th scope="col">재고반영</th>
         </tr>
@@ -220,7 +233,8 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
             $sql = " select c.ct_id, c.it_id, c.ct_price, c.ct_point, c.ct_qty,
                             c.ct_option, c.ct_status, c.cp_price,
                             c.ct_stock_use, c.ct_point_use, c.ct_send_cost,
-                            c.io_type, c.io_price
+                            c.io_type, c.io_price,
+                            c.ct_delivery_company, c.ct_invoice, c.ct_invoice_time
                        from {$g5['g5_shop_cart_table']} c
                        left join {$g5['g5_shop_item_table']} i
                          on c.it_id = i.it_id
@@ -316,6 +330,13 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                 <td class="td_num_right"><?php echo number_format($opt['cp_price']); ?></td>
                 <td class=" td_num_right"><?php echo number_format($ct_point['stotal']); ?></td>
                 <td class="td_sendcost_by"><?php echo $ct_send_cost; ?></td>
+                <td class="td_left">
+                    <input type="text" name="ct_delivery_company[<?php echo $chk_cnt; ?>]" value="<?php echo get_text($opt['ct_delivery_company']); ?>" placeholder="택배사" maxlength="100" class="frm_input" style="width:120px;">
+                </td>
+                <td class="td_left">
+                    <input type="text" name="ct_invoice[<?php echo $chk_cnt; ?>]" value="<?php echo get_text($opt['ct_invoice']); ?>" placeholder="운송장 번호" maxlength="100" class="frm_input" style="width:160px;">
+                    <?php if (!empty($opt['ct_invoice_time'])) { ?><div style="font-size:11px;color:#888;margin-top:3px;"><?php echo get_text($opt['ct_invoice_time']); ?></div><?php } ?>
+                </td>
                 <td class="td_mngsmall"><?php echo get_yn($opt['ct_point_use']); ?></td>
                 <td class="td_mngsmall"><?php echo get_yn($opt['ct_stock_use']); ?></td>
             </tr>
@@ -333,6 +354,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
     <div class="btn_list02 btn_list">
         <p>
             <input type="hidden" name="chk_cnt" value="<?php echo $chk_cnt; ?>">
+            <button type="submit" formaction="./orderforminvoiceupdate.php" formmethod="post" formnovalidate class="btn_02 color_04" onclick="document.pressed='송장정보 저장'">송장정보 저장</button>
             <strong>주문 및 장바구니 상태 변경</strong>
             <input type="submit" name="ct_status" value="주문" onclick="document.pressed=this.value" class="btn_02 color_01">
             <input type="submit" name="ct_status" value="입금" onclick="document.pressed=this.value" class="btn_02 color_02">

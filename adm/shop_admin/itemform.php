@@ -169,6 +169,90 @@ $qstr  = $qstr . '&amp;sca=' . $sca . '&amp;page=' . $page;
 $g5['title'] = $html_title;
 include_once(G5_ADMIN_PATH . '/admin.head.php');
 
+/*
+ * 상품 수정화면 배송조건/배송그룹 현재 적용값
+ *
+ * JS가 실행되기 전에도 hidden 값이 0으로 출력되지 않도록
+ * donuts_delivery_product_settings의 실제 값을 먼저 읽습니다.
+ */
+$dm_form_condition_id = 0;
+$dm_form_group_id = 0;
+$dm_form_brand_id = '';
+
+if (!empty($it['it_brand'])) {
+    $dm_form_brand_id = trim((string)$it['it_brand']);
+} elseif (!empty($member['mb_id'])) {
+    $dm_form_brand_id = trim((string)$member['mb_id']);
+}
+
+if ($w === 'u' && !empty($it['it_id'])) {
+    $dm_form_it_sql = sql_real_escape_string(trim((string)$it['it_id']));
+    $dm_form_brand_sql = sql_real_escape_string($dm_form_brand_id);
+    $dm_form_setting = array();
+
+    if ($dm_form_brand_id !== '') {
+        $dm_form_sr = sql_query("
+            SELECT brand_id, condition_id, group_id
+            FROM donuts_delivery_product_settings
+            WHERE it_id = '{$dm_form_it_sql}'
+              AND LOWER(TRIM(brand_id)) = LOWER('{$dm_form_brand_sql}')
+            LIMIT 1
+        ", false);
+
+        if ($dm_form_sr) {
+            $dm_form_setting = sql_fetch_array($dm_form_sr);
+        }
+    }
+
+    /*
+     * 과거 데이터의 brand_id 표기가 다르더라도 it_id 기준으로 복구.
+     */
+    if (empty($dm_form_setting)) {
+        $dm_form_sr = sql_query("
+            SELECT brand_id, condition_id, group_id
+            FROM donuts_delivery_product_settings
+            WHERE it_id = '{$dm_form_it_sql}'
+            LIMIT 1
+        ", false);
+
+        if ($dm_form_sr) {
+            $dm_form_setting = sql_fetch_array($dm_form_sr);
+        }
+    }
+
+    if (!empty($dm_form_setting['brand_id'])) {
+        $dm_form_brand_id = trim((string)$dm_form_setting['brand_id']);
+        $dm_form_brand_sql = sql_real_escape_string($dm_form_brand_id);
+    }
+
+    $dm_form_condition_id = !empty($dm_form_setting['condition_id'])
+        ? (int)$dm_form_setting['condition_id']
+        : 0;
+
+    $dm_form_group_id = !empty($dm_form_setting['group_id'])
+        ? (int)$dm_form_setting['group_id']
+        : 0;
+
+    /*
+     * 상품별 조건이 비어 있으면 브랜드 기본 배송조건을 현재 적용값으로 사용.
+     */
+    if ($dm_form_condition_id <= 0 && $dm_form_brand_id !== '') {
+        $dm_form_default = sql_fetch("
+            SELECT dc_id
+            FROM donuts_delivery_conditions
+            WHERE LOWER(TRIM(brand_id)) = LOWER('{$dm_form_brand_sql}')
+              AND is_default = 1
+              AND use_yn = 'Y'
+            ORDER BY dc_id DESC
+            LIMIT 1
+        ");
+
+        if (!empty($dm_form_default['dc_id'])) {
+            $dm_form_condition_id = (int)$dm_form_default['dc_id'];
+        }
+    }
+}
+
 // 분류리스트
 $category_select = '';
 $script = '';
@@ -282,8 +366,8 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
     <input type="hidden" name="page" value="<?php echo $page; ?>">
 
     <!-- deliverymanage 연동 저장값 -->
-    <input type="hidden" name="dm_condition_id" id="dm_condition_id" value="0">
-    <input type="hidden" name="dm_group_id" id="dm_group_id" value="0">
+    <input type="hidden" name="dm_condition_id" id="dm_condition_id" value="<?php echo (int)$dm_form_condition_id; ?>">
+    <input type="hidden" name="dm_group_id" id="dm_group_id" value="<?php echo (int)$dm_form_group_id; ?>">
 
     <?php echo $pg_anchor; ?>
 
@@ -1280,9 +1364,13 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
          * 여기서는 deliverymanage.php에서 저장한 "현재 상품의 실제 설정값"만
          * 읽어서 기존 퍼블리싱의 선택 상태에 주입합니다.
          */
-        $dm_selected_condition_id = 0;
+        $dm_selected_condition_id = isset($dm_form_condition_id)
+            ? (int)$dm_form_condition_id
+            : 0;
         $dm_selected_condition_name = '';
-        $dm_selected_group_id = 0;
+        $dm_selected_group_id = isset($dm_form_group_id)
+            ? (int)$dm_form_group_id
+            : 0;
         $dm_selected_group_name = '';
         $dm_selected_group_method = '';
         $dm_selected_brand_id = '';
@@ -1420,12 +1508,59 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
         }
 
         /*
+         * 신규 상품 등록에서는 아직 donuts_delivery_product_settings 행이 없으므로
+         * 현재 브랜드의 기본 배송조건을 초기값으로 사용합니다.
+         *
+         * 사용자가 화면에서 다른 조건/그룹을 선택하면 아래 JS가 dm_* hidden 값을
+         * 실제 선택값으로 다시 갱신합니다.
+         */
+        if (
+            $w === '' &&
+            $dm_selected_brand_id !== '' &&
+            $dm_selected_condition_id <= 0
+        ) {
+            $dm_new_brand_sql = sql_real_escape_string(
+                $dm_selected_brand_id
+            );
+
+            $dm_new_default = sql_fetch("
+                SELECT dc_id, dc_name
+                FROM donuts_delivery_conditions
+                WHERE LOWER(TRIM(brand_id)) =
+                      LOWER('{$dm_new_brand_sql}')
+                  AND is_default = 1
+                  AND use_yn = 'Y'
+                ORDER BY dc_id DESC
+                LIMIT 1
+            ");
+
+            if (!empty($dm_new_default['dc_id'])) {
+                $dm_selected_condition_id =
+                    (int)$dm_new_default['dc_id'];
+                $dm_selected_condition_name =
+                    trim((string)$dm_new_default['dc_name']);
+            }
+        }
+
+        /*
+         * sendcostform.php 및 기존 호환 코드에서 사용할 선택값 alias.
+         * 실제 기준값은 위에서 DB로 읽은 dm_selected_* 입니다.
+         */
+        $selected_condition_id = (int)$dm_selected_condition_id;
+        $delivery_condition_id = (int)$dm_selected_condition_id;
+        $condition_id = (int)$dm_selected_condition_id;
+
+        $selected_group_id = (int)$dm_selected_group_id;
+        $delivery_group_id = (int)$dm_selected_group_id;
+        $group_id = (int)$dm_selected_group_id;
+
+        /*
          * 퍼블리싱 HTML/CSS는 원래 파일 그대로 출력.
          */
         include_once G5_ADMIN_PATH . '/shop_admin/sendcostform.php';
         ?>
 
-        <?php if ($w === 'u') {
+        <?php if ($w === 'u' || $w === '') {
             /*
              * 기존 퍼블리싱 카드/option이 ID가 아니라 이름을 value로 쓰는 경우
              * 저장 시 실제 condition_id / group_id로 변환하기 위한 매핑.
@@ -1989,6 +2124,24 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                 if (conditionHidden && id > 0) {
                     conditionHidden.value = String(id);
                 }
+
+                /*
+                 * 서버 초기값 복원 시 남은 active/selected 상태를 제거하고
+                 * 사용자가 방금 클릭한 카드 하나만 실제 선택 상태로 확정합니다.
+                 */
+                root.querySelectorAll(
+                    '#registerConditions .register-condition,' +
+                    '[data-condition-id],' +
+                    '[data-dc-id]'
+                ).forEach(function(conditionCard) {
+                    const selected = conditionCard === card;
+                    conditionCard.classList.toggle('selected', selected);
+                    conditionCard.classList.toggle('active', selected);
+                    conditionCard.setAttribute(
+                        'aria-checked',
+                        selected ? 'true' : 'false'
+                    );
+                });
             });
 
             /*
@@ -2054,12 +2207,168 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
              */
             window.setTimeout(syncDeliveryManageSelection, 100);
             window.setTimeout(syncDeliveryManageSelection, 400);
+            window.setTimeout(syncDeliveryManageSelection, 1000);
+
+            /*
+             * sendcostform.php가 DOM을 늦게 다시 그리는 경우에도
+             * 현재 상품의 배송조건/그룹 적용값을 다시 반영합니다.
+             */
+            if (window.MutationObserver) {
+                const observer = new MutationObserver(function() {
+                    syncDeliveryManageSelection();
+                });
+
+                observer.observe(root, {
+                    childList: true,
+                    subtree: true
+                });
+            }
+
+            /*
+             * 상품 저장 직전에 실제 UI의 선택값을 dm_* hidden에 최종 반영.
+             * 현재 화면에 보이는 배송조건/배송그룹이 DB에 그대로 저장되게 합니다.
+             */
+            const form = document.forms.fitemform;
+
+            if (form) {
+                form.addEventListener('submit', function() {
+                    /*
+                     * 배송조건: 선택된 radio/checkbox/card를 우선 사용.
+                     */
+                    const checkedCondition = root.querySelector(
+                        'input[type="radio"][name*="condition"]:checked,' +
+                        'input[type="radio"][name="dc_id"]:checked,' +
+                        'input[type="checkbox"][name*="condition"]:checked'
+                    );
+
+                    if (checkedCondition && conditionHidden) {
+                        let cid = parseInt(checkedCondition.value, 10) || 0;
+
+                        if (cid <= 0) {
+                            const label = checkedCondition.closest(
+                                '[data-condition-id], [data-dc-id], [data-condition], ' +
+                                '.condition-card, .shipping-card, .delivery-card, ' +
+                                '.register-condition'
+                            );
+
+                            if (label) {
+                                cid = getConditionCardId(label);
+
+                                if (cid <= 0) {
+                                    const cname = getConditionCardName(label);
+
+                                    if (
+                                        cname &&
+                                        Object.prototype.hasOwnProperty.call(
+                                            conditionNameMap,
+                                            cname
+                                        )
+                                    ) {
+                                        cid = parseInt(
+                                            conditionNameMap[cname],
+                                            10
+                                        ) || 0;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (cid > 0) {
+                            conditionHidden.value = String(cid);
+                        }
+                    } else {
+                        /*
+                         * 사용자가 직접 클릭한 상태는 selected를 기준으로 확정합니다.
+                         * active는 과거 서버값 복원 과정에서 남아 있을 수 있으므로
+                         * selected 카드가 없는 경우에만 fallback으로 사용합니다.
+                         */
+                        let activeCondition = root.querySelector(
+                            '[data-condition-id].selected,' +
+                            '[data-dc-id].selected,' +
+                            '.condition-card.selected,' +
+                            '.shipping-card.selected,' +
+                            '.delivery-card.selected,' +
+                            '.register-condition.selected'
+                        );
+
+                        if (!activeCondition) {
+                            activeCondition = root.querySelector(
+                                '[data-condition-id].active,' +
+                                '[data-dc-id].active,' +
+                                '.condition-card.active,' +
+                                '.shipping-card.active,' +
+                                '.delivery-card.active,' +
+                                '.register-condition.active'
+                            );
+                        }
+
+                        if (activeCondition && conditionHidden) {
+                            let cid = getConditionCardId(activeCondition);
+
+                            if (cid <= 0) {
+                                const cname =
+                                    getConditionCardName(activeCondition);
+
+                                if (
+                                    cname &&
+                                    Object.prototype.hasOwnProperty.call(
+                                        conditionNameMap,
+                                        cname
+                                    )
+                                ) {
+                                    cid = parseInt(
+                                        conditionNameMap[cname],
+                                        10
+                                    ) || 0;
+                                }
+                            }
+
+                            if (cid > 0) {
+                                conditionHidden.value = String(cid);
+                            }
+                        }
+                    }
+
+                    /*
+                     * 배송그룹: 실제 select의 현재 선택값을 최종 사용.
+                     */
+                    const selectedGroup = findGroupSelect();
+
+                    if (selectedGroup && groupHidden) {
+                        const option =
+                            selectedGroup.options[
+                                selectedGroup.selectedIndex
+                            ];
+
+                        let gid = optionGroupId(option);
+
+                        if (gid <= 0 && option) {
+                            const gname = optionGroupName(option);
+
+                            if (
+                                gname &&
+                                Object.prototype.hasOwnProperty.call(
+                                    groupNameMap,
+                                    gname
+                                )
+                            ) {
+                                gid = parseInt(
+                                    groupNameMap[gname],
+                                    10
+                                ) || 0;
+                            }
+                        }
+
+                        groupHidden.value = String(gid || 0);
+                    }
+                }, true);
+            }
         })();
         </script>
         <?php } ?>
     </section>
 
-    <section id="anc_sitfrm_sendcost" class="hidden">
+    <section id="anc_sitfrm_sendcost_legacy" class="hidden">
         <h2 class="h2_frm">배송비</h2>
         <div class="local_desc02 local_desc">
             <p>쇼핑몰설정 &gt; 배송비유형 설정보다 <strong>개별상품 배송비설정이 우선</strong> 적용됩니다.</p>

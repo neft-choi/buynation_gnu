@@ -135,10 +135,38 @@ while ($row = sql_fetch_array($condition_result)) {
         </div>
 
         <div id="registerConditions" class="grid grid-cols-2 gap-2">
-            <?php foreach ($conditions as $index => $condition) { ?>
+            <?php foreach ($conditions as $index => $condition) {
+                /*
+                 * 수정 화면에서는 itemform.php가 전달한 실제 저장 condition_id를 우선 사용합니다.
+                 * 신규등록에서만 저장값이 없으므로 첫 번째(기본) 조건을 초기 선택합니다.
+                 */
+                $render_selected_condition_id = 0;
+
+                /*
+                 * itemform.php에서 실제 DB 값을 담아 전달하는 변수는
+                 * $dm_selected_condition_id 입니다. 이것을 최우선으로 사용합니다.
+                 */
+                if (isset($dm_selected_condition_id) && (int)$dm_selected_condition_id > 0) {
+                    $render_selected_condition_id = (int)$dm_selected_condition_id;
+                } elseif (isset($selected_condition_id) && (int)$selected_condition_id > 0) {
+                    $render_selected_condition_id = (int)$selected_condition_id;
+                } elseif (isset($delivery_condition_id) && (int)$delivery_condition_id > 0) {
+                    $render_selected_condition_id = (int)$delivery_condition_id;
+                } elseif (isset($condition_id) && (int)$condition_id > 0) {
+                    $render_selected_condition_id = (int)$condition_id;
+                }
+
+                if ($render_selected_condition_id > 0) {
+                    $is_condition_selected =
+                        ((int)$condition['dc_id'] === $render_selected_condition_id);
+                } else {
+                    $is_condition_selected = ($index === 0);
+                }
+            ?>
                 <button
-                    class="register-condition <?php echo $index === 0 ? 'selected !border-(--brand) !bg-[#fffaf8] !shadow-[0_0_0_2px_rgba(255,106,61,.08)]' : ''; ?> relative min-h-20 border border-(--line-strong) rounded-xl bg-white px-10 py-3 space-y-1 cursor-pointer hover:border-[#bfc4cc]"
+                    class="register-condition <?php echo $is_condition_selected ? 'selected active !border-(--brand) !bg-[#fffaf8] !shadow-[0_0_0_2px_rgba(255,106,61,.08)]' : ''; ?> relative min-h-20 border border-(--line-strong) rounded-xl bg-white px-10 py-3 space-y-1 cursor-pointer hover:border-[#bfc4cc]"
                     type="button"
+                    aria-checked="<?php echo $is_condition_selected ? 'true' : 'false'; ?>"
                     data-condition-id="<?php echo (int) $condition['dc_id']; ?>"
                     data-condition="<?php echo get_text($condition['dc_name']); ?>">
                     <span class="block text-sm font-bold mb-1">
@@ -222,10 +250,24 @@ while ($row = sql_fetch_array($condition_result)) {
             name="group_id"
             id="delivery_group_id"
             class="w-full h-11 mt-3 px-3 border border-(--line-strong) rounded-lg bg-white">
-            <option value="0" selected>선택 안 함</option>
+            <option value="0" <?php
+                $render_selected_group_id = 0;
+                if (isset($dm_selected_group_id)) {
+                    $render_selected_group_id = (int)$dm_selected_group_id;
+                } elseif (isset($selected_group_id)) {
+                    $render_selected_group_id = (int)$selected_group_id;
+                } elseif (isset($delivery_group_id)) {
+                    $render_selected_group_id = (int)$delivery_group_id;
+                } elseif (isset($group_id)) {
+                    $render_selected_group_id = (int)$group_id;
+                }
+                echo $render_selected_group_id <= 0 ? 'selected' : '';
+            ?>>선택 안 함</option>
 
             <?php foreach ($groups as $group) { ?>
-                <option value="<?php echo (int) $group['dg_id']; ?>">
+                <option
+                    value="<?php echo (int) $group['dg_id']; ?>"
+                    <?php echo ((int)$group['dg_id'] === $render_selected_group_id) ? 'selected' : ''; ?>>
                     <?php echo get_text($group['dg_name']); ?> - 계산 방식 <?php echo get_text($group['calc_method']); ?>
                 </option>
             <?php } ?>
@@ -252,8 +294,31 @@ while ($row = sql_fetch_array($condition_result)) {
             const selectedClasses = "selected !border-(--brand) !bg-[#fffaf8] !shadow-[0_0_0_2px_rgba(255,106,61,.08)]";
 
             $("#registerConditions .register-condition").on("click", function() {
-                $("#registerConditions .register-condition").removeClass(selectedClasses);
-                $(this).addClass(selectedClasses);
+                /*
+                 * itemform.php가 수정값 복원을 위해 active 클래스를 사용할 수 있습니다.
+                 * 사용자가 다른 조건을 클릭하면 이전 카드의 selected/active를 모두 제거해야
+                 * 저장 직전 기본 배송조건(active)이 다시 선택되는 문제가 생기지 않습니다.
+                 */
+                $("#registerConditions .register-condition")
+                    .removeClass(selectedClasses)
+                    .removeClass("active")
+                    .attr("aria-checked", "false");
+
+                $(this)
+                    .addClass(selectedClasses)
+                    .addClass("active")
+                    .attr("aria-checked", "true");
+
+                // 실제로 클릭한 배송조건의 dc_id를 상품등록 hidden 필드에 즉시 저장
+                const conditionId =
+                    parseInt($(this).attr("data-condition-id"), 10) || 0;
+
+                $("#dm_condition_id").val(conditionId);
+            });
+
+            // 배송그룹도 실제 select 값을 상품등록 hidden 필드에 즉시 저장
+            $("#delivery_group_id").on("change", function() {
+                $("#dm_group_id").val(parseInt($(this).val(), 10) || 0);
             });
         }
     );
@@ -278,4 +343,30 @@ while ($row = sql_fetch_array($condition_result)) {
     // <?php if ($w === '') { ?>
     //     $("#registerConditions .register-condition.selected").trigger("click");
     // <?php } ?>
+
+    // 상품 저장 직전, 현재 UI에서 실제 선택된 값으로 최종 확정
+    (function() {
+        const form = document.querySelector('form[name="fitemform"]');
+        if (!form) return;
+
+        form.addEventListener("submit", function() {
+            const selected = document.querySelector(
+                "#registerConditions .register-condition.selected"
+            );
+            const conditionHidden = document.getElementById("dm_condition_id");
+            const groupHidden = document.getElementById("dm_group_id");
+            const groupSelect = document.getElementById("delivery_group_id");
+
+            if (selected && conditionHidden) {
+                conditionHidden.value =
+                    parseInt(selected.getAttribute("data-condition-id"), 10) || 0;
+            }
+
+            if (groupHidden && groupSelect) {
+                groupHidden.value =
+                    parseInt(groupSelect.value, 10) || 0;
+            }
+        }, true);
+    })();
+
 </script>
