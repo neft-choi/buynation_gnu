@@ -1972,4 +1972,5 @@ while ($row = sql_fetch_array($result)) {
 }
 
 fclose($fp);
+
 exit;
