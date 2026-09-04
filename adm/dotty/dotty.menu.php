@@ -5,9 +5,9 @@ $amenu = array();
 
 // dotty 전용 사이드바 메뉴 설정
 $menu['menu710'] = array(
-    array('710000', '도티 관리', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty'),
-    array('710100', '대시보드', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty_dashboard'),
+    array('710000', '도티 관리', G5_ADMIN_URL . '/dotty/management.php', 'dotty'),
     array('710110', '통합 관리', G5_ADMIN_URL . '/dotty/management.php', 'dotty_management'),
+    array('710100', '대시보드', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty_dashboard'),
     array('710800', '도티 설정', G5_ADMIN_URL . '/dotty/settings.php', 'dotty_cf_settings'),
     array('710200', '상품등록', G5_ADMIN_URL . '/dotty/itemform.php', 'dotty_item_form'),
     array('710300', '등록상품관리', G5_ADMIN_URL . '/dotty/item_list.php', 'dotty_item_list'),
@@ -38,4 +38,3 @@ $auth['710900'] = 'r,w,d';
 // 직접 amenu에 넣어 사이드바 메뉴 적용
 $amenu['710'] = 'dotty_menu710';
 // $amenu['720'] = 'dotty_menu720';
-

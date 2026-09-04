@@ -184,7 +184,7 @@ require_once '../admin.head.php';
                 </div>
             </div>
 
-            <button type="button" class="text-sm font-bold bg-white border border-gray-300 rounded-lg px-4 py-3">
+            <button type="button" class="management-task-view-trigger text-sm font-bold bg-white border border-gray-300 rounded-lg px-4 py-3">
                 도넛별 대상 보기
             </button>
         </div>
@@ -196,26 +196,26 @@ require_once '../admin.head.php';
             </div>
 
             <div class="grid grid-cols-1 pc:grid-cols-3 gap-4 mt-4">
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">가입 승인 대기</p>
                     <p class="text-2xs text-gray-500 mt-2">가입 신청을 검토하고 승인 또는 거절합니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">9건</p>
-                </a>
+                </button>
 
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">신고 검토 대기</p>
                     <p class="text-2xs text-gray-500 mt-2">신고된 콘텐츠를 확인하고 처리합니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">5건</p>
-                </a>
+                </button>
 
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">사업자 서류 처리</p>
                     <p class="text-2xs text-gray-500 mt-2">미제출 또는 보완이 필요한 서류를 등록·재제출합니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">1건</p>
-                </a>
+                </button>
             </div>
         </div>
 
@@ -226,33 +226,33 @@ require_once '../admin.head.php';
             </div>
 
             <div class="grid grid-cols-1 pc:grid-cols-3 gap-4 mt-4">
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">사업자 승인 대기</p>
                     <p class="text-2xs text-gray-500 mt-2">제출한 서류를 플랫폼 관리자가 검토하고 있습니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">1건</p>
-                </a>
+                </button>
 
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">정산 검토 중</p>
                     <p class="text-2xs text-gray-500 mt-2">신청 자료를 바탕으로 담당자가 검토하고 있습니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">1건</p>
-                </a>
+                </button>
 
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">운영권 승계 심사</p>
                     <p class="text-2xs text-gray-500 mt-2">본인확인과 운영권 이전에 대한 플랫폼 결과를 기다립니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">1건</p>
-                </a>
+                </button>
 
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">운영자 초대 응답 대기</p>
                     <p class="text-2xs text-gray-500 mt-2">지정 운영자가 초대를 수락할 때까지 상태를 확인합니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">1건</p>
-                </a>
+                </button>
             </div>
         </div>
 
@@ -263,26 +263,26 @@ require_once '../admin.head.php';
             </div>
 
             <div class="grid grid-cols-1 pc:grid-cols-3 gap-4 mt-4">
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">활동 제한 확인</p>
                     <p class="text-2xs text-gray-500 mt-2">활동 제한 중인 도트의 사유와 해제 여부를 확인합니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">4건</p>
-                </a>
+                </button>
 
-                <a class="font-normal border border-gray-300 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100 rounded-lg"></div>
                     <p class="font-bold mt-2">사업자 최종 거절</p>
                     <p class="text-2xs text-gray-500 mt-2">정산 제한 상태와 사업자 전환 가능 여부를 확인합니다.</p>
                     <p class="w-fit text-2xs text-white font-bold bg-gray-900 rounded-full px-2 py-1 mt-2">1건</p>
-                </a>
+                </button>
 
-                <a class="font-normal border border-gray-300/50 rounded-lg p-3">
+                <button type="button" class="management-task-view-trigger w-full text-left font-normal border border-gray-300 rounded-lg p-3 hover:outline-1 hover:outline-amber-400">
                     <div class="w-7 h-7 bg-gray-100/50 rounded-lg"></div>
                     <p class="text-gray-900/50 font-bold mt-2">기한·실패 예외</p>
                     <p class="text-2xs text-gray-500/50 mt-2">기한 초과, 오류 또는 중단 알림의 원인을 확인합니다.</p>
                     <p class="w-fit text-2xs text-gray-900/50  font-bold bg-gray-300/50 rounded-full px-2 py-1 mt-2">현재 없음</p>
-                </a>
+                </button>
             </div>
         </div>
     </div>
@@ -378,9 +378,9 @@ require_once '../admin.head.php';
                             </td>
 
                             <td class="td_center">
-                                <button type="button" class="whitespace-nowrap rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                                <a href="/adm/dotty/dashboard.php" class="inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900 hover:bg-gray-50">
                                     진입
-                                </button>
+                                </a>
                             </td>
                         </tr>
 
@@ -420,9 +420,9 @@ require_once '../admin.head.php';
                             </td>
 
                             <td class="td_center">
-                                <button type="button" class="whitespace-nowrap rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                                <a href="/adm/dotty/dashboard.php" class="inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900 hover:bg-gray-50">
                                     진입
-                                </button>
+                                </a>
                             </td>
                         </tr>
 
@@ -462,9 +462,9 @@ require_once '../admin.head.php';
                             </td>
 
                             <td class="td_center">
-                                <button type="button" class="whitespace-nowrap rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                                <a href="/adm/dotty/dashboard.php" class="inline-flex items-center justify-center whitespace-nowrap rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900 hover:bg-gray-50">
                                     진입
-                                </button>
+                                </a>
                             </td>
                         </tr>
 
@@ -1210,11 +1210,16 @@ require_once '../admin.head.php';
             .attr('aria-pressed', 'false')
             .removeClass('bg-gray-900 text-white')
             .addClass('text-gray-500');
-            
+
         $selectedFilter
             .attr('aria-pressed', 'true')
             .removeClass('text-gray-500')
             .addClass('bg-gray-900 text-white');
+    });
+
+    // 통합 홈 업무 카드에서 통합 업무함 탭으로 이동
+    $('.management-task-view-trigger').on('click', function() {
+        $('#management-tab-task').trigger('click');
     });
 </script>
 
