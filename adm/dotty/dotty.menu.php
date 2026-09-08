@@ -8,6 +8,8 @@ $menu['menu710'] = array(
     array('710000', '도티 관리', G5_ADMIN_URL . '/dotty/management.php', 'dotty'),
     array('710110', '통합 관리', G5_ADMIN_URL . '/dotty/management.php', 'dotty_management'),
     array('710120', '도넛 정보', G5_ADMIN_URL . '/dotty/donuts_info.php', 'dotty_donuts_info'),
+    array('710130', '가입 신청', G5_ADMIN_URL . '/dotty/join_request.php', 'dotty_join_request'),
+    array('710140', '가입 도트', G5_ADMIN_URL . '/dotty/member_activity.php', 'dotty_member_activity'),
     array('710100', '대시보드', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty_dashboard'),
     array('710800', '도티 설정', G5_ADMIN_URL . '/dotty/settings.php', 'dotty_cf_settings'),
     array('710200', '상품등록', G5_ADMIN_URL . '/dotty/itemform.php', 'dotty_item_form'),
@@ -27,6 +29,9 @@ $menu['menu710'] = array(
 // 메뉴 권한 (admin.head.php 에서 auth_check_menu 필터 통과를 위해)
 $auth['710100'] = 'r,w,d';
 $auth['710110'] = 'r,w,d';
+$auth['710120'] = 'r,w,d';
+$auth['710130'] = 'r,w,d';
+$auth['710140'] = 'r,w,d';
 $auth['710200'] = 'r,w,d';
 $auth['710300'] = 'r,w,d';
 $auth['710400'] = 'r,w,d';

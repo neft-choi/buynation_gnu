@@ -71,7 +71,7 @@ require_once '../admin.head.php';
                                     테니스를 사랑하는 도트들의 즐거운 소통 공간입니다.
                                 </p>
                             </div>
-                            <button type="button" class="shrink-0 rounded-full border border-gray-300 px-2 py-1 text-2xs font-bold text-gray-900">
+                            <button type="button" class="donuts-preview-modal-open shrink-0 rounded-full border border-gray-300 px-2 py-1 text-2xs font-bold text-gray-900">
                                 더보기
                             </button>
                         </div>
@@ -117,7 +117,7 @@ require_once '../admin.head.php';
                     </p>
                 </div>
 
-                <button type="button" class="shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                <button type="button" class="donuts-preview-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
                     도넛 미리보기
                 </button>
             </div>
@@ -163,7 +163,7 @@ require_once '../admin.head.php';
             <div class="mt-4">
                 <p class="font-bold text-gray-900">가입 방식</p>
 
-                <div class="mt-2 grid grid-cols-1 gap-3 pc:grid-cols-2">
+                <div class="donuts-setting-options mt-2 grid grid-cols-1 gap-3 pc:grid-cols-2">
                     <button type="button" aria-pressed="true" class="rounded-lg border-2 border-amber-400 bg-amber-50 p-3 text-left">
                         <span class="block font-bold text-gray-900">승인형</span>
                         <span class="mt-1 block text-2xs text-gray-400">
@@ -183,7 +183,7 @@ require_once '../admin.head.php';
             <div class="mt-4 border-t border-gray-300 pt-4">
                 <p class="font-bold text-gray-900">공개 범위</p>
 
-                <div class="mt-2 grid grid-cols-1 gap-3 pc:grid-cols-2">
+                <div class="donuts-setting-options mt-2 grid grid-cols-1 gap-3 pc:grid-cols-2">
                     <button type="button" aria-pressed="true" class="rounded-lg border-2 border-amber-400 bg-amber-50 p-3 text-left">
                         <span class="block font-bold text-gray-900">공개</span>
                         <span class="mt-1 block text-2xs text-gray-400">
@@ -250,7 +250,7 @@ require_once '../admin.head.php';
                         <button type="button" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
                             QR 저장
                         </button>
-                        <button type="button" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                        <button type="button" class="donuts-invite-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
                             가입 화면 확인
                         </button>
                         <button type="button" class="rounded-lg border border-red-300 bg-white px-3 py-2 text-2xs font-bold text-red-600">
@@ -261,7 +261,7 @@ require_once '../admin.head.php';
             </div>
 
             <div class="mt-4 rounded-lg bg-amber-50 p-3 text-2xs text-amber-800">
-                <span class="block font-bold">재발급 전환</span>
+                <span class="block font-bold">재발급 정책</span>
                 링크와 QR은 다음 재발급 전까지 계속 유효합니다. 재발급을 완료하는 즉시 이전 링크와 이전 QR은 무효화되고, 가장 최근에 발급한 1개만 사용할 수 있습니다.
             </div>
         </div>
@@ -312,13 +312,13 @@ require_once '../admin.head.php';
 <div id="donuts-preview-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
     <div id="donuts-preview-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
 
-    <div id="donuts-preview-modal-container" class="relative z-10 w-full max-w-240 max-h-[90vh] overflow-y-auto rounded-lg bg-white">
+    <div id="donuts-preview-modal-container" class="relative z-10 w-full max-w-240 max-h-[80vh] overflow-y-auto rounded-lg bg-white">
         <div id="donuts-preview-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
             <h3 id="donuts-preview-modal-title" class="text-base font-bold text-gray-900">
                 도넛 미리보기
             </h3>
 
-            <button type="button" id="donuts-preview-modal-close" aria-label="도넛 미리보기 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+            <button type="button" aria-label="도넛 미리보기 모달 닫기" class="donuts-preview-modal-close flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
@@ -360,31 +360,31 @@ require_once '../admin.head.php';
                     <span class="font-bold text-amber-700">+2</span>
                 </div>
 
-                <ul id="donuts-preview-modal-tabs" class="grid grid-cols-4 border-t border-gray-300">
+                <ul id="donuts-preview-modal-tabs" role="tablist" aria-label="도넛 미리보기 탭 리스트" class="grid grid-cols-4 border-t border-gray-300">
                     <li>
-                        <button type="button" aria-pressed="true" class="w-full border-b-2 border-gray-900 px-1 py-3 text-2xs font-bold text-gray-900">
+                        <button type="button" id="donuts-preview-modal-products-tab" role="tab" aria-selected="true" aria-controls="donuts-preview-modal-products-panel" class="w-full border-b-2 border-gray-900 px-1 py-3 text-2xs font-bold text-gray-900">
                             추천상품
                         </button>
                     </li>
                     <li>
-                        <button type="button" aria-pressed="false" class="w-full border-b-2 border-transparent px-1 py-3 text-2xs text-gray-700">
+                        <button type="button" id="donuts-preview-modal-notice-tab" role="tab" aria-selected="false" aria-controls="donuts-preview-modal-notice-panel" class="w-full border-b-2 border-transparent px-1 py-3 text-2xs text-gray-700">
                             전체공지
                         </button>
                     </li>
                     <li>
-                        <button type="button" aria-pressed="false" class="w-full border-b-2 border-transparent px-1 py-3 text-2xs text-gray-700">
+                        <button type="button" id="donuts-preview-modal-community-01-tab" role="tab" aria-selected="false" aria-controls="donuts-preview-modal-community-01-panel" class="w-full border-b-2 border-transparent px-1 py-3 text-2xs text-gray-700">
                             커뮤니티 01
                         </button>
                     </li>
                     <li>
-                        <button type="button" aria-pressed="false" class="w-full border-b-2 border-transparent px-1 py-3 text-2xs text-gray-700">
+                        <button type="button" id="donuts-preview-modal-community-02-tab" role="tab" aria-selected="false" aria-controls="donuts-preview-modal-community-02-panel" class="w-full border-b-2 border-transparent px-1 py-3 text-2xs text-gray-700">
                             커뮤니티 02
                         </button>
                     </li>
                 </ul>
 
                 <!-- 도넛 미리보기 모달 탭 내용 -->
-                <section id="donuts-preview-modal-products" class="bg-gray-100 p-4">
+                <section id="donuts-preview-modal-products-panel" role="tabpanel" aria-labelledby="donuts-preview-modal-products-tab" class="bg-gray-100 p-4">
                     <div class="flex items-center justify-between">
                         <h3 class="text-base font-bold text-gray-900">도티 추천상품</h3>
                         <span class="text-2xs text-gray-400">5개 노출</span>
@@ -395,7 +395,7 @@ require_once '../admin.head.php';
                             <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-3xl">🥣</div>
 
                             <div class="min-w-0 flex-1">
-                                <span class="text-2xs text-gray-400">그레티이름 · 일반 상품</span>
+                                <span class="text-2xs text-gray-400">그린테이블 · 일반 상품</span>
                                 <p class="mt-1 text-sm font-bold text-gray-900">유기농 그래놀라 500g</p>
                                 <p class="mt-1 font-bold text-gray-900">18,900원</p>
                                 <span class="mt-2 block text-2xs font-bold text-amber-700">도티의 추천 이유</span>
@@ -407,7 +407,7 @@ require_once '../admin.head.php';
                             <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-3xl">🍫</div>
 
                             <div class="min-w-0 flex-1">
-                                <span class="text-2xs text-gray-400">그레티이름 · 핫딜 상품</span>
+                                <span class="text-2xs text-gray-400">그린테이블 · 핫딜 상품</span>
                                 <p class="mt-1 text-sm font-bold text-gray-900">저당 단백질바 12개입</p>
                                 <p class="mt-1 font-bold text-gray-900">21,900원</p>
                                 <span class="mt-2 block text-2xs font-bold text-amber-700">도티의 추천 이유</span>
@@ -419,7 +419,7 @@ require_once '../admin.head.php';
                             <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-3xl">🎁</div>
 
                             <div class="min-w-0 flex-1">
-                                <span class="text-2xs text-gray-400">그레티이름 · 일반 상품</span>
+                                <span class="text-2xs text-gray-400">그린테이블 · 일반 상품</span>
                                 <p class="mt-1 text-sm font-bold text-gray-900">선물용 대형 패키지</p>
                                 <p class="mt-1 font-bold text-gray-900">48,000원</p>
                                 <span class="mt-2 block text-2xs font-bold text-amber-700">도티의 추천 이유</span>
@@ -431,7 +431,7 @@ require_once '../admin.head.php';
                             <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-3xl">🧃</div>
 
                             <div class="min-w-0 flex-1">
-                                <span class="text-2xs text-gray-400">그레티이름 · 일반 상품</span>
+                                <span class="text-2xs text-gray-400">그린테이블 · 일반 상품</span>
                                 <p class="mt-1 text-sm font-bold text-gray-900">콜드프레스 주스 12병</p>
                                 <p class="mt-1 font-bold text-gray-900">39,900원</p>
                                 <span class="mt-2 block text-2xs font-bold text-amber-700">도티의 추천 이유</span>
@@ -443,7 +443,7 @@ require_once '../admin.head.php';
                             <div class="flex h-24 w-24 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-3xl">📦</div>
 
                             <div class="min-w-0 flex-1">
-                                <span class="text-2xs text-gray-400">그레티이름 · 일반 상품</span>
+                                <span class="text-2xs text-gray-400">그린테이블 · 일반 상품</span>
                                 <p class="mt-1 text-sm font-bold text-gray-900">정기배송 혼합박스 24개입</p>
                                 <p class="mt-1 font-bold text-gray-900">69,000원</p>
                                 <span class="mt-2 block text-2xs font-bold text-amber-700">도티의 추천 이유</span>
@@ -453,14 +453,196 @@ require_once '../admin.head.php';
                     </div>
                 </section>
 
-                <div id="donuts-preview-modal-notice" hidden></div>
-                <div id="donuts-preview-modal-community-01" hidden></div>
-                <div id="donuts-preview-modal-community-02" hidden></div>
+                <section id="donuts-preview-modal-notice-panel" role="tabpanel" aria-labelledby="donuts-preview-modal-notice-tab" class="bg-gray-100 p-4" hidden>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold text-gray-900">전체공지</h3>
+                        <span class="text-2xs text-gray-400">6건</span>
+                    </div>
+
+                    <div class="mt-3 space-y-2">
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">오프라인 모임 신청 안내</p>
+                                <span class="mt-1 block text-2xs text-gray-400">2026.08.03 · 조회 1,204</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">2026 여름 테니스 캠프 모집 안내</p>
+                                <span class="mt-1 block text-2xs text-gray-400">2026.08.01 · 조회 987</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">커뮤니티 운영 가이드라인 안내</p>
+                                <span class="mt-1 block text-2xs text-gray-400">2026.07.29 · 조회 2,101</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">코트 이용 매너 및 안전 수칙</p>
+                                <span class="mt-1 block text-2xs text-gray-400">2026.07.24 · 조회 742</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">회원 등급 운영 기준 안내</p>
+                                <span class="mt-1 block text-2xs text-gray-400">2026.07.18 · 조회 681</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">7월 정기 모임 사진 공유</p>
+                                <span class="mt-1 block text-2xs text-gray-400">2026.07.12 · 조회 524</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="donuts-preview-modal-community-01-panel" role="tabpanel" aria-labelledby="donuts-preview-modal-community-01-tab" class="bg-gray-100 p-4" hidden>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold text-gray-900">커뮤니티 01</h3>
+                        <span class="text-2xs text-gray-400">도티·운영자 콘텐츠</span>
+                    </div>
+
+                    <div class="mt-3 space-y-2">
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">8월 정기 모임 참가 신청 안내</p>
+                                <span class="mt-1 block text-2xs text-gray-400">도티 김도윤 · 댓글 38 · 좋아요 126</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">여름철 코트 이용 매너를 안내드립니다</p>
+                                <span class="mt-1 block text-2xs text-gray-400">운영자 김도현 · 댓글 12 · 좋아요 74</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="donuts-preview-modal-community-02-panel" role="tabpanel" aria-labelledby="donuts-preview-modal-community-02-tab" class="bg-gray-100 p-4" hidden>
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold text-gray-900">커뮤니티 02</h3>
+                        <span class="text-2xs text-gray-400">도트 자유게시판</span>
+                    </div>
+
+                    <div class="mt-3 space-y-2">
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">새 라켓 사용 후기 남겨봐요</p>
+                                <span class="mt-1 block text-2xs text-gray-400">최서진 · 댓글 21 · 좋아요 57</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">주말 번개 복식 멤버 모집합니다</p>
+                                <span class="mt-1 block text-2xs text-gray-400">이유진 · 댓글 8 · 좋아요 31</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-3 rounded-lg border border-gray-300 bg-white p-3">
+                            <span class="shrink-0 block w-10 h-10 rounded-lg bg-gray-100"></span>
+
+                            <div class="flex-1 min-w-0">
+                                <p class="text-xs font-bold text-gray-900">초보자 포핸드 팁 공유</p>
+                                <span class="mt-1 block text-2xs text-gray-400">박성훈 · 댓글 14 · 좋아요 83</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
             </div>
         </div>
 
         <div id="donuts-preview-modal-footer" class="sticky bottom-0 z-10 flex justify-end border-t border-gray-300 bg-white p-4">
-            <button type="button" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-900">
+            <button type="button" class="donuts-preview-modal-close rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-900">
+                닫기
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 초대 링크 가입 화면 모달 -->
+<div id="donuts-invite-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="donuts-invite-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+
+    <div id="donuts-invite-modal-container" class="relative z-10 w-full max-w-160 max-h-[80vh] overflow-y-auto rounded-lg bg-white">
+        <div id="donuts-invite-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 id="donuts-invite-modal-title" class="text-base font-bold text-gray-900">
+                초대 링크 가입 화면
+            </h3>
+
+            <button type="button" aria-label="초대 링크 가입 화면 모달 닫기" class="donuts-invite-modal-close flex w-8 h-8 items-center justify-center rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="donuts-invite-modal-body" class="p-4">
+            <div class="rounded-lg border border-gray-300 bg-white">
+                <div class="p-4">
+                    <div class="flex w-full h-40 items-center justify-center rounded-lg bg-green-800"></div>
+                </div>
+
+                <div class="px-4 pb-4">
+                    <div class="flex gap-2">
+                        <span class="rounded-full bg-gray-100 px-2 py-1 text-2xs font-bold text-gray-700">● 공개 도넛</span>
+                        <span class="rounded-full bg-emerald-50 px-2 py-1 text-2xs font-bold text-emerald-700">● 유효한 초대</span>
+                    </div>
+
+                    <h3 class="mt-4 text-sm font-bold text-gray-900">테니스 커뮤니티</h3>
+
+                    <p class="mt-1 text-xs text-gray-500">
+                        테니스를 사랑하는 도트들의 즐거운 소통 공간입니다.
+                    </p>
+
+                    <div class="mt-2 rounded-lg bg-gray-100 p-3">
+                        <span class="block text-2xs text-gray-500">가입 방식</span>
+                        <p class="mt-1 text-xs text-gray-500">승인형 · 질문 작성 후 운영자 승인을 기다립니다.</p>
+                    </div>
+
+                    <button type="button" class="mt-4 w-full rounded-lg bg-gray-900 px-4 py-3 text-sm font-bold text-white">
+                        가입 신청하기
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-4 rounded-lg bg-amber-50 p-3 text-2xs text-amber-800">
+                <span class="block text-green-600">현재 발급 버전 v1의 초대 링크로 진입한 화면입니다. 재발급된 이전 주소로는 이 화면에 들어올 수 없습니다.</span>
+            </div>
+        </div>
+
+        <div id="donuts-invite-modal-footer" class="sticky bottom-0 z-10 flex justify-end border-t border-gray-300 bg-white p-4">
+            <button type="button" class="donuts-invite-modal-close rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-900">
                 닫기
             </button>
         </div>
@@ -488,6 +670,68 @@ require_once '../admin.head.php';
             .attr('aria-pressed', 'true')
             .removeClass('border-transparent text-gray-700')
             .addClass('border-gray-900 font-bold text-gray-900');
+    });
+    // 도넛 미리보기 모달 열기
+    const $donutsPreviewModal = $('#donuts-preview-modal');
+
+    $('.donuts-preview-modal-open').on('click', function() {
+        $donutsPreviewModal.prop('hidden', false);
+    });
+
+    // 도넛 미리보기 모달 닫기
+    $('.donuts-preview-modal-close, #donuts-preview-modal-backdrop').on('click', function() {
+        $donutsPreviewModal.prop('hidden', true);
+    });
+
+    // 도넛 미리보기 모달 내부 탭 선택
+    const $modalTabs = $('#donuts-preview-modal-tabs [role="tab"]');
+    const $modalPanels = $('#donuts-preview-modal-body [role="tabpanel"]');
+
+    $modalTabs.on('click', function() {
+        const panelId = $(this).attr('aria-controls');
+
+        // 전체 초기화 후
+        $modalTabs
+            .attr('aria-selected', 'false')
+            .removeClass('border-gray-900 font-bold text-gray-900')
+            .addClass('border-transparent text-gray-700');
+
+        // 클릭한 탭만 적용
+        $(this)
+            .attr('aria-selected', 'true')
+            .removeClass('border-transparent text-gray-700')
+            .addClass('border-gray-900 font-bold text-gray-900');
+
+        // 전체 패널 hidden 후 클릭한 탭의 aria-controls 안의 panelId 만 hidden 제거
+        $modalPanels.prop('hidden', true);
+        $('#' + panelId).prop('hidden', false);
+    });
+
+    // 가입 공개 설정 UI
+    $('.donuts-setting-options > button').on('click', function() {
+        const $options = $(this).closest('.donuts-setting-options').find('button');
+
+        $options
+            .attr('aria-pressed', 'false')
+            .removeClass('border-2 border-amber-400 bg-amber-50')
+            .addClass('border border-gray-300');
+
+        $(this)
+            .attr('aria-pressed', 'true')
+            .removeClass('border border-gray-300')
+            .addClass('border-2 border-amber-400 bg-amber-50');
+    });
+
+    // 초대 링크 가입 화면 모달 열기
+    const $donutsInviteModal = $('#donuts-invite-modal');
+
+    $('.donuts-invite-modal-open').on('click', function() {
+        $donutsInviteModal.prop('hidden', false);
+    });
+
+    // 초대 링크 가입 화면 모달 닫기
+    $('.donuts-invite-modal-close, #donuts-invite-modal-backdrop').on('click', function() {
+        $donutsInviteModal.prop('hidden', true);
     });
 </script>
 
