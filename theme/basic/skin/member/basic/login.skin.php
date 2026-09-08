@@ -31,10 +31,10 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
                 <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>">
             </a>
         </div>
-
         <form name="flogin" action="<?php echo $login_action_url ?>" onsubmit="return flogin_submit(this);"
             method="post">
             <input type="hidden" name="url" value="<?php echo $login_url ?>">
+        <?php if (!preg_match("/orderform.php/", $url)) { ?>
 
             <fieldset id="login_fs" class="!p-0 space-y-2">
                 <label for="login_id" class="sound_only">회원아이디<strong class="sound_only"> 필수</strong></label>
@@ -98,6 +98,8 @@ add_stylesheet('<link rel="stylesheet" href="' . $member_skin_url . '/style.css"
         <section class="rounded bg-[#523919] p-6 text-white">
             <div>프로모션 배너</div>
         </section>
+        <?php }?>
+
     </div>
 
     <?php // 쇼핑몰 사용시 여기부터 

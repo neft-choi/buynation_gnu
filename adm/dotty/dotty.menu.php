@@ -7,6 +7,7 @@ $amenu = array();
 $menu['menu710'] = array(
     array('710000', '도티 관리', G5_ADMIN_URL . '/dotty/management.php', 'dotty'),
     array('710110', '통합 관리', G5_ADMIN_URL . '/dotty/management.php', 'dotty_management'),
+    array('710120', '도넛 정보', G5_ADMIN_URL . '/dotty/donuts_info.php', 'dotty_donuts_info'),
     array('710100', '대시보드', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty_dashboard'),
     array('710800', '도티 설정', G5_ADMIN_URL . '/dotty/settings.php', 'dotty_cf_settings'),
     array('710200', '상품등록', G5_ADMIN_URL . '/dotty/itemform.php', 'dotty_item_form'),
@@ -19,7 +20,7 @@ $menu['menu710'] = array(
 );
 
 // $menu['menu720'] = array(
-//     array('720000', '환경설정', G5_ADMIN_URL . '/dotty/settings.php', 'dotty_config'),
+//     array('720000', '커뮤니티', G5_ADMIN_URL . '/dotty/community.php', 'dotty_community'),
 //     array('710800', '도티 설정', G5_ADMIN_URL . '/dotty/settings.php', 'dotty_cf_settings'),
 // );
 

@@ -320,7 +320,7 @@ $listall .= ' <a href="./itemlist_csv.php?'.$qstr.'" class="btn btn_02" style="b
             <input type="submit" name="act_button" value="승인요청" onclick="document.pressed=this.value" class="btn bg-green-700 text-white">
             <a href="./itemform.php" class="btn btn_04">상품등록</a>
             <a href="./itemexcel.php" onclick="return excelform(this.href);" target="_blank" class="btn btn_05 !hidden">상품일괄등록</a>
-            <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_05 !hidden">
+            <input type="submit" name="act_button" value="선택수정" onclick="document.pressed=this.value" class="btn btn_05">
                 <input type="submit" name="act_button" value="선택삭제" onclick="document.pressed=this.value" class="btn btn_05">
         </div>
         <!-- <div class="btn_confirm01 btn_confirm">

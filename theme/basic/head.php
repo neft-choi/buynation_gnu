@@ -45,7 +45,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
         <div id="hd_wrapper">
             <div id="hd_inner" class="flex flex-col gap-4 p-4">
                 <div class="flex items-center justify-between">
-                    <a id="hd_logo" href="<?php echo G5_URL ?>" aria-label="메인으로 이동">
+                    <a id="hd_logo" href="<?php echo G5_URL ?>/shop" aria-label="메인으로 이동">
                         <img src="<?php echo G5_DATA_URL; ?>/common/logo_img" alt="<?php echo $config['cf_title']; ?>"
                             class="block">
                     </a>

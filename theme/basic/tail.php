@@ -150,7 +150,7 @@ $is_shop_active = $is_shop && !$is_mypage;
     <ul
         class="h-[var(--bottom-nav-height)] grid grid-cols-5 items-center overflow-hidden rounded-full font-semibold bg-white/60 backdrop-blur shadow-[0_8px_30px_0px_rgba(0,0,0,0.12)] p-1">
         <li>
-            <a href="<?php echo G5_URL; ?>" class="h-full text-gray-900">
+            <a href="<?php echo G5_URL; ?>/shop" class="h-full text-gray-900">
                 <span
                     class="flex flex-col items-center justify-center rounded-full text-center <?= $is_home ? 'bg-[var(--donuts-yellow)] fill-gray-900' : 'fill-transparent' ?> p-1">
                     <svg viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg" class="w-9 h-9">

@@ -21,9 +21,13 @@ jQuery(function ($) {
 
     $.post(
       g5_theme_shop_url + "/ajax.action.php",
-      { it_id: it_id, action: "wish_update" },
+      {it_id: it_id, action: "wish_update"},
       function (error) {
+        if (error === "로그인 후 이용해 주세요.") {
+          location.href = g5_bbs_url + "/login.php?url=" + encodeURIComponent(location.href);
+        }
         if (error != "OK") {
+          console.log(error);
           alert(error.replace(/\\n/g, "\n"));
           return false;
         }
@@ -137,7 +141,7 @@ jQuery(function ($) {
     $.ajax({
       url: ajax_url + "/ajax.action.php",
       type: "GET",
-      data: { action: "refresh_cart" },
+      data: {action: "refresh_cart"},
       dataType: "html",
       async: true,
       cache: false,
@@ -167,7 +171,7 @@ jQuery(function ($) {
     $.ajax({
       url: ajax_url + "/ajax.action.php",
       type: "GET",
-      data: { action: "refresh_wish" },
+      data: {action: "refresh_wish"},
       dataType: "html",
       async: true,
       cache: false,
@@ -279,7 +283,7 @@ jQuery(function ($) {
 
       $.post(
         g5_shop_url + "/itemoption.php",
-        { it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count },
+        {it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count},
         function (data) {
           $sel
             .eq(idx + 1)
@@ -327,7 +331,6 @@ jQuery(function ($) {
 
   $(document).on("click", ".btn_wish", function (e) {
     e.preventDefault();
-
     mainCart.add_wishitem(this);
   });
 });

@@ -26,6 +26,7 @@ $it = array(
     'it_type4' => 0,
     'it_type5' => 0,
     'it_brand' => '',
+    'it_seller' => '',
     'it_model' => '',
     'it_tel_inq' => 0,
     'it_use' => 0,
@@ -610,6 +611,22 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                 <?php } else { ?>
                                     현재 접속한 계정의 브랜드 정보가 자동으로 입력되며, 수정할 수 없습니다.
                                 <?php } ?>
+                            </span>
+                        </td>
+                        <td class="td_grpset">
+                            <input type="checkbox" name="chk_ca_it_brand" value="1" id="chk_ca_it_brand">
+                            <label for="chk_ca_it_brand">분류적용</label>
+                            <input type="checkbox" name="chk_all_it_brand" value="1" id="chk_all_it_brand">
+                            <label for="chk_all_it_brand">전체적용</label>
+                        </td>
+                    </tr>
+                                        <tr>
+                        <th scope="row"><label for="it_seller">셀러11 <?php echo get_text($it['it_brand'])?></label></th>
+                        <td>
+ 
+                            <input type="text" name="it_seller" value="<?php echo get_text($it['it_seller']) ?> " id="it_seller" class="frm_input" size="40" <?php echo $readonly_attr; ?>>
+                            <span class="frm_info">
+                               
                             </span>
                         </td>
                         <td class="td_grpset">

@@ -322,7 +322,7 @@ switch ($action) {
         $it_id = isset($_POST['it_id']) ? safe_replace_regex($_POST['it_id'], 'it_id') : '';
 
         if (!$is_member)
-            die('회원 전용 서비스 입니다.');
+            die('로그인 후 이용해 주세요.');
 
         if (!$it_id)
             die('상품 코드가 올바르지 않습니다.');
