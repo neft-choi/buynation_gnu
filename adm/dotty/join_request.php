@@ -76,7 +76,7 @@ require_once '../admin.head.php';
         </form>
 
         <div class="mt-4 overflow-x-auto rounded-lg border border-gray-300 bg-white">
-            <table class="border-collapse w-full min-w-[900px] text-left text-xs text-gray-900">
+            <table class="border-collapse w-full min-w-225 text-left text-xs text-gray-900">
                 <caption class="sound_only">가입 신청 목록</caption>
 
                 <colgroup>

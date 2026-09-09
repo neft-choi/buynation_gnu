@@ -10,6 +10,8 @@ $menu['menu710'] = array(
     array('710120', '도넛 정보', G5_ADMIN_URL . '/dotty/donuts_info.php', 'dotty_donuts_info'),
     array('710130', '가입 신청', G5_ADMIN_URL . '/dotty/join_request.php', 'dotty_join_request'),
     array('710140', '가입 도트', G5_ADMIN_URL . '/dotty/member_activity.php', 'dotty_member_activity'),
+    array('710150', '콘텐츠', G5_ADMIN_URL . '/dotty/community_content.php', 'dotty_community_content'),
+    array('710160', '공지·핀 관리', G5_ADMIN_URL . '/dotty/notice_pin.php', 'dotty_notice_pin'), 
     array('710100', '대시보드', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty_dashboard'),
     array('710800', '도티 설정', G5_ADMIN_URL . '/dotty/settings.php', 'dotty_cf_settings'),
     array('710200', '상품등록', G5_ADMIN_URL . '/dotty/itemform.php', 'dotty_item_form'),
@@ -32,6 +34,8 @@ $auth['710110'] = 'r,w,d';
 $auth['710120'] = 'r,w,d';
 $auth['710130'] = 'r,w,d';
 $auth['710140'] = 'r,w,d';
+$auth['710150'] = 'r,w,d';
+$auth['710160'] = 'r,w,d';
 $auth['710200'] = 'r,w,d';
 $auth['710300'] = 'r,w,d';
 $auth['710400'] = 'r,w,d';

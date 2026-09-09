@@ -621,7 +621,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         </td>
                     </tr>
                                         <tr>
-                        <th scope="row"><label for="it_seller">셀러11 <?php echo get_text($it['it_brand'])?></label></th>
+                        <th scope="row"><label for="it_seller">셀러</label></th>
                         <td>
  
                             <input type="text" name="it_seller" value="<?php echo get_text($it['it_seller']) ?> " id="it_seller" class="frm_input" size="40" <?php echo $readonly_attr; ?>>

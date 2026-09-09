@@ -55,6 +55,7 @@
     --color-blue-400: oklch(70.7% 0.165 254.624);
     --color-blue-500: oklch(62.3% 0.214 259.815);
     --color-blue-600: oklch(54.6% 0.245 262.881);
+    --color-blue-700: oklch(48.8% 0.243 264.376);
     --color-blue-800: oklch(42.4% 0.199 265.638);
     --color-indigo-50: oklch(96.2% 0.018 272.314);
     --color-indigo-100: oklch(93% 0.034 272.788);
@@ -1255,14 +1256,35 @@
   .w-\[8\%\] {
     width: 8%;
   }
+  .w-\[9\%\] {
+    width: 9%;
+  }
   .w-\[10\%\] {
     width: 10%;
+  }
+  .w-\[10\.5\%\] {
+    width: 10.5%;
   }
   .w-\[11\%\] {
     width: 11%;
   }
+  .w-\[11\.5\%\] {
+    width: 11.5%;
+  }
+  .w-\[11\.25\%\] {
+    width: 11.25%;
+  }
   .w-\[12\%\] {
     width: 12%;
+  }
+  .w-\[12\.\%\] {
+    width: 12.%;
+  }
+  .w-\[12\.5\%\] {
+    width: 12.5%;
+  }
+  .w-\[13\%\] {
+    width: 13%;
   }
   .w-\[14\%\] {
     width: 14%;
@@ -1270,11 +1292,17 @@
   .w-\[15\%\] {
     width: 15%;
   }
+  .w-\[15\.5\%\] {
+    width: 15.5%;
+  }
   .w-\[16\%\] {
     width: 16%;
   }
   .w-\[17\%\] {
     width: 17%;
+  }
+  .w-\[17\.5\%\] {
+    width: 17.5%;
   }
   .w-\[18\%\] {
     width: 18%;
@@ -1285,11 +1313,23 @@
   .w-\[22\%\] {
     width: 22%;
   }
+  .w-\[22\.5\%\] {
+    width: 22.5%;
+  }
   .w-\[23\%\] {
     width: 23%;
   }
+  .w-\[24\.5\%\] {
+    width: 24.5%;
+  }
+  .w-\[25\%\] {
+    width: 25%;
+  }
   .w-\[27\%\] {
     width: 27%;
+  }
+  .w-\[30\%\] {
+    width: 30%;
   }
   .w-\[32\%\] {
     width: 32%;
@@ -1302,6 +1342,9 @@
   }
   .w-\[58\%\] {
     width: 58%;
+  }
+  .w-\[60\%\] {
+    width: 60%;
   }
   .w-\[105px\] {
     width: 105px;
@@ -1419,6 +1462,9 @@
   }
   .min-w-180 {
     min-width: calc(var(--spacing) * 180);
+  }
+  .min-w-225 {
+    min-width: calc(var(--spacing) * 225);
   }
   .min-w-240 {
     min-width: calc(var(--spacing) * 240);
@@ -2384,6 +2430,9 @@
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(in oklab, var(--color-amber-100) 30%, transparent);
     }
+  }
+  .bg-amber-200 {
+    background-color: var(--color-amber-200);
   }
   .bg-amber-300 {
     background-color: var(--color-amber-300);
@@ -3382,6 +3431,9 @@
   }
   .text-blue-600 {
     color: var(--color-blue-600);
+  }
+  .text-blue-700 {
+    color: var(--color-blue-700);
   }
   .text-blue-800 {
     color: var(--color-blue-800);
@@ -4824,6 +4876,11 @@
       max-width: 100%;
     }
   }
+  .\[\&_td\]\:p-3 {
+    & td {
+      padding: calc(var(--spacing) * 3);
+    }
+  }
   .\[\&_td\]\:px-3 {
     & td {
       padding-inline: calc(var(--spacing) * 3);
@@ -4837,6 +4894,11 @@
   .\[\&_td\]\:align-middle {
     & td {
       vertical-align: middle;
+    }
+  }
+  .\[\&_th\]\:p-3 {
+    & th {
+      padding: calc(var(--spacing) * 3);
     }
   }
   .\[\&_th\]\:px-3 {
