@@ -908,6 +908,9 @@
   .h-1\.5 {
     height: calc(var(--spacing) * 1.5);
   }
+  .h-2 {
+    height: calc(var(--spacing) * 2);
+  }
   .h-3 {
     height: calc(var(--spacing) * 3);
   }
@@ -1144,6 +1147,9 @@
   }
   .w-0 {
     width: calc(var(--spacing) * 0);
+  }
+  .w-2 {
+    width: calc(var(--spacing) * 2);
   }
   .w-3 {
     width: calc(var(--spacing) * 3);
@@ -4876,6 +4882,18 @@
       max-width: 100%;
     }
   }
+  .\[\&_td\]\:mx-3 {
+    & td {
+      margin-inline: calc(var(--spacing) * 3);
+    }
+  }
+  .\[\&_td\]\:\[\&_td\]\:p-3 {
+    & td {
+      & td {
+        padding: calc(var(--spacing) * 3);
+      }
+    }
+  }
   .\[\&_td\]\:p-3 {
     & td {
       padding: calc(var(--spacing) * 3);
@@ -4909,6 +4927,12 @@
   .\[\&_th\]\:py-3 {
     & th {
       padding-block: calc(var(--spacing) * 3);
+    }
+  }
+  .\[\&_th\]\:font-normal {
+    & th {
+      --tw-font-weight: var(--font-weight-normal);
+      font-weight: var(--font-weight-normal);
     }
   }
   .\[\&_th\]\:font-semibold {

@@ -11,7 +11,10 @@ $menu['menu710'] = array(
     array('710130', '가입 신청', G5_ADMIN_URL . '/dotty/join_request.php', 'dotty_join_request'),
     array('710140', '가입 도트', G5_ADMIN_URL . '/dotty/member_activity.php', 'dotty_member_activity'),
     array('710150', '콘텐츠', G5_ADMIN_URL . '/dotty/community_content.php', 'dotty_community_content'),
-    array('710160', '공지·핀 관리', G5_ADMIN_URL . '/dotty/notice_pin.php', 'dotty_notice_pin'), 
+    array('710160', '공지·핀 관리', G5_ADMIN_URL . '/dotty/notice_pin.php', 'dotty_notice_pin'),
+    array('710170', '운영자 관리', G5_ADMIN_URL . '/dotty/admin_list.php', 'dotty_admin_list'),
+    array('710180', '운영권 승계', G5_ADMIN_URL . '/dotty/ownership_transfer.php', 'dotty_ownership_transfer'),
+    array('710190', '활동 로그', G5_ADMIN_URL . '/dotty/activity_log.php', 'dotty_activity_log'),
     array('710100', '대시보드', G5_ADMIN_URL . '/dotty/dashboard.php', 'dotty_dashboard'),
     array('710800', '도티 설정', G5_ADMIN_URL . '/dotty/settings.php', 'dotty_cf_settings'),
     array('710200', '상품등록', G5_ADMIN_URL . '/dotty/itemform.php', 'dotty_item_form'),
@@ -36,6 +39,9 @@ $auth['710130'] = 'r,w,d';
 $auth['710140'] = 'r,w,d';
 $auth['710150'] = 'r,w,d';
 $auth['710160'] = 'r,w,d';
+$auth['710170'] = 'r,w,d';
+$auth['710180'] = 'r,w,d';
+$auth['710190'] = 'r,w,d';
 $auth['710200'] = 'r,w,d';
 $auth['710300'] = 'r,w,d';
 $auth['710400'] = 'r,w,d';
