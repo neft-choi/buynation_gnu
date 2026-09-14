@@ -3,6 +3,107 @@
 $sub_menu = '400300';
 include_once('./_common.php');
 
+/*
+ * ============================================================
+ * 상품 등록/수정 HTTP Request Body 디버그 로그
+ * ============================================================
+ *
+ * 저장 위치:
+ *   G5_DATA_PATH . /log/itemform_request_YYYYMMDD.txt
+ *
+ * multipart/form-data(이미지 업로드 포함)는 PHP 환경에 따라 php://input이
+ * 비어 있을 수 있으므로 $_POST와 $_FILES를 함께 기록합니다.
+ *
+ * 디버깅이 끝나면 ITEMFORM_REQUEST_DEBUG를 false로 변경해 주세요.
+ */
+if (!defined('ITEMFORM_REQUEST_DEBUG')) {
+    define('ITEMFORM_REQUEST_DEBUG', true);
+}
+
+if (ITEMFORM_REQUEST_DEBUG) {
+    $itemform_log_dir = G5_DATA_PATH . '/log';
+
+    if (!is_dir($itemform_log_dir)) {
+        @mkdir($itemform_log_dir, G5_DIR_PERMISSION, true);
+    }
+
+    $itemform_log_file = $itemform_log_dir . '/itemform_request_' . date('Ymd') . '.txt';
+
+    $itemform_content_type = isset($_SERVER['CONTENT_TYPE'])
+        ? (string)$_SERVER['CONTENT_TYPE']
+        : '';
+
+    $itemform_raw_body = '';
+
+    /*
+     * multipart/form-data는 파일 바이너리까지 포함되어 로그가 지나치게 커질 수 있고
+     * PHP 설정에 따라 php://input이 비어 있을 수 있습니다.
+     * 일반 POST/JSON 요청일 때만 raw body를 추가로 기록합니다.
+     */
+    if (stripos($itemform_content_type, 'multipart/form-data') === false) {
+        $itemform_raw_body = file_get_contents('php://input');
+
+        if ($itemform_raw_body === false) {
+            $itemform_raw_body = '';
+        }
+    }
+
+    $itemform_file_log = array();
+
+    foreach ($_FILES as $field => $file_info) {
+        $itemform_file_log[$field] = $file_info;
+    }
+
+    $itemform_log_data = array(
+        'time' => date('Y-m-d H:i:s'),
+        'method' => isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '',
+        'request_uri' => isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '',
+        'content_type' => $itemform_content_type,
+        'content_length' => isset($_SERVER['CONTENT_LENGTH']) ? $_SERVER['CONTENT_LENGTH'] : '',
+        'remote_addr' => isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '',
+        'member_id' => isset($member['mb_id']) ? $member['mb_id'] : '',
+        'raw_body' => $itemform_raw_body,
+        'post' => $_POST,
+        'files' => $itemform_file_log,
+    );
+
+    $itemform_log_text  = PHP_EOL;
+    $itemform_log_text .= str_repeat('=', 100) . PHP_EOL;
+    $itemform_log_text .= '[ITEMFORM REQUEST] ' . $itemform_log_data['time'] . PHP_EOL;
+    $itemform_log_text .= str_repeat('=', 100) . PHP_EOL;
+    $itemform_log_text .= 'METHOD         : ' . $itemform_log_data['method'] . PHP_EOL;
+    $itemform_log_text .= 'REQUEST_URI    : ' . $itemform_log_data['request_uri'] . PHP_EOL;
+    $itemform_log_text .= 'CONTENT_TYPE   : ' . $itemform_log_data['content_type'] . PHP_EOL;
+    $itemform_log_text .= 'CONTENT_LENGTH : ' . $itemform_log_data['content_length'] . PHP_EOL;
+    $itemform_log_text .= 'REMOTE_ADDR    : ' . $itemform_log_data['remote_addr'] . PHP_EOL;
+    $itemform_log_text .= 'MEMBER_ID      : ' . $itemform_log_data['member_id'] . PHP_EOL;
+    $itemform_log_text .= PHP_EOL . '[RAW BODY]' . PHP_EOL;
+
+    if (stripos($itemform_content_type, 'multipart/form-data') !== false) {
+        $itemform_log_text .= '[multipart/form-data: raw binary body 생략 - POST/FILES 항목 참조]' . PHP_EOL;
+    } elseif ($itemform_log_data['raw_body'] !== '') {
+        $itemform_log_text .= $itemform_log_data['raw_body'] . PHP_EOL;
+    } else {
+        $itemform_log_text .= '[empty]' . PHP_EOL;
+    }
+
+    $itemform_log_text .= PHP_EOL . '[POST]' . PHP_EOL;
+    $itemform_log_text .= print_r($itemform_log_data['post'], true);
+
+    $itemform_log_text .= PHP_EOL . '[FILES]' . PHP_EOL;
+    $itemform_log_text .= print_r($itemform_log_data['files'], true);
+    $itemform_log_text .= PHP_EOL;
+
+    /*
+     * 동시에 여러 요청이 들어와도 로그가 섞이지 않도록 LOCK_EX 사용.
+     */
+    @file_put_contents(
+        $itemform_log_file,
+        $itemform_log_text,
+        FILE_APPEND | LOCK_EX
+    );
+}
+
 if ($w == "u" || $w == "d")
     check_demo();
 

@@ -1574,8 +1574,127 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
         /*
          * 퍼블리싱 HTML/CSS는 원래 파일 그대로 출력.
          */
+        /*
+         * 배송조건 카드 표시값도 deliverymanage.php와 동일한 기준을 사용합니다.
+         *
+         * sendcostform.php는 기존 퍼블리싱/선택 로직을 그대로 유지하고,
+         * 여기서 DB의 실제 배송조건 값을 카드에 전달해 표시만 보정합니다.
+         *
+         * free         : 0원
+         * amount_range : 금액 구간별
+         * 그 외        : dc_price
+         */
+        $dm_condition_display_map = array();
+
+        if ($dm_selected_brand_id !== '') {
+            $dm_display_brand_sql = sql_real_escape_string($dm_selected_brand_id);
+
+            $dm_display_result = sql_query("
+                SELECT dc_id, dc_type, dc_price, dc_minimum, dc_qty
+                FROM donuts_delivery_conditions
+                WHERE LOWER(TRIM(brand_id)) = LOWER('{$dm_display_brand_sql}')
+                  AND use_yn = 'Y'
+                ORDER BY is_default DESC, dc_id ASC
+            ", false);
+
+            if ($dm_display_result) {
+                while ($dm_display_row = sql_fetch_array($dm_display_result)) {
+                    $dm_display_id = (int)$dm_display_row['dc_id'];
+
+                    $dm_condition_display_map[$dm_display_id] = array(
+                        'type' => trim((string)$dm_display_row['dc_type']),
+                        'price' => max(0, (int)$dm_display_row['dc_price']),
+                        'minimum' => max(0, (int)$dm_display_row['dc_minimum']),
+                        'qty' => max(1, (int)$dm_display_row['dc_qty'])
+                    );
+                }
+            }
+        }
+
         include_once G5_ADMIN_PATH . '/shop_admin/sendcostform.php';
         ?>
+
+        <script>
+        (function () {
+            'use strict';
+
+            var conditionDisplayMap = <?php
+                echo json_encode(
+                    $dm_condition_display_map,
+                    JSON_UNESCAPED_UNICODE |
+                    JSON_UNESCAPED_SLASHES
+                );
+            ?>;
+
+            function formatNumber(value) {
+                return String(parseInt(value, 10) || 0)
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+            }
+
+            function getFeeText(info) {
+                if (!info) {
+                    return null;
+                }
+
+                if (info.type === 'free') {
+                    return '배송비 0원';
+                }
+
+                if (info.type === 'amount_range') {
+                    return '배송비 금액 구간별';
+                }
+
+                return '배송비 ' + formatNumber(info.price) + '원';
+            }
+
+            function syncDeliveryConditionFeeLabels() {
+                var cards = document.querySelectorAll(
+                    '#registerConditions .register-condition'
+                );
+
+                Array.prototype.forEach.call(cards, function (card) {
+                    var conditionId = parseInt(
+                        card.getAttribute('data-condition-id'),
+                        10
+                    ) || 0;
+
+                    var info = conditionDisplayMap[conditionId];
+                    var feeText = getFeeText(info);
+
+                    if (!info || !feeText) {
+                        return;
+                    }
+
+                    /*
+                     * sendcostform.php의 기존 DOM 구조를 깨지 않고
+                     * "배송비 ..." 텍스트가 들어 있는 span만 교체합니다.
+                     */
+                    var spans = card.querySelectorAll('span');
+
+                    for (var i = 0; i < spans.length; i++) {
+                        var span = spans[i];
+
+                        if (
+                            span.children.length === 0 &&
+                            /^\s*배송비\s/.test(span.textContent || '')
+                        ) {
+                            span.textContent = feeText;
+                            break;
+                        }
+                    }
+                });
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener(
+                    'DOMContentLoaded',
+                    syncDeliveryConditionFeeLabels
+                );
+            } else {
+                syncDeliveryConditionFeeLabels();
+            }
+        })();
+        </script>
 
         <?php if ($w === 'u' || $w === '') {
             /*
