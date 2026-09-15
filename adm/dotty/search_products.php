@@ -1,18 +1,18 @@
 <?php
-$sub_menu = '730100';
+$sub_menu = '730200';
 include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, 'r');
 
-$g5['title'] = '추천상품 현황';
+$g5['title'] = '상품 검색';
 require_once '../admin.head.php';
 ?>
 
 <section>
     <div class="flex flex-col pc:flex-row pc:items-center justify-between gap-3">
-        <p class="text-gray-400">쇼핑 상품을 골라 도넛의 추천상품 영역에 등록합니다.</p>
+        <p class="mt-1 text-gray-400">쇼핑 상품을 골라 도넛의 추천상품 영역에 등록합니다.</p>
 
-        <button type="button" id="featured-guide-modal-open" class="shrink-0 border border-gray-300 rounded-lg bg-white text-gray-900 font-bold px-3 py-2">
+        <button type="button" id="search-guide-modal-open" class="shrink-0 border border-gray-300 rounded-lg bg-white text-gray-900 font-bold px-3 py-2">
             <span>추천 · 기여 구조 안내</span>
         </button>
     </div>
@@ -23,18 +23,36 @@ require_once '../admin.head.php';
     </div>
 
     <div class="mt-4 flex flex-col gap-2 pc:flex-row pc:items-center">
-        <div class="flex shrink-0 rounded-lg bg-gray-100 p-1">
-            <button type="button" aria-pressed="true" class="featured-product-tab rounded-lg bg-white px-3 py-2 font-bold text-gray-900">
+        <div class="flex shrink-0 w-fit rounded-lg bg-gray-100 p-1">
+            <button type="button" aria-pressed="false" class="search-product-tab rounded-lg px-3 py-2 text-gray-600">
                 등록한 추천상품 2
             </button>
 
-            <button type="button" aria-pressed="false" class="featured-product-tab rounded-lg px-3 py-2 text-gray-600">
+            <button type="button" aria-pressed="true" class="search-product-tab rounded-lg bg-white px-3 py-2 font-bold text-gray-900">
                 상품 검색
             </button>
         </div>
 
+        <div class="flex shrink-0 w-fit rounded-lg bg-gray-100 p-1">
+            <button type="button" aria-pressed="true" class="search-product-category-tab rounded-lg bg-white px-3 py-2 font-bold text-gray-900">
+                전체
+            </button>
+
+            <button type="button" aria-pressed="false" class="search-product-category-tab rounded-lg px-3 py-2 text-gray-600">
+                일반 상품
+            </button>
+
+            <button type="button" aria-pressed="false" class="search-product-category-tab rounded-lg px-3 py-2 text-gray-600">
+                추가 토핑 상품
+            </button>
+
+            <button type="button" aria-pressed="false" class="search-product-category-tab rounded-lg px-3 py-2 text-gray-600">
+                핫딜 상품
+            </button>
+        </div>
+
         <div class="flex min-w-0 flex-1 items-center rounded-lg border border-gray-300 bg-white">
-            <input type="search" id="featured-product-search-input" aria-label="상품 검색" class="min-w-0 flex-1 rounded-lg px-3 py-2 outline-none" placeholder="상품명, 브랜드명 검색">
+            <input type="search" id="search-product-search-input" aria-label="상품 검색" class="min-w-0 flex-1 rounded-lg px-3 py-2 outline-none" placeholder="상품명, 브랜드명 검색">
 
             <button type="button" aria-label="상품 검색 실행" class="shrink-0 px-3 py-2 text-gray-900">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4">
@@ -44,18 +62,18 @@ require_once '../admin.head.php';
             </button>
         </div>
 
-        <span id="featured-product-search-result" class="shrink-0 text-2xs text-gray-500">검색 결과 2개</span>
+        <span id="search-product-search-result" class="shrink-0 text-2xs text-gray-500">검색 결과 2개</span>
     </div>
 
-    <ul id="featured-product-list" class="mt-4 grid grid-cols-1 pc:grid-cols-3 gap-4">
+    <ul id="search-product-list" class="mt-4 grid grid-cols-1 pc:grid-cols-3 gap-4">
         <li>
             <article class="relative rounded-lg border border-gray-300 bg-white">
                 <div class="flex h-40 items-center justify-center rounded-lg bg-amber-100 text-5xl"></div>
                 <span class="absolute top-2 left-2 inline-block rounded-lg bg-gray-900 px-2 py-1 text-2xs font-bold text-white">일반 상품</span>
 
                 <div class="mt-3 px-3">
-                    <span class="featured-product-brand text-2xs text-gray-400">그린테이블 · P-801</span>
-                    <h3 class="featured-product-name mt-2 text-sm font-bold text-gray-900">유기농 그래놀라 500g</h3>
+                    <span class="search-product-brand text-2xs text-gray-400">그린테이블 · P-801</span>
+                    <h3 class="search-product-name mt-2 text-sm font-bold text-gray-900">유기농 그래놀라 500g</h3>
                     <p class="mt-2 font-bold text-gray-900">18,900원</p>
                 </div>
 
@@ -76,13 +94,13 @@ require_once '../admin.head.php';
                 </div>
 
                 <div class="mt-4 grid grid-cols-3 gap-2 border-t border-gray-300 p-3">
-                    <button type="button" class="featured-remove-modal-open rounded-lg border border-red-300 bg-white px-2 py-2 text-2xs font-bold text-red-600">
+                    <button type="button" class="search-remove-modal-open rounded-lg border border-red-300 bg-white px-2 py-2 text-2xs font-bold text-red-600">
                         추천 해제
                     </button>
-                    <button type="button" class="featured-reason-modal-open rounded-lg border border-gray-300 bg-white px-2 py-2 text-2xs font-bold text-gray-900">
+                    <button type="button" class="search-reason-modal-open rounded-lg border border-gray-300 bg-white px-2 py-2 text-2xs font-bold text-gray-900">
                         이유 수정
                     </button>
-                    <button type="button" class="featured-detail-modal-open rounded-lg border border-gray-300 bg-white px-2 py-2 text-2xs font-bold text-gray-900">
+                    <button type="button" class="search-detail-modal-open rounded-lg border border-gray-300 bg-white px-2 py-2 text-2xs font-bold text-gray-900">
                         상세
                     </button>
                 </div>
@@ -95,8 +113,8 @@ require_once '../admin.head.php';
                 <span class="absolute top-2 left-2 inline-block rounded-lg bg-gray-900 px-2 py-1 text-2xs font-bold text-white">핫딜 상품</span>
 
                 <div class="mt-3 px-3">
-                    <span class="featured-product-brand text-2xs text-gray-400">그린테이블 · P-802</span>
-                    <h3 class="featured-product-name mt-2 text-sm font-bold text-gray-900">저당 단백질바 12개입</h3>
+                    <span class="search-product-brand text-2xs text-gray-400">그린테이블 · P-802</span>
+                    <h3 class="search-product-name mt-2 text-sm font-bold text-gray-900">저당 단백질바 12개입</h3>
                     <p class="mt-2 font-bold text-gray-900">21,900원</p>
                 </div>
 
@@ -117,13 +135,13 @@ require_once '../admin.head.php';
                 </div>
 
                 <div class="mt-4 grid grid-cols-3 gap-2 border-t border-gray-300 p-3">
-                    <button type="button" class="featured-remove-modal-open rounded-lg border border-red-300 bg-white px-2 py-2 text-2xs font-bold text-red-600">
+                    <button type="button" class="search-remove-modal-open rounded-lg border border-red-300 bg-white px-2 py-2 text-2xs font-bold text-red-600">
                         추천 해제
                     </button>
-                    <button type="button" class="featured-reason-modal-open rounded-lg border border-gray-300 bg-white px-2 py-2 text-2xs font-bold text-gray-900">
+                    <button type="button" class="search-reason-modal-open rounded-lg border border-gray-300 bg-white px-2 py-2 text-2xs font-bold text-gray-900">
                         이유 수정
                     </button>
-                    <button type="button" class="featured-detail-modal-open rounded-lg border border-gray-300 bg-white px-2 py-2 text-2xs font-bold text-gray-900">
+                    <button type="button" class="search-detail-modal-open rounded-lg border border-gray-300 bg-white px-2 py-2 text-2xs font-bold text-gray-900">
                         상세
                     </button>
                 </div>
@@ -133,16 +151,16 @@ require_once '../admin.head.php';
 </section>
 
 <!-- 추천 · 기여 구조 안내 모달 -->
-<div id="featured-guide-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
-    <div id="featured-guide-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+<div id="search-guide-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="search-guide-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
 
-    <div id="featured-guide-modal-container" role="dialog" aria-modal="true" aria-labelledby="featured-guide-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
-        <div id="featured-guide-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
-            <h3 id="featured-guide-modal-title" class="text-lg font-bold text-gray-900">
+    <div id="search-guide-modal-container" role="dialog" aria-modal="true" aria-labelledby="search-guide-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
+        <div id="search-guide-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 id="search-guide-modal-title" class="text-lg font-bold text-gray-900">
                 추천상품 · 기여 구조
             </h3>
 
-            <button type="button" id="featured-guide-modal-close" aria-label="추천 · 기여 구조 안내 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+            <button type="button" id="search-guide-modal-close" aria-label="추천 · 기여 구조 안내 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
@@ -150,7 +168,7 @@ require_once '../admin.head.php';
             </button>
         </div>
 
-        <div id="featured-guide-modal-body" class="space-y-2 p-4">
+        <div id="search-guide-modal-body" class="space-y-2 p-4">
             <div class="rounded-lg bg-gray-50 p-3">
                 <span class="block text-2xs text-gray-400">도티의 추천 이유</span>
                 <p class="mt-2 text-gray-900">추천상품 등록 시 커뮤니티의 활동 맥락과 상품의 장점을 연결한 추천 이유를 필수로 작성합니다. 등록 후에도 추천상품 카드와 상세에서 수정할 수 있습니다.</p>
@@ -182,8 +200,8 @@ require_once '../admin.head.php';
             </div>
         </div>
 
-        <div id="featured-guide-modal-footer" class="sticky bottom-0 z-10 flex justify-end border-t border-gray-300 bg-white p-4">
-            <button type="button" id="featured-guide-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
+        <div id="search-guide-modal-footer" class="sticky bottom-0 z-10 flex justify-end border-t border-gray-300 bg-white p-4">
+            <button type="button" id="search-guide-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
                 닫기
             </button>
         </div>
@@ -191,12 +209,12 @@ require_once '../admin.head.php';
 </div>
 
 <!-- 추천 해제 모달 -->
-<div id="featured-remove-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
-    <div id="featured-remove-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+<div id="search-remove-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="search-remove-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
 
-    <div id="featured-remove-modal-container" role="dialog" aria-modal="true" aria-labelledby="featured-remove-modal-title" class="relative z-10 w-full max-w-120 rounded-lg bg-white">
-        <div id="featured-remove-modal-header" class="flex justify-end border-b border-gray-300 p-3">
-            <button type="button" id="featured-remove-modal-close" aria-label="추천 해제 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+    <div id="search-remove-modal-container" role="dialog" aria-modal="true" aria-labelledby="search-remove-modal-title" class="relative z-10 w-full max-w-120 rounded-lg bg-white">
+        <div id="search-remove-modal-header" class="flex justify-end border-b border-gray-300 p-3">
+            <button type="button" id="search-remove-modal-close" aria-label="추천 해제 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
@@ -204,10 +222,10 @@ require_once '../admin.head.php';
             </button>
         </div>
 
-        <div id="featured-remove-modal-body" class="px-4 py-6 text-center">
+        <div id="search-remove-modal-body" class="px-4 py-6 text-center">
             <div class="mx-auto h-14 w-14 rounded-full bg-amber-100"></div>
 
-            <h3 id="featured-remove-modal-title" class="mt-4 text-xl font-bold text-gray-900">
+            <h3 id="search-remove-modal-title" class="mt-4 text-xl font-bold text-gray-900">
                 추천을 해제할까요?
             </h3>
 
@@ -216,8 +234,8 @@ require_once '../admin.head.php';
             </p>
         </div>
 
-        <div id="featured-remove-modal-footer" class="flex justify-end gap-2 border-t border-gray-300 p-4">
-            <button type="button" id="featured-remove-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
+        <div id="search-remove-modal-footer" class="flex justify-end gap-2 border-t border-gray-300 p-4">
+            <button type="button" id="search-remove-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
                 취소
             </button>
 
@@ -229,16 +247,16 @@ require_once '../admin.head.php';
 </div>
 
 <!-- 추천 이유 수정 모달 -->
-<div id="featured-reason-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
-    <div id="featured-reason-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+<div id="search-reason-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="search-reason-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
 
-    <div id="featured-reason-modal-container" role="dialog" aria-modal="true" aria-labelledby="featured-reason-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
-        <div id="featured-reason-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
-            <h3 id="featured-reason-modal-title" class="text-lg font-bold text-gray-900">
+    <div id="search-reason-modal-container" role="dialog" aria-modal="true" aria-labelledby="search-reason-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
+        <div id="search-reason-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 id="search-reason-modal-title" class="text-lg font-bold text-gray-900">
                 도티의 추천 이유 수정
             </h3>
 
-            <button type="button" id="featured-reason-modal-close" aria-label="추천 이유 수정 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+            <button type="button" id="search-reason-modal-close" aria-label="추천 이유 수정 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
@@ -246,7 +264,7 @@ require_once '../admin.head.php';
             </button>
         </div>
 
-        <form id="featured-reason-modal-form" class="p-4">
+        <form id="search-reason-modal-form" class="p-4">
             <div class="flex items-center gap-3">
                 <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-amber-300 text-2xl"></div>
 
@@ -263,14 +281,14 @@ require_once '../admin.head.php';
 
             <div class="mt-4">
                 <div class="flex items-center justify-between gap-3">
-                    <label for="featured-reason-modal-text" class="font-bold text-gray-900">
+                    <label for="search-reason-modal-text" class="font-bold text-gray-900">
                         도티의 추천 이유
                     </label>
 
                     <span class="text-2xs text-gray-400">필수 · 최대 180자</span>
                 </div>
 
-                <textarea id="featured-reason-modal-text" maxlength="180" required class="mt-2 h-36 w-full rounded-lg border border-gray-300 p-3">활동 전후 편하게 활용할 수 있어 테니스 커뮤니티 도트들에게 추천합니다.</textarea>
+                <textarea id="search-reason-modal-text" maxlength="180" required class="mt-2 h-36 w-full rounded-lg border border-gray-300 p-3">활동 전후 편하게 활용할 수 있어 테니스 커뮤니티 도트들에게 추천합니다.</textarea>
 
                 <p class="mt-2 text-2xs text-gray-400">
                     상품의 특징과 커뮤니티 활동 맥락을 연결하면 도트가 추천 의도를 더 쉽게 이해할 수 있습니다.
@@ -278,31 +296,29 @@ require_once '../admin.head.php';
             </div>
         </form>
 
-        <div id="featured-reason-modal-footer" class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
-            <button type="button" id="featured-reason-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
+        <div id="search-reason-modal-footer" class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
+            <button type="button" id="search-reason-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
                 취소
             </button>
 
-            <button type="submit" form="featured-reason-modal-form" class="rounded-lg bg-amber-300 px-4 py-3 text-sm font-bold text-gray-900">
+            <button type="submit" form="search-reason-modal-form" class="rounded-lg bg-amber-300 px-4 py-3 text-sm font-bold text-gray-900">
                 추천 이유 저장
             </button>
         </div>
     </div>
 </div>
 
-</div>
-
 <!-- 상품 상세 모달 -->
-<div id="featured-detail-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
-    <div id="featured-detail-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+<div id="search-detail-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="search-detail-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
 
-    <div id="featured-detail-modal-container" role="dialog" aria-modal="true" aria-labelledby="featured-detail-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
-        <div id="featured-detail-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
-            <h3 id="featured-detail-modal-title" class="text-lg font-bold text-gray-900">
+    <div id="search-detail-modal-container" role="dialog" aria-modal="true" aria-labelledby="search-detail-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
+        <div id="search-detail-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 id="search-detail-modal-title" class="text-lg font-bold text-gray-900">
                 상품 상세
             </h3>
 
-            <button type="button" id="featured-detail-modal-close" aria-label="상품 상세 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+            <button type="button" id="search-detail-modal-close" aria-label="상품 상세 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
@@ -310,7 +326,7 @@ require_once '../admin.head.php';
             </button>
         </div>
 
-        <div id="featured-detail-modal-body" class="p-4">
+        <div id="search-detail-modal-body" class="p-4">
             <div class="h-40 rounded-lg bg-amber-100"></div>
 
             <dl class="mt-4 overflow-hidden rounded-lg border border-gray-300">
@@ -355,12 +371,12 @@ require_once '../admin.head.php';
             </div>
         </div>
 
-        <div id="featured-detail-modal-footer" class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
-            <button type="button" id="featured-detail-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
+        <div id="search-detail-modal-footer" class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
+            <button type="button" id="search-detail-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
                 닫기
             </button>
 
-            <button type="button" id="featured-detail-modal-reason-open" class="rounded-lg bg-amber-300 px-4 py-3 text-sm font-bold text-gray-900">
+            <button type="button" id="search-detail-modal-reason-open" class="rounded-lg bg-amber-300 px-4 py-3 text-sm font-bold text-gray-900">
                 추천 이유 수정
             </button>
         </div>
@@ -369,81 +385,77 @@ require_once '../admin.head.php';
 
 <script>
     // 추천 · 기여 구조 안내 모달 열기 닫기
-    $('#featured-guide-modal-open').on('click', function() {
-        $('#featured-guide-modal').prop('hidden', false);
+    $('#search-guide-modal-open').on('click', function() {
+        $('#search-guide-modal').prop('hidden', false);
     });
 
-    $('#featured-guide-modal-close, #featured-guide-modal-cancel, #featured-guide-modal-backdrop').on('click', function() {
-        $('#featured-guide-modal').prop('hidden', true);
+    $('#search-guide-modal-close, #search-guide-modal-cancel, #search-guide-modal-backdrop').on('click', function() {
+        $('#search-guide-modal').prop('hidden', true);
     });
 
     // 추천 해제 모달 열기 닫기
-    $('.featured-remove-modal-open').on('click', function() {
-        $('#featured-remove-modal').prop('hidden', false);
+    $('.search-remove-modal-open').on('click', function() {
+        $('#search-remove-modal').prop('hidden', false);
     });
 
-    $('#featured-remove-modal-close, #featured-remove-modal-cancel, #featured-remove-modal-backdrop').on('click', function() {
-        $('#featured-remove-modal').prop('hidden', true);
+    $('#search-remove-modal-close, #search-remove-modal-cancel, #search-remove-modal-backdrop').on('click', function() {
+        $('#search-remove-modal').prop('hidden', true);
     });
 
     // 이유 수정 모달 열기 닫기
-    $('.featured-reason-modal-open').on('click', function() {
-        $('#featured-reason-modal').prop('hidden', false);
+    $('.search-reason-modal-open').on('click', function() {
+        $('#search-reason-modal').prop('hidden', false);
     });
 
-    $('#featured-reason-modal-close, #featured-reason-modal-cancel, #featured-reason-modal-backdrop').on('click', function() {
-        $('#featured-reason-modal').prop('hidden', true);
+    $('#search-reason-modal-close, #search-reason-modal-cancel, #search-reason-modal-backdrop').on('click', function() {
+        $('#search-reason-modal').prop('hidden', true);
     });
 
     // 상세 모달 열기 닫기
-    $('.featured-detail-modal-open').on('click', function() {
-        $('#featured-detail-modal').prop('hidden', false);
+    $('.search-detail-modal-open').on('click', function() {
+        $('#search-detail-modal').prop('hidden', false);
     });
 
-    $('#featured-detail-modal-close, #featured-detail-modal-cancel, #featured-detail-modal-backdrop').on('click', function() {
-        $('#featured-detail-modal').prop('hidden', true);
+    $('#search-detail-modal-close, #search-detail-modal-cancel, #search-detail-modal-backdrop').on('click', function() {
+        $('#search-detail-modal').prop('hidden', true);
     });
 
     // 상세 모달에서 이유 수정 모달 열기
-    $('#featured-detail-modal-reason-open').on('click', function() {
-        $('#featured-detail-modal').prop('hidden', true);
-        $('#featured-reason-modal').prop('hidden', false);
+    $('#search-detail-modal-reason-open').on('click', function() {
+        $('#search-detail-modal').prop('hidden', true);
+        $('#search-reason-modal').prop('hidden', false);
     });
 
     // 검색 필터
-    const $featuredProductSearchInput = $('#featured-product-search-input');
-    const $featuredProductItems = $('#featured-product-list > li');
-    const $featuredProductSearchResult = $('#featured-product-search-result');
+    const $searchProductInput = $('#search-product-search-input');
+    const $searchProductItems = $('#search-product-list > li');
+    const $searchProductResult = $('#search-product-search-result');
+    let selectedCategory = '전체';
 
     // on input으로 실시간 입력 감지
-    $featuredProductSearchInput.on('input', function() {
+    $searchProductInput.on('input', function() {
         const keyword = $.trim($(this).val()).toLowerCase();
         let matchedCount = 0;
 
         // 상품 카드마다 반복 실행
-        $featuredProductItems.each(function() {
-            // 카드 안의 브랜드명과 상품명을 가져온다
-            const searchText = $(this).find('.featured-product-brand, .featured-product-name').text().toLowerCase();
-
-            // 검색 키워드가 브랜드명 또는 상품명에 포함되면 true, 없으면 false
+        $searchProductItems.each(function() {
+            const searchText = $(this).find('.search-product-brand, .search-product-name').text().toLowerCase();
+            const productCategory = $(this).children('article').children('span').text().trim();
             const isMatched = searchText.includes(keyword);
 
-            // true이면 카드 보이기, false이면 카드 숨기기
             $(this).toggle(isMatched);
 
-            // 검색된 카드 숫자 증가
             if (isMatched) {
                 matchedCount += 1;
             }
         });
 
-        // 현재 검색 결과 수 표시
-        $featuredProductSearchResult.text('검색 결과 ' + matchedCount + '개');
+        $searchProductResult.text('검색 결과 ' + matchedCount + '개');
     });
 
-    // 추천상품 목록 선택 UI
-    $('.featured-product-tab').on('click', function() {
-        $('.featured-product-tab')
+    // 탭 선택 UI
+    $('.search-product-tab').on('click', function() {
+        $('.search-product-tab')
             .attr('aria-pressed', 'false')
             .removeClass('bg-white font-bold text-gray-900')
             .addClass('text-gray-600');
@@ -452,6 +464,23 @@ require_once '../admin.head.php';
             .attr('aria-pressed', 'true')
             .removeClass('text-gray-600')
             .addClass('bg-white font-bold text-gray-900');
+    });
+
+    // 상품 구분 탭 UI
+    $('.search-product-category-tab').on('click', function() {
+        selectedCategory = $(this).text().trim();
+
+        $('.search-product-category-tab')
+            .attr('aria-pressed', 'false')
+            .removeClass('bg-white font-bold text-gray-900')
+            .addClass('text-gray-600');
+
+        $(this)
+            .attr('aria-pressed', 'true')
+            .removeClass('text-gray-600')
+            .addClass('bg-white font-bold text-gray-900');
+
+        $searchProductInput.trigger('input');
     });
 </script>
 

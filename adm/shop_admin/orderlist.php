@@ -2,6 +2,7 @@
 $sub_menu = '400400';
 include_once('./_common.php');
 include_once(G5_LIB_PATH . '/donuts_delivery.lib.php');
+include_once('./orderlist_csv_shipping.lib.php'); // CSV와 동일한 배송비 계산 기준
 
 donuts_delivery_install();
 
@@ -243,6 +244,7 @@ $od_settle_case = isset($_GET['od_settle_case']) ? clean_xss_tags($_GET['od_sett
 $od_escrow = isset($_GET['od_escrow']) ? clean_xss_tags($_GET['od_escrow'], 1, 1) : '';
 
 $tot_itemcount = $tot_orderprice = $tot_receiptprice = $tot_ordercancel = $tot_misu = $tot_couponprice = 0;
+$tot_itemprice = $tot_shipping = $tot_region_extra = 0;
 $sql_search = "";
 if ($search != "") {
     if ($sel_field != "") {
@@ -415,10 +417,11 @@ if (function_exists('pg_setting_check')) {
 <?php if (!empty($brand['brand_id'])) { ?>
 <div class="local_desc01 local_desc" style="margin-top:10px;">
     <p>
-        주문합계는 현재 로그인 브랜드
+        현재 로그인 브랜드
         <strong><?php echo get_text($brand_login_id); ?></strong>
-        의 주문상품 금액과 해당 브랜드 배송비만 합산합니다.
-        같은 주문번호의 다른 브랜드 상품금액은 포함되지 않습니다.
+        기준으로 상품금액·지역추가비·최종배송비·주문합계를 계산합니다.
+        입금/취소/쿠폰/미수금도 동일 주문에서 현재 브랜드의 CSV 기준 주문금액 비율로 배분하며,
+        다른 브랜드 금액은 포함하지 않습니다.
     </p>
 </div>
 <?php } ?>
@@ -540,7 +543,10 @@ if (function_exists('pg_setting_check')) {
                     <th scope="col" id="th_odrer">주문자</th>
                     <th scope="col" id="th_odrertel">주문자전화</th>
                     <th scope="col" id="th_recvr">받는분</th>
-                    <th scope="col" rowspan="3">주문합계<br>선불배송비포함</th>
+                    <th scope="col" rowspan="3">상품금액</th>
+                    <th scope="col" rowspan="3">지역<br>추가비</th>
+                    <th scope="col" rowspan="3">최종<br>배송비</th>
+                    <th scope="col" rowspan="3">주문합계</th>
                     <th scope="col" rowspan="3">입금합계</th>
                     <th scope="col" rowspan="3">주문취소</th>
                     <th scope="col" rowspan="3">쿠폰</th>
@@ -564,40 +570,76 @@ if (function_exists('pg_setting_check')) {
                 <?php
                 for ($i = 0; $row = sql_fetch_array($result); $i++) {
                     /*
-                     * 주문금액 표시
+                     * ============================================================
+                     * 주문목록 금액 계산 - 현재 CSV(orderlist_csv) 기준 통일
+                     * ============================================================
                      *
-                     * 최고관리자:
-                     *   기존 주문 전체 금액
+                     * 1) 상품금액
+                     *    옵션 추가금액까지 포함한 실제 주문상품 금액
                      *
-                     * 브랜드 계정:
-                     *   현재 로그인 브랜드의 상품금액만 합산
-                     *   + 현재 브랜드 배송비만 합산
+                     * 2) 지역 추가비 / 최종 배송비
+                     *    orderlist_csv_shipping.lib.php의
+                     *    csv_new_delivery_final_order_shipping_detail()을 그대로 사용
                      *
-                     * 다른 브랜드 상품 가격은 같은 주문번호에 들어 있어도
-                     * 절대 주문합계에 포함하지 않습니다.
+                     * 3) 브랜드 계정
+                     *    현재 로그인 브랜드 상품/배송비만 계산
+                     *
+                     * 4) 최고관리자
+                     *    주문번호 전체 브랜드 기준으로 계산
+                     *
+                     * 5) 입금/취소/쿠폰/미수금
+                     *    영카트 주문테이블에는 주문번호 전체 금액만 저장되므로,
+                     *    브랜드 계정에서는 CSV 기준 주문금액 비율로 배분하여
+                     *    다른 브랜드 금액이 섞여 노출되지 않게 합니다.
                      */
-                    $brand_delivery = null;
+
+                    $od_id_sql = sql_real_escape_string($row['od_id']);
+
+                    $receiver_addr_for_shipping = trim(
+                        (string)$row['od_b_addr1'] . ' ' .
+                        (string)$row['od_b_addr2'] . ' ' .
+                        (string)$row['od_b_addr3']
+                    );
+
+                    $receiver_zip_for_shipping =
+                        preg_replace(
+                            '/[^0-9]/',
+                            '',
+                            trim((string)$row['od_b_zip1']) .
+                            trim((string)$row['od_b_zip2'])
+                        );
+
+                    /*
+                     * 주문 전체 CSV 기준 배송비.
+                     * 브랜드 계정의 재무 배분 비율 계산에도 사용합니다.
+                     */
+                    $all_shipping_detail =
+                        csv_new_delivery_final_order_shipping_detail(
+                            $row['od_id'],
+                            '',
+                            $receiver_addr_for_shipping,
+                            $receiver_zip_for_shipping
+                        );
+
+                    $all_final_shipping =
+                        isset($all_shipping_detail['shipping_total'])
+                        ? (int)$all_shipping_detail['shipping_total']
+                        : 0;
+
+                    $all_region_extra =
+                        isset($all_shipping_detail['region_extra'])
+                        ? (int)$all_shipping_detail['region_extra']
+                        : 0;
+
                     $display_item_total = (int)$row['od_cart_price'];
-                    $display_shipping_total =
-                        (int)$row['od_send_cost'] +
-                        (int)$row['od_send_cost2'];
+                    $display_shipping_total = $all_final_shipping;
+                    $display_region_extra = $all_region_extra;
+                    $display_cart_count = (int)$row['od_cart_count'];
 
-                    $display_order_total =
-                        $display_item_total +
-                        $display_shipping_total;
-
+                    /*
+                     * 브랜드 계정이면 현재 로그인 브랜드 상품만 계산.
+                     */
                     if (!empty($brand['brand_id'])) {
-                        $od_id_sql = sql_real_escape_string($row['od_id']);
-
-                        /*
-                         * 옵션까지 포함한 현재 브랜드 상품금액 직접 계산
-                         *
-                         * 일반옵션(io_type=0):
-                         *   (ct_price + io_price) * ct_qty
-                         *
-                         * 추가옵션(io_type=1):
-                         *   io_price * ct_qty
-                         */
                         $brand_amount_row = sql_fetch("
                             SELECT
                                 COALESCE(
@@ -623,30 +665,77 @@ if (function_exists('pg_setting_check')) {
                             ? (int)$brand_amount_row['brand_item_total']
                             : 0;
 
-                        $brand_delivery = donuts_admin_direct_delivery_calc(
-                            $row['od_id'],
-                            $brand_login_id
-                        );
-
-                        $display_shipping_total =
-                            isset($brand_delivery['shipping_total'])
-                            ? (int)$brand_delivery['shipping_total']
-                            : 0;
-
-                        $display_order_total =
-                            $display_item_total +
-                            $display_shipping_total;
-
-                        /*
-                         * 주문상품수도 현재 브랜드 상품수로 표시.
-                         * 금액 필터와 화면 데이터가 서로 어긋나지 않게 맞춤.
-                         */
                         $display_cart_count =
                             isset($brand_amount_row['brand_item_count'])
                             ? (int)$brand_amount_row['brand_item_count']
                             : 0;
-                    } else {
-                        $display_cart_count = (int)$row['od_cart_count'];
+
+                        $brand_shipping_detail =
+                            csv_new_delivery_final_order_shipping_detail(
+                                $row['od_id'],
+                                $brand_login_id,
+                                $receiver_addr_for_shipping,
+                                $receiver_zip_for_shipping
+                            );
+
+                        $display_shipping_total =
+                            isset($brand_shipping_detail['shipping_total'])
+                            ? (int)$brand_shipping_detail['shipping_total']
+                            : 0;
+
+                        $display_region_extra =
+                            isset($brand_shipping_detail['region_extra'])
+                            ? (int)$brand_shipping_detail['region_extra']
+                            : 0;
+                    }
+
+                    /*
+                     * CSV의 '최종 배송비'는 지역 추가비가 이미 합산된 값입니다.
+                     */
+                    $display_order_total =
+                        max(0, $display_item_total + $display_shipping_total);
+
+                    /*
+                     * 입금/취소/쿠폰/미수금 표시값.
+                     * 최고관리자는 주문 전체 원본값을 사용합니다.
+                     */
+                    $display_receipt_price = (int)$row['od_receipt_price'];
+                    $display_cancel_price = (int)$row['od_cancel_price'];
+                    $display_couponprice = (int)$row['couponprice'];
+                    $display_misu = (int)$row['od_misu'];
+
+                    /*
+                     * 브랜드 계정은 전체 주문의 다른 브랜드 금액이 노출되지 않도록
+                     * CSV 기준 주문금액 비율로 주문단위 재무값을 배분합니다.
+                     */
+                    if (!empty($brand['brand_id'])) {
+                        $full_excel_order_total =
+                            max(0, (int)$row['od_cart_price'] + $all_final_shipping);
+
+                        $brand_share_ratio = 0.0;
+
+                        if ($full_excel_order_total > 0) {
+                            $brand_share_ratio =
+                                $display_order_total / $full_excel_order_total;
+
+                            if ($brand_share_ratio < 0) {
+                                $brand_share_ratio = 0;
+                            } elseif ($brand_share_ratio > 1) {
+                                $brand_share_ratio = 1;
+                            }
+                        }
+
+                        $display_receipt_price =
+                            (int)round((int)$row['od_receipt_price'] * $brand_share_ratio);
+
+                        $display_cancel_price =
+                            (int)round((int)$row['od_cancel_price'] * $brand_share_ratio);
+
+                        $display_couponprice =
+                            (int)round((int)$row['couponprice'] * $brand_share_ratio);
+
+                        $display_misu =
+                            (int)round((int)$row['od_misu'] * $brand_share_ratio);
                     }
 
                     // 결제 수단
@@ -701,7 +790,7 @@ if (function_exists('pg_setting_check')) {
 
                     $bg = 'bg' . ($i % 2);
                     $td_color = 0;
-                    if ($row['od_cancel_price'] > 0) {
+                    if ($display_cancel_price > 0) {
                         $bg .= 'cancel';
                         $td_color = 1;
                     }
@@ -720,16 +809,22 @@ if (function_exists('pg_setting_check')) {
                         <td headers="th_odrer" class="td_name"><?php echo $mb_nick; ?></td>
                         <td headers="th_odrertel" class="td_tel"><?php echo get_text($row['od_tel']); ?></td>
                         <td headers="th_recvr" class="td_name"><a href="<?php echo $_SERVER['SCRIPT_NAME']; ?>?sort1=<?php echo $sort1; ?>&amp;sort2=<?php echo $sort2; ?>&amp;sel_field=od_b_name&amp;search=<?php echo get_text($row['od_b_name']); ?>"><?php echo get_text($row['od_b_name']); ?></a></td>
+                        <td rowspan="3" class="td_num_right">
+                            <?php echo number_format($display_item_total); ?>
+                        </td>
+                        <td rowspan="3" class="td_num_right">
+                            <?php echo number_format($display_region_extra); ?>
+                        </td>
+                        <td rowspan="3" class="td_num_right">
+                            <?php echo number_format($display_shipping_total); ?>
+                        </td>
                         <td rowspan="3" class="td_num td_numsum">
                             <?php echo number_format($display_order_total); ?>
-                            <?php if (!empty($brand['brand_id'])) { ?>
-                                <br><small style="color:#777;">배송비 <?php echo number_format($display_shipping_total); ?>원</small>
-                            <?php } ?>
                         </td>
-                        <td rowspan="3" class="td_num_right"><?php echo number_format($row['od_receipt_price']); ?></td>
-                        <td rowspan="3" class="td_numcancel<?php echo $td_color; ?> td_num"><?php echo number_format($row['od_cancel_price']); ?></td>
-                        <td rowspan="3" class="td_num_right"><?php echo number_format($row['couponprice']); ?></td>
-                        <td rowspan="3" class="td_num_right"><?php echo number_format($row['od_misu']); ?></td>
+                        <td rowspan="3" class="td_num_right"><?php echo number_format($display_receipt_price); ?></td>
+                        <td rowspan="3" class="td_numcancel<?php echo $td_color; ?> td_num"><?php echo number_format($display_cancel_price); ?></td>
+                        <td rowspan="3" class="td_num_right"><?php echo number_format($display_couponprice); ?></td>
+                        <td rowspan="3" class="td_num_right"><?php echo number_format($display_misu); ?></td>
                         <td rowspan="3" class="td_mng td_mng_s">
                             <a href="./orderform.php?od_id=<?php echo $row['od_id']; ?>&amp;<?php echo $qstr; ?>" class="mng_mod btn btn_05"><span class="sound_only"><?php echo $row['od_id']; ?> </span>보기</a>
                         </td>
@@ -779,16 +874,19 @@ if (function_exists('pg_setting_check')) {
                         </td>
                     </tr>
                 <?php
-                    $tot_itemcount     += $display_cart_count;
-                    $tot_orderprice    += $display_order_total;
-                    $tot_ordercancel   += $row['od_cancel_price'];
-                    $tot_receiptprice  += $row['od_receipt_price'];
-                    $tot_couponprice   += $row['couponprice'];
-                    $tot_misu          += $row['od_misu'];
+                    $tot_itemcount      += $display_cart_count;
+                    $tot_itemprice      += $display_item_total;
+                    $tot_region_extra   += $display_region_extra;
+                    $tot_shipping       += $display_shipping_total;
+                    $tot_orderprice     += $display_order_total;
+                    $tot_ordercancel    += $display_cancel_price;
+                    $tot_receiptprice   += $display_receipt_price;
+                    $tot_couponprice    += $display_couponprice;
+                    $tot_misu           += $display_misu;
                 }
                 sql_free_result($result);
                 if ($i == 0)
-                    echo '<tr><td colspan="12" class="empty_table">자료가 없습니다.</td></tr>';
+                    echo '<tr><td colspan="15" class="empty_table">자료가 없습니다.</td></tr>';
                 ?>
             </tbody>
             <tfoot>
@@ -797,6 +895,9 @@ if (function_exists('pg_setting_check')) {
                     <td>&nbsp;</td>
                     <td><?php echo number_format($tot_itemcount); ?>건</td>
                     <th scope="row">합 계</th>
+                    <td><?php echo number_format($tot_itemprice); ?></td>
+                    <td><?php echo number_format($tot_region_extra); ?></td>
+                    <td><?php echo number_format($tot_shipping); ?></td>
                     <td><?php echo number_format($tot_orderprice); ?></td>
                     <td><?php echo number_format($tot_receiptprice); ?></td>
                     <td><?php echo number_format($tot_ordercancel); ?></td>
@@ -870,7 +971,7 @@ if (function_exists('pg_setting_check')) {
             $("#orderitemlist").remove();
 
             $.post(
-                "./ajax.orderitem.php", {
+                "./ajax.orderitem_brand.php", {
                     od_id: od_id
                 },
                 function(data) {

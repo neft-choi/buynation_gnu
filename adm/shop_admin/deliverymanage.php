@@ -6,6 +6,22 @@ include_once(G5_LIB_PATH . '/donuts_delivery.lib.php');
 auth_check_menu($auth, $sub_menu, 'r');
 donuts_delivery_install();
 
+sql_query("
+    CREATE TABLE IF NOT EXISTS donuts_brand_sendcost (
+        sc_id INT NOT NULL AUTO_INCREMENT,
+        brand_id VARCHAR(255) NOT NULL DEFAULT '',
+        sc_name VARCHAR(255) NOT NULL DEFAULT '',
+        sc_zip1 VARCHAR(10) NOT NULL DEFAULT '',
+        sc_zip2 VARCHAR(10) NOT NULL DEFAULT '',
+        sc_price INT NOT NULL DEFAULT 0,
+        reg_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        update_date DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        PRIMARY KEY (sc_id),
+        KEY idx_brand_id (brand_id),
+        KEY idx_brand_zip (brand_id, sc_zip1, sc_zip2)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+", false);
+
 /*
  * 배송조건 <-> 추가배송비(sendcostlist) 연결 테이블
  *
@@ -94,8 +110,9 @@ while ($row = sql_fetch_array($condition_result)) {
     $sendcost_map_result = sql_query("
     SELECT m.sc_id, s.sc_name, s.sc_zip1, s.sc_zip2, s.sc_price
     FROM donuts_delivery_condition_sendcosts m
-    INNER JOIN {$g5['g5_shop_sendcost_table']} s ON m.sc_id = s.sc_id
-    WHERE m.dc_id = '" . (int)$row['dc_id'] . "'
+    INNER JOIN donuts_brand_sendcost s ON m.sc_id = s.sc_id
+    WHERE s.brand_id = '{$brand_id_sql}'
+      AND m.dc_id = '" . (int)$row['dc_id'] . "'
     ORDER BY m.sc_id ASC
 ", false);
 
@@ -448,7 +465,8 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             // 추가 배송비 SQL
             $sendcost_result = sql_query("
                 SELECT sc_id, sc_name, sc_zip1, sc_zip2, sc_price
-                FROM {$g5['g5_shop_sendcost_table']}
+                FROM donuts_brand_sendcost
+                WHERE brand_id = '{$brand_id_sql}'
                 ORDER BY sc_id DESC
             ");
             ?>

@@ -18,6 +18,34 @@ if (!donuts_item_inspection_is_brand($brand_id)) {
 $brand_sql = sql_real_escape_string($brand_id);
 
 /*
+ * ============================================================
+ * 검수 미승인 상품 판매상태 강제 보정
+ * ============================================================
+ *
+ * 상품 재고 관리 등 다른 관리자 화면에서 it_use=1로 변경되더라도,
+ * 검수 상태가 승인(approved)이 아니면 판매중이 될 수 없습니다.
+ *
+ * 적용 대상:
+ * - draft     : 임시저장
+ * - pending   : 검수중
+ * - revision  : 보완요청
+ * - rejected  : 거절
+ *
+ * approved 상태만 판매 가능 상태(it_use=1)를 가질 수 있습니다.
+ */
+sql_query("
+    UPDATE {$g5['g5_shop_item_table']} i
+    INNER JOIN donuts_item_inspections r
+        ON r.it_id COLLATE utf8mb4_general_ci = i.it_id COLLATE utf8mb4_general_ci
+       AND r.brand_id = '{$brand_sql}'
+    SET i.it_use = 0,
+        i.it_update_time = NOW()
+    WHERE TRIM(i.it_brand) = '{$brand_sql}'
+      AND i.it_use = 1
+      AND r.status IN ('draft', 'pending', 'revision', 'rejected')
+", false);
+
+/*
  * 검수 row가 누락된 브랜드 상품을 공통 규칙으로 복구합니다.
  */
 donuts_item_inspection_sync_untracked_brand_products(30);

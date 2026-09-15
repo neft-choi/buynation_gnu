@@ -119,8 +119,9 @@ if ($action === 'save_condition') {
          */
         $sendcost_row = sql_fetch("
             SELECT sc_id
-            FROM {$g5['g5_shop_sendcost_table']}
+            FROM donuts_brand_sendcost
             WHERE sc_id = '{$sc_id}'
+              AND brand_id = '{$brand_id_sql}'
             LIMIT 1
         ");
 

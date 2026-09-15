@@ -604,14 +604,15 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 
                             $readonly_attr = 'readonly style="background-color:#f5f5f5; cursor:not-allowed;"';
                             ?>
-                            <input type="text" name="it_brand" value="<?php echo $brand_value; ?>" id="it_brand" class="frm_input" size="40" <?php echo $readonly_attr; ?>>
-                            <span class="frm_info">
+                            <!-- <input type="text" name="it_brand" value="<?php echo $brand_value; ?>" id="it_brand" class="frm_input" size="40" <?php echo $readonly_attr; ?>> -->
+                            <!-- <span class="frm_info">
                                 <?php if ($w === 'u') { ?>
                                     기존 상품의 소유 브랜드를 유지합니다. 관리자 수정 시에도 변경되지 않습니다.
                                 <?php } else { ?>
                                     현재 접속한 계정의 브랜드 정보가 자동으로 입력되며, 수정할 수 없습니다.
                                 <?php } ?>
-                            </span>
+                            </span> -->
+                                 <input type="text" name="it_brand" value="<?php echo get_text($it['it_seller']) ?>" id="it_brand" class="frm_input" size="40" >
                         </td>
                         <td class="td_grpset">
                             <input type="checkbox" name="chk_ca_it_brand" value="1" id="chk_ca_it_brand">

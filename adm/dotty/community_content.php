@@ -11,7 +11,7 @@ require_once '../admin.head.php';
 <section>
     <div class="flex flex-col pc:flex-row pc:items-center justify-between gap-3">
         <p class="mt-1 text-gray-400">커뮤니티 01은 도티와 지정 운영자가, 커뮤니티 02는 가입 도트도 작성할 수 있습니다.</p>
-        <button type="button" class="shrink-0 rounded-lg bg-amber-400 px-3 py-2 text-gray-900 font-bold">
+        <button type="button" id="community-content-write-modal-open" class="shrink-0 rounded-lg bg-amber-400 px-3 py-2 text-gray-900 font-bold">
             + 게시글 작성
         </button>
     </div>
@@ -140,6 +140,144 @@ require_once '../admin.head.php';
     </section>
 </section>
 
+<!-- 커뮤니티 게시글 작성 모달 -->
+<div id="community-content-write-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="community-content-write-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+
+    <div id="community-content-write-modal-container" role="dialog" aria-modal="true" aria-labelledby="community-content-write-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
+        <div id="community-content-write-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 id="community-content-write-modal-title" class="text-base font-bold text-gray-900">
+                커뮤니티 게시글 작성
+            </h3>
+
+            <button type="button" id="community-content-write-modal-close" aria-label="커뮤니티 게시글 작성 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <form id="community-content-write-modal-form" method="post">
+            <div class="grid grid-cols-1 gap-4 p-4 pc:grid-cols-2">
+                <div>
+                    <label for="community-content-write-area" class="mb-2 block font-bold text-gray-900">
+                        게시 영역
+                    </label>
+
+                    <select id="community-content-write-area" name="community_area" class="w-full rounded-lg border border-gray-300 px-3 py-3 text-gray-900">
+                        <option value="community_01">커뮤니티 01</option>
+                        <option value="community_02">커뮤니티 02</option>
+                    </select>
+                </div>
+
+                <div>
+                    <div class="mb-2 flex items-center justify-between">
+                        <label for="community-content-write-category" class="font-bold text-gray-900">
+                            말머리
+                        </label>
+                        <span class="text-2xs text-gray-400">선택 사항</span>
+                    </div>
+
+                    <select id="community-content-write-gallery" name="gallery" class="w-full rounded-lg border border-gray-300 px-3 py-3 text-gray-900">
+                        <option value="">선택하지 않음</option>
+                        <option value="">안내</option>
+                        <option value="">모임</option>
+                        <option value="">후기</option>
+                        <option value="">질문</option>
+                        <option value="">팁</option>
+                    </select>
+                </div>
+
+                <div class="pc:col-span-2">
+                    <label for="community-content-write-title" class="mb-2 block font-bold text-gray-900">
+                        제목
+                    </label>
+
+                    <input type="text" id="community-content-write-title" name="title" class="w-full rounded-lg border border-gray-300 px-3 py-3 text-gray-900" placeholder="게시글 제목을 입력하세요">
+                </div>
+
+                <div class="pc:col-span-2">
+                    <label for="community-content-write-body" class="mb-2 block font-bold text-gray-900">
+                        내용
+                    </label>
+
+                    <textarea id="community-content-write-body" name="content" class="h-40 w-full rounded-lg border border-gray-300 p-3 text-gray-900" placeholder="도트에게 공유할 내용을 입력하세요"></textarea>
+                </div>
+            </div>
+
+            <div id="community-content-write-modal-footer" class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
+                <button type="button" id="community-content-write-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
+                    취소
+                </button>
+
+                <button type="submit" class="rounded-lg bg-amber-400 px-4 py-3 text-sm font-bold text-gray-900">
+                    게시하기
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 커뮤니티 콘텐츠 상세 모달 -->
+<div id="community-content-detail-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="community-content-detail-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+
+    <div id="community-content-detail-modal-container" role="dialog" aria-modal="true" aria-labelledby="community-content-detail-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
+        <div id="community-content-detail-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 id="community-content-detail-modal-title" class="text-base font-bold text-gray-900">
+                콘텐츠 상세
+            </h3>
+
+            <button type="button" id="community-content-detail-modal-close" aria-label="콘텐츠 상세 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="community-content-detail-modal-body" class="p-4">
+            <div class="overflow-hidden rounded-lg border border-gray-300">
+                <div class="flex border-b border-gray-300">
+                    <p class="w-32 shrink-0 bg-gray-100 p-3 text-2xs text-gray-500">콘텐츠 ID</p>
+                    <p class="flex-1 p-3 text-2xs font-bold text-gray-900">POST-00871</p>
+                </div>
+
+                <div class="flex border-b border-gray-300">
+                    <p class="w-32 shrink-0 bg-gray-100 p-3 text-2xs text-gray-500">작성자</p>
+                    <p class="flex-1 p-3 text-2xs font-bold text-gray-900">도티 김도윤</p>
+                </div>
+
+                <div class="flex border-b border-gray-300">
+                    <p class="w-32 shrink-0 bg-gray-100 p-3 text-2xs text-gray-500">등록일</p>
+                    <p class="flex-1 p-3 text-2xs font-bold text-gray-900">2026.08.03 11:20</p>
+                </div>
+
+                <div class="flex">
+                    <p class="w-32 shrink-0 bg-gray-100 p-3 text-2xs text-gray-500">상태</p>
+                    <p class="flex-1 p-3 text-2xs font-bold text-gray-900">게시 중</p>
+                </div>
+            </div>
+
+            <div class="mt-4 rounded-lg bg-gray-100 p-3">
+                <span class="block text-2xs text-gray-400">8월 정기 모임 참가 신청 안내</span>
+                <p class="mt-2 text-gray-900">등록된 예시 콘텐츠의 본문입니다.</p>
+            </div>
+        </div>
+
+        <div id="community-content-detail-modal-footer" class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
+            <button type="button" id="community-content-detail-modal-footer-close" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
+                닫기
+            </button>
+
+            <button type="button" id="community-content-detail-modal-unpublish" class="rounded-lg border border-red-400 bg-white px-4 py-3 text-sm font-bold text-red-500">
+                노출 중지
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     const $statusButtons = $('#community-content-search-filter > button');
 
@@ -156,6 +294,24 @@ require_once '../admin.head.php';
             .attr('aria-pressed', 'true')
             .removeClass('text-gray-500')
             .addClass('bg-white text-gray-900 shadow-sm');
+    });
+
+    // 커뮤니티 게시글 작성 모달 열기 닫기
+    $('#community-content-write-modal-open').on('click', function() {
+        $('#community-content-write-modal').prop('hidden', false);
+    });
+
+    $('#community-content-write-modal-close, #community-content-write-modal-cancel, #community-content-write-modal-backdrop').on('click', function() {
+        $('#community-content-write-modal').prop('hidden', true);
+    });
+
+    // 커뮤니티 콘텐츠 상세 모달 열기 닫기
+    $('.community-content-modal-open').on('click', function() {
+        $('#community-content-detail-modal').prop('hidden', false);
+    });
+
+    $('#community-content-detail-modal-close, #community-content-detail-modal-footer-close, #community-content-detail-modal-backdrop').on('click', function() {
+        $('#community-content-detail-modal').prop('hidden', true);
     });
 </script>
 

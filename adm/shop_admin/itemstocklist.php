@@ -118,11 +118,16 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목�
 </form>
 
 <div class="local_desc01 local_desc">
-    <p>재고수정의 수치를 수정하시면 창고재고의 수치가 변경됩니다.</p>
+    <p>
+        재고수정의 수치를 수정하시면 창고재고의 수치가 변경됩니다.
+        <?php if ($is_admin !== 'super') { ?>
+        <strong>재고/판매/품절/재입고알림 수정 및 일괄수정은 최고관리자만 가능합니다.</strong>
+        <?php } ?>
+    </p>
 </div>
 
 
-<form name="fitemstocklist" action="./itemstocklistupdate.php" method="post">
+<form name="fitemstocklist" action="./itemstocklistupdate_admin.php" method="post">
 <input type="hidden" name="sort1" value="<?php echo $sort1; ?>">
 <input type="hidden" name="sort2" value="<?php echo $sort2; ?>">
 <input type="hidden" name="sel_ca_id" value="<?php echo $sel_ca_id; ?>">
@@ -193,25 +198,51 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목�
         <td class="td_num"><?php echo number_format((float)$temporary_qty); ?></td>
         <td class="td_num">
             <label for="stock_qty_<?php echo $i; ?>" class="sound_only">재고수정</label>
+            <?php if ($is_admin === 'super') { ?>
             <input type="text" name="it_stock_qty[<?php echo $i; ?>]" value="<?php echo $row['it_stock_qty']; ?>" id="stock_qty_<?php echo $i; ?>" class="frm_input" size="10" autocomplete="off">
+            <?php } else { ?>
+            <input type="text" value="<?php echo $row['it_stock_qty']; ?>" id="stock_qty_<?php echo $i; ?>" class="frm_input" size="10" readonly disabled title="최고관리자만 수정할 수 있습니다.">
+            <?php } ?>
         </td>
         <td class="td_num">
             <label for="noti_qty_<?php echo $i; ?>" class="sound_only">통보수량</label>
+            <?php if ($is_admin === 'super') { ?>
             <input type="text" name="it_noti_qty[<?php echo $i; ?>]" value="<?php echo $row['it_noti_qty']; ?>" id="noti_qty_<?php echo $i; ?>" class="frm_input" size="10" autocomplete="off">
+            <?php } else { ?>
+            <input type="text" value="<?php echo $row['it_noti_qty']; ?>" id="noti_qty_<?php echo $i; ?>" class="frm_input" size="10" readonly disabled title="최고관리자만 수정할 수 있습니다.">
+            <?php } ?>
         </td>
         <td class="td_chk2">
             <label for="use_<?php echo $i; ?>" class="sound_only">판매</label>
+            <?php if ($is_admin === 'super') { ?>
             <input type="checkbox" name="it_use[<?php echo $i; ?>]" value="1" id="use_<?php echo $i; ?>" <?php echo ($row['it_use'] ? "checked" : ""); ?>>
+            <?php } else { ?>
+            <input type="checkbox" value="1" id="use_<?php echo $i; ?>" <?php echo ($row['it_use'] ? "checked" : ""); ?> disabled title="최고관리자만 수정할 수 있습니다.">
+            <?php } ?>
         </td>
         <td class="td_chk2">
             <label for="soldout_<?php echo $i; ?>" class="sound_only">품절</label>
+            <?php if ($is_admin === 'super') { ?>
             <input type="checkbox" name="it_soldout[<?php echo $i; ?>]" value="1" id="soldout_<?php echo $i; ?>" <?php echo ($row['it_soldout'] ? "checked" : ""); ?>>
+            <?php } else { ?>
+            <input type="checkbox" value="1" id="soldout_<?php echo $i; ?>" <?php echo ($row['it_soldout'] ? "checked" : ""); ?> disabled title="최고관리자만 수정할 수 있습니다.">
+            <?php } ?>
         </td>
         <td class="td_chk2">
             <label for="stock_sms_<?php echo $i; ?>" class="sound_only">재입고 알림</label>
+            <?php if ($is_admin === 'super') { ?>
             <input type="checkbox" name="it_stock_sms[<?php echo $i; ?>]" value="1" id="stock_sms_<?php echo $i; ?>" <?php echo ($row['it_stock_sms'] ? "checked" : ""); ?>>
+            <?php } else { ?>
+            <input type="checkbox" value="1" id="stock_sms_<?php echo $i; ?>" <?php echo ($row['it_stock_sms'] ? "checked" : ""); ?> disabled title="최고관리자만 수정할 수 있습니다.">
+            <?php } ?>
         </td>
-        <td class="td_mng td_mng_s"><a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_04">수정</a></td>
+        <td class="td_mng td_mng_s">
+            <?php if ($is_admin === 'super') { ?>
+            <a href="./itemform.php?w=u&amp;it_id=<?php echo $row['it_id']; ?>&amp;ca_id=<?php echo $row['ca_id']; ?>&amp;<?php echo $qstr; ?>" class="btn btn_04">수정</a>
+            <?php } else { ?>
+            <span style="color:#999;">관리자 전용</span>
+            <?php } ?>
+        </td>
     </tr>
     <?php
     }
@@ -225,7 +256,11 @@ $listall = '<a href="'.$_SERVER['SCRIPT_NAME'].'" class="btn btn_04">전체목�
 <div class="btn_fixed_top">
     <a href="./optionstocklist.php" class="btn btn_05">상품옵션재고</a>
     <a href="./itemsellrank.php"  class="btn btn_05">상품판매순위</a>
+    <?php if ($is_admin === 'super') { ?>
     <input type="submit" value="일괄수정" class="btn btn_04">
+    <?php } else { ?>
+    <button type="button" class="btn btn_04" disabled title="최고관리자만 수정할 수 있습니다.">일괄수정</button>
+    <?php } ?>
 </div>
 </form>
 
