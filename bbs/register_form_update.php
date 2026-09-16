@@ -343,6 +343,58 @@ if ($w == '') {
             ");
 
         }
+
+        // 브랜드 회원 쇼핑몰 관리자 메뉴 권한 자동 부여
+        // g5_auth.au_auth는 auth_update.php와 동일하게 r,w,d 형식으로 저장합니다.
+        $brand_admin_menus = array(
+            '400010', // 쇼핑몰현황
+            '400100', // 쇼핑몰설정
+            '400210', // 브랜드정보
+            '400300', // 상품관리
+            '400320', // 핫딜추가토핑
+            '400330', // 도넛 쪽지
+            '400400', // 주문내역
+            '400410', // 미완료주문
+            '400500', // 상품옵션재고관리
+            '400620', // 상품재고관리
+            '400650', // 사용후기
+            '400660', // 상품문의
+            '400760', // 배송관리
+            '400770', // 입점 사업자 서류
+            '400780', // 담당자 권한
+            '500100', // 상품판매순위
+            '500300', // 기획전
+            '500110'  // 매출현황
+        );
+
+        $brand_auth_mb_id = sql_real_escape_string($mb_id);
+
+        foreach ($brand_admin_menus as $brand_admin_menu) {
+            $brand_admin_menu = preg_replace('/[^0-9a-z_]/i', '', $brand_admin_menu);
+
+            $brand_auth_row = sql_fetch("
+                SELECT COUNT(*) AS cnt
+                FROM {$g5['auth_table']}
+                WHERE mb_id = '{$brand_auth_mb_id}'
+                  AND au_menu = '{$brand_admin_menu}'
+            ");
+
+            if (!empty($brand_auth_row['cnt'])) {
+                sql_query("
+                    UPDATE {$g5['auth_table']}
+                    SET au_auth = 'r,w,d'
+                    WHERE mb_id = '{$brand_auth_mb_id}'
+                      AND au_menu = '{$brand_admin_menu}'
+                ");
+            } else {
+                sql_query("
+                    INSERT INTO {$g5['auth_table']}
+                    SET mb_id = '{$brand_auth_mb_id}',
+                        au_menu = '{$brand_admin_menu}',
+                        au_auth = 'r,w,d'
+                ");
+            }
+        }
     }
 
     // 회원가입 포인트 부여

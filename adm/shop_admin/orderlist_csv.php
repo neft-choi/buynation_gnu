@@ -233,6 +233,7 @@ if (!empty($brand['brand_id'])) {
  * - CSV 검색/조회/출력 흐름은 기존과 동일
  *************************************************/
 include_once('./orderlist_csv_shipping.lib.php');
+include_once(G5_LIB_PATH . '/donuts_order_shipping_snapshot.lib.php');
 
 /* CSV 헤더 */
 fputcsv($fp, array(
@@ -402,10 +403,38 @@ while ($row = sql_fetch_array($result)) {
             );
     }
 
-    $delivery_calc =
-        ($row_brand_id !== '' && isset($new_delivery_cache[$delivery_cache_key]))
-        ? $new_delivery_cache[$delivery_cache_key]
-        : null;
+    /*
+     * 주문시점 배송비 스냅샷 우선.
+     * 과거 주문은 스냅샷이 없을 때 최초 다운로드 시 1회 저장 후 고정합니다.
+     */
+    $row_snapshot = array();
+
+    if ($row_brand_id !== '') {
+        $row_snapshot = donuts_order_shipping_snapshot_capture_if_missing(
+            $row['od_id'],
+            $row_brand_id,
+            $receiver_addr_for_shipping,
+            $receiver_zip_for_shipping
+        );
+    }
+
+    $delivery_calc = null;
+
+    if (
+        !empty($row_snapshot['_snapshot_exists']) &&
+        !empty($row_snapshot['delivery_calc']) &&
+        is_array($row_snapshot['delivery_calc'])
+    ) {
+        $delivery_calc = $row_snapshot['delivery_calc'];
+    } elseif (
+        $row_brand_id !== '' &&
+        isset($new_delivery_cache[$delivery_cache_key])
+    ) {
+        /*
+         * 구 주문/예외 데이터 fallback.
+         */
+        $delivery_calc = $new_delivery_cache[$delivery_cache_key];
+    }
 
     $row_shipping_amount = 0;
     $shipping_method = '무료';
@@ -536,8 +565,26 @@ while ($row = sql_fetch_array($result)) {
             ? trim((string)$member['mb_id'])
             : '';
 
+        $snapshot_key_brand =
+            $final_shipping_brand_id !== ''
+            ? $final_shipping_brand_id
+            : '__ALL__';
+
+        $snapshot_detail =
+            donuts_order_shipping_snapshot_capture_if_missing(
+                $row['od_id'],
+                $snapshot_key_brand,
+                $receiver_addr,
+                $receiver_zip
+            );
+
         $final_shipping_cache[$final_shipping_cache_key] =
-            csv_new_delivery_final_order_shipping_detail(
+            !empty($snapshot_detail['_snapshot_exists'])
+            ? array(
+                'shipping_total' => (int)$snapshot_detail['shipping_total'],
+                'region_extra' => (int)$snapshot_detail['region_extra']
+            )
+            : csv_new_delivery_final_order_shipping_detail(
                 $row['od_id'],
                 $final_shipping_brand_id,
                 $receiver_addr,

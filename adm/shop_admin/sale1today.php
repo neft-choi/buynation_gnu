@@ -12,7 +12,7 @@ donuts_delivery_install();
  *   기존처럼 전체 브랜드 매출 표시
  *
  * 브랜드 계정:
- *   현재 로그인 ID와 상품의 it_brand가 일치하는 상품만 매출 합산
+ *   현재 로그인 ID와 상품의 it_seller가 일치하는 상품만 매출 합산
  */
 $sale_brand_id = '';
 $sale_is_brand = false;
@@ -105,7 +105,7 @@ if (!function_exists('sale_brand_order_calc')) {
                AND LOWER(TRIM(dg.brand_id)) = LOWER('{$brand_id_sql}')
                AND dg.use_yn = 'Y'
             WHERE c.od_id = '{$od_id_sql}'
-              AND LOWER(TRIM(i.it_brand)) = LOWER('{$brand_id_sql}')
+              AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}')
             ORDER BY c.ct_id ASC
         ";
 
@@ -331,7 +331,7 @@ if (!function_exists('sale_brand_order_exists_sql')) {
                 INNER JOIN {$g5['g5_shop_item_table']} sale_i
                     ON sale_c.it_id = sale_i.it_id
                 WHERE sale_c.od_id = {$order_alias}.od_id
-                  AND LOWER(TRIM(sale_i.it_brand))
+                  AND LOWER(TRIM(sale_i.it_seller))
                       = LOWER('{$brand_id_sql}')
             )
         ";

@@ -2,6 +2,7 @@
 include_once('./_common.php');
 include_once(G5_LIB_PATH.'/mailer.lib.php');
 include_once(G5_LIB_PATH . '/donuts_delivery_policy.lib.php');
+include_once(G5_LIB_PATH . '/donuts_order_shipping_snapshot.lib.php');
 
 //이니시스 lpay 요청으로 왔다면 $default['de_pg_service'] 값을 이니시스로 변경합니다.
 if( in_array($od_settle_case, array('lpay', 'inicis_kakaopay')) ){
@@ -781,6 +782,127 @@ if(!$result) {
     sql_query(" delete from {$g5['g5_shop_order_table']} where od_id = '$od_id' ");
 
     die('<p>고객님의 주문 정보를 처리하는 중 오류가 발생해서 주문이 완료되지 않았습니다.</p><p>'.strtoupper($od_pg).'를 이용한 전자결제(신용카드, 계좌이체, 가상계좌 등)은 자동 취소되었습니다.');
+}
+
+
+/*
+ * ============================================================
+ * 주문시점 배송비 스냅샷 저장
+ * ============================================================
+ *
+ * 반드시 장바구니의 임시 주문번호가 실제 $od_id로 변경된 뒤 실행합니다.
+ * 이후 배송조건/추가배송비/묶음배송 정책이 바뀌어도 이 값은 UPDATE하지 않습니다.
+ */
+if (defined('G5_ADMIN_PATH')) {
+    $shipping_calc_lib = G5_ADMIN_PATH . '/shop_admin/orderlist_csv_shipping.lib.php';
+
+    if (is_file($shipping_calc_lib)) {
+        include_once($shipping_calc_lib);
+    }
+}
+
+if (function_exists('csv_new_delivery_final_order_shipping_detail')) {
+    $snapshot_receiver_addr = trim(
+        (string)$od_b_addr1 . ' ' .
+        (string)$od_b_addr2 . ' ' .
+        (string)$od_b_addr3
+    );
+
+    $snapshot_receiver_zip = preg_replace(
+        '/[^0-9]/',
+        '',
+        (string)$od_b_zip1 . (string)$od_b_zip2
+    );
+
+    /*
+     * 주문 전체 배송비 스냅샷
+     */
+    $snapshot_all_detail =
+        csv_new_delivery_final_order_shipping_detail(
+            $od_id,
+            '',
+            $snapshot_receiver_addr,
+            $snapshot_receiver_zip
+        );
+
+    donuts_order_shipping_snapshot_save_once(
+        $od_id,
+        '__ALL__',
+        isset($snapshot_all_detail['shipping_total'])
+            ? (int)$snapshot_all_detail['shipping_total']
+            : (int)$od_send_cost,
+        isset($snapshot_all_detail['region_extra'])
+            ? (int)$snapshot_all_detail['region_extra']
+            : 0,
+        array(
+            'source' => 'order_created',
+            'final_detail' => $snapshot_all_detail,
+            'order_saved_send_cost' => (int)$od_send_cost
+        )
+    );
+
+    /*
+     * 주문에 포함된 브랜드별 배송비 스냅샷.
+     * 현재 운영 코드의 배송정책 소유자 기준(it_brand)을 그대로 사용합니다.
+     */
+    $snapshot_brand_result = sql_query("
+        SELECT DISTINCT TRIM(i.it_brand) AS brand_id
+        FROM {$g5['g5_shop_cart_table']} c
+        INNER JOIN {$g5['g5_shop_item_table']} i
+            ON i.it_id = c.it_id
+        WHERE c.od_id = '" . sql_real_escape_string($od_id) . "'
+          AND TRIM(COALESCE(i.it_brand, '')) <> ''
+    ", false);
+
+    if ($snapshot_brand_result) {
+        while ($snapshot_brand_row = sql_fetch_array($snapshot_brand_result)) {
+            $snapshot_brand_id = trim((string)$snapshot_brand_row['brand_id']);
+
+            if ($snapshot_brand_id === '') {
+                continue;
+            }
+
+            $snapshot_brand_detail =
+                csv_new_delivery_final_order_shipping_detail(
+                    $od_id,
+                    $snapshot_brand_id,
+                    $snapshot_receiver_addr,
+                    $snapshot_receiver_zip
+                );
+
+            $snapshot_delivery_calc = array();
+
+            if (
+                function_exists('csv_new_delivery_order_brand') &&
+                function_exists('csv_new_delivery_order_product_total')
+            ) {
+                $snapshot_delivery_calc =
+                    csv_new_delivery_order_brand(
+                        $od_id,
+                        $snapshot_brand_id,
+                        $snapshot_receiver_addr,
+                        $snapshot_receiver_zip,
+                        csv_new_delivery_order_product_total($od_id)
+                    );
+            }
+
+            donuts_order_shipping_snapshot_save_once(
+                $od_id,
+                $snapshot_brand_id,
+                isset($snapshot_brand_detail['shipping_total'])
+                    ? (int)$snapshot_brand_detail['shipping_total']
+                    : 0,
+                isset($snapshot_brand_detail['region_extra'])
+                    ? (int)$snapshot_brand_detail['region_extra']
+                    : 0,
+                array(
+                    'source' => 'order_created',
+                    'final_detail' => $snapshot_brand_detail,
+                    'delivery_calc' => $snapshot_delivery_calc
+                )
+            );
+        }
+    }
 }
 
 // 회원이면서 포인트를 사용했다면 테이블에 사용을 추가

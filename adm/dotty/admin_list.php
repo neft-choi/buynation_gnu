@@ -1,10 +1,10 @@
 <?php
-$sub_menu = '710170';
+$sub_menu = '730700';
 include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, 'r');
 
-$g5['title'] = '운영자 관리';
+$g5['title'] = '운영자 권한';
 require_once '../admin.head.php';
 ?>
 

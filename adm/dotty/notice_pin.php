@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '710160';
+$sub_menu = '730600';
 include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, 'r');
@@ -105,7 +105,7 @@ require_once '../admin.head.php';
                         </button>
                     </td>
                     <td class="td_center">
-                        <button type="button" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                        <button type="button" class="notice-detail-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
                             상세
                         </button>
                     </td>
@@ -128,7 +128,7 @@ require_once '../admin.head.php';
                         </button>
                     </td>
                     <td class="td_center">
-                        <button type="button" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                        <button type="button" class="notice-detail-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
                             상세
                         </button>
                     </td>
@@ -151,7 +151,7 @@ require_once '../admin.head.php';
                         </button>
                     </td>
                     <td class="td_center">
-                        <button type="button" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                        <button type="button" class="notice-detail-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
                             상세
                         </button>
                     </td>
@@ -174,7 +174,7 @@ require_once '../admin.head.php';
                         </button>
                     </td>
                     <td class="td_center">
-                        <button type="button" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                        <button type="button" class="notice-detail-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
                             상세
                         </button>
                     </td>
@@ -247,6 +247,71 @@ require_once '../admin.head.php';
     </div>
 </div>
 
+<!-- 공지 상세 모달 -->
+<div id="notice-detail-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="notice-detail-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+
+    <div id="notice-detail-modal-container" role="dialog" aria-modal="true" aria-labelledby="notice-detail-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
+        <div id="notice-detail-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 id="notice-detail-modal-title" class="text-lg font-bold text-gray-900">
+                공지 상세
+            </h3>
+
+            <button type="button" id="notice-detail-modal-close" aria-label="공지 상세 모달 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="notice-detail-modal-body" class="p-4">
+            <dl class="overflow-hidden rounded-lg border border-gray-300">
+                <div class="grid grid-cols-[110px_1fr] border-b border-gray-300">
+                    <dt class="bg-gray-50 p-3 text-gray-500">공지 ID</dt>
+                    <dd class="p-3 font-bold text-gray-900">NTC-CAMPING-01</dd>
+                </div>
+
+                <div class="grid grid-cols-[110px_1fr] border-b border-gray-300">
+                    <dt class="bg-gray-50 p-3 text-gray-500">제목</dt>
+                    <dd class="p-3 font-bold text-gray-900">캠핑 위켄드 운영 안내</dd>
+                </div>
+
+                <div class="grid grid-cols-[110px_1fr] border-b border-gray-300">
+                    <dt class="bg-gray-50 p-3 text-gray-500">작성자</dt>
+                    <dd class="p-3 font-bold text-gray-900">도티 김도윤</dd>
+                </div>
+
+                <div class="grid grid-cols-[110px_1fr] border-b border-gray-300">
+                    <dt class="bg-gray-50 p-3 text-gray-500">등록일</dt>
+                    <dd class="p-3 font-bold text-gray-900">2026.08.09</dd>
+                </div>
+
+                <div class="grid grid-cols-[110px_1fr]">
+                    <dt class="bg-gray-50 p-3 text-gray-500">조회</dt>
+                    <dd class="p-3 font-bold text-gray-900">482</dd>
+                </div>
+            </dl>
+
+            <div class="mt-4 rounded-lg bg-gray-100 p-3">
+                <span class="block text-2xs text-gray-500">
+                    공지 내용
+                </span>
+
+                <p class="mt-2 text-2xs text-gray-900">
+                    캠핑 위켄드의 중요 운영 소식을 안내드립니다. 자세한 일정과 참여 방법을 확인해 주세요.
+                </p>
+            </div>
+        </div>
+
+        <div id="notice-detail-modal-footer" class="sticky bottom-0 z-10 flex justify-end border-t border-gray-300 bg-white p-4">
+            <button type="button" id="notice-detail-modal-cancel" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold text-gray-900">
+                닫기
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     $('#notice-write-modal-open').on('click', function() {
         $('#notice-write-modal').prop('hidden', false);
@@ -254,6 +319,15 @@ require_once '../admin.head.php';
 
     $('#notice-write-modal-close, #notice-write-modal-cancel, #notice-write-modal-backdrop').on('click', function() {
         $('#notice-write-modal').prop('hidden', true);
+    });
+
+    // 공지 상세 모달 열기 닫기
+    $('.notice-detail-modal-open').on('click', function() {
+        $('#notice-detail-modal').prop('hidden', false);
+    });
+
+    $('#notice-detail-modal-close, #notice-detail-modal-cancel, #notice-detail-modal-backdrop').on('click', function() {
+        $('#notice-detail-modal').prop('hidden', true);
     });
 </script>
 

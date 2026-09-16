@@ -3,6 +3,7 @@ $sub_menu = '400400';
 include_once('./_common.php');
 include_once(G5_LIB_PATH . '/donuts_delivery.lib.php');
 include_once('./orderlist_csv_shipping.lib.php'); // CSV와 동일한 배송비 계산 기준
+include_once(G5_LIB_PATH . '/donuts_order_shipping_snapshot.lib.php');
 
 donuts_delivery_install();
 
@@ -613,8 +614,21 @@ if (function_exists('pg_setting_check')) {
                      * 주문 전체 CSV 기준 배송비.
                      * 브랜드 계정의 재무 배분 비율 계산에도 사용합니다.
                      */
+                    $all_shipping_snapshot =
+                        donuts_order_shipping_snapshot_capture_if_missing(
+                            $row['od_id'],
+                            '__ALL__',
+                            $receiver_addr_for_shipping,
+                            $receiver_zip_for_shipping
+                        );
+
                     $all_shipping_detail =
-                        csv_new_delivery_final_order_shipping_detail(
+                        !empty($all_shipping_snapshot['_snapshot_exists'])
+                        ? array(
+                            'shipping_total' => (int)$all_shipping_snapshot['shipping_total'],
+                            'region_extra' => (int)$all_shipping_snapshot['region_extra']
+                        )
+                        : csv_new_delivery_final_order_shipping_detail(
                             $row['od_id'],
                             '',
                             $receiver_addr_for_shipping,
@@ -670,8 +684,21 @@ if (function_exists('pg_setting_check')) {
                             ? (int)$brand_amount_row['brand_item_count']
                             : 0;
 
+                        $brand_shipping_snapshot =
+                            donuts_order_shipping_snapshot_capture_if_missing(
+                                $row['od_id'],
+                                $brand_login_id,
+                                $receiver_addr_for_shipping,
+                                $receiver_zip_for_shipping
+                            );
+
                         $brand_shipping_detail =
-                            csv_new_delivery_final_order_shipping_detail(
+                            !empty($brand_shipping_snapshot['_snapshot_exists'])
+                            ? array(
+                                'shipping_total' => (int)$brand_shipping_snapshot['shipping_total'],
+                                'region_extra' => (int)$brand_shipping_snapshot['region_extra']
+                            )
+                            : csv_new_delivery_final_order_shipping_detail(
                                 $row['od_id'],
                                 $brand_login_id,
                                 $receiver_addr_for_shipping,

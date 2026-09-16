@@ -1164,10 +1164,7 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
                 $receiver_zip
             );
 
-            /*
-             * 지역 추가비는 최종 합산 단계에서 명시적으로 더합니다.
-             * 여기서 $fee에 더하지 않아야 이중 합산을 피할 수 있습니다.
-             */
+            $fee += $region_extra;
         } else {
             $region_extra = 0;
             /*
@@ -1272,18 +1269,12 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         );
 
         foreach ($paid_only_fees as $candidate) {
-            $candidate_total = (int)$candidate['fee'] + (int)$candidate['region_extra'];
-            $selected_total = (int)$selected_paid['fee'] + (int)$selected_paid['region_extra'];
-
-            if ($candidate_total > $selected_total) {
+            if ((int)$candidate['fee'] > (int)$selected_paid['fee']) {
                 $selected_paid = $candidate;
             }
         }
 
-        $paid_shipping_total = max(
-            0,
-            (int)$selected_paid['fee'] + (int)$selected_paid['region_extra']
-        );
+        $paid_shipping_total = max(0, (int)$selected_paid['fee']);
         $paid_region_extra = max(
             0,
             (int)$selected_paid['region_extra']
@@ -1318,16 +1309,14 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
 
             if (
                 $bundle['method'] === 'MIN' &&
-                ((int)$candidate['fee'] + (int)$candidate['region_extra']) <
-                ((int)$selected['fee'] + (int)$selected['region_extra'])
+                (int)$candidate['fee'] < (int)$selected['fee']
             ) {
                 $selected = $candidate;
             }
 
             if (
                 $bundle['method'] !== 'MIN' &&
-                ((int)$candidate['fee'] + (int)$candidate['region_extra']) >
-                ((int)$selected['fee'] + (int)$selected['region_extra'])
+                (int)$candidate['fee'] > (int)$selected['fee']
             ) {
                 $selected = $candidate;
             }
@@ -1342,21 +1331,15 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         }
     }
 
+    $shipping_total = max(
+        0,
+        (int)$individual_total + (int)$bundle_total
+    );
+
     $region_extra_total = max(
         0,
         (int)$individual_region_extra +
         (int)$bundle_region_extra
-    );
-
-    /*
-     * 최종 배송비 = 기본/묶음 배송비 + 지역 추가비
-     * 지역 추가비가 화면에 별도 표시되더라도 최종 배송비에는 반드시 포함합니다.
-     */
-    $shipping_total = max(
-        0,
-        (int)$individual_total +
-        (int)$bundle_total +
-        (int)$region_extra_total
     );
 
     return $return_detail
