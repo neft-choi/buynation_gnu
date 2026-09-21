@@ -62,10 +62,39 @@ $before = sql_fetch("
 $request_type = !empty($before['it_id']) ? 'update' : 'new';
 
 /*
- * 브랜드 소유권 및 승인 전 판매중지.
+ * 상품 폼에서 전달된 브랜드/셀러 값을 그대로 저장합니다.
+ * 검수/일괄적용의 계정 범위는 로그인 브랜드($brand_id)를 계속 사용합니다.
  */
-$_POST['it_brand'] = $brand_id;
-$it_brand = $brand_id;
+$request_it_brand = isset($_POST['it_brand'])
+    ? trim((string)$_POST['it_brand'])
+    : '';
+
+/*
+ * 셀러는 수정할 수 없습니다.
+ * - 신규등록: 로그인 브랜드 ID를 셀러로 사용
+ * - 수정: DB에 이미 저장된 it_seller를 유지
+ * 화면 readonly 우회 POST도 서버에서 차단합니다.
+ */
+if ($request_type === 'update') {
+    $seller_row = sql_fetch("
+        SELECT it_seller
+        FROM {$g5['g5_shop_item_table']}
+        WHERE it_id = '{$it_id_sql}'
+        LIMIT 1
+    ");
+
+    $request_it_seller = isset($seller_row['it_seller'])
+        ? trim((string)$seller_row['it_seller'])
+        : '';
+} else {
+    $request_it_seller = $brand_id;
+}
+
+$_POST['it_brand'] = $request_it_brand;
+$it_brand = $request_it_brand;
+
+$_POST['it_seller'] = $request_it_seller;
+$it_seller = $request_it_seller;
 
 $_POST['it_use'] = '0';
 $it_use = 0;
@@ -231,6 +260,8 @@ register_shutdown_function(function () use (
     $it_id_sql,
     $brand_id,
     $brand_sql,
+    $request_it_brand,
+    $request_it_seller,
     $request_type,
     $brand_bulk_requests,
     $shop_item_columns
@@ -247,12 +278,17 @@ register_shutdown_function(function () use (
     }
 
     /*
-     * 현재 저장 상품은 반드시 현재 브랜드 소유 + 판매대기.
+     * 원본 itemformupdate.php 저장 후 폼에서 받은 브랜드/셀러 값을 확정합니다.
+     * 판매대기(it_use=0) 검수 정책은 그대로 유지합니다.
      */
+    $request_it_brand_sql = sql_real_escape_string(trim((string)$request_it_brand));
+    $request_it_seller_sql = sql_real_escape_string(trim((string)$request_it_seller));
+
     sql_query("
         UPDATE {$g5['g5_shop_item_table']}
         SET
-            it_brand = '{$brand_sql}',
+            it_brand = '{$request_it_brand_sql}',
+            it_seller = '{$request_it_seller_sql}',
             it_use = 0
         WHERE it_id = '{$it_id_sql}'
     ");

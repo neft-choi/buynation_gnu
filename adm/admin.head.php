@@ -64,7 +64,7 @@ function print_menu2($key, $no = '')
             $current_class = ' on';
         }
 
-        $str .= '<li data-menu="' . $menu[$key][$i][0] . '" class="hover:bg-blue-100"><a href="' . $menu[$key][$i][2] . '" class="gnb_2da block px-4 py-2 text-gray-900 font-medium ' . $gnb_grp_style . ' ' . $gnb_grp_div . $current_class . '">' . $menu[$key][$i][1] . '</a></li>';
+        $str .= '<li data-menu="' . $menu[$key][$i][0] . '" class="hover:bg-blue-100"><a href="' . $menu[$key][$i][2] . '" class="gnb_2da block py-2 pl-10 pr-4 text-gray-900 font-medium ' . $gnb_grp_style . ' ' . $gnb_grp_div . $current_class . '">' . $menu[$key][$i][1] . '</a></li>';
 
         $auth_menu[$menu[$key][$i][0]] = $menu[$key][$i][1];
     }
@@ -108,6 +108,24 @@ $adm_menu_cookie = array(
         class="absolute left-0 top-0 block h-0 w-0 overflow-hidden text-[0] focus:h-[70px] focus:w-full focus:bg-white focus:text-center focus:text-3xl focus:font-bold focus:no-underline">본문
         바로가기</a>
 </div>
+
+<style>
+    #admin-sidebar .admin-sidebar-panel a.on {
+        position: relative;
+        background-color: #eff6ff;
+        color: #3080ff;
+    }
+
+    /* #admin-sidebar .admin-sidebar-panel a.on::before {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 3px;
+        background-color: #3080ff;
+        content: "";
+    } */
+</style>
 
 <header id="hd" class="w-full max-w-full text-xs">
     <h1 class="sr-only"><?php echo $config['cf_title'] ?></h1>
@@ -155,35 +173,85 @@ $adm_menu_cookie = array(
         </div>
     </div>
 
-    <nav id="gnb" class="gnb_large <?php echo $adm_menu_cookie['gnb']; ?> fixed left-0 top-0 z-[999] h-full w-[var(--admin-sidebar-width)] max-w-[var(--admin-sidebar-width)] pt-[var(--admin-header-height)]">
+    <?php
+    // 메뉴 키 별 아이콘 매핑
+    $menu_icon_svg_map = array(
+        '100' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings h-4 w-4"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>',
+        '200' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round h-4 w-4"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
+        '300' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list-icon lucide-clipboard-list h-4 w-4"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>',
+        '400' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag-icon lucide-shopping-bag h-4 w-4"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>',
+        '500' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-pie-icon lucide-chart-pie h-4 w-4"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>',
+        '900' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail h-4 w-4"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>',
+
+        // buygent 전용 그룹 아이콘
+        '910' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings h-4 w-4"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>',
+        '920' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round h-4 w-4"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
+
+        // brand 전용 그룹 아이콘
+        '810' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round h-4 w-4"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
+        '820' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings h-4 w-4"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>',
+    );
+
+    if (isset($dotty_menu_icon_svg_map) && is_array($dotty_menu_icon_svg_map)) {
+        $menu_icon_svg_map = array_replace($menu_icon_svg_map, $dotty_menu_icon_svg_map);
+    }
+    if (isset($dot_menu_icon_svg_map) && is_array($dot_menu_icon_svg_map)) {
+        $menu_icon_svg_map = array_replace($menu_icon_svg_map, $dot_menu_icon_svg_map);
+    }
+
+    // 매핑이 없는 메뉴 키 대비 기본 아이콘
+    $menu_icon_svg_default = '<svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle></svg>';
+    ?>
+
+    <nav id="admin-sidebar" class="fixed left-0 top-0 z-[999] h-full w-[var(--admin-sidebar-width)] max-w-[var(--admin-sidebar-width)] bg-white pt-[var(--admin-header-height)]">
+        <h2 class="sr-only">관리자 주메뉴</h2>
+
+        <ul class="admin-sidebar-menu h-full overflow-y-auto border-r border-gray-200">
+            <?php foreach ($amenu as $key => $value) { ?>
+                <?php if (!isset($menu['menu' . $key][0][2]) || !$menu['menu' . $key][0][2]) continue; ?>
+
+                <?php
+                $is_current_group = isset($sub_menu) &&
+                    (substr($sub_menu, 0, 3) == substr($menu['menu' . $key][0][0], 0, 3));
+
+                $menu_icon_svg = isset($menu_icon_svg_map[$key]) ? $menu_icon_svg_map[$key] : $menu_icon_svg_default;
+                ?>
+
+                <li class="admin-sidebar-item border-b border-gray-200<?php echo $is_current_group ? ' is-open' : ''; ?>">
+                    <h3 class="admin-sidebar-title">
+                        <button type="button"
+                            class="admin-sidebar-trigger flex w-full items-center justify-between px-4 py-3 text-left text-sm font-black text-gray-900"
+                            aria-expanded="<?php echo $is_current_group ? 'true' : 'false'; ?>"
+                            aria-controls="admin-sidebar-panel-<?php echo $key; ?>">
+                            <span class="flex min-w-0 items-center gap-2">
+                                <span aria-hidden="true" class="inline-flex h-4 w-4 shrink-0 items-center justify-center">
+                                    <?php echo $menu_icon_svg; ?>
+                                </span>
+                                <span><?php echo $menu['menu' . $key][0][1]; ?></span>
+                            </span>
+
+                            <span aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="admin-sidebar-chevron lucide lucide-chevron-down w-4 h-4<?php echo $is_current_group ? ' rotate-180' : ''; ?>">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </span>
+                        </button>
+                    </h3>
+
+                    <div id="admin-sidebar-panel-<?php echo $key; ?>" class="admin-sidebar-panel" <?php echo $is_current_group ? '' : ' hidden'; ?>>
+                        <?php echo print_menu1('menu' . $key, 1); ?>
+                    </div>
+                </li>
+            <?php } ?>
+        </ul>
+    </nav>
+
+    <nav id="gnb" class="gnb_large <?php echo $adm_menu_cookie['gnb']; ?> hidden fixed left-0 top-0 z-[999] h-full w-[var(--admin-sidebar-width)] max-w-[var(--admin-sidebar-width)] pt-[var(--admin-header-height)]">
         <h2 class="sr-only">관리자 주메뉴</h2>
         <ul class="gnb_ul relative block h-full w-[50px] bg-gray-50 border-r border-gray-200">
             <?php
             $jj = 1;
-            // 메뉴 키 별 아이콘 매핑
-            $menu_icon_svg_map = array(
-                '100' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings h-4 w-4"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>',
-                '200' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round h-4 w-4"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
-                '300' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list-icon lucide-clipboard-list h-4 w-4"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>',
-                '400' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag-icon lucide-shopping-bag h-4 w-4"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>',
-                '500' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-pie-icon lucide-chart-pie h-4 w-4"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>',
-                '900' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail h-4 w-4"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>',
 
-                // buygent 전용 그룹 아이콘
-                '910' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings h-4 w-4"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>',
-                '920' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round h-4 w-4"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
-
-                // brand 전용 그룹 아이콘
-                '810' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round h-4 w-4"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
-                '820' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings h-4 w-4"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>',
-            );
-
-            if (isset($dotty_menu_icon_svg_map) && is_array($dotty_menu_icon_svg_map)) {
-                $menu_icon_svg_map = array_replace($menu_icon_svg_map, $dotty_menu_icon_svg_map);
-            }
-
-            // 매핑이 없는 메뉴 키 대비 기본 아이콘
-            $menu_icon_svg_default = '<svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle></svg>';
             foreach ($amenu as $key => $value) {
                 $href1 = $href2 = '';
 
@@ -203,7 +271,7 @@ $adm_menu_cookie = array(
                 // 키별 아이콘 선택 (없으면 기본 아이콘 fallback)
                 $menu_icon_svg = isset($menu_icon_svg_map[$key]) ? $menu_icon_svg_map[$key] : $menu_icon_svg_default;
             ?>
-                <li class="gnb_li<?php echo $current_class; ?>">
+                <li class="gnb_li <?php echo $current_class; ?>">
                     <button type="button" class="btn_op h-[50px] w-[50px] bg-gray-50 text-gray-500 border-r border-gray-200 overflow-hidden hover:bg-blue-50 menu-<?php echo $key; ?> menu-order-<?php echo $jj; ?>"
                         title="<?php echo $button_title; ?>">
                         <span aria-hidden="true" class="inline-flex h-5 w-5 items-center justify-center">
@@ -273,6 +341,29 @@ $adm_menu_cookie = array(
     <div id="gnb_overlay" aria-hidden="true"></div>
 
 </header>
+<script>
+    jQuery(function($) {
+        const $sidebar = $("#admin-sidebar");
+
+        $sidebar.on("click", ".admin-sidebar-trigger", function() {
+            const $trigger = $(this);
+            const $item = $trigger.closest(".admin-sidebar-item");
+            const $panel = $("#" + $trigger.attr("aria-controls"));
+            const is_open = $trigger.attr("aria-expanded") === "true";
+            const $other_items = $sidebar.find(".admin-sidebar-item").not($item);
+
+            $other_items.removeClass("is-open");
+            $other_items.find(".admin-sidebar-trigger").attr("aria-expanded", "false");
+            $other_items.find(".admin-sidebar-panel").prop("hidden", true);
+            $other_items.find(".admin-sidebar-chevron").removeClass("rotate-180");
+
+            $item.toggleClass("is-open", !is_open);
+            $trigger.attr("aria-expanded", String(!is_open));
+            $panel.prop("hidden", is_open);
+            $item.find(".admin-sidebar-chevron").toggleClass("rotate-180", !is_open);
+        });
+    });
+</script>
 <script>
     jQuery(function($) {
 

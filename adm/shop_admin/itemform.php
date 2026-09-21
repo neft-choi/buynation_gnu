@@ -114,9 +114,9 @@ if ($w == "") {
                 SELECT it_id
                 FROM {$g5['g5_shop_item_table']}
                 WHERE it_id = '{$it_id}'
-                AND it_brand = '{$member['mb_id']}'
+                AND it_seller = '{$member['mb_id']}'
             ");
-
+            // die($it_id);
             if (!$row['it_id']) {
                 alert("'{$member['mb_id']}' 님께서 수정 할 권한이 없는 상품입니다.");
             }
@@ -612,7 +612,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                     현재 접속한 계정의 브랜드 정보가 자동으로 입력되며, 수정할 수 없습니다.
                                 <?php } ?>
                             </span> -->
-                                 <input type="text" name="it_brand" value="<?php echo get_text($it['it_seller']) ?>" id="it_brand" class="frm_input" size="40" >
+                                 <input type="text" name="it_brand" value="<?php echo get_text($it['it_brand']); ?>" id="it_brand" class="frm_input" size="40">
                         </td>
                         <td class="td_grpset">
                             <input type="checkbox" name="chk_ca_it_brand" value="1" id="chk_ca_it_brand">
@@ -625,7 +625,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <th scope="row"><label for="it_seller">셀러</label></th>
                         <td>
  
-                            <input type="text" name="it_seller" value="<?php echo get_text($it['it_seller']) ?> " id="it_seller" class="frm_input" size="40" <?php echo $readonly_attr; ?>>
+                            <input type="text" name="it_seller" value="<?php echo get_text($it['it_seller']); ?>" id="it_seller" class="frm_input" size="40" readonly>
                             <span class="frm_info">
                                
                             </span>

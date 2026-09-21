@@ -3068,6 +3068,9 @@
   .pl-6 {
     padding-left: calc(var(--spacing) * 6);
   }
+  .pl-10 {
+    padding-left: calc(var(--spacing) * 10);
+  }
   .pl-\[calc\(var\(--admin-sidebar-width\)\+16px\)\] {
     padding-left: calc(var(--admin-sidebar-width) + 16px);
   }

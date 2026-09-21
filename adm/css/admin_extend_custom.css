@@ -4,10 +4,6 @@
   --color-secondary: ##3f51b5;
 }
 
-/* #logo {
-  background: var(--color-primary);
-} */
-
 #gnb .gnb_ul {
   display: flex;
   flex-direction: column;
@@ -19,10 +15,6 @@
   flex-direction: row;
   gap: 8px;
 }
-
-/* .tbl_head01 thead th {
-  padding: 8px 16px;
-} */
 
 /* SMS 관리 - 휴대폰번호 관리 */
 .local_ov01 {
@@ -38,13 +30,6 @@
 
 /* 모바일 CSS */
 @media (max-width: 768px) {
-  /* 기본 클래스 */
-  /* select {
-    height: fit-content;
-    line-height: normal;
-    padding: 4px 2px;
-  } */
-
   /* 커스텀 클래스 */
   .flex_gap {
     display: flex;
@@ -168,22 +153,6 @@
     background: rgba(201, 201, 201, 1);
     border-radius: 100%;
   }
-
-  /* 공통 - 탭 */
-  /* .anchor a {
-    margin: 2px 4px;
-    border-radius: 10px;
-  } */
-
-  /* .anchor a:hover {
-    background-color: #c8ced1;
-  } */
-
-  /* .btn_row_flex {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  } */
 
   /* 환경 설정 - 테마 설정 */
   #theme_list {
@@ -357,18 +326,5 @@
   /* 포인트 관리 */
   #fpointlist2 input {
     width: 100%;
-  }
-
-  /* SMS 관리 - 휴대폰번호 관리 */
-  .local_ov {
-    min-width: 0;
-  }
-
-  /* SMS 관리 - 휴대폰번호 파일 */
-  #sms5_fileup_frm #sms5_fileup {
-    border: none;
-    display: flex;
-    flex-direction: column;
-    border-top: 1px solid #f4f4f4;
   }
 }

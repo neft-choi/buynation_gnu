@@ -52,7 +52,7 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
         </select>
     </div>
 
-    <div id="sms5_fileup">
+    <div id="sms5_fileup" class="flex flex-col border-t border-gray-200">
         <div class="flex_gap flex-column">
             <div>
                 <label for="csv">파일선택</label>
@@ -121,7 +121,7 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
             document.getElementById('register').style.display = 'block';
             f.action = 'num_book_file_upload.php';
         }
-        (function ($) {
+        (function($) {
             if (!document.getElementById("fileupload_fr")) {
                 var i = document.createElement('iframe');
                 i.setAttribute('id', 'fileupload_fr');
@@ -145,14 +145,16 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
             return;
         }
 
-        if (no_hp.checked) no_hp = 1; else no_hp = 0;
-        if (hyphen.checked) hyphen = 1; else hyphen = 0;
+        if (no_hp.checked) no_hp = 1;
+        else no_hp = 0;
+        if (hyphen.checked) hyphen = 1;
+        else hyphen = 0;
 
         par += '?bg_no=' + bg_no.value;
         par += '&no_hp=' + no_hp;
         par += '&hyphen=' + hyphen;
 
-        (function ($) {
+        (function($) {
             if (!document.getElementById("fileupload_fr")) {
                 var i = document.createElement('iframe');
                 i.setAttribute('id', 'fileupload_fr');
