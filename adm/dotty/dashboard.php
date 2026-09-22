@@ -2,166 +2,334 @@
 $sub_menu = '710100';
 require_once './_common.php';
 
+auth_check_menu($auth, $sub_menu, 'r');
+
 $g5['title'] = '대시보드';
 $title_sub = '러닝 메이트 운영 현황을 한눈에 확인합니다.';
 
-require_once './dotty.head.php';
+require_once '../admin.head.php';
 ?>
 
-<section class="content" id="page-content">
-    <div class="notice-strip"><b>● 운영 요약</b> 가입 신청 2건이 검토를 기다리고 있으며, 고정 공지 2개가 노출 중입니다.</div>
+<section>
+    <h3 class="sr-only">도티 관리 대시보드</h3>
 
-    <div class="notice-strip yellow"><b>▣ 사업자 전환 서류 미제출</b> 전환 신청 서류를 제출해 주세요. 전환 신청의 별도 제출 기한은 정책 확정 전입니다.<button class="btn small" style="margin-left:auto" data-nav="business">서류 등록</button></div>
-    <div class="stats">
-        <article class="stat"><span class="label">가입 도트</span><strong>4,360<small>명</small></strong><span class="delta up">▲ 지난달 대비 128명</span></article>
-        <article class="stat"><span class="label">가입 승인 대기</span><strong>2<small>건</small></strong><span class="delta warn">가장 오래된 대기 3시간</span></article>
-        <article class="stat"><span class="label">이번 달 기여토핑</span><strong>1,286,400<small>토핑</small></strong><span class="delta blue">플랫폼 집계 기준</span></article>
-        <article class="stat"><span class="label">지급 가능 토핑</span><strong>420,000<small>토핑</small></strong><span class="delta up">정상 사용 가능</span></article>
+    <div class="mt-4 flex items-center gap-3 bg-blue-50 rounded-lg p-3">
+        <span class="text-blue-500 font-bold">● 운영 요약</span>
+        <p class="text-gray-600">가입 신청 2건이 검토를 기다리고 있으며, 고정 공지 1개가 노출 중입니다.</p>
     </div>
-    <div class="grid-2 wide-left">
-        <article class="card">
-            <div class="card-head">
-                <div>
-                    <h3>가입 신청 대기</h3>
-                    <p>최근 접수된 승인형 가입 신청</p>
-                </div><button data-nav="applications">전체 보기 ›</button>
+
+    <section>
+        <h3 class="sound_only">요약 정보</h3>
+
+        <div class="grid grid-cols-1 pc:grid-cols-4 gap-4 mt-4">
+            <div class="border border-gray-300 rounded-lg bg-white font-normal p-4">
+                <p class="text-xs text-gray-500">가입 도트</p>
+                <p class="mt-3 text-2xl font-bold text-gray-900">3,940<span class="ml-1 text-sm">명</span></p>
+                <span class="mt-3 block text-2xs text-green-600">▲ 지난달 대비 116명</span>
             </div>
-            <div class="table-wrap">
-                <table class="data-table">
-                    <thead>
+
+            <div class="border border-gray-300 rounded-lg bg-white font-normal p-4">
+                <p class="text-xs text-gray-500">가입 승인 대기</p>
+                <p class="mt-3 text-2xl font-bold text-gray-900">2<span class="ml-1 text-sm">건</span></p>
+                <span class="mt-3 block text-2xs text-orange-600">가장 오래된 대기 2시간</span>
+            </div>
+
+            <div class="border border-gray-300 rounded-lg bg-white font-normal p-4">
+                <p class="text-xs text-gray-500">이번 달 기여토핑</p>
+                <p class="mt-3 text-2xl font-bold text-gray-900">1,052,000<span class="ml-1 text-sm">토핑</span></p>
+                <span class="mt-3 block text-2xs text-blue-600">플랫폼 집계 기준</span>
+            </div>
+
+            <div class="border border-gray-300 rounded-lg bg-white font-normal p-4">
+                <p class="text-xs text-gray-500">지급 가능 토핑</p>
+                <p class="mt-3 text-2xl font-bold text-gray-900">610,000<span class="ml-1 text-sm">토핑</span></p>
+                <span class="mt-3 block text-2xs text-emerald-600">정상 사용 가능</span>
+            </div>
+        </div>
+    </section>
+
+    <div class="mt-4 grid grid-cols-1 gap-4 pc:grid-cols-5">
+        <section class="overflow-hidden rounded-lg border border-gray-300 bg-white pc:col-span-3">
+            <header class="flex items-center justify-between gap-3 border-b border-gray-300 px-4 py-3">
+                <div>
+                    <h3 class="text-sm font-bold text-gray-900">
+                        가입 신청 대기
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400">
+                        최근 접수된 승인형 가입 신청
+                    </p>
+                </div>
+
+                <a href="<?php echo G5_ADMIN_URL . '/dotty/join_request.php'; ?>" class="shrink-0 inline-flex items-center gap-1 text-2xs text-gray-500">
+                    <span>전체 보기</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right preview-icon w-3 h-3">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </a>
+            </header>
+
+            <div class="overflow-x-auto">
+                <table class="border-collapse min-w-180 w-full table-fixed text-left">
+                    <colgroup>
+                        <col class="w-[20%]">
+                        <col class="w-[20%]">
+                        <col class="w-[20%]">
+                        <col class="w-[20%]">
+                        <col class="w-[20%]">
+                    </colgroup>
+
+                    <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
                         <tr>
-                            <th>신청자</th>
-                            <th>신청일</th>
-                            <th>대기</th>
-                            <th>상태</th>
-                            <th>처리</th>
+                            <th scope="col">신청자</th>
+                            <th scope="col">신청일</th>
+                            <th scope="col">대기</th>
+                            <th scope="col">상태</th>
+                            <th scope="col">처리</th>
                         </tr>
                     </thead>
-                    <tbody>
+
+                    <tbody class="text-gray-900 font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
                         <tr>
-                            <td><span class="name">지민런데이</span><span class="sub">APP-RUN-240803-021</span></td>
-                            <td>2026.08.03 15:04</td>
-                            <td>대기 40분</td>
-                            <td><span class="badge yellow">승인 대기</span></td>
-                            <td><button class="btn small" data-action="application-detail" data-id="APP-RUN-240803-021">검토</button></td>
+                            <td>
+                                <span class="block font-bold">캠핑 위켄드새싹</span>
+                                <span class="block text-2xs text-zinc-400 font-normal">APP-CAMPING-2608-001</span>
+                            </td>
+                            <td>2026.08.10 10:20</td>
+                            <td>대기 1시간</td>
+                            <td>
+                                <span class="w-fit bg-orange-100 rounded-full text-2xs text-orange-700 font-bold px-2 py-1">● 승인 대기</span>
+                            </td>
+                            <td>
+                                <button type="button" class="border border-gray-300 rounded-lg text-2xs font-bold px-3 py-2">검토</button>
+                            </td>
                         </tr>
+
                         <tr>
-                            <td><span class="name">현우페이스</span><span class="sub">APP-RUN-240803-018</span></td>
-                            <td>2026.08.03 12:30</td>
-                            <td>대기 3시간</td>
-                            <td><span class="badge yellow">승인 대기</span></td>
-                            <td><button class="btn small" data-action="application-detail" data-id="APP-RUN-240803-018">검토</button></td>
+                            <td>
+                                <span class="block font-bold">캠핑 위켄드친구</span>
+                                <span class="block text-2xs text-zinc-400 font-normal">APP-CAMPING-2608-002</span>
+                            </td>
+                            <td>2026.08.09 11:20</td>
+                            <td>대기 2시간</td>
+                            <td>
+                                <span class="w-fit bg-orange-100 rounded-full text-2xs text-orange-700 font-bold px-2 py-1">● 승인 대기</span>
+                            </td>
+                            <td>
+                                <button type="button" class="border border-gray-300 rounded-lg text-2xs font-bold px-3 py-2">검토</button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </article>
-        <article class="card">
-            <div class="card-head">
+        </section>
+
+        <section class="rounded-lg border border-gray-300 bg-white pc:col-span-2">
+            <header class="flex items-center justify-between gap-3 border-b border-gray-300 px-4 py-3">
                 <div>
-                    <h3>주간 신규 가입</h3>
-                    <p>최근 7일 승인 완료 기준</p>
-                </div><span class="badge green">총 128명</span>
+                    <h3 class="text-sm font-bold text-gray-900">
+                        주간 신규 가입
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400">
+                        최근 7일 승인 완료 기준
+                    </p>
+                </div>
+
+                <span class="w-fit bg-emerald-100 rounded-lg text-2xs text-emerald-700 font-bold px-2 py-1">● 총 116명</span>
+            </header>
+
+            <div class="grid h-48 grid-cols-7 gap-3 px-4 py-5">
+                <div class="flex min-w-0 flex-col">
+                    <div class="flex flex-1 items-end justify-center">
+                        <div class="h-[55%] w-full max-w-8 rounded-t-lg bg-gray-300"></div>
+                    </div>
+                    <span class="mt-2 text-center text-2xs text-gray-400">월</span>
+                </div>
+
+                <div class="flex min-w-0 flex-col">
+                    <div class="flex flex-1 items-end justify-center">
+                        <div class="h-[70%] w-full max-w-8 rounded-t-lg bg-gray-300"></div>
+                    </div>
+                    <span class="mt-2 text-center text-2xs text-gray-400">화</span>
+                </div>
+
+                <div class="flex min-w-0 flex-col">
+                    <div class="flex flex-1 items-end justify-center">
+                        <div class="h-[50%] w-full max-w-8 rounded-t-lg bg-gray-300"></div>
+                    </div>
+                    <span class="mt-2 text-center text-2xs text-gray-400">수</span>
+                </div>
+
+                <div class="flex min-w-0 flex-col">
+                    <div class="flex flex-1 items-end justify-center">
+                        <div class="h-[88%] w-full max-w-8 rounded-t-lg bg-gray-300"></div>
+                    </div>
+                    <span class="mt-2 text-center text-2xs text-gray-400">목</span>
+                </div>
+
+                <div class="flex min-w-0 flex-col">
+                    <div class="flex flex-1 items-end justify-center">
+                        <div class="h-full w-full max-w-8 rounded-t-lg bg-amber-300"></div>
+                    </div>
+                    <span class="mt-2 text-center text-2xs text-gray-400">금</span>
+                </div>
+
+                <div class="flex min-w-0 flex-col">
+                    <div class="flex flex-1 items-end justify-center">
+                        <div class="h-[78%] w-full max-w-8 rounded-t-lg bg-gray-300"></div>
+                    </div>
+                    <span class="mt-2 text-center text-2xs text-gray-400">토</span>
+                </div>
+
+                <div class="flex min-w-0 flex-col">
+                    <div class="flex flex-1 items-end justify-center">
+                        <div class="h-[65%] w-full max-w-8 rounded-t-lg bg-gray-300"></div>
+                    </div>
+                    <span class="mt-2 text-center text-2xs text-gray-400">일</span>
+                </div>
             </div>
-            <div class="chart">
-                <div class="bar-wrap">
-                    <div class="bar " style="height:48%"></div><span>월</span>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar " style="height:64%"></div><span>화</span>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar " style="height:44%"></div><span>수</span>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar " style="height:78%"></div><span>목</span>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar " style="height:87%"></div><span>금</span>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar active" style="height:96%"></div><span>토</span>
-                </div>
-                <div class="bar-wrap">
-                    <div class="bar " style="height:72%"></div><span>일</span>
-                </div>
-            </div>
-        </article>
+        </section>
     </div>
-    <div class="grid-3" style="margin-top:16px">
-        <article class="card">
-            <div class="card-head">
+
+    <div class="mt-4 grid grid-cols-1 gap-4 pc:grid-cols-3">
+        <section class="overflow-hidden rounded-lg border border-gray-300 bg-white">
+            <header class="flex items-center justify-between gap-3 border-b border-gray-300 px-4 py-3">
                 <div>
-                    <h3>최근 콘텐츠</h3>
-                    <p>새 게시글과 주요 반응</p>
-                </div><button data-nav="content">관리 ›</button>
-            </div>
-            <div class="feed-list">
-                <div class="feed-row"><span class="feed-icon">01</span>
-                    <div><b>8월 한강 정기런 참가 안내</b>
-                        <p>도티 김도윤 · 댓글 29</p>
-                    </div><time>08.03</time>
+                    <h3 class="text-sm font-bold text-gray-900">
+                        최근 콘텐츠
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400">
+                        새 게시글과 주요 반응
+                    </p>
                 </div>
-                <div class="feed-row"><span class="feed-icon">01</span>
-                    <div><b>폭염 시간대 러닝 안전수칙</b>
-                        <p>운영자 윤해진 · 댓글 11</p>
-                    </div><time>08.02</time>
-                </div>
-                <div class="feed-row"><span class="feed-icon">02</span>
-                    <div><b>첫 10km 완주 기록을 공유해요</b>
-                        <p>오지수 · 댓글 17</p>
-                    </div><time>08.01</time>
-                </div>
-            </div>
-        </article>
-        <article class="card">
-            <div class="card-head">
+
+                <button type="button" class="shrink-0 inline-flex items-center gap-1 text-2xs text-gray-500">
+                    <span>관리</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right preview-icon w-3 h-3">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </button>
+            </header>
+
+            <ul class="divide-y divide-gray-200 px-4">
+                <li class="flex items-center justify-between gap-3 py-4">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-sm text-gray-900">
+                            01
+                        </span>
+
+                        <div class="min-w-0">
+                            <span class="block truncate font-bold text-gray-900">캠핑 위켄드 운영 안내</span>
+                            <span class="mt-1 block text-2xs text-gray-400">도티 김도윤 · 댓글 38</span>
+                        </div>
+                    </div>
+
+                    <span class="shrink-0 text-2xs text-gray-400">08.03</span>
+                </li>
+
+                <li class="flex items-center justify-between gap-3 py-4">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-sm text-gray-900">
+                            01
+                        </span>
+
+                        <div class="min-w-0">
+                            <span class="block truncate font-bold text-gray-900">캠핑 위켄드 이벤트 모임</span>
+                            <span class="mt-1 block text-2xs text-gray-400">운영자 김도현 · 댓글 12</span>
+                        </div>
+                    </div>
+
+                    <span class="shrink-0 text-2xs text-gray-400">08.02</span>
+                </li>
+
+                <li class="flex items-center justify-between gap-3 py-4">
+                    <div class="flex min-w-0 items-center gap-3">
+                        <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-100 text-sm text-gray-900">
+                            02
+                        </span>
+
+                        <div class="min-w-0">
+                            <span class="block truncate font-bold text-gray-900">캠핑 위켄드 활동 후기</span>
+                            <span class="mt-1 block text-2xs text-gray-400">최서진 · 댓글 21</span>
+                        </div>
+                    </div>
+
+                    <span class="shrink-0 text-2xs text-gray-400">08.01</span>
+                </li>
+            </ul>
+        </section>
+
+        <section class="overflow-hidden rounded-lg border border-gray-300 bg-white">
+            <header class="flex items-center justify-between gap-3 border-b border-gray-300 px-4 py-3">
                 <div>
-                    <h3>공지 고정 현황</h3>
-                    <p>커뮤니티 상단 노출</p>
-                </div><button data-nav="notices">관리 ›</button>
-            </div>
-            <div class="feed-list">
-                <div class="feed-row"><span class="feed-icon">📌</span>
-                    <div><b>8월 정기런 집결 장소 안내</b>
-                        <p>고정 순서 1 · 조회 713</p>
-                    </div><time>08.03</time>
+                    <h3 class="text-sm font-bold text-gray-900">
+                        공지 고정 현황
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400">
+                        커뮤니티 상단 노출
+                    </p>
                 </div>
-                <div class="feed-row"><span class="feed-icon">📌</span>
-                    <div><b>여름철 러닝 안전 가이드</b>
-                        <p>고정 순서 2 · 조회 984</p>
-                    </div><time>07.31</time>
+
+                <button type="button" class="shrink-0 inline-flex items-center gap-1 text-2xs text-gray-500">
+                    <span>관리</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right preview-icon w-3 h-3">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </button>
+            </header>
+
+            <div class="flex items-center justify-between gap-3 p-4">
+                <div class="flex min-w-0 items-center gap-3">
+                    <div aria-hidden="true" class="h-8 w-8 shrink-0 rounded-lg bg-gray-100"></div>
+
+                    <div class="min-w-0">
+                        <span class="block truncate font-bold text-gray-900">캠핑 위켄드 운영 안내</span>
+                        <span class="mt-1 block text-2xs text-gray-400">고정 순서 1 · 조회 482</span>
+                    </div>
                 </div>
+
+                <span class="shrink-0 text-2xs text-gray-400">08.09</span>
             </div>
-        </article>
-        <article class="card">
-            <div class="card-head">
+        </section>
+
+        <section class="overflow-hidden rounded-lg border border-gray-300 bg-white">
+            <header class="flex items-center justify-between gap-3 border-b border-gray-300 px-4 py-3">
                 <div>
-                    <h3>추천상품 현황</h3>
-                    <p>현재 노출 중인 상품</p>
-                </div><button data-nav="products">관리 ›</button>
+                    <h3 class="text-sm font-bold text-gray-900">
+                        추천상품 현황
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400">
+                        커뮤니티 설정 중인 상품
+                    </p>
+                </div>
+
+                <button type="button" class="shrink-0 inline-flex items-center gap-1 text-2xs text-gray-500">
+                    <span>관리</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right preview-icon w-3 h-3">
+                        <path d="m9 18 6-6-6-6" />
+                    </svg>
+                </button>
+            </header>
+
+            <div class="flex items-center justify-between gap-3 p-4">
+                <div class="flex min-w-0 items-center gap-3">
+                    <div aria-hidden="true" class="h-8 w-8 shrink-0 rounded-lg bg-gray-100"></div>
+
+                    <div class="min-w-0">
+                        <span class="block truncate font-bold text-gray-900">유기농 그래놀라 500g</span>
+                        <span class="mt-1 block text-2xs text-gray-400">그린테이블 · 18,900원</span>
+                    </div>
+                </div>
+
+                <span class="shrink-0 text-2xs text-gray-400">일반</span>
             </div>
-            <div class="feed-list">
-                <div class="feed-row"><span class="feed-icon">👟</span>
-                    <div><b>에어 줌 페가수스 러닝화</b>
-                        <p>그린테이블 · 18,900원</p>
-                    </div><time>일반</time>
-                </div>
-                <div class="feed-row"><span class="feed-icon">🧢</span>
-                    <div><b>드라이핏 러닝 캡</b>
-                        <p>그린테이블 · 21,900원</p>
-                    </div><time>일반</time>
-                </div>
-                <div class="feed-row"><span class="feed-icon">🥗</span>
-                    <div><b>프리미엄 냉장 샐러드 6팩</b>
-                        <p>그린테이블 · 32,900원</p>
-                    </div><time>추가 토핑</time>
-                </div>
-            </div>
-        </article>
+        </section>
     </div>
-    <p class="footer-note">클릭형 시안 · 변경 데이터는 이 브라우저에 저장되며 계정 전환 메뉴에서 초기화할 수 있습니다.</p>
 </section>
 
 <?php
-require_once './dotty.tail.php';
+require_once '../admin.tail.php';
