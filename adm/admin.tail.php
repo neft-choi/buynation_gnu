@@ -26,7 +26,7 @@ $print_version = ($is_admin == 'super') ? 'Version ' . G5_GNUBOARD_VER : '';
 <nav id="admin_bottom_nav" class="fixed bottom-0 left-0 z-[1200] w-full max-w-full border-t border-gray-200 bg-white md:!hidden">
     <ul class="grid grid-cols-3 h-[var(--admin-bottom-nav-height)]">
         <li class="h-full">
-            <button type="button" id="btn_gnb" aria-label="메뉴 열기" class="js-btn-gnb-toggle flex w-full h-full items-center justify-center text-gray-500">
+            <button type="button" id="admin-sidebar-toggle-button" aria-label="메뉴 열기" aria-controls="admin-sidebar" aria-expanded="false" class="flex w-full h-full items-center justify-center text-gray-500">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu h-5 w-5">
                     <path d="M4 5h16" />
                     <path d="M4 12h16" />
@@ -205,6 +205,19 @@ $print_version = ($is_admin == 'super') ? 'Version ' . G5_GNUBOARD_VER : '';
             left += w1;
         }
     }
+
+    // 관리자 사이드 바 토글
+    $(function() {
+        const $sidebar = $("#admin-sidebar");
+        const $sidebarToggleButton = $("#admin-sidebar-toggle-button");
+
+        $sidebarToggleButton.on("click", function() {
+            $sidebar.toggleClass("hidden");
+
+            const isSidebarOpen = !$sidebar.hasClass("hidden");
+            $sidebarToggleButton.attr("aria-expanded", String(isSidebarOpen));
+        });
+    });
 </script>
 
 <?php

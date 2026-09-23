@@ -203,7 +203,7 @@ $adm_menu_cookie = array(
     $menu_icon_svg_default = '<svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle></svg>';
     ?>
 
-    <nav id="admin-sidebar" class="fixed left-0 top-0 z-[999] h-full w-[var(--admin-sidebar-width)] max-w-[var(--admin-sidebar-width)] bg-white pt-[var(--admin-header-height)]">
+    <nav id="admin-sidebar" class="hidden md:block fixed left-0 top-0 z-999 h-full w-(--admin-sidebar-width) max-w-(--admin-sidebar-width) bg-white pt-(--admin-header-height)">
         <h2 class="sr-only">관리자 주메뉴</h2>
 
         <ul class="admin-sidebar-menu h-full overflow-y-auto border-r border-gray-200">
@@ -366,7 +366,7 @@ $adm_menu_cookie = array(
 </script>
 <script>
     jQuery(function($) {
-
+        /*
         const menu_cookie_key = 'g5_admin_btn_gnb';
         const mobile_media_query = "(max-width: 768px)";
         const $gnb_toggle_buttons = $(".js-btn-gnb-toggle");
@@ -390,11 +390,13 @@ $adm_menu_cookie = array(
             $("#gnb_overlay").removeClass("is-active");
             syncSidebarToggleIcon();
         }
+        */
 
         $(".tnb_mb_btn").click(function() {
             $(".tnb_mb_area").toggle();
         });
 
+        /*
         $gnb_toggle_buttons.on("click", function() {
             const is_open_before_toggle = $("#gnb").hasClass("gnb_small");
 
@@ -451,6 +453,7 @@ $adm_menu_cookie = array(
         $("#gnb").on("click", "a", function() {
             closeMobileSidebar();
         });
+        */
     });
 </script>
 
