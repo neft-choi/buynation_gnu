@@ -82,11 +82,11 @@ html {
   /* pre {overflow-x:scroll;font-size:1.1em} */
   /* a:link, a:visited {color:#000;text-decoration:none} */
 
-  @media (max-width: 768px) {
+  /* @media (max-width: 768px) {
     section {
       padding: 16px;
     }
-  }
+  } */
 
   section h2 {
     display: none;

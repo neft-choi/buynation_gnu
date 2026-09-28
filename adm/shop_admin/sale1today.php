@@ -82,6 +82,7 @@ if (!function_exists('sale_brand_order_calc')) {
                 c.ct_price,
                 c.io_type,
                 c.io_price,
+                c.ct_send_cost,
                 ps.condition_id,
                 ps.group_id,
                 dc.dc_id,
@@ -132,6 +133,7 @@ if (!function_exists('sale_brand_order_calc')) {
                 $items[$it_id] = array(
                     'amount' => 0,
                     'qty' => 0,
+                    'collect' => ((int)$row['ct_send_cost'] === 1),
                     'condition' => $condition,
                     'group_id' => !empty($row['group_id'])
                         ? (int)$row['group_id']
@@ -154,6 +156,9 @@ if (!function_exists('sale_brand_order_calc')) {
 
             $items[$it_id]['amount'] += $line_price;
             $items[$it_id]['qty'] += (int)$row['ct_qty'];
+            if ((int)$row['ct_send_cost'] === 1) {
+                $items[$it_id]['collect'] = true;
+            }
             $result_data['item_total'] += $line_price;
         }
 
@@ -258,6 +263,11 @@ if (!function_exists('sale_brand_order_calc')) {
                 }
             }
 
+            // 착불(ct_send_cost=1)은 매출 주문합계/미수금에서 배송비 제외
+            if (!empty($item['collect'])) {
+                $fee = 0;
+            }
+
             if ($item['group_id'] > 0) {
                 $group_id = $item['group_id'];
 
@@ -338,6 +348,33 @@ if (!function_exists('sale_brand_order_exists_sql')) {
     }
 }
 
+
+/*
+ * 브랜드 미수금 계산
+ * - 현재 브랜드 상품금액만 기준
+ * - 선불 배송비 포함
+ * - 착불 배송비 제외
+ * - 혼합 주문은 주문 전체 미수금을 결제대상 금액 비율로 배분
+ */
+if (!function_exists('sale_brand_misu_calc')) {
+    function sale_brand_misu_calc($row, $brand_order_total)
+    {
+        $brand_order_total = max(0, (int)$brand_order_total);
+        $full_order_total = max(0, (int)$row['orderprice']);
+        $full_misu = max(0, (int)$row['od_misu']);
+
+        if ($brand_order_total <= 0 || $full_misu <= 0) {
+            return 0;
+        }
+
+        if ($full_order_total <= 0) {
+            return min($brand_order_total, $full_misu);
+        }
+
+        $ratio = min(1, $brand_order_total / $full_order_total);
+        return min($brand_order_total, (int)round($full_misu * $ratio));
+    }
+}
 
 auth_check_menu($auth, $sub_menu, "r");
 
@@ -429,6 +466,11 @@ $result = sql_query($sql);
 
             $row['orderprice'] =
                 (int)$sale_calc['order_total'];
+
+            $row['od_misu'] = sale_brand_misu_calc(
+                $row,
+                $row['orderprice']
+            );
         }
 
         if ($row['mb_id'] == '') { // 비회원일 경우는 주문자로 링크

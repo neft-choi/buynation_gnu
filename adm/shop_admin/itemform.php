@@ -116,7 +116,7 @@ if ($w == "") {
                 WHERE it_id = '{$it_id}'
                 AND it_seller = '{$member['mb_id']}'
             ");
-            // die($it_id);
+
             if (!$row['it_id']) {
                 alert("'{$member['mb_id']}' 님께서 수정 할 권한이 없는 상품입니다.");
             }
@@ -2677,7 +2677,8 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <tr>
                             <th scope="row"><label for="it_img<?php echo $i; ?>">이미지 <?php echo $i; ?></label></th>
                             <td>
-                                <input type="file" name="it_img<?php echo $i; ?>" id="it_img<?php echo $i; ?>">
+                                <input type="file" name="it_img<?php echo $i; ?>" id="it_img<?php echo $i; ?>" accept="image/jpeg,image/png,image/webp,image/gif">
+                                <span class="frm_info" id="it_img<?php echo $i; ?>_compress_info"></span>
                                 <?php
                                 $it_img = G5_DATA_PATH . '/item/' . $it['it_img' . $i];
                                 $it_img_exists = run_replace('shop_item_image_exists', (is_file($it_img) && file_exists($it_img)), $it, $i);
@@ -3085,7 +3086,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
     </div>
 </form>
 
-
+\n<script>\n(function(){\n const MAX=1920,Q=.82;\n function sz(n){if(!n)return '0 B';let u=['B','KB','MB','GB'],i=Math.min(Math.floor(Math.log(n)/Math.log(1024)),3);return (n/Math.pow(1024,i)).toFixed(i?1:0)+' '+u[i]}\n function replaceFile(el,file){let dt=new DataTransfer();dt.items.add(file);el.files=dt.files}\n document.addEventListener('change',function(e){\n  let el=e.target;if(!el||!/^it_img(?:10|[1-9])$/.test(el.id)||!el.files[0])return;\n  let f=el.files[0],info=document.getElementById(el.id+'_compress_info');\n  if(!/^image\//.test(f.type))return;if(f.type==='image/gif'){if(info)info.textContent='GIF 원본 유지 ('+sz(f.size)+')';return}\n  if(info)info.textContent='이미지 최적화 중...';let im=new Image(),url=URL.createObjectURL(f);\n  im.onload=function(){let sc=Math.min(1,MAX/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*sc)),h=Math.max(1,Math.round(im.naturalHeight*sc)),c=document.createElement('canvas');c.width=w;c.height=h;let x=c.getContext('2d',{alpha:false});x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);c.toBlob(function(b){URL.revokeObjectURL(url);if(!b){if(info)info.textContent='최적화 실패 - 원본 유지';return}if(b.size>=f.size&&sc===1){if(info)info.textContent='원본 유지 ('+sz(f.size)+')';return}let nf=new File([b],f.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});replaceFile(el,nf);if(info)info.textContent='자동 최적화: '+sz(f.size)+' → '+sz(nf.size)+' ('+w+'×'+h+')'},'image/jpeg',Q)};\n  im.onerror=function(){URL.revokeObjectURL(url);if(info)info.textContent='이미지 읽기 실패 - 원본 유지'};im.src=url;\n });\n})();\n</script>\n
 <script>
     var f = document.fitemform;
 

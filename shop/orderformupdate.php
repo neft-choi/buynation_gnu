@@ -602,6 +602,12 @@ $od_addr_jibeon   = preg_match("/^(N|R)$/", $od_addr_jibeon) ? $od_addr_jibeon :
 $od_b_name        = clean_xss_tags($od_b_name);
 $od_b_tel         = clean_xss_tags($od_b_tel);
 $od_b_hp          = clean_xss_tags($od_b_hp);
+
+// 수취인 우편번호를 DB 컬럼(od_b_zip1, od_b_zip2)에 맞게 분리
+$od_b_zip          = isset($_POST['od_b_zip']) ? preg_replace('/[^0-9]/', '', $_POST['od_b_zip']) : preg_replace('/[^0-9]/', '', (isset($od_b_zip) ? $od_b_zip : ''));
+$od_b_zip1         = substr($od_b_zip, 0, 3);
+$od_b_zip2         = substr($od_b_zip, 3);
+
 $od_b_addr1       = clean_xss_tags($od_b_addr1);
 $od_b_addr2       = clean_xss_tags($od_b_addr2);
 $od_b_addr3       = clean_xss_tags($od_b_addr3);

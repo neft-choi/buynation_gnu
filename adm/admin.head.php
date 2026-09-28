@@ -465,4 +465,4 @@ $adm_menu_cookie = array(
             class="fixed left-0 top-[var(--admin-header-height)] z-[99] w-full max-w-full border-b border-gray-200 bg-white px-[20px] pl-[calc(var(--admin-sidebar-width)+16px)] text-sm font-black text-gray-900 h-[50px] flex items-center">
             <?php echo $g5['title'] ?>
         </h1>
-        <div class="container_wr md:m-4 mx-0 my-4 md:p-4 px-2 bg-white md:border border-y border-gray-200 md:rounded rounded-none">
+        <div class="container_wr md:m-4 mx-0 my-4 p-4 bg-white md:border border-y border-gray-200 md:rounded rounded-none">

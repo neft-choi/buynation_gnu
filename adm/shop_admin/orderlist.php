@@ -55,6 +55,7 @@ if (!function_exists('donuts_admin_direct_delivery_calc')) {
                 c.ct_price,
                 c.io_type,
                 c.io_price,
+                c.ct_send_cost,
                 ps.condition_id,
                 ps.group_id,
                 dc.dc_id,
@@ -80,7 +81,7 @@ if (!function_exists('donuts_admin_direct_delivery_calc')) {
                AND dg.brand_id = '{$brand_id_sql}'
                AND dg.use_yn = 'Y'
             WHERE c.od_id = '{$od_id_sql}'
-              AND TRIM(i.it_brand) = '{$brand_id_sql}'
+              AND TRIM(i.it_seller) = '{$brand_id_sql}'
             ORDER BY c.ct_id ASC
         ";
 
@@ -100,6 +101,7 @@ if (!function_exists('donuts_admin_direct_delivery_calc')) {
                 $items[$it_id] = array(
                     'amount' => 0,
                     'qty' => 0,
+                    'collect' => ((int)$row['ct_send_cost'] === 1),
                     'condition' => $condition,
                     'group_id' => !empty($row['group_id']) ? (int)$row['group_id'] : 0,
                     'calc_method' => !empty($row['calc_method']) ? strtoupper($row['calc_method']) : 'MAX'
@@ -114,6 +116,9 @@ if (!function_exists('donuts_admin_direct_delivery_calc')) {
 
             $items[$it_id]['amount'] += $line;
             $items[$it_id]['qty'] += (int)$row['ct_qty'];
+            if ((int)$row['ct_send_cost'] === 1) {
+                $items[$it_id]['collect'] = true;
+            }
             $result_data['item_total'] += $line;
         }
 
@@ -178,6 +183,11 @@ if (!function_exists('donuts_admin_direct_delivery_calc')) {
                             : max(0, $price);
                         break;
                 }
+            }
+
+            // 착불(ct_send_cost=1)은 결제/미수금에 배송비를 포함하지 않음
+            if (!empty($item['collect'])) {
+                $fee = 0;
             }
 
             $result_data['item_fees'][$it_id] = $fee;
@@ -348,7 +358,7 @@ if (!empty($brand['brand_id'])) {
             FROM {$g5['g5_shop_cart_table']} c
             INNER JOIN {$g5['g5_shop_item_table']} i
                 ON c.it_id = i.it_id
-            WHERE LOWER(TRIM(i.it_brand)) = LOWER('{$brand_login_sql}')
+            WHERE LOWER(TRIM(i.it_seller)) = LOWER('{$brand_login_sql}')
         )
     ";
 }
@@ -671,7 +681,7 @@ if (function_exists('pg_setting_check')) {
                             INNER JOIN {$g5['g5_shop_item_table']} i
                                 ON c.it_id = i.it_id
                             WHERE c.od_id = '{$od_id_sql}'
-                              AND LOWER(TRIM(i.it_brand)) = LOWER('{$brand_login_sql}')
+                              AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_login_sql}')
                         ");
 
                         $display_item_total =
@@ -705,15 +715,35 @@ if (function_exists('pg_setting_check')) {
                                 $receiver_zip_for_shipping
                             );
 
-                        $display_shipping_total =
-                            isset($brand_shipping_detail['shipping_total'])
-                            ? (int)$brand_shipping_detail['shipping_total']
-                            : 0;
+                        // 기본 배송비는 상품별 ct_send_cost를 반영하여 계산합니다.
+                        // 착불 상품의 배송비는 주문금액/미수금에서 제외합니다.
+                        $brand_direct_delivery = donuts_admin_direct_delivery_calc(
+                            $row['od_id'],
+                            $brand_login_id
+                        );
 
                         $display_region_extra =
                             isset($brand_shipping_detail['region_extra'])
                             ? (int)$brand_shipping_detail['region_extra']
                             : 0;
+
+                        $display_shipping_total =
+                            max(0, (int)$brand_direct_delivery['shipping_total'] + $display_region_extra);
+
+                        $brand_prepaid_row = sql_fetch("
+                            SELECT COUNT(*) AS cnt
+                            FROM {$g5['g5_shop_cart_table']} c
+                            INNER JOIN {$g5['g5_shop_item_table']} i
+                                ON c.it_id = i.it_id
+                            WHERE c.od_id = '{$od_id_sql}'
+                              AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_login_sql}')
+                              AND (c.ct_send_cost IS NULL OR c.ct_send_cost <> 1)
+                        " );
+
+                        if (empty($brand_prepaid_row['cnt'])) {
+                            $display_shipping_total = 0;
+                            $display_region_extra = 0;
+                        }
                     }
 
                     /*
