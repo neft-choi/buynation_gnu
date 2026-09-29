@@ -103,7 +103,7 @@ if ($dm_post_it_id !== '') {
         $it_id_sql = sql_real_escape_string($dm_post_it_id);
 
         // 기존 itemformupdate가 끝난 뒤 실제 저장된 상품 기준으로 처리한다.
-        $item = sql_fetch("SELECT it_id, it_brand
+        $item = sql_fetch("SELECT it_id, it_seller
             FROM {$g5['g5_shop_item_table']}
             WHERE it_id = '{$it_id_sql}'
             LIMIT 1");
@@ -113,7 +113,9 @@ if ($dm_post_it_id !== '') {
             return;
         }
 
-        $brand_id = trim((string)$item['it_brand']);
+        $brand_id = isset($item['it_seller'])
+            ? trim((string)$item['it_seller'])
+            : '';
         if ($brand_id === '') $brand_id = $dm_login_brand_id;
         if ($brand_id === '') {
             $dm_debug_log('FAIL brand_id empty for item=' . $dm_post_it_id);
@@ -149,7 +151,7 @@ if ($dm_post_it_id !== '') {
         $condition = sql_fetch("SELECT dc_id
             FROM donuts_delivery_conditions
             WHERE dc_id = '{$condition_id}'
-              AND brand_id = '{$brand_id_sql}'
+              AND LOWER(TRIM(brand_id)) = LOWER('{$brand_id_sql}')
               AND use_yn = 'Y'
             LIMIT 1");
 
@@ -166,7 +168,7 @@ if ($dm_post_it_id !== '') {
             $group = sql_fetch("SELECT dg_id
                 FROM donuts_delivery_groups
                 WHERE dg_id = '{$group_id}'
-                  AND brand_id = '{$brand_id_sql}'
+                  AND LOWER(TRIM(brand_id)) = LOWER('{$brand_id_sql}')
                   AND use_yn = 'Y'
                 LIMIT 1");
 

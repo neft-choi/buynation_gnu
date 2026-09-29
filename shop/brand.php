@@ -98,7 +98,7 @@ define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
     $count_where[] = " it_use = '1' ";
 
     // 현재 브랜드에 등록된 상품 조회
-    $count_where[] = " it_brand = '" . sql_real_escape_string($brand['brand_id']) . "' ";
+    $count_where[] = " it_seller = '" . sql_real_escape_string($brand['brand_id']) . "' ";
 
     // 상품 종류 필터 SQL
     $item_type_conditions = array();
@@ -219,7 +219,7 @@ define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
 
         $list_where[] = " it_use = '1' ";
 
-        $list_where[] = " it_brand = '" . sql_real_escape_string($brand['brand_id']) . "' ";
+        $list_where[] = " it_seller = '" . sql_real_escape_string($brand['brand_id']) . "' ";
 
         if ($item_type_where) {
             $list_where[] = $item_type_where;

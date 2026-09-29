@@ -87,7 +87,7 @@ $item_sql = "
         it_name,
         it_price
     FROM {$g5['g5_shop_item_table']}
-    WHERE TRIM(it_brand) = '{$brand_id_sql}'
+    WHERE LOWER(TRIM(it_seller)) = LOWER('{$brand_id_sql}')
       AND (
             it_name LIKE '%{$keyword_sql}%'
             OR it_id LIKE '%{$keyword_sql}%'

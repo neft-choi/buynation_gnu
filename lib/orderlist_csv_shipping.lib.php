@@ -300,7 +300,7 @@ function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiv
         INNER JOIN {$g5['g5_shop_item_table']} i
             ON i.it_id = c.it_id
         WHERE c.od_id = '{$od_id_sql}'
-          AND TRIM(i.it_brand) = '{$brand_id_sql}'
+          AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}')
         GROUP BY c.it_id
         ORDER BY MIN(c.ct_id) ASC
     ", false);
@@ -879,13 +879,13 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
 
     if ($brand_id !== '') {
         $brand_id_sql = sql_real_escape_string($brand_id);
-        $brand_where = " AND TRIM(i.it_brand) = '{$brand_id_sql}' ";
+        $brand_where = " AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}') ";
     }
 
     $result = sql_query("
         SELECT
             c.it_id,
-            TRIM(i.it_brand) AS item_brand_id,
+            TRIM(i.it_seller) AS item_brand_id,
             SUM(
                 IF(
                     c.io_type = 1,
@@ -899,7 +899,7 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
             ON i.it_id = c.it_id
         WHERE c.od_id = '{$od_id_sql}'
         {$brand_where}
-        GROUP BY c.it_id, i.it_brand
+        GROUP BY c.it_id, i.it_seller
         ORDER BY MIN(c.ct_id)
     ", false);
 

@@ -30,7 +30,7 @@ $sql = " select a.ct_id,
                 a.io_price,
 	            b.ca_id,
 	            b.it_cust_price,
-	            b.it_brand
+				b.it_seller
 
            from {$g5['g5_shop_cart_table']} a
            left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
@@ -243,13 +243,13 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 					$unit_discount_price = $qty > 0 ? (int) round($discount_price / $qty) : (int) $discount_price;
 					$unit_market_price_calc = $qty > 0 ? (int) round($market_price / $qty) : (int) $market_price;
 
-					$brand_name = trim((string) $row['it_brand']);
-					if ($brand_name === '') {
-						$brand_name = '기타';
+					$seller_name = trim((string) $row['it_seller']);
+					if ($seller_name === '') {
+						$seller_name = '기타';
 					}
 
-					if (!isset($grouped_cart[$brand_name])) {
-						$grouped_cart[$brand_name] = array(
+					if (!isset($grouped_cart[$seller_name])) {
+						$grouped_cart[$seller_name] = array(
 							'items' => array(),
 							'market_price' => 0,
 							'discount_price' => 0,
@@ -261,14 +261,14 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 					}
 
 					if ($ct_send_cost === '착불') {
-						$grouped_cart[$brand_name]['send_collect']++;
+						$grouped_cart[$seller_name]['send_collect']++;
 					} elseif ($ct_send_cost === '선불') {
-						$grouped_cart[$brand_name]['send_prepaid']++;
+						$grouped_cart[$seller_name]['send_prepaid']++;
 					} else {
-						$grouped_cart[$brand_name]['send_free']++;
+						$grouped_cart[$seller_name]['send_free']++;
 					}
 
-					$grouped_cart[$brand_name]['items'][] = array(
+					$grouped_cart[$seller_name]['items'][] = array(
 						'idx' => $item_index,
 						'it_id' => $row['it_id'],
 						'it_name' => get_text($row['it_name']),
@@ -285,9 +285,9 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 						'sell_price' => (int) $sell_price
 					);
 
-					$grouped_cart[$brand_name]['market_price'] += (int) $market_price;
-					$grouped_cart[$brand_name]['discount_price'] += (int) $discount_price;
-					$grouped_cart[$brand_name]['sell_price'] += (int) $sell_price;
+					$grouped_cart[$seller_name]['market_price'] += (int) $market_price;
+					$grouped_cart[$seller_name]['discount_price'] += (int) $discount_price;
+					$grouped_cart[$seller_name]['sell_price'] += (int) $sell_price;
 
 					$tot_point += $point;
 					$tot_sell_price += $sell_price;
@@ -299,7 +299,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 
 				if ($i > 0) {
 					$brand_index = 0;
-					foreach ($grouped_cart as $brand_name => $brand_group) {
+					foreach ($grouped_cart as $seller_name => $brand_group) {
 						$brand_send_cost = '무료';
 						if ($brand_group['send_collect'] > 0 && ($brand_group['send_prepaid'] > 0 || $brand_group['send_free'] > 0)) {
 							$brand_send_cost = '상품별 상이';
@@ -320,7 +320,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 										data-maker-index="<?php echo $brand_index; ?>" checked>
 									<label for="vendor_chk_<?php echo $brand_index; ?>"><span></span><b
 											class="sound_only">업체선택</b></label>
-									<div><?php echo get_text($brand_name); ?></div>
+									<div><?php echo get_text($seller_name); ?></div>
 								</div>
 							</div>
 

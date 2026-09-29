@@ -63,8 +63,9 @@ $sql_common = " from {$g5['g5_shop_item_table']} a ,
                where (a.ca_id = b.ca_id";
 
 if ($is_admin != 'super') {
-    $sql_common .= " and a.it_brand = '{$member['mb_id']}'"; 
-    // $sql_common .= " and a.it_brand = '{$brand['brand_id']}'"; 예시
+    // 브랜드 계정은 상품 소유자(it_seller)가 현재 로그인 계정인 상품만 조회
+    $member_id_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+    $sql_common .= " and LOWER(TRIM(a.it_seller)) = LOWER('{$member_id_sql}')";
 }
 $sql_common .= ") ";
 $sql_common .= $sql_search;

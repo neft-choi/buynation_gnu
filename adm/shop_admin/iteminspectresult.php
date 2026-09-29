@@ -40,7 +40,7 @@ sql_query("
        AND r.brand_id = '{$brand_sql}'
     SET i.it_use = 0,
         i.it_update_time = NOW()
-    WHERE TRIM(i.it_brand) = '{$brand_sql}'
+    WHERE LOWER(TRIM(i.it_seller)) = LOWER('{$brand_sql}')
       AND i.it_use = 1
       AND r.status IN ('draft', 'pending', 'revision', 'rejected')
 ", false);
@@ -61,7 +61,7 @@ $hidden_products = sql_query("
     LEFT JOIN donuts_item_inspections r
       ON r.it_id COLLATE utf8mb4_general_ci = i.it_id COLLATE utf8mb4_general_ci
      AND r.brand_id = '{$brand_sql}'
-    WHERE TRIM(i.it_brand) = '{$brand_sql}'
+    WHERE LOWER(TRIM(i.it_seller)) = LOWER('{$brand_sql}')
       AND i.it_use = 0
       AND r.inspection_id IS NULL
     ORDER BY i.it_time DESC, i.it_id DESC
@@ -116,7 +116,7 @@ if ($status === 'draft') {
         LEFT JOIN donuts_item_inspections r
           ON r.it_id COLLATE utf8mb4_general_ci = i.it_id COLLATE utf8mb4_general_ci
          AND r.brand_id = '{$brand_sql}'
-        WHERE TRIM(i.it_brand) = '{$brand_sql}'
+        WHERE LOWER(TRIM(i.it_seller)) = LOWER('{$brand_sql}')
           AND i.it_use = 0
           AND (r.inspection_id IS NULL OR r.status IN ('draft','revision','rejected'))
         ORDER BY i.it_time DESC, i.it_id DESC
@@ -140,7 +140,7 @@ if ($status === 'draft') {
         INNER JOIN {$g5['g5_shop_item_table']} i
             ON i.it_id COLLATE utf8mb4_general_ci = r.it_id COLLATE utf8mb4_general_ci
         WHERE r.brand_id = '{$brand_sql}'
-          AND TRIM(i.it_brand) = '{$brand_sql}'
+          AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_sql}')
           {$status_where}
         ORDER BY COALESCE(r.requested_at, r.updated_at, r.created_at) DESC, r.inspection_id DESC
     ", false);
@@ -343,7 +343,7 @@ $draft_count = sql_fetch("
     LEFT JOIN donuts_item_inspections r
       ON r.it_id COLLATE utf8mb4_general_ci = i.it_id COLLATE utf8mb4_general_ci
      AND r.brand_id = '{$brand_sql}'
-    WHERE TRIM(i.it_brand) = '{$brand_sql}'
+    WHERE LOWER(TRIM(i.it_seller)) = LOWER('{$brand_sql}')
       AND i.it_use = 0
       AND (r.inspection_id IS NULL OR r.status IN ('draft','revision','rejected'))
 ");
@@ -354,7 +354,7 @@ $count_result = sql_query("
     FROM donuts_item_inspections r
     INNER JOIN {$g5['g5_shop_item_table']} i ON i.it_id COLLATE utf8mb4_general_ci = r.it_id COLLATE utf8mb4_general_ci
     WHERE r.brand_id = '{$brand_sql}'
-      AND TRIM(i.it_brand) = '{$brand_sql}'
+      AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_sql}')
       AND r.status IN ('pending','revision','rejected','approved')
     GROUP BY r.status
 ", false);

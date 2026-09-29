@@ -1,9 +1,11 @@
 <?php
 include_once(G5_LIB_PATH . '/donuts_delivery.lib.php');
 
-$item_delivery_brand_id = trim($it['it_brand']);
+// 배송조건/배송그룹은 상품의 소유 판매자(it_seller)를 기준으로 조회합니다.
+// it_brand는 상품 브랜드 메타데이터이므로 배송 소유권 기준으로 사용하지 않습니다.
+$item_delivery_brand_id = isset($it['it_seller']) ? trim((string)$it['it_seller']) : '';
 if ($item_delivery_brand_id === '') {
-    $item_delivery_brand_id = trim($member['mb_id']);
+    $item_delivery_brand_id = isset($member['mb_id']) ? trim((string)$member['mb_id']) : '';
 }
 
 $brand_id_sql = sql_real_escape_string($item_delivery_brand_id);
@@ -17,7 +19,7 @@ $condition_result = sql_query(" SELECT c.*,
             AND ps.condition_id = c.dc_id
         ) AS product_count
     FROM donuts_delivery_conditions c
-    WHERE c.brand_id = '{$brand_id_sql}'
+    WHERE LOWER(TRIM(c.brand_id)) = LOWER('{$brand_id_sql}')
     AND c.use_yn = 'Y'
     ORDER BY c.is_default DESC, c.dc_id ASC ");
 
@@ -121,7 +123,7 @@ while ($row = sql_fetch_array($condition_result)) {
     }
 </style>
 
-<div class="register-screen">
+<div class="register-screen active" style="display:block;">
     <div class="register-screen-head">
         <h2>배송설정</h2>
         <p>배송조건으로 금액을 정하고, 배송그룹 선택 여부로 묶음·개별을 결정합니다.</p>
@@ -232,7 +234,7 @@ while ($row = sql_fetch_array($condition_result)) {
     $group_result = sql_query("
                         SELECT g.*
                         FROM donuts_delivery_groups AS g
-                        WHERE g.brand_id = '{$brand_id_sql}'
+                        WHERE LOWER(TRIM(g.brand_id)) = LOWER('{$brand_id_sql}')
                         AND g.use_yn = 'Y'
                         ORDER BY g.dg_id ASC
                     ");

@@ -30,6 +30,30 @@ require_once '../../admin.head.php';
         </div>
     </section>
 
+    <div id="dotty-review-filters" role="group" aria-label="도티 사업자 심사 상태 필터" class="mt-4 flex flex-wrap gap-2">
+        <button type="button" data-status="all" aria-pressed="true" class="rounded-full bg-gray-900 text-2xs font-bold text-white px-3 py-2">
+            전체
+        </button>
+        <button type="button" data-status="not-submitted" aria-pressed="false" class="rounded-full border border-gray-300 bg-white text-2xs text-gray-700 px-3 py-2">
+            미제출
+        </button>
+        <button type="button" data-status="pending" aria-pressed="false" class="rounded-full border border-gray-300 bg-white text-2xs text-gray-700 px-3 py-2">
+            심사 대기
+        </button>
+        <button type="button" data-status="supplement" aria-pressed="false" class="rounded-full border border-gray-300 bg-white text-2xs text-gray-700 px-3 py-2">
+            보완 요청
+        </button>
+        <button type="button" data-status="approved" aria-pressed="false" class="rounded-full border border-gray-300 bg-white text-2xs text-gray-700 px-3 py-2">
+            승인
+        </button>
+        <button type="button" data-status="rejected" aria-pressed="false" class="rounded-full border border-gray-300 bg-white text-2xs text-gray-700 px-3 py-2">
+            거절
+        </button>
+        <button type="button" data-status="auto" aria-pressed="false" class="rounded-full border border-gray-300 bg-white text-2xs text-gray-700 px-3 py-2">
+            자동 비사업자
+        </button>
+    </div>
+
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
         <div class="overflow-x-auto">
             <table class="border-collapse min-w-250 w-full table-fixed text-left">

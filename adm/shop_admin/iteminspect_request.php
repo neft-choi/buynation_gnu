@@ -13,7 +13,7 @@ if (empty($member['mb_id'])) {
  * 검수 요청 권한:
  * - 최고관리자 전용 메뉴권한을 요구하지 않음
  * - donuts_brand에 등록된 현재 로그인 브랜드 계정이면 허용
- * - 아래에서 실제 상품의 it_brand도 현재 계정과 일치하는지 다시 확인
+ * - 아래에서 실제 상품의 it_seller도 현재 계정과 일치하는지 다시 확인
  */
 if (!donuts_item_inspection_is_brand($member['mb_id'])) {
     alert('브랜드 회원만 검수 요청할 수 있습니다.');
@@ -31,10 +31,10 @@ $brand_id = trim($member['mb_id']);
 $brand_sql = sql_real_escape_string($brand_id);
 
 $item = sql_fetch("
-    SELECT it_id, it_name, it_brand, ca_id, it_price
+    SELECT it_id, it_name, it_brand, it_seller, ca_id, it_price
     FROM {$g5['g5_shop_item_table']}
     WHERE it_id = '{$it_sql}'
-      AND TRIM(it_brand) = '{$brand_sql}'
+      AND LOWER(TRIM(it_seller)) = LOWER('{$brand_sql}')
     LIMIT 1
 ");
 

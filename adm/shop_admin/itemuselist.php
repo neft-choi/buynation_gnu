@@ -52,7 +52,8 @@ $sql_common = "  from {$g5['g5_shop_item_use_table']} a
 
 if ($brand_member) {
     $sql_search .= ($sql_search ? " and " : " where ");
-    $sql_search .= " b.it_brand = '{$member['mb_id']}' ";
+    $member_id_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+    $sql_search .= " LOWER(TRIM(b.it_seller)) = LOWER('{$member_id_sql}') ";
 }
 
 $sql_common .= $sql_search;

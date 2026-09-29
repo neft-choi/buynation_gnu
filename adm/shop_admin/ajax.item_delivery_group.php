@@ -33,7 +33,7 @@ $it_id_sql = sql_real_escape_string($it_id);
  * 상품 확인
  */
 $item = sql_fetch("
-    SELECT it_id, it_brand
+    SELECT it_id, it_seller
     FROM {$g5['g5_shop_item_table']}
     WHERE it_id = '{$it_id_sql}'
     LIMIT 1
@@ -43,10 +43,10 @@ if (empty($item['it_id'])) {
     item_delivery_group_json(false, '상품정보가 존재하지 않습니다.');
 }
 
-$item_brand_id = trim((string)$item['it_brand']);
+$item_brand_id = trim((string)$item['it_seller']);
 
 if ($item_brand_id === '') {
-    item_delivery_group_json(false, '상품의 브랜드 정보가 없습니다.');
+    item_delivery_group_json(false, '상품의 판매자 정보가 없습니다.');
 }
 
 /*

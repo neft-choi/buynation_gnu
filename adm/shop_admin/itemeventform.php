@@ -5,6 +5,14 @@ include_once(G5_EDITOR_LIB);
 
 auth_check_menu($auth, $sub_menu, "w");
 
+/* 브랜드별 기획전 소유자 컬럼 */
+if (!sql_query(" select ev_seller from {$g5['g5_shop_event_table']} limit 1 ", false)) {
+    sql_query(" ALTER TABLE `{$g5['g5_shop_event_table']}` ADD `ev_seller` varchar(20) NOT NULL DEFAULT '' AFTER `ev_id` ", true);
+}
+
+$event_member_id = isset($member['mb_id']) ? trim((string)$member['mb_id']) : '';
+$event_member_sql = sql_real_escape_string($event_member_id);
+
 $ev_id = isset($_REQUEST['ev_id']) ? preg_replace('/[^0-9]/', '', $_REQUEST['ev_id']) : '';
 $ev = array(
     'ev_subject' => '',
@@ -24,14 +32,20 @@ if ($w == "u") {
     $readonly = " readonly";
 
     $sql = " select * from {$g5['g5_shop_event_table']} where ev_id = '$ev_id' ";
+    if ($is_admin != 'super') {
+        $sql .= " and LOWER(TRIM(ev_seller)) = LOWER('{$event_member_sql}') ";
+    }
     $ev = sql_fetch($sql);
     if (!(isset($ev['ev_id']) && $ev['ev_id']))
-        alert("등록된 자료가 없습니다.");
+        alert("등록된 자료가 없거나 수정 권한이 없습니다.");
 
     // 등록된 이벤트 상품
     $sql = " select b.it_id, b.it_name
                 from {$g5['g5_shop_event_item_table']} a left join {$g5['g5_shop_item_table']} b on ( a.it_id = b.it_id )
                 where a.ev_id = '$ev_id' ";
+    if ($is_admin != 'super') {
+        $sql .= " and LOWER(TRIM(b.it_seller)) = LOWER('{$event_member_sql}') ";
+    }
     $res_item = sql_query($sql);
 } else {
     $html_title .= " 입력";

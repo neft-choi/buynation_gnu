@@ -3104,8 +3104,15 @@ if (function_exists('is_use_easypay') && is_use_easypay('global_nhnkcp')) {  // 
                     f.escrowProducts.value = JSON.stringify(<?php echo json_encode($escrow_products, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>);
                 <?php } ?>
 
+                // 토스 카드 결제 옵션 초기화
+                // 일반 신용카드: DEFAULT 통합 PG창에서 카드사를 선택
+                // 간편결제: DIRECT 사용 시 easyPay(TOSSPAY)를 반드시 함께 전달
+                f.cardflowMode.value = 'DEFAULT';
+                f.cardeasyPay.value = '';
+
                 if (settle_method == "간편결제") {
                     f.cardflowMode.value = 'DIRECT';
+                    f.cardeasyPay.value = 'TOSSPAY';
                 }
 
                 f.amountCurrency.value = 'KRW';

@@ -37,7 +37,8 @@ $sql_common = "  from {$g5['g5_shop_item_qa_table']} a
                  left join {$g5['member_table']} c on (a.mb_id = c.mb_id) ";
 
 if ($is_admin != 'super') {
-    $sql_search .= " {$where} b.it_brand = '{$member['mb_id']}' ";
+    $member_id_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+    $sql_search .= " {$where} LOWER(TRIM(b.it_seller)) = LOWER('{$member_id_sql}') ";
     $where = " and ";
 }
 $sql_common .= $sql_search;

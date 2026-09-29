@@ -54,8 +54,8 @@ $sql .= " where a.it_id = b.it_id ";
 
 // 브랜드 회원은 자신의 상품만 조회
 if ($is_admin != 'super' && $brand_member) {
-    $brand_id_sql = sql_real_escape_string($brand_id);
-    $sql .= " and b.it_brand = '{$brand_id_sql}' ";
+    $brand_id_sql = sql_real_escape_string(trim((string)$brand_id));
+    $sql .= " and LOWER(TRIM(b.it_seller)) = LOWER('{$brand_id_sql}') ";
 }
 
 if ($fr_date && $to_date)

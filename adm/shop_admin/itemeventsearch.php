@@ -4,6 +4,21 @@ include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, "w");
 
+$event_member_id = isset($member['mb_id']) ? trim((string)$member['mb_id']) : '';
+$event_member_sql = sql_real_escape_string($event_member_id);
+
+/* 수정 중인 기획전도 본인 소유인지 확인 */
+if ($is_admin != 'super' && $w == 'u' && !empty($ev_id)) {
+    $event_ev_id = preg_replace('/[^0-9]/', '', (string)$ev_id);
+    $event_owner = sql_fetch(" select ev_id from {$g5['g5_shop_event_table']}
+        where ev_id = '{$event_ev_id}'
+          and LOWER(TRIM(ev_seller)) = LOWER('{$event_member_sql}')
+        limit 1 ");
+    if (empty($event_owner['ev_id'])) {
+        die('<p>기획전 상품을 수정할 권한이 없습니다.</p>');
+    }
+}
+
 $ca_id = trim($ca_id);
 $it_name = trim(strip_tags($it_name));
 
@@ -13,6 +28,9 @@ if(!$ca_id && !$it_name)
 $sql = " select it_id, it_name
            from {$g5['g5_shop_item_table']}
           where (1) ";
+if ($is_admin != 'super') {
+    $sql .= " and LOWER(TRIM(it_seller)) = LOWER('{$event_member_sql}') ";
+}
 if($ca_id)
     $sql .= " and ( ca_id like '$ca_id%' or ca_id2 like '$ca_id%' or ca_id3 like '$ca_id%' ) ";
 

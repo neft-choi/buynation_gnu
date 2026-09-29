@@ -46,6 +46,7 @@ $base_result = sql_query("
         i.it_id,
         i.it_name,
         i.it_brand,
+        i.it_seller,
         i.it_price,
         i.it_use,
         i.it_time,
@@ -76,14 +77,14 @@ if ($base_result) {
          */
         if (empty($row['inspection_id'])) {
             $row['status'] = 'draft';
-            $row['brand_id'] = $row['it_brand'];
+            $row['brand_id'] = $row['it_seller'];
             $row['inspect_no'] = '';
             $row['request_type'] = 'new';
         } else {
             $row['status'] = trim((string)$row['inspection_status']);
 
             if (empty($row['brand_id'])) {
-                $row['brand_id'] = $row['it_brand'];
+                $row['brand_id'] = $row['it_seller'];
             }
         }
 
@@ -266,7 +267,7 @@ function inspect_status_sub($status)
                     <?php } ?>
 
                     <?php foreach ($rows as $row) {
-                        $row_brand_id = !empty($row['brand_id']) ? $row['brand_id'] : $row['it_brand'];
+                        $row_brand_id = !empty($row['brand_id']) ? $row['brand_id'] : $row['it_seller'];
                         $delivery_label = donuts_item_inspection_delivery_label($row_brand_id, $row['it_id']);
                         $badge = donuts_item_inspection_status_badge($row['status']);
                     ?>

@@ -29,7 +29,8 @@ include_once (G5_ADMIN_PATH.'/admin.head.php');
 $sql_search = " where 1 ";
 // 브랜드 회원이면 자기 상품만 조회
 if ($is_admin != 'super' && $brand_member) {
-    $sql_search .= " and it_brand = '{$member['mb_id']}' ";
+    $member_id_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+    $sql_search .= " and LOWER(TRIM(it_seller)) = LOWER('{$member_id_sql}') ";
 }
 if ($search != "") {
 	if ($sel_field != "") {

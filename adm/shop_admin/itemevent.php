@@ -5,9 +5,19 @@ include_once('./_common.php');
 auth_check_menu($auth, $sub_menu, "r");
 
 $g5['title'] = '기획전';
+
+/* 브랜드별 기획전 소유자 컬럼 */
+if (!sql_query(" select ev_seller from {$g5['g5_shop_event_table']} limit 1 ", false)) {
+    sql_query(" ALTER TABLE `{$g5['g5_shop_event_table']}` ADD `ev_seller` varchar(20) NOT NULL DEFAULT '' AFTER `ev_id` ", true);
+}
+
 include_once (G5_ADMIN_PATH.'/admin.head.php');
 
 $sql_common = " from {$g5['g5_shop_event_table']} ";
+if ($is_admin != 'super') {
+    $event_seller_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+    $sql_common .= " where LOWER(TRIM(ev_seller)) = LOWER('{$event_seller_sql}') ";
+}
 
 // 테이블의 전체 레코드수만 얻음
 $sql = " select count(*) as cnt " . $sql_common;

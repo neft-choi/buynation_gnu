@@ -180,8 +180,8 @@ $dm_form_condition_id = 0;
 $dm_form_group_id = 0;
 $dm_form_brand_id = '';
 
-if (!empty($it['it_brand'])) {
-    $dm_form_brand_id = trim((string)$it['it_brand']);
+if (!empty($it['it_seller'])) {
+    $dm_form_brand_id = trim((string)$it['it_seller']);
 } elseif (!empty($member['mb_id'])) {
     $dm_form_brand_id = trim((string)$member['mb_id']);
 }
@@ -1393,8 +1393,8 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
         $dm_selected_group_method = '';
         $dm_selected_brand_id = '';
 
-        if (!empty($it['it_brand'])) {
-            $dm_selected_brand_id = trim((string)$it['it_brand']);
+        if (!empty($it['it_seller'])) {
+            $dm_selected_brand_id = trim((string)$it['it_seller']);
         } elseif (!empty($member['mb_id'])) {
             $dm_selected_brand_id = trim((string)$member['mb_id']);
         }
@@ -1613,6 +1613,51 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
         }
 
         include_once G5_ADMIN_PATH . '/shop_admin/sendcostform.php';
+        ?>
+
+<script>
+(function () {
+    function restoreSavedDeliverySelection() {
+        var conditionId = <?php echo (int)$dm_selected_condition_id; ?>;
+        var groupId = <?php echo (int)$dm_selected_group_id; ?>;
+
+        var cards = document.querySelectorAll('#registerConditions .register-condition');
+        Array.prototype.forEach.call(cards, function (card) {
+            var id = parseInt(card.getAttribute('data-condition-id'), 10) || 0;
+            var selected = conditionId > 0 && id === conditionId;
+
+            card.classList.toggle('selected', selected);
+            card.classList.toggle('active', selected);
+            card.setAttribute('aria-checked', selected ? 'true' : 'false');
+        });
+
+        var conditionHidden = document.getElementById('dm_condition_id');
+        if (conditionHidden) {
+            conditionHidden.value = String(conditionId || 0);
+        }
+
+        var groupSelect = document.getElementById('delivery_group_id');
+        if (groupSelect) {
+            groupSelect.value = String(groupId || 0);
+        }
+
+        var groupHidden = document.getElementById('dm_group_id');
+        if (groupHidden) {
+            groupHidden.value = String(groupId || 0);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () {
+            window.setTimeout(restoreSavedDeliverySelection, 0);
+        });
+    } else {
+        window.setTimeout(restoreSavedDeliverySelection, 0);
+    }
+})();
+</script>
+
+        <?php
         ?>
 
         <script>
@@ -3086,7 +3131,19 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
     </div>
 </form>
 
-\n<script>\n(function(){\n const MAX=1920,Q=.82;\n function sz(n){if(!n)return '0 B';let u=['B','KB','MB','GB'],i=Math.min(Math.floor(Math.log(n)/Math.log(1024)),3);return (n/Math.pow(1024,i)).toFixed(i?1:0)+' '+u[i]}\n function replaceFile(el,file){let dt=new DataTransfer();dt.items.add(file);el.files=dt.files}\n document.addEventListener('change',function(e){\n  let el=e.target;if(!el||!/^it_img(?:10|[1-9])$/.test(el.id)||!el.files[0])return;\n  let f=el.files[0],info=document.getElementById(el.id+'_compress_info');\n  if(!/^image\//.test(f.type))return;if(f.type==='image/gif'){if(info)info.textContent='GIF 원본 유지 ('+sz(f.size)+')';return}\n  if(info)info.textContent='이미지 최적화 중...';let im=new Image(),url=URL.createObjectURL(f);\n  im.onload=function(){let sc=Math.min(1,MAX/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*sc)),h=Math.max(1,Math.round(im.naturalHeight*sc)),c=document.createElement('canvas');c.width=w;c.height=h;let x=c.getContext('2d',{alpha:false});x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);c.toBlob(function(b){URL.revokeObjectURL(url);if(!b){if(info)info.textContent='최적화 실패 - 원본 유지';return}if(b.size>=f.size&&sc===1){if(info)info.textContent='원본 유지 ('+sz(f.size)+')';return}let nf=new File([b],f.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});replaceFile(el,nf);if(info)info.textContent='자동 최적화: '+sz(f.size)+' → '+sz(nf.size)+' ('+w+'×'+h+')'},'image/jpeg',Q)};\n  im.onerror=function(){URL.revokeObjectURL(url);if(info)info.textContent='이미지 읽기 실패 - 원본 유지'};im.src=url;\n });\n})();\n</script>\n
+<script>(function(){
+ const MAX=1920,Q=.82;
+ function sz(n){if(!n)return '0 B';let u=['B','KB','MB','GB'],i=Math.min(Math.floor(Math.log(n)/Math.log(1024)),3);return (n/Math.pow(1024,i)).toFixed(i?1:0)+' '+u[i]}
+ function replaceFile(el,file){let dt=new DataTransfer();dt.items.add(file);el.files=dt.files}
+ document.addEventListener('change',function(e){
+  let el=e.target;if(!el||!/^it_img(?:10|[1-9])$/.test(el.id)||!el.files[0])return;
+  let f=el.files[0],info=document.getElementById(el.id+'_compress_info');
+  if(!/^image\//.test(f.type))return;if(f.type==='image/gif'){if(info)info.textContent='GIF 원본 유지 ('+sz(f.size)+')';return}
+  if(info)info.textContent='이미지 최적화 중...';let im=new Image(),url=URL.createObjectURL(f);
+  im.onload=function(){let sc=Math.min(1,MAX/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*sc)),h=Math.max(1,Math.round(im.naturalHeight*sc)),c=document.createElement('canvas');c.width=w;c.height=h;let x=c.getContext('2d',{alpha:false});x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);c.toBlob(function(b){URL.revokeObjectURL(url);if(!b){if(info)info.textContent='최적화 실패 - 원본 유지';return}if(b.size>=f.size&&sc===1){if(info)info.textContent='원본 유지 ('+sz(f.size)+')';return}let nf=new File([b],f.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});replaceFile(el,nf);if(info)info.textContent='자동 최적화: '+sz(f.size)+' → '+sz(nf.size)+' ('+w+'×'+h+')'},'image/jpeg',Q)};
+  im.onerror=function(){URL.revokeObjectURL(url);if(info)info.textContent='이미지 읽기 실패 - 원본 유지'};im.src=url;
+ });
+})();</script>
 <script>
     var f = document.fitemform;
 

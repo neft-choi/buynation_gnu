@@ -15,6 +15,7 @@
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-red-700: oklch(50.5% 0.213 27.518);
+    --color-red-900: oklch(39.6% 0.141 25.723);
     --color-orange-100: oklch(95.4% 0.038 75.164);
     --color-orange-400: oklch(75% 0.183 55.934);
     --color-orange-500: oklch(70.5% 0.213 47.604);
@@ -1280,6 +1281,9 @@
   .w-200 {
     width: calc(var(--spacing) * 200);
   }
+  .w-\[1\%\] {
+    width: 1%;
+  }
   .w-\[6\%\] {
     width: 6%;
   }
@@ -2483,6 +2487,9 @@
       background-color: color-mix(in oklab, var(--color-amber-100) 30%, transparent);
     }
   }
+  .bg-amber-200 {
+    background-color: var(--color-amber-200);
+  }
   .bg-amber-300 {
     background-color: var(--color-amber-300);
   }
@@ -2844,6 +2851,9 @@
   .p-8 {
     padding: calc(var(--spacing) * 8);
   }
+  .p-10 {
+    padding: calc(var(--spacing) * 10);
+  }
   .p-\[10px\] {
     padding: 10px;
   }
@@ -3149,6 +3159,9 @@
   }
   .text-right {
     text-align: right;
+  }
+  .align-baseline {
+    vertical-align: baseline;
   }
   .\!text-base {
     font-size: var(--text-base) !important;
@@ -3594,6 +3607,9 @@
   .text-red-700 {
     color: var(--color-red-700);
   }
+  .text-red-900 {
+    color: var(--color-red-900);
+  }
   .text-rose-300 {
     color: var(--color-rose-300);
   }
@@ -3849,6 +3865,9 @@
   }
   .\[hostname\:port\] {
     hostname: port;
+  }
+  .\[ip\:93\.41\.125\.186\] {
+    ip: 93.41.125.186;
   }
   .group-hover\:bg-blue-200 {
     &:is(:where(.group):hover *) {
@@ -4916,6 +4935,11 @@
   .md\:grid-cols-2 {
     @media (width >= 48rem) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .md\:grid-cols-4 {
+    @media (width >= 48rem) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
   }
   .md\:flex-row {

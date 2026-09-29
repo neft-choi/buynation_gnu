@@ -5,7 +5,7 @@ include_once('./_common.php');
 /*************************************************
  * 브랜드 회원 여부 확인
  * - 최고관리자: 전체 조회
- * - 브랜드 회원: 자신의 it_brand 상품이 포함된 미완료주문만 조회
+ * - 브랜드 회원: 자신의 it_seller 상품이 포함된 미완료주문만 조회
  *************************************************/
 $brand_member = false;
 $brand_id = '';
@@ -41,7 +41,7 @@ if ($is_admin != 'super' && $brand_member) {
             inner join {$g5['g5_shop_item_table']} i
                 on c.it_id = i.it_id
             where c.od_id = {$g5['g5_shop_order_data_table']}.cart_id
-              and i.it_brand = '{$brand_id_sql}'
+              and LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}')
         )
     ";
 }
@@ -161,7 +161,7 @@ $colspan = 10;
                                     on c.it_id = i.it_id
                                 where c.od_id = '{$row['cart_id']}'
                                   and c.ct_status = '쇼핑'
-                                  and i.it_brand = '{$brand_id_sql}'
+                                  and LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}')
                             ";
                         } else {
                             $sql = "

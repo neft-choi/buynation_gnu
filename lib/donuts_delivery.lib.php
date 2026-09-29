@@ -153,7 +153,7 @@ function donuts_delivery_sync_brand_products($brand_id)
     $brand_id_sql = sql_real_escape_string($brand_id);
     $dc_id = (int)$default['dc_id'];
 
-    $result = sql_query("SELECT it_id FROM {$g5['g5_shop_item_table']} WHERE TRIM(it_brand) = '{$brand_id_sql}'");
+    $result = sql_query("SELECT it_id FROM {$g5['g5_shop_item_table']} WHERE LOWER(TRIM(it_seller)) = LOWER('{$brand_id_sql}')");
     while ($row = sql_fetch_array($result)) {
         $it_id = sql_real_escape_string($row['it_id']);
         sql_query("INSERT IGNORE INTO donuts_delivery_product_settings
@@ -269,7 +269,7 @@ function donuts_delivery_calculate_order_brand($od_id, $brand_id)
         LEFT JOIN donuts_delivery_conditions dc ON dc.dc_id = ps.condition_id
         LEFT JOIN donuts_delivery_groups dg ON dg.dg_id = ps.group_id
         WHERE c.od_id = '{$od_id_sql}'
-          AND TRIM(i.it_brand) = '{$brand_id_sql}'
+          AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}')
         ORDER BY c.ct_id ASC");
 
     $default = donuts_delivery_ensure_default_condition($brand_id);

@@ -174,7 +174,7 @@ if ($where)
                 FROM {$g5['g5_shop_cart_table']} c
                 INNER JOIN {$g5['g5_shop_item_table']} i
                     ON c.it_id = i.it_id
-                WHERE TRIM(i.it_brand) = '{$member['mb_id']}'
+                WHERE TRIM(i.it_seller) = '{$member['mb_id']}'
             )
         ";
 
@@ -280,18 +280,19 @@ fputcsv($fp, array(
 
 /*
  * 기존 sql_search는 o alias를 사용하므로 그대로 사용.
- * 브랜드 회원은 주문번호뿐 아니라 실제 CSV 행도 자기 브랜드 상품으로 제한.
+ * 브랜드 회원은 주문번호뿐 아니라 실제 CSV 행도 자기 판매자(it_seller) 상품으로 제한.
+ * 배송정책 계산은 기존 운영 기준(it_brand)을 그대로 유지.
  */
 $csv_brand_where = '';
 
 if (!empty($brand['brand_id'])) {
     $brand_id_sql = sql_real_escape_string($member['mb_id']);
-    $csv_brand_where = " AND TRIM(i.it_brand) = '{$brand_id_sql}' ";
+    $csv_brand_where = " AND TRIM(i.it_seller) = '{$brand_id_sql}' ";
 }
 
 /* WHERE가 없는 경우 AND를 붙일 수 없으므로 별도 처리 */
 if (!$sql_search && $csv_brand_where) {
-    $csv_brand_where = " WHERE TRIM(i.it_brand) = '{$brand_id_sql}' ";
+    $csv_brand_where = " WHERE TRIM(i.it_seller) = '{$brand_id_sql}' ";
 }
 
 /* 주문상품 기준 조회 */
@@ -314,6 +315,7 @@ SELECT
     c.ct_invoice_time,
 
     i.it_brand,
+    i.it_seller,
     i.it_sc_type,
     i.it_sc_method,
     i.it_sc_price,
@@ -367,7 +369,7 @@ while ($row = sql_fetch_array($result)) {
      * 현재 구현된 배송관리 정책으로 주문/브랜드 전체 배송비를 계산합니다.
      * 주문 단위로 캐시하여 같은 주문의 옵션행마다 다시 계산하지 않습니다.
      */
-    $row_brand_id = trim((string)$row['it_brand']);
+    $row_brand_id = trim((string)$row['it_seller']);
 
     if (!isset($new_delivery_cache)) {
         $new_delivery_cache = array();
@@ -440,21 +442,37 @@ while ($row = sql_fetch_array($result)) {
     $shipping_method = '무료';
     $shipping_type = '';
 
-    if ($delivery_calc) {
+    /*
+     * CSV의 배송비/배송유형/묶음정보는 반드시 같은 계산 결과를 사용한다.
+     * 과거 snapshot은 당시 item_charges가 0으로 남아 있을 수 있으므로,
+     * 현재 배송관리 계산값이 있으면 그것을 우선한다.
+     */
+    $current_delivery_calc =
+        ($row_brand_id !== '' &&
+         isset($new_delivery_cache[$delivery_cache_key]) &&
+         is_array($new_delivery_cache[$delivery_cache_key]))
+        ? $new_delivery_cache[$delivery_cache_key]
+        : null;
+
+    $csv_delivery_calc = $current_delivery_calc
+        ? $current_delivery_calc
+        : $delivery_calc;
+
+    if ($csv_delivery_calc) {
         $row_shipping_amount =
-            isset($delivery_calc['item_charges'][$row['it_id']])
-            ? (int)$delivery_calc['item_charges'][$row['it_id']]
+            isset($csv_delivery_calc['item_charges'][$row['it_id']])
+            ? (int)$csv_delivery_calc['item_charges'][$row['it_id']]
             : 0;
 
         $shipping_method =
-            isset($delivery_calc['item_methods'][$row['it_id']])
-            ? $delivery_calc['item_methods'][$row['it_id']]
+            isset($csv_delivery_calc['item_methods'][$row['it_id']])
+            ? $csv_delivery_calc['item_methods'][$row['it_id']]
             : ($row_shipping_amount > 0 ? '선불' : '무료');
 
         $shipping_type =
-            isset($delivery_calc['item_types'][$row['it_id']])
-            ? $delivery_calc['item_types'][$row['it_id']]
-            : '배송관리 정책';
+            isset($csv_delivery_calc['item_types'][$row['it_id']])
+            ? $csv_delivery_calc['item_types'][$row['it_id']]
+            : '';
 
         /*
          * 같은 상품의 옵션행에는 배송비를 한 번만 출력.
@@ -565,31 +583,49 @@ while ($row = sql_fetch_array($result)) {
             ? trim((string)$member['mb_id'])
             : '';
 
-        $snapshot_key_brand =
-            $final_shipping_brand_id !== ''
-            ? $final_shipping_brand_id
-            : '__ALL__';
+        /*
+         * 브랜드 CSV는 상품별 배송비와 최종배송비가 서로 다른 계산경로를
+         * 사용하지 않도록 현재 배송관리 계산값 하나만 사용한다.
+         */
+        if (
+            $final_shipping_brand_id !== '' &&
+            isset($new_delivery_cache[$delivery_cache_key]) &&
+            is_array($new_delivery_cache[$delivery_cache_key])
+        ) {
+            $same_calc = $new_delivery_cache[$delivery_cache_key];
 
-        $snapshot_detail =
-            donuts_order_shipping_snapshot_capture_if_missing(
-                $row['od_id'],
-                $snapshot_key_brand,
-                $receiver_addr,
-                $receiver_zip
-            );
+            $region_detail =
+                csv_new_delivery_final_order_shipping_detail(
+                    $row['od_id'],
+                    $final_shipping_brand_id,
+                    $receiver_addr,
+                    $receiver_zip
+                );
 
-        $final_shipping_cache[$final_shipping_cache_key] =
-            !empty($snapshot_detail['_snapshot_exists'])
-            ? array(
-                'shipping_total' => (int)$snapshot_detail['shipping_total'],
-                'region_extra' => (int)$snapshot_detail['region_extra']
-            )
-            : csv_new_delivery_final_order_shipping_detail(
-                $row['od_id'],
-                $final_shipping_brand_id,
-                $receiver_addr,
-                $receiver_zip
+            $final_shipping_cache[$final_shipping_cache_key] = array(
+                'shipping_total' => isset($same_calc['shipping_total'])
+                    ? (int)$same_calc['shipping_total']
+                    : 0,
+                'region_extra' => (
+                    is_array($region_detail) &&
+                    isset($region_detail['region_extra'])
+                )
+                    ? (int)$region_detail['region_extra']
+                    : 0
             );
+        } else {
+            /*
+             * 최고관리자는 여러 판매자의 합산이 필요하므로 기존 전체주문
+             * 최종배송비 계산을 유지한다.
+             */
+            $final_shipping_cache[$final_shipping_cache_key] =
+                csv_new_delivery_final_order_shipping_detail(
+                    $row['od_id'],
+                    $final_shipping_brand_id,
+                    $receiver_addr,
+                    $receiver_zip
+                );
+        }
     }
 
     $final_shipping_detail =
@@ -641,8 +677,8 @@ while ($row = sql_fetch_array($result)) {
         $row_shipping_amount,
         $shipping_method,
         $shipping_type,
-        ($delivery_calc && isset($delivery_calc['item_groups'][$row['it_id']]))
-            ? $delivery_calc['item_groups'][$row['it_id']]
+        ($csv_delivery_calc && isset($csv_delivery_calc['item_groups'][$row['it_id']]))
+            ? $csv_delivery_calc['item_groups'][$row['it_id']]
             : '',
 
         $region_extra_amount,

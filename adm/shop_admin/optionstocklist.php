@@ -30,7 +30,8 @@ $sql_search = " where b.it_id is not NULL ";
 
 // 브랜드 회원이면 자기 브랜드 상품만 조회
 if ($is_admin != 'super' && $brand_member) {
-    $sql_search .= " and b.it_brand = '{$member['mb_id']}' ";
+    $member_id_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+    $sql_search .= " and LOWER(TRIM(b.it_seller)) = LOWER('{$member_id_sql}') ";
 }
 
 if ($search != "") {

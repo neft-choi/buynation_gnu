@@ -778,10 +778,8 @@ function csv_final_default_special_non_group_items($items)
  * 잘못 겹친 우편번호 범위가 여러 개 있을 경우 중복 가산하지 않고
  * 가장 큰 추가비 1건만 적용합니다.
  */
-function csv_delivery_condition_region_extra($condition_id, $receiver_zip)
+function csv_delivery_condition_region_extra($condition_id, $receiver_zip, $brand_id = '')
 {
-    global $g5;
-
     $condition_id = (int)$condition_id;
 
     if ($condition_id <= 0) {
@@ -796,7 +794,22 @@ function csv_delivery_condition_region_extra($condition_id, $receiver_zip)
 
     $zip_num = (int)$zip;
     $matched_fee = 0;
+    $brand_id = trim((string)$brand_id);
+    $brand_where = '';
 
+    if ($brand_id !== '') {
+        $brand_id_sql = sql_real_escape_string($brand_id);
+        $brand_where =
+            " AND LOWER(TRIM(s.brand_id)) = LOWER('{$brand_id_sql}') ";
+    }
+
+    /*
+     * sendcostlist.php / deliverymanage.php가 실제로 사용하는
+     * 브랜드 전용 지역 추가배송비 테이블을 조회한다.
+     *
+     * donuts_delivery_condition_sendcosts.sc_id
+     *     -> donuts_brand_sendcost.sc_id
+     */
     $result = sql_query("
         SELECT
             s.sc_id,
@@ -804,9 +817,10 @@ function csv_delivery_condition_region_extra($condition_id, $receiver_zip)
             s.sc_zip2,
             s.sc_price
         FROM donuts_delivery_condition_sendcosts m
-        INNER JOIN {$g5['g5_shop_sendcost_table']} s
+        INNER JOIN donuts_brand_sendcost s
             ON s.sc_id = m.sc_id
         WHERE m.dc_id = '{$condition_id}'
+          {$brand_where}
         ORDER BY s.sc_id ASC
     ", false);
 
@@ -1161,7 +1175,8 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
              */
             $region_extra = csv_delivery_condition_region_extra(
                 isset($condition['dc_id']) ? (int)$condition['dc_id'] : 0,
-                $receiver_zip
+                $receiver_zip,
+                $setting_brand
             );
 
             $fee += $region_extra;

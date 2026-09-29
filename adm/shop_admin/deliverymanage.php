@@ -158,7 +158,7 @@ $product_result = sql_query("SELECT i.it_id, i.it_name, i.it_price, i.it_stock_q
     LEFT JOIN donuts_delivery_product_settings ps ON ps.brand_id = '{$brand_id_sql}' AND ps.it_id = i.it_id
     LEFT JOIN donuts_delivery_conditions c ON c.dc_id = ps.condition_id
     LEFT JOIN donuts_delivery_groups g ON g.dg_id = ps.group_id
-    WHERE TRIM(i.it_brand) = '{$brand_id_sql}'
+    WHERE LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}')
     ORDER BY i.it_time DESC, i.it_id DESC");
 while ($row = sql_fetch_array($product_result)) $products[] = $row;
 
