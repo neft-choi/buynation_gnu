@@ -112,10 +112,10 @@ $order_items = array();
 $order_item_options = array();
 
 if (!empty($order_ids)) {
-    $item_sql = " select od_id, it_id, it_name, ct_qty, ct_price, io_price, io_type, io_id, ct_option
-                    from {$g5['g5_shop_cart_table']}
-                   where od_id in (" . implode(',', $order_ids) . ")
-                   order by od_id asc, ct_id asc ";
+    $item_sql = " select od_id, it_id, it_name, ct_qty, ct_price, io_price, io_type, io_id, ct_option, ct_status
+                from {$g5['g5_shop_cart_table']}
+               where od_id in (" . implode(',', $order_ids) . ")
+               order by od_id asc, ct_id asc ";
     $item_result = sql_query($item_sql);
 
     for ($j = 0; $item_row = sql_fetch_array($item_result); $j++) {
@@ -133,10 +133,13 @@ if (!empty($order_ids)) {
                 'it_id' => $it_id,
                 'it_name' => $item_row['it_name'],
                 'ct_qty' => 0,
-                'item_price' => 0
+                'item_price' => 0,
+                'ct_statuses' => array()
             );
             $order_item_options[$od_id][$it_id] = array();
         }
+
+        $order_items[$od_id][$it_id]['ct_statuses'][] = $item_row['ct_status'];
 
         if ((string) $item_row['io_type'] === '1') {
             $item_price = (int) $item_row['io_price'] * $item_qty;
@@ -358,6 +361,48 @@ if (!empty($order_ids)) {
                 $item_id = $first_order_item['it_id'];
             }
 
+            $item_status_counts = array();
+            $item_status_labels = array(
+                '주문' => '입금확인중',
+                '입금' => '입금완료',
+                '준비' => '상품준비중',
+                '배송' => '상품배송',
+                '완료' => '배송완료',
+                '취소' => '주문취소',
+                '반품' => '반품',
+                '품절' => '품절'
+            );
+
+            foreach ($order_item_rows as $order_item) {
+                $item_statuses = array_unique($order_item['ct_statuses']);
+
+                if (count($item_statuses) === 1) {
+                    $item_status = reset($item_statuses);
+                } else {
+                    $item_status = '부분배송';
+                }
+
+                if (!isset($item_status_counts[$item_status])) {
+                    $item_status_counts[$item_status] = 0;
+                }
+
+                $item_status_counts[$item_status]++;
+            }
+
+            $complete_count = isset($item_status_counts['완료']) ? $item_status_counts['완료'] : 0;
+            $total_item_count = count($order_item_rows);
+
+            if ($complete_count > 0 && $complete_count < $total_item_count) {
+                $status_summary = array();
+
+                foreach ($item_status_labels as $status_key => $status_label) {
+                    if (isset($item_status_counts[$status_key])) {
+                        $status_summary[] = $status_label . ' ' . number_format($item_status_counts[$status_key]) . '건';
+                    }
+                }
+
+                $od_status = '<span class="status_04">' . implode(' · ', $status_summary) . '</span>';
+            }
             // $thumb_html = '';
             // $item_id = '';
             // $item_name = '';
@@ -417,11 +462,11 @@ if (!empty($order_ids)) {
                     // );
                     break;
                 case '완료':
-                    $action_buttons[] = array(
-                        'label' => '리뷰쓰기',
-                        'href' => G5_SHOP_URL . '/itemuseform.php?it_id=' . $item_id,
-                        'disabled' => false
-                    );
+                    // $action_buttons[] = array(
+                    //     'label' => '리뷰쓰기',
+                    //     'href' => G5_SHOP_URL . '/itemuseform.php?it_id=' . $item_id,
+                    //     'disabled' => false
+                    // );
                     $action_buttons[] = array(
                         'label' => '반품신청',
                         'href' => G5_BBS_URL . '/qalist.php',
@@ -447,7 +492,16 @@ if (!empty($order_ids)) {
                     break;
             }
 
-            $action_cols = count($action_buttons) === 3 ? 'grid-cols-3' : 'grid-cols-2';
+            // 액션 버튼 개수 별 버튼 배치 수정
+            $action_count = count($action_buttons);
+
+            if ($action_count === 3) {
+                $action_cols = 'grid-cols-3';
+            } elseif ($action_count === 2) {
+                $action_cols = 'grid-cols-2';
+            } else {
+                $action_cols = 'grid-cols-1';
+            }
         ?>
 
             <div class="order-card flex flex-col gap-4">
@@ -508,6 +562,11 @@ if (!empty($order_ids)) {
                                 <?php if ($row['od_status'] === '주문' || $row['od_status'] === '입금' || $row['od_status'] === '준비') { ?>
                                     <a href="<?php echo G5_SHOP_URL; ?>/orderinquiryview.php?od_id=<?php echo $row['od_id']; ?>&amp;uid=<?php echo $uid; ?>#sod_fin_cancel"
                                         class="border border-zinc-300 rounded px-2 py-1 hover:bg-gray-100">취소하기</a>
+                                <?php } ?>
+
+                                <?php if ($row['od_status'] === '완료') { ?>
+                                    <a href="<?php echo G5_SHOP_URL; ?>/itemuseform.php?it_id=<?php echo urlencode($item_id); ?>"
+                                        class="border border-zinc-300 rounded px-2 py-1 hover:bg-gray-100">리뷰쓰기</a>
                                 <?php } ?>
 
                                 <a href="<?php echo G5_SHOP_URL; ?>/itemqaform.php?it_id=<?php echo urlencode($item_id); ?>"

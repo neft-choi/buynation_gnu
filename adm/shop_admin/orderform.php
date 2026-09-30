@@ -56,7 +56,7 @@ if (!sql_query(" SELECT ct_delivery_company FROM {$g5['g5_shop_cart_table']} LIM
 
 /*
  * 브랜드 계정 주문상세 필터
- * - 브랜드: 현재 로그인 계정의 it_brand 상품만 표시
+ * - 브랜드: 현재 로그인 계정의 it_seller 상품만 표시
  * - 최고관리자: 기존처럼 주문 전체 상품 표시
  */
 $orderform_is_brand = false;
@@ -112,7 +112,7 @@ $sql = " select c.it_id,
           where c.od_id = '{$od['od_id']}' ";
 
 if ($orderform_is_brand) {
-    $sql .= " and TRIM(i.it_brand) = '{$orderform_brand_sql}' ";
+    $sql .= " and LOWER(TRIM(i.it_seller)) = LOWER('{$orderform_brand_sql}') ";
 }
 
 $sql .= " group by c.it_id
@@ -242,7 +242,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                         and c.it_id = '{$row['it_id']}' ";
 
             if ($orderform_is_brand) {
-                $sql .= " and TRIM(i.it_brand) = '{$orderform_brand_sql}' ";
+                $sql .= " and LOWER(TRIM(i.it_seller)) = LOWER('{$orderform_brand_sql}') ";
             }
 
             $sql .= " order by c.io_type asc, c.ct_id asc ";
@@ -266,7 +266,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
                         and c.od_id = '{$od['od_id']}' ";
 
             if ($orderform_is_brand) {
-                $sql .= " and TRIM(i.it_brand) = '{$orderform_brand_sql}' ";
+                $sql .= " and LOWER(TRIM(i.it_seller)) = LOWER('{$orderform_brand_sql}') ";
             }
 
             $sum = sql_fetch($sql);

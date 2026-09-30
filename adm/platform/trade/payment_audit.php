@@ -12,7 +12,7 @@ require_once '../../admin.head.php';
     <div class="flex flex-col pc:flex-row pc:items-center justify-between gap-3">
         <p class="text-gray-600 font-normal">PG 승인·취소·환불과 주문 상태를 대조하고 불일치 판단 근거를 기록합니다.</p>
 
-        <a class="shrink-0 w-fit border border-gray-300 rounded-lg bg-white text-gray-900 font-bold px-3 py-2">
+        <a href="<?php echo G5_ADMIN_URL . '/platform/money/manual_review.php'; ?>" class="shrink-0 w-fit border border-gray-300 rounded-lg bg-white text-gray-900 font-bold px-3 py-2">
             <span>검토 기록</span>
         </a>
     </div>
