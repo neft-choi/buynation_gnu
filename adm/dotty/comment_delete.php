@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '710500';
+$sub_menu = '730500';
 include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, "d");
@@ -37,4 +37,4 @@ sql_query("
     WHERE post_id = '{$comment['post_id']}'
 ");
 
-goto_url('./post_list.php');
+goto_url('./community_content.php?status=comment');

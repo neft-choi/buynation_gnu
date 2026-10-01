@@ -5,42 +5,261 @@ include_once('./_common.php');
 auth_check_menu($auth, $sub_menu, 'r');
 
 $g5['title'] = '가입 신청 관리';
+
+function jr_e($v) {
+    return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
+}
+
+function jr_json($v) {
+    return json_encode($v, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+}
+
+$dotty_mb_id = trim((string)$member['mb_id']);
+if ($is_admin === 'super' && !empty($_REQUEST['mb_id'])) {
+    $dotty_mb_id = trim((string)$_REQUEST['mb_id']);
+}
+if ($dotty_mb_id === '') {
+    alert('도넛 관리 계정을 확인할 수 없습니다.');
+}
+$dotty_mb_id_sql = sql_real_escape_string($dotty_mb_id);
+
+$required_tables = array(
+    'donuts_dotty_join_requests',
+    'donuts_dotty_join_request_answers',
+    'donuts_dotty_members'
+);
+foreach ($required_tables as $table) {
+    $table_sql = sql_real_escape_string($table);
+    $ck = sql_fetch("SELECT COUNT(*) AS cnt FROM information_schema.TABLES WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='{$table_sql}'");
+    if (empty($ck['cnt'])) {
+        alert('가입 신청 관리 DB 마이그레이션이 필요합니다. migration_join_request.sql을 먼저 실행해 주세요.');
+    }
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    check_admin_token();
+
+    $action = isset($_POST['action']) ? trim((string)$_POST['action']) : '';
+    $request_id = isset($_POST['request_id']) ? (int)$_POST['request_id'] : 0;
+
+    if ($request_id <= 0) {
+        alert('가입 신청번호가 올바르지 않습니다.');
+    }
+
+    $request = sql_fetch("
+        SELECT *
+          FROM donuts_dotty_join_requests
+         WHERE request_id = '{$request_id}'
+           AND dotty_mb_id = '{$dotty_mb_id_sql}'
+         LIMIT 1
+    ");
+
+    if (empty($request['request_id'])) {
+        alert('가입 신청을 찾을 수 없거나 처리 권한이 없습니다.');
+    }
+
+    if ($action === 'approve') {
+        if ($request['status'] !== 'pending') {
+            alert('이미 처리된 가입 신청입니다.');
+        }
+
+        $applicant_mb_id = trim((string)$request['applicant_mb_id']);
+        $applicant_mb_id_sql = sql_real_escape_string($applicant_mb_id);
+
+        sql_query("
+            INSERT INTO donuts_dotty_members
+                (dotty_mb_id, mb_id, member_status, joined_at, created_at, updated_at)
+            VALUES
+                ('{$dotty_mb_id_sql}', '{$applicant_mb_id_sql}', 'active', NOW(), NOW(), NOW())
+            ON DUPLICATE KEY UPDATE
+                member_status = 'active',
+                joined_at = NOW(),
+                left_at = NULL,
+                updated_at = NOW()
+        ");
+
+        $processor_sql = sql_real_escape_string((string)$member['mb_id']);
+        sql_query("
+            UPDATE donuts_dotty_join_requests
+               SET status = 'approved',
+                   processed_by = '{$processor_sql}',
+                   processed_at = NOW(),
+                   reject_category = '',
+                   reject_reason = '',
+                   updated_at = NOW()
+             WHERE request_id = '{$request_id}'
+               AND dotty_mb_id = '{$dotty_mb_id_sql}'
+               AND status = 'pending'
+        ");
+
+        alert('가입 신청을 승인했습니다.', './join_request.php?status=pending&mb_id='.urlencode($dotty_mb_id));
+    }
+
+    if ($action === 'reject') {
+        if ($request['status'] !== 'pending') {
+            alert('이미 처리된 가입 신청입니다.');
+        }
+
+        $reject_category = isset($_POST['reject_category']) ? trim((string)$_POST['reject_category']) : '';
+        $reject_reason = isset($_POST['reject_reason']) ? trim((string)$_POST['reject_reason']) : '';
+
+        if ($reject_category === '') {
+            alert('거절 사유 카테고리를 선택해 주세요.');
+        }
+        if ($reject_reason === '') {
+            alert('상세 거절 사유를 입력해 주세요.');
+        }
+
+        $category_sql = sql_real_escape_string($reject_category);
+        $reason_sql = sql_real_escape_string($reject_reason);
+        $processor_sql = sql_real_escape_string((string)$member['mb_id']);
+
+        sql_query("
+            UPDATE donuts_dotty_join_requests
+               SET status = 'rejected',
+                   processed_by = '{$processor_sql}',
+                   processed_at = NOW(),
+                   reject_category = '{$category_sql}',
+                   reject_reason = '{$reason_sql}',
+                   updated_at = NOW()
+             WHERE request_id = '{$request_id}'
+               AND dotty_mb_id = '{$dotty_mb_id_sql}'
+               AND status = 'pending'
+        ");
+
+        alert('가입 신청을 거절했습니다.', './join_request.php?status=rejected&mb_id='.urlencode($dotty_mb_id));
+    }
+
+    alert('올바르지 않은 처리 요청입니다.');
+}
+
+$status = isset($_GET['status']) ? trim((string)$_GET['status']) : 'all';
+if (!in_array($status, array('all', 'pending', 'rejected', 'approved'), true)) {
+    $status = 'all';
+}
+$q = isset($_GET['q']) ? trim((string)$_GET['q']) : '';
+
+$where = array("r.dotty_mb_id = '{$dotty_mb_id_sql}'");
+if ($status !== 'all') {
+    $status_sql = sql_real_escape_string($status);
+    $where[] = "r.status = '{$status_sql}'";
+}
+if ($q !== '') {
+    $q_sql = sql_real_escape_string($q);
+    $where[] = "(
+        r.request_no LIKE '%{$q_sql}%'
+        OR r.applicant_mb_id LIKE '%{$q_sql}%'
+        OR m.mb_name LIKE '%{$q_sql}%'
+        OR m.mb_nick LIKE '%{$q_sql}%'
+    )";
+}
+$sql_where = implode(' AND ', $where);
+
+$stats = sql_fetch("
+    SELECT
+        SUM(CASE WHEN status='pending' THEN 1 ELSE 0 END) AS pending_count,
+        SUM(CASE WHEN status='approved' AND DATE(processed_at)=CURDATE() THEN 1 ELSE 0 END) AS today_approved,
+        SUM(CASE WHEN status='rejected' AND DATE(processed_at)=CURDATE() THEN 1 ELSE 0 END) AS today_rejected
+    FROM donuts_dotty_join_requests
+    WHERE dotty_mb_id = '{$dotty_mb_id_sql}'
+");
+$pending_count = (int)$stats['pending_count'];
+$today_approved = (int)$stats['today_approved'];
+$today_rejected = (int)$stats['today_rejected'];
+$today_processed = $today_approved + $today_rejected;
+$approval_rate = $today_processed > 0 ? round(($today_approved / $today_processed) * 100, 1) : 0;
+
+$count_row = sql_fetch("
+    SELECT COUNT(*) AS cnt
+      FROM donuts_dotty_join_requests r
+      LEFT JOIN {$g5['member_table']} m ON m.mb_id = r.applicant_mb_id
+     WHERE {$sql_where}
+");
+$total_count = (int)$count_row['cnt'];
+
+$rows = array();
+$res = sql_query("
+    SELECT r.*, m.mb_name, m.mb_nick
+      FROM donuts_dotty_join_requests r
+      LEFT JOIN {$g5['member_table']} m ON m.mb_id = r.applicant_mb_id
+     WHERE {$sql_where}
+     ORDER BY CASE WHEN r.status='pending' THEN 0 ELSE 1 END,
+              r.created_at DESC,
+              r.request_id DESC
+     LIMIT 200
+");
+while ($row = sql_fetch_array($res)) {
+    $answers = array();
+    $ares = sql_query("
+        SELECT question_text, answer_text, sort_order
+          FROM donuts_dotty_join_request_answers
+         WHERE request_id = '".(int)$row['request_id']."'
+         ORDER BY sort_order ASC, answer_id ASC
+    ");
+    while ($a = sql_fetch_array($ares)) {
+        $answers[] = array(
+            'question' => (string)$a['question_text'],
+            'answer' => (string)$a['answer_text']
+        );
+    }
+
+    $row['answers_json'] = jr_json($answers);
+    $rows[] = $row;
+}
+
+$admin_token = get_admin_token();
 require_once '../admin.head.php';
+
+function jr_status_label($status) {
+    if ($status === 'approved') return '가입 승인';
+    if ($status === 'rejected') return '승인 거절';
+    return '승인 대기';
+}
+function jr_status_class($status) {
+    if ($status === 'approved') return 'bg-emerald-100 text-emerald-700';
+    if ($status === 'rejected') return 'bg-red-100 text-red-600';
+    return 'bg-amber-100 text-amber-700';
+}
+function jr_notice($row) {
+    if ($row['status'] === 'pending') {
+        $created = strtotime($row['created_at']);
+        $seconds = max(0, time() - $created);
+        if ($seconds < 3600) return '대기 '.max(1, (int)ceil($seconds / 60)).'분';
+        if ($seconds < 86400) return '대기 '.(int)floor($seconds / 3600).'시간';
+        return '대기 '.(int)floor($seconds / 86400).'일';
+    }
+    if ($row['status'] === 'rejected') return '재신청 가능';
+    return !empty($row['processed_at']) ? date('Y.m.d H:i', strtotime($row['processed_at'])).' 승인' : '승인 완료';
+}
 ?>
 
 <section>
     <div class="flex flex-col pc:flex-row pc:items-center justify-between gap-3">
         <p class="mt-1 text-gray-400">신청 답변을 확인한 뒤 승인하거나 거절할 수 있습니다.</p>
-        <button type="button" id="join-request-policy-modal-open" class="shrink-0 border border-gray-300 rounded-lg bg-white px-3 py-2 text-gray-900 font-bold">
-            재신청 정책 보기
-        </button>
+        <button type="button" id="join-request-policy-modal-open" class="shrink-0 border border-gray-300 rounded-lg bg-white px-3 py-2 text-gray-900 font-bold">재신청 정책 보기</button>
     </div>
 
     <section>
         <h3 class="sound_only">가입 신청 현황</h3>
-
         <div class="mt-4 grid grid-cols-1 gap-4 pc:grid-cols-4">
             <div class="rounded-lg border border-gray-300 bg-white p-4">
                 <p class="text-xs text-gray-500">승인 대기</p>
-                <p class="mt-3 text-2xl font-bold text-gray-900">3<span class="ml-1 text-base">건</span></p>
+                <p class="mt-3 text-2xl font-bold text-gray-900"><?php echo number_format($pending_count); ?><span class="ml-1 text-base">건</span></p>
                 <span class="mt-3 block text-2xs text-amber-600">검토가 필요합니다.</span>
             </div>
-
             <div class="rounded-lg border border-gray-300 bg-white p-4">
                 <p class="text-xs text-gray-500">오늘 승인</p>
-                <p class="mt-3 text-2xl font-bold text-gray-900">11<span class="ml-1 text-base">건</span></p>
+                <p class="mt-3 text-2xl font-bold text-gray-900"><?php echo number_format($today_approved); ?><span class="ml-1 text-base">건</span></p>
                 <span class="mt-3 block text-2xs text-emerald-600">처리 결과 즉시 반영</span>
             </div>
-
             <div class="rounded-lg border border-gray-300 bg-white p-4">
                 <p class="text-xs text-gray-500">오늘 거절</p>
-                <p class="mt-3 text-2xl font-bold text-gray-900">2<span class="ml-1 text-base">건</span></p>
+                <p class="mt-3 text-2xl font-bold text-gray-900"><?php echo number_format($today_rejected); ?><span class="ml-1 text-base">건</span></p>
                 <span class="mt-3 block text-2xs text-red-600">사유 입력 완료</span>
             </div>
-
             <div class="rounded-lg border border-gray-300 bg-white p-4">
                 <p class="text-xs text-gray-500">오늘 승인율</p>
-                <p class="mt-3 text-2xl font-bold text-gray-900">84.6<span class="ml-1 text-base">%</span></p>
+                <p class="mt-3 text-2xl font-bold text-gray-900"><?php echo number_format($approval_rate, 1); ?><span class="ml-1 text-base">%</span></p>
                 <span class="mt-3 block text-2xs text-blue-600">승인 ÷ 전체 처리</span>
             </div>
         </div>
@@ -48,351 +267,226 @@ require_once '../admin.head.php';
 
     <section class="mt-4">
         <h3 class="sound_only">가입 신청 목록</h3>
-
         <form id="join-request-search-form" method="get" class="flex flex-col gap-3 pc:flex-row pc:items-center">
+            <input type="hidden" name="mb_id" value="<?php echo jr_e($dotty_mb_id); ?>">
             <div class="flex shrink-0 rounded-lg bg-gray-100 p-1">
-                <button type="submit" name="status" value="all" aria-pressed="true" class="rounded-md bg-white px-3 py-2 text-xs font-bold text-gray-900 shadow-sm">
-                    전체
-                </button>
-                <button type="submit" name="status" value="pending" aria-pressed="false" class="rounded-md px-3 py-2 text-xs font-bold text-gray-500">
-                    승인 대기 3
-                </button>
-                <button type="submit" name="status" value="rejected" aria-pressed="false" class="rounded-md px-3 py-2 text-xs font-bold text-gray-500">
-                    승인 거절 2
-                </button>
+                <?php
+                $tabs = array('all'=>'전체', 'pending'=>'승인 대기 '.$pending_count, 'rejected'=>'승인 거절', 'approved'=>'가입 승인');
+                foreach ($tabs as $key => $label) {
+                    $active = $status === $key;
+                ?>
+                <button type="submit" name="status" value="<?php echo jr_e($key); ?>" aria-pressed="<?php echo $active ? 'true' : 'false'; ?>" class="rounded-md px-3 py-2 text-xs font-bold <?php echo $active ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500'; ?>"><?php echo jr_e($label); ?></button>
+                <?php } ?>
             </div>
 
             <div class="flex min-w-0 flex-1 items-center rounded-lg border border-gray-300 bg-white">
                 <label for="join-request-search" class="sound_only">신청자명 또는 신청번호 검색</label>
-
-                <input type="search" id="join-request-search" name="q" class="min-w-0 flex-1 rounded-lg px-3 py-2 text-sm outline-none" placeholder="신청자명 또는 신청번호 검색">
-
-                <button type="submit" aria-label="가입 신청 검색" class="shrink-0 px-3 py-2 text-gray-900">
-                    검색
-                </button>
+                <input type="search" id="join-request-search" name="q" value="<?php echo jr_e($q); ?>" class="min-w-0 flex-1 rounded-lg px-3 py-2 text-sm outline-none" placeholder="신청자명 또는 신청번호 검색">
+                <button type="submit" aria-label="가입 신청 검색" class="shrink-0 px-3 py-2 text-gray-900">검색</button>
             </div>
-
-            <p class="shrink-0 text-2xs text-gray-500">검색 결과 5건</p>
+            <p class="shrink-0 text-2xs text-gray-500">검색 결과 <?php echo number_format($total_count); ?>건</p>
         </form>
 
         <div class="mt-4 overflow-x-auto rounded-lg border border-gray-300 bg-white">
             <table class="border-collapse w-full min-w-225 text-left text-xs text-gray-900">
                 <caption class="sound_only">가입 신청 목록</caption>
-
                 <colgroup>
-                    <col class="w-[14%]">
-                    <col class="w-[18%]">
-                    <col class="w-[18%]">
-                    <col class="w-[14%]">
-                    <col class="w-[22%]">
-                    <col class="w-[14%]">
+                    <col class="w-[14%]"><col class="w-[18%]"><col class="w-[18%]"><col class="w-[14%]"><col class="w-[22%]"><col class="w-[14%]">
                 </colgroup>
-
                 <thead class="border-b border-gray-300 bg-gray-50 text-gray-500">
                     <tr>
-                        <th scope="col" class="px-3 py-3 font-bold">신청자</th>
-                        <th scope="col" class="px-3 py-3 font-bold">신청번호</th>
-                        <th scope="col" class="px-3 py-3 font-bold">신청일</th>
-                        <th scope="col" class="px-3 py-3 font-bold">처리 상태</th>
-                        <th scope="col" class="px-3 py-3 font-bold">안내</th>
-                        <th scope="col" class="px-3 py-3 text-center font-bold">검토</th>
+                        <th class="px-3 py-3 font-bold">신청자</th>
+                        <th class="px-3 py-3 font-bold">신청번호</th>
+                        <th class="px-3 py-3 font-bold">신청일</th>
+                        <th class="px-3 py-3 font-bold">처리 상태</th>
+                        <th class="px-3 py-3 font-bold">안내</th>
+                        <th class="px-3 py-3 text-center font-bold">검토</th>
                     </tr>
                 </thead>
-
-                <tbody id="join-request-list-body">
-                    <tr class="join-request-search-row border-b border-gray-200">
-                        <td class="px-3 py-3">
-                            <p class="font-bold">서울의백핸드</p>
-                            <span class="mt-1 block text-2xs text-gray-400">최서윤</span>
-                        </td>
-                        <td class="px-3 py-3">APP-240803-014</td>
-                        <td class="px-3 py-3">2026.08.03 14:22</td>
-                        <td class="px-3 py-3">
-                            <span class="rounded-full bg-amber-100 px-2 py-1 text-2xs font-bold text-amber-700">● 승인 대기</span>
-                        </td>
-                        <td class="px-3 py-3">대기 1시간</td>
+                <tbody>
+                <?php if (!$rows) { ?>
+                    <tr><td colspan="6" class="p-6 text-center text-xs text-gray-500">검색 결과가 없습니다.</td></tr>
+                <?php } ?>
+                <?php foreach ($rows as $row) {
+                    $nick = $row['mb_nick'] !== '' ? $row['mb_nick'] : $row['applicant_mb_id'];
+                    $name = $row['mb_name'] !== '' ? $row['mb_name'] : $row['applicant_mb_id'];
+                ?>
+                    <tr class="border-b border-gray-200">
+                        <td class="px-3 py-3"><p class="font-bold"><?php echo jr_e($nick); ?></p><span class="mt-1 block text-2xs text-gray-400"><?php echo jr_e($name); ?></span></td>
+                        <td class="px-3 py-3"><?php echo jr_e($row['request_no']); ?></td>
+                        <td class="px-3 py-3"><?php echo jr_e(date('Y.m.d H:i', strtotime($row['created_at']))); ?></td>
+                        <td class="px-3 py-3"><span class="rounded-full px-2 py-1 text-2xs font-bold <?php echo jr_status_class($row['status']); ?>">● <?php echo jr_e(jr_status_label($row['status'])); ?></span></td>
+                        <td class="px-3 py-3"><?php echo jr_e(jr_notice($row)); ?></td>
                         <td class="px-3 py-3 text-center">
-                            <button type="button" class="join-request-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
-                                신청 검토
+                            <button type="button"
+                                class="join-request-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900"
+                                data-request-id="<?php echo (int)$row['request_id']; ?>"
+                                data-applicant="<?php echo jr_e($nick.' ('.$name.')'); ?>"
+                                data-request-no="<?php echo jr_e($row['request_no']); ?>"
+                                data-created-at="<?php echo jr_e(date('Y.m.d H:i', strtotime($row['created_at']))); ?>"
+                                data-status="<?php echo jr_e($row['status']); ?>"
+                                data-status-label="<?php echo jr_e(jr_status_label($row['status'])); ?>"
+                                data-reject-category="<?php echo jr_e($row['reject_category']); ?>"
+                                data-reject-reason="<?php echo jr_e($row['reject_reason']); ?>"
+                                data-answers="<?php echo jr_e($row['answers_json']); ?>">
+                                <?php echo $row['status'] === 'pending' ? '신청 검토' : ($row['status'] === 'rejected' ? '거절 사유' : '상세 보기'); ?>
                             </button>
                         </td>
                     </tr>
-
-                    <tr class="join-request-search-row border-b border-gray-200">
-                        <td class="px-3 py-3">
-                            <p class="font-bold">민재서브</p>
-                            <span class="mt-1 block text-2xs text-gray-400">김민재</span>
-                        </td>
-                        <td class="px-3 py-3">APP-240803-013</td>
-                        <td class="px-3 py-3">2026.08.03 13:08</td>
-                        <td class="px-3 py-3">
-                            <span class="rounded-full bg-amber-100 px-2 py-1 text-2xs font-bold text-amber-700">● 승인 대기</span>
-                        </td>
-                        <td class="px-3 py-3">대기 2시간</td>
-                        <td class="px-3 py-3 text-center">
-                            <button type="button" class="join-request-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
-                                신청 검토
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr class="join-request-search-row border-b border-gray-200">
-                        <td class="px-3 py-3">
-                            <p class="font-bold">하늘스매시</p>
-                            <span class="mt-1 block text-2xs text-gray-400">박하늘</span>
-                        </td>
-                        <td class="px-3 py-3">APP-240802-041</td>
-                        <td class="px-3 py-3">2026.08.02 19:31</td>
-                        <td class="px-3 py-3">
-                            <span class="rounded-full bg-amber-100 px-2 py-1 text-2xs font-bold text-amber-700">● 승인 대기</span>
-                        </td>
-                        <td class="px-3 py-3">대기 19시간</td>
-                        <td class="px-3 py-3 text-center">
-                            <button type="button" class="join-request-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
-                                신청 검토
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr class="join-request-search-row border-b border-gray-200">
-                        <td class="px-3 py-3">
-                            <p class="font-bold">지후테니스</p>
-                            <span class="mt-1 block text-2xs text-gray-400">오지후</span>
-                        </td>
-                        <td class="px-3 py-3">APP-240802-028</td>
-                        <td class="px-3 py-3">2026.08.02 11:17</td>
-                        <td class="px-3 py-3">
-                            <span class="rounded-full bg-red-100 px-2 py-1 text-2xs font-bold text-red-600">● 승인 거절</span>
-                        </td>
-                        <td class="px-3 py-3">재신청 가능 22시간 후</td>
-                        <td class="px-3 py-3 text-center">
-                            <button type="button" class="join-request-modal-rejected-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
-                                거절 사유
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr class="join-request-search-row">
-                        <td class="px-3 py-3">
-                            <p class="font-bold">연우랠리</p>
-                            <span class="mt-1 block text-2xs text-gray-400">이연우</span>
-                        </td>
-                        <td class="px-3 py-3">APP-240801-017</td>
-                        <td class="px-3 py-3">2026.08.01 09:02</td>
-                        <td class="px-3 py-3">
-                            <span class="rounded-full bg-red-100 px-2 py-1 text-2xs font-bold text-red-600">● 승인 거절</span>
-                        </td>
-                        <td class="px-3 py-3">재신청 가능</td>
-                        <td class="px-3 py-3 text-center">
-                            <button type="button" class="join-request-modal-rejected-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
-                                거절 사유
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr id="join-request-search-empty" hidden>
-                        <td colspan="6" class="p-4 text-center text-xs text-gray-500">
-                            검색 결과가 없습니다.
-                        </td>
-                    </tr>
+                <?php } ?>
                 </tbody>
             </table>
         </div>
     </section>
 </section>
 
-<!-- 가입 재신청 정책 모달 -->
 <div id="join-request-policy-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
     <div id="join-request-policy-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
-
-    <div id="join-request-policy-modal-container" role="dialog" aria-modal="true" aria-labelledby="join-request-policy-modal-title" class="relative z-10 w-full max-w-160 overflow-auto rounded-lg bg-white">
-        <div id="join-request-policy-modal-header" class="flex items-center justify-between border-b border-gray-300 bg-white p-4">
-            <h3 id="join-request-policy-modal-title" class="text-base font-bold text-gray-900">
-                가입 재신청 정책
-            </h3>
-
-            <button type="button" id="join-request-policy-modal-close" aria-label="가입 재신청 정책 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                </svg>
-            </button>
+    <div class="relative z-10 w-full max-w-160 overflow-auto rounded-lg bg-white">
+        <div class="flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 class="text-base font-bold text-gray-900">가입 재신청 정책</h3>
+            <button type="button" class="join-request-policy-modal-close flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">×</button>
         </div>
-
-        <div id="join-request-policy-modal-body" class="space-y-3 p-4">
-            <div class="rounded-lg bg-gray-100 p-3">
-                <p class="text-2xs text-gray-400">승인 거절</p>
-                <p class="mt-1 text-xs text-gray-700">신청자에게 선택한 거절 사유 카테고리와 상세 사유를 표시합니다.</p>
-            </div>
-
-            <div class="rounded-lg bg-gray-100 p-3">
-                <p class="text-2xs text-gray-400">거절 후 재신청</p>
-                <p class="mt-1 text-xs text-gray-700">대기 기간 없이 즉시 다시 신청할 수 있습니다.</p>
-            </div>
-
-            <div class="rounded-lg bg-gray-100 p-3">
-                <p class="text-2xs text-gray-400">도넛 탈퇴 후 재가입</p>
-                <p class="mt-1 text-xs text-gray-700">탈퇴 후 72시간이 지난 뒤 재가입할 수 있습니다.</p>
-            </div>
+        <div class="space-y-3 p-4">
+            <div class="rounded-lg bg-gray-100 p-3"><p class="text-2xs text-gray-400">승인 거절</p><p class="mt-1 text-xs text-gray-700">신청자에게 선택한 거절 사유 카테고리와 상세 사유를 표시합니다.</p></div>
+            <div class="rounded-lg bg-gray-100 p-3"><p class="text-2xs text-gray-400">거절 후 재신청</p><p class="mt-1 text-xs text-gray-700">대기 기간 없이 즉시 다시 신청할 수 있습니다.</p></div>
+            <div class="rounded-lg bg-gray-100 p-3"><p class="text-2xs text-gray-400">도넛 탈퇴 후 재가입</p><p class="mt-1 text-xs text-gray-700">탈퇴 후 72시간이 지난 뒤 재가입할 수 있습니다.</p></div>
         </div>
-
-        <div id="join-request-policy-modal-footer" class="flex justify-end border-t border-gray-300 bg-white p-4">
-            <button type="button" id="join-request-policy-modal-footer-close" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-900">
-                닫기
-            </button>
-        </div>
+        <div class="flex justify-end border-t border-gray-300 bg-white p-4"><button type="button" class="join-request-policy-modal-close rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-bold">닫기</button></div>
     </div>
 </div>
 
-<!-- 가입 신청 상세 모달 -->
 <div id="join-request-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
     <div id="join-request-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
-
-    <div id="join-request-modal-container" role="dialog" aria-modal="true" aria-labelledby="join-request-modal-title" class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
-        <div id="join-request-modal-header" class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
-            <h3 id="join-request-modal-title" class="text-base font-bold text-gray-900">
-                가입 신청 상세
-            </h3>
-
-            <button type="button" id="join-request-modal-close" aria-label="가입 신청 상세 닫기" class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
-                    <path d="M18 6 6 18" />
-                    <path d="m6 6 12 12" />
-                </svg>
-            </button>
+    <div class="relative z-10 max-h-[90vh] w-full max-w-160 overflow-y-auto rounded-lg bg-white">
+        <div class="sticky top-0 z-10 flex items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 class="text-base font-bold text-gray-900">가입 신청 상세</h3>
+            <button type="button" class="join-request-modal-close flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">×</button>
         </div>
 
-        <div id="join-request-modal-body" class="p-4">
+        <div class="p-4">
             <div class="overflow-hidden rounded-lg border border-gray-300">
                 <dl class="text-xs text-gray-900">
-                    <div class="flex border-b border-gray-300">
-                        <dt class="w-32 shrink-0 bg-gray-50 p-3 text-gray-500">신청자</dt>
-                        <dd class="flex-1 p-3 font-bold">서울의백핸드 (최서윤)</dd>
-                    </div>
-
-                    <div class="flex border-b border-gray-300">
-                        <dt class="w-32 shrink-0 bg-gray-50 p-3 text-gray-500">신청번호</dt>
-                        <dd class="flex-1 p-3 font-bold">APP-240803-014</dd>
-                    </div>
-
-                    <div class="flex border-b border-gray-300">
-                        <dt class="w-32 shrink-0 bg-gray-50 p-3 text-gray-500">신청일</dt>
-                        <dd class="flex-1 p-3 font-bold">2026.08.03 14:22</dd>
-                    </div>
-
-                    <div class="flex">
-                        <dt class="w-32 shrink-0 bg-gray-50 p-3 text-gray-500">상태</dt>
-                        <dd id="join-request-modal-status" class="flex-1 p-3 font-bold">승인 대기</dd>
-                    </div>
+                    <div class="flex border-b border-gray-300"><dt class="w-32 shrink-0 bg-gray-50 p-3 text-gray-500">신청자</dt><dd id="jr-applicant" class="flex-1 p-3 font-bold"></dd></div>
+                    <div class="flex border-b border-gray-300"><dt class="w-32 shrink-0 bg-gray-50 p-3 text-gray-500">신청번호</dt><dd id="jr-number" class="flex-1 p-3 font-bold"></dd></div>
+                    <div class="flex border-b border-gray-300"><dt class="w-32 shrink-0 bg-gray-50 p-3 text-gray-500">신청일</dt><dd id="jr-date" class="flex-1 p-3 font-bold"></dd></div>
+                    <div class="flex"><dt class="w-32 shrink-0 bg-gray-50 p-3 text-gray-500">상태</dt><dd id="jr-status" class="flex-1 p-3 font-bold"></dd></div>
                 </dl>
             </div>
 
-            <div class="mt-4 rounded-lg bg-gray-100 p-3">
-                <span class="block text-2xs text-gray-400">Q1. 가입 질문</span>
-                <p class="mt-2 text-xs text-gray-900">테니스를 시작한 지 2년 되었습니다. 주 2회 정도 즐기고 있어요.</p>
+            <div id="jr-answers" class="mt-4 space-y-3"></div>
+
+            <div id="jr-rejected-box" class="mt-4 rounded-lg bg-red-50 p-3 text-xs text-red-700" hidden>
+                <span class="block font-bold">거절 사유</span>
+                <p id="jr-reject-category" class="mt-2 font-bold"></p>
+                <p id="jr-reject-reason" class="mt-1"></p>
             </div>
 
-            <div class="mt-3 rounded-lg bg-gray-100 p-3">
-                <span class="block text-2xs text-gray-400">Q2. 가입 질문</span>
-                <p class="mt-2 text-xs text-gray-900">정기 모임과 라켓 정보 공유에 참여하고 싶습니다.</p>
-            </div>
-
-            <div id="join-request-modal-notice" class="mt-3 rounded-lg bg-amber-50 p-3 text-2xs text-amber-800">
-                <span id="join-request-modal-notice-title" class="block font-bold" hidden>커뮤니티 운영 기준 미충족</span>
-                <span id="join-request-modal-notice-message">신청 답변과 커뮤니티 운영 기준을 확인한 뒤 처리해 주세요.</span>
-            </div>
+            <form id="jr-reject-form" method="post" class="mt-4 rounded-lg border border-red-200 bg-red-50 p-3" hidden>
+                <input type="hidden" name="token" value="<?php echo jr_e($admin_token); ?>">
+                <input type="hidden" name="mb_id" value="<?php echo jr_e($dotty_mb_id); ?>">
+                <input type="hidden" name="action" value="reject">
+                <input type="hidden" name="request_id" class="jr-request-id" value="">
+                <label class="block text-xs font-bold text-red-700">거절 사유 카테고리</label>
+                <select name="reject_category" class="mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs" required>
+                    <option value="">선택해 주세요</option>
+                    <option value="운영 기준 미충족">운영 기준 미충족</option>
+                    <option value="홍보·광고 목적">홍보·광고 목적</option>
+                    <option value="신청 정보 부족">신청 정보 부족</option>
+                    <option value="기타">기타</option>
+                </select>
+                <label class="mt-3 block text-xs font-bold text-red-700">상세 사유</label>
+                <textarea name="reject_reason" rows="4" class="mt-2 w-full rounded-lg border border-gray-300 bg-white p-3 text-xs" required></textarea>
+                <div class="mt-3 flex justify-end gap-2">
+                    <button type="button" id="jr-reject-cancel" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-xs font-bold">취소</button>
+                    <button type="submit" class="rounded-lg bg-red-600 px-3 py-2 text-xs font-bold text-white">거절 확정</button>
+                </div>
+            </form>
         </div>
 
-        <div id="join-request-modal-footer" class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
-            <button type="button" id="join-request-modal-reject" class="rounded-lg border border-red-300 bg-white px-3 py-2 text-sm font-bold text-red-600">
-                가입 거절
-            </button>
-            <button type="button" id="join-request-modal-approve" class="rounded-lg bg-amber-300 px-3 py-2 text-sm font-bold text-gray-900">
-                가입 승인
-            </button>
-            <button type="button" id="join-request-modal-footer-close" class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-900" hidden>
-                닫기
-            </button>
+        <div class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
+            <button type="button" id="jr-reject-open" class="rounded-lg border border-red-300 bg-white px-3 py-2 text-sm font-bold text-red-600">가입 거절</button>
+            <form id="jr-approve-form" method="post">
+                <input type="hidden" name="token" value="<?php echo jr_e($admin_token); ?>">
+                <input type="hidden" name="mb_id" value="<?php echo jr_e($dotty_mb_id); ?>">
+                <input type="hidden" name="action" value="approve">
+                <input type="hidden" name="request_id" class="jr-request-id" value="">
+                <button type="submit" class="rounded-lg bg-amber-300 px-3 py-2 text-sm font-bold text-gray-900">가입 승인</button>
+            </form>
+            <button type="button" class="join-request-modal-close rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-bold text-gray-900">닫기</button>
         </div>
     </div>
 </div>
 
 <script>
-    // 가입 재신청 정책 모달 열기 닫기
-    const $joinRequestPolicyModal = $('#join-request-policy-modal');
+const $policyModal = $('#join-request-policy-modal');
+$('#join-request-policy-modal-open').on('click', function(){ $policyModal.prop('hidden', false); });
+$('.join-request-policy-modal-close, #join-request-policy-modal-backdrop').on('click', function(){ $policyModal.prop('hidden', true); });
 
-    $('#join-request-policy-modal-open').on('click', function() {
-        $joinRequestPolicyModal.prop('hidden', false);
-    });
+const $requestModal = $('#join-request-modal');
 
-    $('#join-request-policy-modal-close, #join-request-policy-modal-backdrop, #join-request-policy-modal-footer-close').on('click', function() {
-        $joinRequestPolicyModal.prop('hidden', true);
-    });
+$('.join-request-modal-open').on('click', function() {
+    const $btn = $(this);
+    const requestId = $btn.data('request-id');
+    const status = String($btn.data('status') || '');
+    let answers = [];
 
-    // 가입 신청 상세 모달 열기 닫기
-    const $joinRequestModal = $('#join-request-modal');
+    try {
+        answers = JSON.parse($btn.attr('data-answers') || '[]');
+    } catch (e) {
+        answers = [];
+    }
 
-    $('.join-request-modal-open').on('click', function() {
-        $('#join-request-modal-status').text('승인 대기');
+    $('.jr-request-id').val(requestId);
+    $('#jr-applicant').text($btn.attr('data-applicant') || '');
+    $('#jr-number').text($btn.attr('data-request-no') || '');
+    $('#jr-date').text($btn.attr('data-created-at') || '');
+    $('#jr-status').text($btn.attr('data-status-label') || '');
 
-        $('#join-request-modal-notice')
-            .removeClass('bg-red-50 text-red-700')
-            .addClass('bg-amber-50 text-amber-800');
-
-        $('#join-request-modal-notice-title').prop('hidden', true);
-        $('#join-request-modal-notice-message').text('신청 답변과 커뮤니티 운영 기준을 확인한 뒤 처리해 주세요.');
-
-        $('#join-request-modal-reject, #join-request-modal-approve').prop('hidden', false);
-        $('#join-request-modal-footer-close').prop('hidden', true);
-
-        $joinRequestModal.prop('hidden', false);
-    });
-
-    $('.join-request-modal-rejected-open').on('click', function() {
-        $('#join-request-modal-status').text('승인 거절');
-
-        $('#join-request-modal-notice')
-            .removeClass('bg-amber-50 text-amber-800')
-            .addClass('bg-red-50 text-red-700');
-
-        $('#join-request-modal-notice-title').prop('hidden', false);
-        $('#join-request-modal-notice-message').text('커뮤니티 활동 목적과 맞지 않는 홍보성 내용이 포함되어 있습니다.');
-
-        $('#join-request-modal-reject, #join-request-modal-approve').prop('hidden', true);
-        $('#join-request-modal-footer-close').prop('hidden', false);
-
-        $joinRequestModal.prop('hidden', false);
-    });
-
-    $('#join-request-modal-close, #join-request-modal-backdrop, #join-request-modal-footer-close').on('click', function() {
-        $joinRequestModal.prop('hidden', true);
-    });
-
-    // 가입 신청 검색 기능
-    const $joinRequestSearchRows = $('.join-request-search-row');
-
-    $('#join-request-search').on('input', function() {
-        const keyword = $(this).val().toLowerCase();
-        let hasResult = false;
-
-        $joinRequestSearchRows.each(function() {
-            const applicant = $(this).children('td').eq(0).text();
-            const requestNumber = $(this).children('td').eq(1).text();
-            const isMatched = (applicant + requestNumber).toLowerCase().includes(keyword);
-
-            $(this).toggle(isMatched);
-
-            if (isMatched) {
-                hasResult = true;
-            }
+    const $answers = $('#jr-answers').empty();
+    if (!answers.length) {
+        $answers.append('<div class="rounded-lg bg-gray-100 p-3 text-xs text-gray-500">등록된 가입 질문 답변이 없습니다.</div>');
+    } else {
+        answers.forEach(function(item, index) {
+            const $box = $('<div class="rounded-lg bg-gray-100 p-3"></div>');
+            $('<span class="block text-2xs text-gray-400"></span>').text('Q' + (index + 1) + '. ' + (item.question || '가입 질문')).appendTo($box);
+            $('<p class="mt-2 text-xs text-gray-900 whitespace-pre-wrap"></p>').text(item.answer || '').appendTo($box);
+            $answers.append($box);
         });
+    }
 
-        $('#join-request-search-empty').prop('hidden', hasResult);
-    });
+    const rejected = status === 'rejected';
+    $('#jr-rejected-box').prop('hidden', !rejected);
+    $('#jr-reject-category').text($btn.attr('data-reject-category') || '');
+    $('#jr-reject-reason').text($btn.attr('data-reject-reason') || '');
 
-    $('#join-request-search-form').on('submit', function(event) {
-        event.preventDefault();
-    });
+    const pending = status === 'pending';
+    $('#jr-reject-open, #jr-approve-form').prop('hidden', !pending);
+    $('#jr-reject-form').prop('hidden', true);
+    $requestModal.prop('hidden', false);
+});
+
+$('.join-request-modal-close, #join-request-modal-backdrop').on('click', function(){
+    $requestModal.prop('hidden', true);
+    $('#jr-reject-form').prop('hidden', true);
+});
+
+$('#jr-reject-open').on('click', function(){
+    $('#jr-reject-form').prop('hidden', false);
+    $(this).prop('hidden', true);
+});
+
+$('#jr-reject-cancel').on('click', function(){
+    $('#jr-reject-form').prop('hidden', true);
+    $('#jr-reject-open').prop('hidden', false);
+});
+
+$('#jr-approve-form').on('submit', function(e){
+    if (!confirm('이 가입 신청을 승인하시겠습니까?')) e.preventDefault();
+});
+$('#jr-reject-form').on('submit', function(e){
+    if (!confirm('이 가입 신청을 거절하시겠습니까?')) e.preventDefault();
+});
 </script>
 
 <?php

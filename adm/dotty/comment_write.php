@@ -1,5 +1,5 @@
 <?php
-$sub_menu = '710500';
+$sub_menu = '730500';
 include_once('./_common.php');
 
 auth_check_menu($auth, $sub_menu, "w");
@@ -77,4 +77,4 @@ sql_query("
     WHERE post_id = '{$post_id}'
 ");
 
-alert('테스트 댓글이 등록되었습니다.', './post_view.php?post_id=' . $post_id);
+alert('댓글이 등록되었습니다.', './community_content.php?status=comment');
