@@ -15,7 +15,6 @@
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-red-700: oklch(50.5% 0.213 27.518);
-    --color-red-900: oklch(39.6% 0.141 25.723);
     --color-orange-100: oklch(95.4% 0.038 75.164);
     --color-orange-400: oklch(75% 0.183 55.934);
     --color-orange-500: oklch(70.5% 0.213 47.604);
@@ -39,13 +38,13 @@
     --color-green-50: oklch(98.2% 0.018 155.826);
     --color-green-100: oklch(96.2% 0.044 156.743);
     --color-green-400: oklch(79.2% 0.209 151.711);
-    --color-green-500: oklch(72.3% 0.219 149.579);
     --color-green-600: oklch(62.7% 0.194 149.214);
     --color-green-700: oklch(52.7% 0.154 150.069);
     --color-green-800: oklch(44.8% 0.119 151.328);
     --color-emerald-50: oklch(97.9% 0.021 166.113);
     --color-emerald-100: oklch(95% 0.052 163.051);
     --color-emerald-300: oklch(84.5% 0.143 164.978);
+    --color-emerald-400: oklch(76.5% 0.177 163.223);
     --color-emerald-600: oklch(59.6% 0.145 163.225);
     --color-emerald-700: oklch(50.8% 0.118 165.612);
     --color-teal-600: oklch(60% 0.118 184.704);
@@ -61,10 +60,7 @@
     --color-blue-600: oklch(54.6% 0.245 262.881);
     --color-blue-700: oklch(48.8% 0.243 264.376);
     --color-blue-800: oklch(42.4% 0.199 265.638);
-    --color-indigo-50: oklch(96.2% 0.018 272.314);
     --color-indigo-100: oklch(93% 0.034 272.788);
-    --color-indigo-200: oklch(87% 0.065 274.039);
-    --color-indigo-500: oklch(58.5% 0.233 277.117);
     --color-indigo-600: oklch(51.1% 0.262 276.966);
     --color-indigo-700: oklch(45.7% 0.24 277.023);
     --color-rose-100: oklch(94.1% 0.03 12.58);
@@ -721,6 +717,9 @@
   .mt-auto {
     margin-top: auto;
   }
+  .mr-1 {
+    margin-right: calc(var(--spacing) * 1);
+  }
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
   }
@@ -1283,9 +1282,6 @@
   .w-200 {
     width: calc(var(--spacing) * 200);
   }
-  .w-\[1\%\] {
-    width: 1%;
-  }
   .w-\[7\%\] {
     width: 7%;
   }
@@ -1364,6 +1360,9 @@
   .w-\[30\%\] {
     width: 30%;
   }
+  .w-\[40\%\] {
+    width: 40%;
+  }
   .w-\[45px\] {
     width: 45px;
   }
@@ -1423,6 +1422,9 @@
   }
   .max-w-100 {
     max-width: calc(var(--spacing) * 100);
+  }
+  .max-w-105 {
+    max-width: calc(var(--spacing) * 105);
   }
   .max-w-120 {
     max-width: calc(var(--spacing) * 120);
@@ -3429,9 +3431,6 @@
   .text-amber-300 {
     color: var(--color-amber-300);
   }
-  .text-amber-400 {
-    color: var(--color-amber-400);
-  }
   .text-amber-600 {
     color: var(--color-amber-600);
   }
@@ -3482,6 +3481,9 @@
   }
   .text-blue-800 {
     color: var(--color-blue-800);
+  }
+  .text-emerald-400 {
+    color: var(--color-emerald-400);
   }
   .text-emerald-600 {
     color: var(--color-emerald-600);
@@ -3957,6 +3959,16 @@
       background-color: var(--color-gray-900);
     }
   }
+  .read-only\:bg-gray-100 {
+    &:read-only {
+      background-color: var(--color-gray-100);
+    }
+  }
+  .read-only\:text-gray-500 {
+    &:read-only {
+      color: var(--color-gray-500);
+    }
+  }
   .hover\:border-\[\#bfc4cc\] {
     &:hover {
       @media (hover: hover) {
@@ -4180,6 +4192,16 @@
   .has-\[\:checked\]\:border-gray-900 {
     &:has(*:is(:checked)) {
       border-color: var(--color-gray-900);
+    }
+  }
+  .aria-selected\:bg-white {
+    &[aria-selected="true"] {
+      background-color: var(--color-white);
+    }
+  }
+  .aria-selected\:text-gray-900 {
+    &[aria-selected="true"] {
+      color: var(--color-gray-900);
     }
   }
   .data-\[visible\=false\]\:\!hidden {
@@ -4942,6 +4964,33 @@
   .\[\&_img\]\:max-w-full {
     & img {
       max-width: 100%;
+    }
+  }
+  .\[\&_li\]\:not-last\:mt-2 {
+    & li {
+      &:not(*:last-child) {
+        margin-top: calc(var(--spacing) * 2);
+      }
+    }
+  }
+  .\[\&_li\:not\(\:last-child\)\]\:mb-2 {
+    & li:not(:last-child) {
+      margin-bottom: calc(var(--spacing) * 2);
+    }
+  }
+  .\[\&_li\:not\(\:last-child\)\]\:pb-2 {
+    & li:not(:last-child) {
+      padding-bottom: calc(var(--spacing) * 2);
+    }
+  }
+  .\[\&_li\:not-last\]\:mt-2 {
+    & li:not-last {
+      margin-top: calc(var(--spacing) * 2);
+    }
+  }
+  .\[\&_li\:not-last\]\:mb-2 {
+    & li:not-last {
+      margin-bottom: calc(var(--spacing) * 2);
     }
   }
   .\[\&_td\]\:p-3 {

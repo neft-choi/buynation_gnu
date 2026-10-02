@@ -213,7 +213,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             <div class="page-head">
                 <div>
                     <h1>배송관리</h1>
-                    <p><strong><?php echo get_text($manage_brand_id); ?></strong> 브랜드의 배송조건과 묶음배송 그룹을 별도로 관리합니다.</p>
+                    <p><strong><?php echo get_text($manage_brand_id); ?></strong> 브랜드의 배송조건을 별도로 관리합니다.</p>
                 </div>
                 <div style="display:flex;gap:8px;align-items:center">
                     <?php if ($is_admin === 'super') { ?>
@@ -229,7 +229,6 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
 
             <nav class="tabs" aria-label="배송 관리 탭">
                 <button class="tab <?php echo $active_tab === 'conditions' ? 'active' : ''; ?>" type="button" data-tab="conditions">배송조건 <span><?php echo count($conditions); ?></span></button>
-                <button class="tab <?php echo $active_tab === 'groups' ? 'active' : ''; ?>" type="button" data-tab="groups">묶음배송 그룹 <span><?php echo count($groups); ?></span></button>
             </nav>
 
             <section class="panel <?php echo $active_tab === 'conditions' ? 'active' : ''; ?>" id="panel-conditions">
@@ -346,58 +345,6 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                     <div class="empty-search" id="emptySearch">조건에 맞는 배송조건이 없습니다.</div>
                 </div>
             </section>
-
-            <section class="panel <?php echo $active_tab === 'groups' ? 'active' : ''; ?>" id="panel-groups">
-                <div class="guide">
-                    <div>
-                        <h2>묶음배송 그룹</h2>
-                        <p>같은 그룹 상품은 주문 시 배송비를 한 번만 계산합니다.</p>
-                    </div>
-                    <div class="flow">
-                        <div class="flow-step"><span class="step-no">1</span>
-                            <div><strong>그룹 생성</strong><small>합포장 가능한 범위</small></div>
-                        </div>
-                        <div class="flow-arrow">›</div>
-                        <div class="flow-step"><span class="step-no">2</span>
-                            <div><strong>MIN / MAX</strong><small>대표 배송비 기준</small></div>
-                        </div>
-                        <div class="flow-arrow">›</div>
-                        <div class="flow-step"><span class="step-no">3</span>
-                            <div><strong>상품 이동</strong><small>실제 DB에 저장</small></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="padding:20px">
-                    <div class="card-head" style="padding:0 0 17px;min-height:auto;margin-bottom:15px">
-                        <div>
-                            <h2>묶음배송 그룹</h2>
-                            <p>브랜드별로 독립 관리됩니다.</p>
-                        </div><button class="btn btn-small" id="openGroupCreate" type="button">＋ 그룹 추가</button>
-                    </div>
-                    <div class="group-grid" id="groupGrid">
-                        <?php foreach ($groups as $g) { ?>
-                            <article class="group-card" data-group-id="<?php echo (int)$g['dg_id']; ?>" data-group-name="<?php echo get_text($g['dg_name']); ?>">
-                                <div class="group-top">
-                                    <div>
-                                        <h3><?php echo get_text($g['dg_name']); ?></h3>
-                                        <p>묶음배송 그룹</p>
-                                    </div><span class="badge badge-bundle">사용 중</span>
-                                </div>
-                                <div class="group-meta">
-                                    <div><span>상품 수</span><strong><?php echo number_format((int)$g['product_count']); ?>개</strong></div>
-                                    <div><span>계산 방식</span><strong><?php echo get_text($g['calc_method']); ?></strong></div>
-                                    <div><span>적용 방식</span><strong>1회 부과</strong></div>
-                                </div>
-                                <div style="display:flex;gap:8px;margin-top:14px"><button class="btn btn-small group-products" type="button" style="flex:1">기존 상품 추가·이동</button>
-                                    <form method="post" action="./deliverymanage_update.php" onsubmit="return confirm('그룹을 삭제하시겠습니까? 상품이 포함되어 있으면 삭제되지 않습니다.');"><input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>"><input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>"><input type="hidden" name="action" value="delete_group"><input type="hidden" name="dg_id" value="<?php echo (int)$g['dg_id']; ?>"><button class="btn btn-small" type="submit">삭제</button></form>
-                                </div>
-                            </article>
-                        <?php } ?>
-                        <?php if (!$groups) { ?><div class="empty-products" style="display:block">등록된 묶음배송 그룹이 없습니다.</div><?php } ?>
-                    </div>
-                </div>
-            </section>
-
         </div>
     </main>
 </div>
@@ -444,20 +391,26 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             <div class="form-section"><label class="form-label">배송조건명</label><input class="form-control" id="conditionName" name="dc_name" maxlength="100" required></div>
             <div class="form-section">
                 <div class="section-title">배송비 유형</div>
-                <div class="fee-types" id="feeTypes"><button class="fee-type" type="button" data-fee="paid">유료</button><button class="fee-type active" type="button" data-fee="conditional">조건부 무료</button><button class="fee-type" type="button" data-fee="free">무료</button><button class="fee-type" type="button" data-fee="quantity">수량별</button><button class="fee-type" type="button" data-fee="amount_range">금액 구간별</button></div>
+                <div class="fee-types" id="feeTypes"><button class="fee-type" type="button" data-fee="paid">유료</button><button class="fee-type active" type="button" data-fee="conditional">조건부 무료</button><button class="fee-type" type="button" data-fee="free">무료</button><button class="fee-type" type="button" data-fee="quantity">수량별</button></div>
+            </div>
+            <div class="form-section">
+                <div class="section-title">개별 배송</div>
+                <div class="mt-3">
+                    <label for="individual-shipping" class="inline-flex cursor-pointer items-center gap-2">
+                        <input type="checkbox" id="individual-shipping" name="individual_shipping" value="1" class="w-4 h-4">
+                        <span class="font-bold text-gray-900">개별 배송 적용</span>
+                    </label>
+
+                    <p class="mt-2 text-2xs text-gray-500">
+                        개별 배송 적용시 같은 정책의 물건이라도 각각 부과됩니다. (4개면 4번 부과)
+                    </p>
+                </div>
             </div>
             <div class="form-section" id="feeFields">
                 <div class="two-col">
                     <div class="input-unit"><label class="form-label">기본 배송비</label><input class="form-control" id="baseFee" name="dc_price" type="number" min="0" value="3000"><span class="unit">원</span></div>
                     <div class="input-unit" id="thresholdWrap"><label class="form-label">무료배송 기준</label><input class="form-control" id="freeThreshold" name="dc_minimum" type="number" min="0" value="50000"><span class="unit">원</span></div>
                     <div class="input-unit" id="quantityWrap" style="display:none"><label class="form-label">반복 부과 수량</label><input class="form-control" id="repeatQuantity" name="dc_qty" type="number" min="1" value="1"><span class="unit">개</span></div>
-                </div>
-            </div>
-            <div class="form-section" id="amountRangeFields" style="display:none">
-                <div class="section-title">주문금액별 배송비 구간</div>
-                <div class="amount-range-editor">
-                    <div class="amount-range-head"><span>시작 금액</span><span>종료 금액</span><span>배송비</span><span></span></div>
-                    <div id="amountRangeRows"></div><button class="range-add" id="addAmountRange" type="button">＋ 구간 추가</button>
                 </div>
             </div>
 
@@ -511,26 +464,6 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
         <div class="drawer-foot"><button class="btn" type="button" data-close>취소</button><button class="btn btn-brand" type="submit">저장</button></div>
     </form>
 </aside>
-
-<aside class="drawer" id="groupDrawer">
-    <div class="drawer-head">
-        <div>
-            <h2>묶음배송 그룹 추가</h2>
-            <p>같이 주문된 상품의 배송비를 MIN 또는 MAX 한 번만 부과합니다.</p>
-        </div><button class="close-btn" type="button" data-close>×</button>
-    </div>
-    <form method="post" action="./deliverymanage_update.php"><input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>"><input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>"><input type="hidden" name="action" value="save_group">
-        <div class="drawer-body">
-            <div class="form-section"><label class="form-label">그룹명</label><input class="form-control" name="dg_name" required maxlength="100"></div>
-            <div class="form-section">
-                <div class="section-title">계산 방식</div>
-                <div class="choice-grid"><label class="choice-card"><input type="radio" name="calc_method" value="MIN"><span class="radio-mark"></span><strong>MIN · 최저 배송비</strong><small>그룹 상품 중 가장 낮은 배송비 1회</small></label><label class="choice-card selected"><input type="radio" name="calc_method" value="MAX" checked><span class="radio-mark"></span><strong>MAX · 최고 배송비</strong><small>그룹 상품 중 가장 높은 배송비 1회</small></label></div>
-            </div>
-        </div>
-        <div class="drawer-foot"><button class="btn" type="button" data-close>취소</button><button class="btn btn-brand" type="submit">그룹 저장</button></div>
-    </form>
-</aside>
-
 
 <aside class="drawer" id="conditionProductDrawer">
     <div class="drawer-head shrink-0">
@@ -617,102 +550,22 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
     <div class="drawer-head">
         <div>
             <h2>상품 배송설정</h2>
-            <p>선택 상품의 배송조건과 묶음배송 그룹을 저장합니다.</p>
+            <p>선택 상품의 배송조건을 저장합니다.</p>
         </div><button class="close-btn" type="button" data-close>×</button>
     </div>
     <form method="post" action="./deliverymanage_update.php" id="applyForm"><input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>"><input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>"><input type="hidden" name="action" value="apply_products">
         <div id="applyProductIds"></div>
         <div class="drawer-body">
             <div class="select-block"><label class="form-label">배송조건</label><select name="condition_id" id="applyCondition" required><?php foreach ($conditions as $c) { ?><option value="<?php echo (int)$c['dc_id']; ?>"><?php echo get_text($c['dc_name']); ?> — <?php echo delivery_type_label($c['dc_type']); ?></option><?php } ?></select></div>
-            <div class="select-block"><label class="form-label">묶음배송 그룹</label><select name="group_id" id="applyGroup">
-                    <option value="0">선택 안 함 · 개별배송</option><?php foreach ($groups as $g) { ?><option value="<?php echo (int)$g['dg_id']; ?>"><?php echo get_text($g['dg_name']); ?> · <?php echo get_text($g['calc_method']); ?></option><?php } ?>
-                </select></div>
-            <div class="branch-box individual"><span class="info-dot">i</span><span>그룹을 선택하지 않으면 상품별 배송비가 각각 합산됩니다.</span></div>
         </div>
         <div class="drawer-foot"><button class="btn" type="button" data-close>취소</button><button class="btn btn-brand" type="submit">상품에 적용</button></div>
-    </form>
-</aside>
-
-<aside class="drawer" id="productGroupDrawer">
-    <div class="drawer-head">
-        <div>
-            <h2 id="productGroupTitle">기존 상품 추가·이동</h2>
-            <p>상품명 또는 상품코드를 검색한 뒤 대상 그룹으로 이동합니다.</p>
-        </div>
-        <button class="close-btn" type="button" data-close>×</button>
-    </div>
-
-    <form method="post" action="./deliverymanage_update.php" id="moveForm">
-        <input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>">
-        <input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>">
-        <input type="hidden" name="action" value="move_products">
-        <input type="hidden" name="group_id" id="moveGroupId">
-
-        <div id="moveSelectedProductIds"></div>
-
-        <div class="drawer-body">
-            <div style="margin-bottom:18px;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
-                    <strong>현재 적용 상품</strong>
-                    <span><strong id="groupAppliedCount">0</strong>개</span>
-                </div>
-
-                <div class="product-pick-list" id="groupAppliedList"></div>
-
-                <div class="empty-products" id="groupAppliedEmpty" style="display:block;">
-                    현재 적용 상품을 불러오는 중입니다.
-                </div>
-            </div>
-
-            <hr style="border:0;border-top:1px solid #eee;margin:18px 0;">
-
-            <div class="two-col select-block">
-                <div>
-                    <label class="form-label" for="productPickSearch">상품 검색</label>
-                    <input class="form-control"
-                        id="productPickSearch"
-                        type="search"
-                        placeholder="상품명 또는 상품코드 입력"
-                        autocomplete="off">
-                </div>
-
-                <div>
-                    <label class="form-label" for="productSourceFilter">현재 소속</label>
-                    <select class="form-control" id="productSourceFilter">
-                        <option value="all">전체</option>
-                        <option value="none">그룹 미지정</option>
-                        <?php foreach ($groups as $g) { ?>
-                            <option value="<?php echo (int)$g['dg_id']; ?>">
-                                <?php echo get_text($g['dg_name']); ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
-            </div>
-
-            <div class="picker-summary" style="margin-top:12px;">
-                <span>검색 결과 <strong id="productPickCount">0</strong>개</span>
-                <span>선택 <strong id="moveSelectedCount">0</strong>개</span>
-            </div>
-
-            <div class="product-pick-list" id="productPickList"></div>
-
-            <div class="empty-products" id="emptyProductPick" style="display:block;">
-                상품명 또는 상품코드를 입력하면 검색 결과가 표시됩니다.
-            </div>
-        </div>
-
-        <div class="drawer-foot">
-            <button class="btn" type="button" data-close>취소</button>
-            <button class="btn btn-brand" type="submit">선택 상품 이동</button>
-        </div>
     </form>
 </aside>
 
 <div class="toast" id="toast"><span class="toast-check">✓</span><span id="toastText"></span></div>
 
 <!-- <script src="./assets/deliverymanage.js"></script> -->
- <script>
+<script>
     (function() {
         const $ = (id) => document.getElementById(id);
 
@@ -889,9 +742,9 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
 
             if (sendcostViewTitle) {
                 sendcostViewTitle.textContent =
-                    conditionName
-                        ? conditionName + ' · 지역 추가비'
-                        : '지역 추가비';
+                    conditionName ?
+                    conditionName + ' · 지역 추가비' :
+                    '지역 추가비';
             }
 
             if (sendcostViewSub) {
@@ -2025,7 +1878,5 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
         refreshSelected();
         updatePreview();
     })();
-
-
- </script>
+</script>
 <?php include_once(G5_ADMIN_PATH . '/admin.tail.php'); ?>
