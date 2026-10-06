@@ -17,8 +17,8 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
             </p>
         </div>
 
-        <button type="button" class="shrink-0 rounded-lg bg-gray-900 px-3 py-2 text-2xs font-bold text-white">
-            + 담당자 초대
+        <button type="button" class="add-admin-modal-open shrink-0 rounded-lg bg-gray-900 px-3 py-2 text-2xs font-bold text-white">
+            + 담당자 추가
         </button>
     </div>
 
@@ -156,6 +156,106 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
         <span>최고 관리자는 전체 권한을 가지며, 다른 담당자의 권한을 변경할 수 있습니다. 주요 권한 변경은 활동 로그에 기록됩니다.</span>
     </div>
 </section>
+
+<!-- 관리자 추가 모달 -->
+<div id="add-admin-modal" class="fixed inset-0 z-1000 flex items-center justify-center p-4" hidden>
+    <div id="add-admin-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+
+    <div id="add-admin-modal-container" role="dialog" aria-modal="true" aria-labelledby="add-admin-modal-title"
+        class="relative z-10 flex max-h-[90vh] w-full max-w-120 flex-col overflow-hidden rounded-lg bg-white">
+
+        <div id="add-admin-modal-header" class="flex shrink-0 items-center justify-between border-b border-gray-300 bg-white p-4">
+            <h3 id="add-admin-modal-title" class="text-sm font-bold text-gray-900">
+                관리자 추가
+            </h3>
+
+            <button type="button" id="add-admin-modal-close" aria-label="플랫폼 관리자 추가 모달 닫기"
+                class="flex h-8 w-8 items-center justify-center rounded-full hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-5 w-5">
+                    <path d="M18 6 6 18" />
+                    <path d="m6 6 12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="add-admin-modal-body" class="min-h-0 flex-1 overflow-y-auto p-4">
+            <form id="add-admin-form">
+                <div>
+                    <label for="add-admin-name" class="block text-2xs font-bold text-gray-900">
+                        이름
+                    </label>
+
+                    <input type="text" id="add-admin-name" name="name"
+                        class="mt-2 h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-2xs text-gray-900">
+                </div>
+
+                <div class="mt-4">
+                    <label for="add-admin-email" class="block text-2xs font-bold text-gray-900">
+                        이메일
+                    </label>
+
+                    <input type="email" id="add-admin-email" name="email"
+                        class="mt-2 h-10 w-full rounded-lg border border-gray-300 bg-white px-3 text-2xs text-gray-900">
+                </div>
+
+                <fieldset class="mt-4">
+                    <legend class="text-2xs font-bold text-gray-900">
+                        권한
+                    </legend>
+
+                    <div class="mt-2 space-y-2">
+                        <label class="flex cursor-pointer items-center gap-3 rounded-lg bg-gray-50 p-4">
+                            <input type="checkbox" name="permissions[]" value="brand_product"
+                                class="h-4 w-4 shrink-0 rounded border-gray-300">
+                            <span class="text-xs font-normal text-gray-900">브랜드 · 상품</span>
+                        </label>
+
+                        <label class="flex cursor-pointer items-center gap-3 rounded-lg bg-gray-50 p-4">
+                            <input type="checkbox" name="permissions[]" value="dot_donut"
+                                class="h-4 w-4 shrink-0 rounded border-gray-300">
+                            <span class="text-xs font-normal text-gray-900">도티 · 도넛</span>
+                        </label>
+
+                        <label class="flex cursor-pointer items-center gap-3 rounded-lg bg-gray-50 p-4">
+                            <input type="checkbox" name="permissions[]" value="order_cs"
+                                class="h-4 w-4 shrink-0 rounded border-gray-300">
+                            <span class="text-xs font-normal text-gray-900">주문 · CS</span>
+                        </label>
+
+                        <label class="flex cursor-pointer items-center gap-3 rounded-lg bg-gray-50 p-4">
+                            <input type="checkbox" name="permissions[]" value="topping_settlement"
+                                class="h-4 w-4 shrink-0 rounded border-gray-300">
+                            <span class="text-xs font-normal text-gray-900">토핑 · 정산</span>
+                        </label>
+                    </div>
+                </fieldset>
+            </form>
+        </div>
+
+        <div id="add-admin-modal-footer" class="flex shrink-0 justify-end gap-2 border-t border-gray-300 bg-white p-4">
+            <button type="button" id="add-admin-modal-cancel"
+                class="rounded-lg border border-gray-300 bg-white px-4 py-3 font-bold text-gray-900">
+                취소
+            </button>
+
+            <button type="submit" form="add-admin-form"
+                class="rounded-lg border border-transparent bg-amber-300 px-4 py-3 font-bold text-gray-900">
+                추가
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('.add-admin-modal-open').on('click', function() {
+        $('#add-admin-modal').prop('hidden', false);
+    });
+
+    $('#add-admin-modal-cancel, #add-admin-modal-close, #add-admin-modal-backdrop').on('click', function() {
+        $('#add-admin-modal').prop('hidden', true);
+    });
+</script>
 
 <?php
 include_once(G5_ADMIN_PATH . '/admin.tail.php');

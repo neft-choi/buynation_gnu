@@ -92,17 +92,17 @@ require_once '../admin.head.php';
         </div>
     </div>
 
-    <div class="mt-4 flex w-fit rounded-lg bg-gray-100 p-1">
-        <button type="button" id="work-queue-processing-tab" aria-pressed="true" aria-controls="work-queue-processing-panel" class="rounded-lg bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+    <div id="work-queue-tabs" role="tablist" aria-label="업무 처리 상태" class="mt-4 flex w-fit rounded-lg bg-gray-100 p-1">
+        <button type="button" role="tab" id="work-queue-processing-tab" aria-selected="true" aria-controls="work-queue-processing-panel" tabindex="0" class="rounded-lg px-3 py-2 text-2xs font-bold text-gray-600 aria-selected:bg-white aria-selected:text-gray-900">
             <span>처리 중 55</span>
         </button>
 
-        <button type="button" id="work-queue-completed-tab" aria-pressed="false" aria-controls="work-queue-completed-panel" class="rounded-lg px-3 py-2 text-2xs font-bold text-gray-600">
+        <button type="button" role="tab" id="work-queue-completed-tab" aria-selected="false" aria-controls="work-queue-completed-panel" tabindex="-1" class="rounded-lg px-3 py-2 text-2xs font-bold text-gray-600 aria-selected:bg-white aria-selected:text-gray-900">
             <span>처리 완료 6</span>
         </button>
     </div>
 
-    <section id="work-queue-processing-panel" class="mt-4">
+    <section role="tabpanel" id="work-queue-processing-panel" class="mt-4">
         <form method="get" class="flex flex-col gap-3 pc:flex-row pc:items-center">
             <div class="flex-1 min-w-0 flex items-center border border-gray-300 rounded-lg bg-white">
                 <label for="work-queue-search" class="sound_only">업무 ID·대상·메모·전달 사유 검색</label>
@@ -135,36 +135,46 @@ require_once '../admin.head.php';
                 <option value="internal">내부 전용</option>
             </select>
 
-            <div class="overflow-x-auto">
-                <ul class="flex items-center gap-2 text-2xs font-bold text-nowrap">
-                    <li>
-                        <button type="button" class="bg-gray-900 border border-transparent rounded-full text-white px-3 py-2">전체</button>
-                    </li>
-                    <li>
-                        <button type="button" class="bg-white border border-gray-300 rounded-full text-gray-600 px-3 py-2">브랜드·상품</button>
-                    </li>
-                    <li>
-                        <button type="button" class="bg-white border border-gray-300 rounded-full text-gray-600 px-3 py-2">도티·도넛</button>
-                    </li>
-                    <li>
-                        <button type="button" class="bg-white border border-gray-300 rounded-full text-gray-600 px-3 py-2">주문·배송</button>
-                    </li>
-                    <li>
-                        <button type="button" class="bg-white border border-gray-300 rounded-full text-gray-600 px-3 py-2">신고·분쟁</button>
-                    </li>
-                    <li>
-                        <button type="button" class="bg-white border border-gray-300 rounded-full text-gray-600 px-3 py-2">결제·정산</button>
-                    </li>
-                    <li>
-                        <button type="button" class="bg-white border border-gray-300 rounded-full text-gray-600 px-3 py-2">계정·권한</button>
-                    </li>
-                    <li>
-                        <button type="button" class="bg-white border border-gray-300 rounded-full text-gray-600 px-3 py-2">시스템·보안</button>
-                    </li>
-                    <li>
-                        <button type="button" class="bg-white border border-gray-300 rounded-full text-gray-600 px-3 py-2">정책</button>
-                    </li>
-                </ul>
+            <div class="min-w-0 overflow-x-auto">
+                <fieldset class="flex items-center gap-2 text-2xs font-bold text-nowrap">
+                    <legend class="sr-only">업무 분류 필터</legend>
+                    <div>
+                        <input type="radio" id="work-queue-category-all" name="category" value="all" class="peer sr-only" checked>
+                        <label for="work-queue-category-all" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">전체</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="work-queue-category-brand" name="category" value="brand" class="peer sr-only">
+                        <label for="work-queue-category-brand" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">브랜드·상품</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="work-queue-category-community" name="category" value="community" class="peer sr-only">
+                        <label for="work-queue-category-community" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">도티·도넛</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="work-queue-category-order" name="category" value="order" class="peer sr-only">
+                        <label for="work-queue-category-order" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">주문·배송</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="work-queue-category-dispute" name="category" value="dispute" class="peer sr-only">
+                        <label for="work-queue-category-dispute" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">신고·분쟁</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="work-queue-category-money" name="category" value="money" class="peer sr-only">
+                        <label for="work-queue-category-money" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">결제·정산</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="work-queue-category-account" name="category" value="account" class="peer sr-only">
+                        <label for="work-queue-category-account" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">계정·권한</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="work-queue-category-system" name="category" value="system" class="peer sr-only">
+                        <label for="work-queue-category-system" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">시스템·보안</label>
+                    </div>
+                    <div>
+                        <input type="radio" id="work-queue-category-policy" name="category" value="policy" class="peer sr-only">
+                        <label for="work-queue-category-policy" class="block cursor-pointer rounded-full border border-gray-300 bg-white text-gray-600 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white peer-focus-visible:inset-ring-2 peer-focus-visible:inset-ring-blue-500">정책</label>
+                    </div>
+                </fieldset>
             </div>
         </form>
 
@@ -221,7 +231,7 @@ require_once '../admin.head.php';
                                 <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 보류</span>
                             </td>
                             <td>
-                                <span class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold p-2">처리</span>
+                                <button type="button" id="work-queue-modal-open" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
                             </td>
                         </tr>
 
@@ -250,7 +260,7 @@ require_once '../admin.head.php';
                                 <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 보류</span>
                             </td>
                             <td>
-                                <span class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold p-2">처리</span>
+                                <button type="button" id="work-queue-modal-open" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
                             </td>
                         </tr>
 
@@ -279,7 +289,7 @@ require_once '../admin.head.php';
                                 <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 처리 필요</span>
                             </td>
                             <td>
-                                <span class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold p-2">처리</span>
+                                <button type="button" id="work-queue-modal-open" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
                             </td>
                         </tr>
 
@@ -308,7 +318,7 @@ require_once '../admin.head.php';
                                 <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 처리 필요</span>
                             </td>
                             <td>
-                                <span class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold p-2">처리</span>
+                                <button type="button" id="work-queue-modal-open" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
                             </td>
                         </tr>
                     </tbody>
@@ -317,7 +327,7 @@ require_once '../admin.head.php';
         </section>
     </section>
 
-    <section id="work-queue-completed-panel" class="mt-4" hidden>
+    <section role="tabpanel" id="work-queue-completed-panel" class="mt-4" hidden>
         <form method="get" class="flex flex-col gap-3 pc:flex-row pc:items-center">
             <div class="flex min-w-0 flex-1 items-center rounded-lg border border-gray-300 bg-white">
                 <label for="work-queue-completed-search" class="sound_only">완료 업무 검색</label>
@@ -601,36 +611,158 @@ require_once '../admin.head.php';
     </section>
 </section>
 
+<!-- 처리 업무 상세 모달 -->
+<div id="work-queue-modal" class="fixed inset-0 z-[1300] flex items-center justify-center p-4" hidden>
+    <div id="work-queue-modal-backdrop" class="absolute inset-0 bg-black/40"></div>
+
+    <div id="work-queue-modal-container" role="dialog" aria-modal="true" aria-labelledby="work-queue-modal-title" tabindex="-1" class="relative z-10 flex w-full max-w-[900px] max-h-[90vh] flex-col overflow-hidden rounded-2xl bg-white">
+        <header class="flex shrink-0 items-center justify-between border-b border-gray-300 p-4">
+            <h3 id="work-queue-modal-title" class="text-sm font-bold text-gray-900">처리 업무 상세</h3>
+            <button type="button" aria-label="처리 업무 상세 모달 닫기" class="work-queue-modal-close flex h-8 w-8 items-center justify-center rounded-full bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="h-4 w-4" aria-hidden="true">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                </svg>
+            </button>
+        </header>
+
+        <div id="work-queue-modal-body" class="min-h-0 flex-1 overflow-y-auto p-4">
+            <dl class="overflow-hidden rounded-lg border border-gray-300 text-2xs [&>div+div]:border-t [&>div+div]:border-gray-200">
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">업무 ID</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">ESC-0104</dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">유형</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">보류·에스크로 검토</dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">대상</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">분쟁 DSP-0182</dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">검토 사유</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">반품비 분쟁 · 36,000원 보류 근거와 해제 조건 확인</dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">접수</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">2026.08.09</dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">기한</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">우선 확인</dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">담당자</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">정산팀 김OO</dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">현재 상태</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">
+                            <span aria-hidden="true">●</span>
+                            보류
+                        </span>
+                    </dd>
+                </div>
+                <div class="flex">
+                    <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">대상</dt>
+                    <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">
+                        <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">
+                            전달 선택
+                        </span>
+                        <span> · 관련 당사자</span>
+                    </dd>
+                </div>
+            </dl>
+
+            <div class="mt-4">
+                <label for="work-queue-result" class="block text-2xs font-bold text-gray-900">처리 결과</label>
+                <select id="work-queue-result" name="result" class="mt-2 w-full rounded-lg border border-gray-300 bg-white">
+                    <option value="approve">승인</option>
+                    <option value="supplement">보완 요청</option>
+                    <option value="reject">반려</option>
+                    <option value="hold">보류</option>
+                    <option value="complete">완료</option>
+                </select>
+            </div>
+
+            <div class="mt-4 grid grid-cols-1 gap-4 pc:grid-cols-2">
+                <section class="rounded-lg border border-amber-300 bg-amber-50 p-4">
+                    <h4 class="text-xs font-bold text-gray-900">
+                        <label for="work-queue-internal-memo">내부 처리 메모 · 필수</label>
+                    </h4>
+                    <p id="work-queue-internal-memo-help" class="mt-1 text-2xs font-normal text-gray-500">플랫폼 담당자만 확인합니다. 확인 자료, 판단 과정과 내부 후속 조치를 기록하세요.</p>
+                    <textarea id="work-queue-internal-memo" name="internal_memo" maxlength="2000" required aria-describedby="work-queue-internal-memo-help" class="mt-3 min-h-40 w-full rounded-lg border border-gray-300 bg-white p-3" placeholder="내부에서 확인한 자료와 판단 근거를 입력하세요."></textarea>
+                    <div class="mt-2 flex items-center justify-between text-2xs text-gray-500">
+                        <p class="font-normal">상대방에게 노출되지 않음</p>
+                        <span class="font-bold">0 / 2000</span>
+                    </div>
+                </section>
+
+                <section class="rounded-lg border border-blue-200 bg-blue-50 p-4">
+                    <h4 class="text-xs font-bold text-gray-900">
+                        <label for="work-queue-external-reason">상대방 전달 사유 · 선택</label>
+                    </h4>
+                    <p id="work-queue-external-reason-help" class="mt-1 text-2xs font-normal text-gray-500">관련 당사자에게 관리자 알림으로 안내할 때만 사용합니다.</p>
+                    <label for="work-queue-send-notice" class="mt-3 flex items-center gap-2 text-2xs font-bold text-gray-900">
+                        <input type="checkbox" id="work-queue-send-notice" name="send_notice" value="1">
+                        <span>상대방에게 안내하기</span>
+                    </label>
+                    <textarea id="work-queue-external-reason" name="external_reason" maxlength="1000" aria-describedby="work-queue-external-reason-help" class="mt-3 min-h-40 w-full rounded-lg border border-gray-300 bg-white p-3" placeholder="상대방에게 보낼 사유와 후속 조치를 입력하세요."></textarea>
+                    <div class="mt-2 flex items-center justify-between text-2xs text-gray-500">
+                        <p class="font-normal">수신자에게만 표시</p>
+                        <span class="font-bold">0 / 1000</span>
+                    </div>
+                    <div class="mt-2 border border-dashed border-blue-200 rounded-lg bg-white text-2xs p-3">
+                        <span class="block text-blue-500 font-bold">관련 당사자 · 관리자 알림</span>
+                        <p class="mt-1 text-gray-500 font-normal">안내하기를 선택하면 전달 문구를 미리 확인할 수 있습니다.</p>
+                    </div>
+                </section>
+            </div>
+
+            <div class="mt-4 flex items-center gap-3 bg-amber-50 rounded-lg text-2xs p-3">
+                <p class="text-amber-700 font-normal">내부 메모는 상대방 화면에 전달되지 않습니다. 승인·반려·완료는 항목별 완료함으로 이동하며, 보완 요청·보류는 두 기록을 분리해 유지합니다.</p>
+            </div>
+        </div>
+
+        <footer class="flex shrink-0 justify-end gap-2 border-t border-gray-300 p-4">
+            <button type="button" class="work-queue-modal-close rounded-lg border border-gray-300 bg-white px-4 py-3 font-bold text-gray-900">닫기</button>
+            <button type="button" class="rounded-lg border border-gray-300 bg-white px-4 py-3 font-bold text-gray-900">전문 화면</button>
+            <button type="button" id="work-queue-modal-save" class="rounded-lg border border-transparent bg-amber-300 px-4 py-3 font-bold text-gray-900">결과 저장·전달</button>
+        </footer>
+    </div>
+</div>
+
 <script>
-    // 탭 전환 UI
-    $('#work-queue-processing-tab').on('click', function() {
-        $('#work-queue-processing-panel').prop('hidden', false);
-        $('#work-queue-completed-panel').prop('hidden', true);
+    // 탭 선택
+    const $workQueueTabs = $('#work-queue-tabs [role="tab"]');
+    const $workQueuePanels = $('[role="tabpanel"]');
 
-        $('#work-queue-processing-tab')
-            .attr('aria-pressed', 'true')
-            .removeClass('text-gray-600')
-            .addClass('bg-white text-gray-900');
+    $workQueueTabs.on('click', function() {
+        const panelId = $(this).attr('aria-controls');
 
-        $('#work-queue-completed-tab')
-            .attr('aria-pressed', 'false')
-            .removeClass('bg-white text-gray-900')
-            .addClass('text-gray-600');
+        $workQueueTabs
+            .attr('aria-selected', 'false')
+            .attr('tabindex', '-1');
+
+        $(this)
+            .attr('aria-selected', 'true')
+            .attr('tabindex', '0');
+
+        $workQueuePanels.prop('hidden', true);
+        $('#' + panelId).prop('hidden', false);
     });
 
-    $('#work-queue-completed-tab').on('click', function() {
-        $('#work-queue-processing-panel').prop('hidden', true);
-        $('#work-queue-completed-panel').prop('hidden', false);
+    // 업무 상세 모달 열기
+    $('#work-queue-modal-open').on('click', function() {
+        $('#work-queue-modal').prop('hidden', false);
+        $('#work-queue-modal-container').trigger('focus');
+    });
 
-        $('#work-queue-processing-tab')
-            .attr('aria-pressed', 'false')
-            .removeClass('bg-white text-gray-900')
-            .addClass('text-gray-600');
-
-        $('#work-queue-completed-tab')
-            .attr('aria-pressed', 'true')
-            .removeClass('text-gray-600')
-            .addClass('bg-white text-gray-900');
+    // 업무 상세 모달 닫기
+    $('.work-queue-modal-close, #work-queue-modal-backdrop').on('click', function() {
+        $('#work-queue-modal').prop('hidden', true);
+        $('#work-queue-modal-open').trigger('focus');
     });
 </script>
 

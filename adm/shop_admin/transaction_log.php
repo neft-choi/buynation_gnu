@@ -24,8 +24,8 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
         <span class="text-amber-600 font-bold">자동 변경 없음</span>
         <p class="text-amber-700 font-normal">시스템은 비교 결과만 표시합니다. 불일치 해소와 환불 판단은 결제사 증빙을 확인한 뒤 담당자 검토 기록으로 남깁니다.</p>
     </div>
-
-    <form class="mt-4 rounded-lg border border-gray-300 bg-white p-4">
+    <!-- 검색 폼 -->
+    <form id="transaction-log-filter-form" class="mt-4 rounded-lg border border-gray-300 bg-white p-4">
         <div class="flex flex-col gap-3 pc:flex-row pc:flex-wrap pc:items-end">
             <div class="pc:w-68">
                 <label for="transaction-log-from-date" class="block text-2xs font-bold text-gray-700">조회 기간</label>
@@ -62,7 +62,7 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
                 <input type="search" id="transaction-log-search" name="q" class="mt-1 w-full rounded-lg border border-gray-300 p-3 text-xs text-gray-900" placeholder="거래번호 또는 주문번호 검색">
             </div>
 
-            <button type="button" class="rounded-lg bg-gray-900 px-4 py-3 text-xs font-bold text-white">
+            <button type="submit" class="rounded-lg bg-gray-900 px-4 py-3 text-xs font-bold text-white">
                 검색
             </button>
         </div>
@@ -99,8 +99,8 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
                     </tr>
                 </thead>
 
-                <tbody class="text-2xs font-normal text-gray-900 [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
+                <tbody id="transaction-log-list" class="text-2xs font-normal text-gray-900 [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                    <tr data-transaction-type="payment" data-reconciliation-status="matched" data-transaction-date="2026-10-01">
                         <td>2026.10.01 10:30</td>
                         <td><span class="font-bold">PAY-261001-0001</span></td>
                         <td>20261001000001</td>
@@ -113,7 +113,7 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
                         </td>
                         <td>-</td>
                     </tr>
-                    <tr>
+                    <tr data-transaction-type="point_use" data-reconciliation-status="pending" data-transaction-date="2026-10-01">
                         <td>2026.10.01 11:12</td>
                         <td><span class="font-bold">PNT-261001-0001</span></td>
                         <td>20261001000002</td>
@@ -130,11 +130,11 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
                             </button>
                         </td>
                     </tr>
-                    <tr>
+                    <tr data-transaction-type="cancel" data-reconciliation-status="mismatched" data-transaction-date="2026-10-01">
                         <td>2026.10.01 14:05</td>
                         <td><span class="font-bold">PAY-261001-0002</span></td>
                         <td>20261001000003</td>
-                        <td>부분취소</td>
+                        <td>취소·환불</td>
                         <td class="text-red-600">-42,000원</td>
                         <td class="text-red-600">-420P</td>
                         <td>PG 금액 차이</td>
@@ -217,6 +217,69 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 </div>
 
 <script>
+    // 필터 기능 (현재 화면의 리스트만 가능)
+    // 전체 리스트 검색은 검색어 포함 여부를 서버가 확인하고 API로 전달 받아야 함
+    $('#transaction-log-filter-form').on('submit', function(event) {
+        event.preventDefault();
+
+        // 검색어
+        const keyword = $('#transaction-log-search').val().trim().toLowerCase();
+
+        // 거래 구분
+        const selectedType = $('#transaction-log-type').val();
+
+        // 대사 상태
+        const selectedStatus = $('#transaction-log-status').val();
+
+        // 조회 기간
+        const fromDate = $('#transaction-log-from-date').val();
+        const toDate = $('#transaction-log-to-date').val();
+
+        if (fromDate !== '' && toDate !== '' && fromDate > toDate) {
+            alert('시작일은 종료일보다 늦을 수 없습니다.');
+            return;
+        }
+
+        $('#transaction-log-list > tr').each(function() {
+            const $row = $(this);
+            const $cells = $row.children('td');
+            const rowType = $row.attr('data-transaction-type');
+            const rowStatus = $row.attr('data-reconciliation-status');
+            const rowDate = $row.attr('data-transaction-date');
+
+            // 거래번호와 주문번호
+            // eq()는 jQuery에서 여러 요소 중 하나를 고르는 기능
+            const transactionNo = $cells.eq(1).text().trim().toLowerCase();
+            const orderNo = $cells.eq(2).text().trim().toLowerCase();
+
+            // 거래 구분 조건
+            const isTypeMatch = selectedType === '' ||
+                rowType === selectedType;
+
+            // 대사 상태 조건
+            const isStatusMatch = selectedStatus === '' ||
+                rowStatus === selectedStatus;
+
+            // 시작일 조건
+            const isFromDateMatch = fromDate === '' ||
+                rowDate >= fromDate;
+
+            // 종료일 조건
+            const isToDateMatch = toDate === '' ||
+                rowDate <= toDate;
+
+            // 검색 조건
+            // keyword === '' 가 있는 이유는 빈 검색어로 검색했을 때 전체 목록을 다시 보여주기 위함
+            const isMatch = keyword === '' ||
+                transactionNo.includes(keyword) ||
+                orderNo.includes(keyword);
+
+            // 모든 조건을 만족하는 행만 표시
+            // true면 현재 행 표시, false면 현재 행 미표시
+            $row.toggle(isMatch && isTypeMatch && isStatusMatch && isFromDateMatch && isToDateMatch);
+        });
+    });
+
     // 거래 상세 모달
     $('.payment-audit-modal-open').on('click', function() {
         $('#payment-audit-modal').prop('hidden', false);
