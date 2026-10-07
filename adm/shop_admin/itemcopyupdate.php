@@ -9,29 +9,33 @@ check_admin_token();
 $ca_id = isset($_REQUEST['ca_id']) ? preg_replace('/[^0-9a-z]/i', '', $_REQUEST['ca_id']) : '';
 $it_id = isset($_REQUEST['it_id']) ? safe_replace_regex($_REQUEST['it_id'], 'it_id') : '';
 
-if ($is_admin != "super") {
+if ($is_admin !== 'super') {
+    $member_id_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+    $it_id_sql = sql_real_escape_string($it_id);
 
+    // 브랜드/셀러 계정 확인 (대소문자 무시)
     $brand = sql_fetch("
         SELECT brand_id
         FROM donuts_brand
-        WHERE brand_id = '{$member['mb_id']}'
+        WHERE LOWER(TRIM(brand_id)) = LOWER('{$member_id_sql}')
+        LIMIT 1
     ");
 
-    // 브랜드 회원이 아니면 차단
-    if (!$brand['brand_id']) {
-        alert("최고관리자만 접근 가능합니다.상품수정");
+    if (empty($brand['brand_id'])) {
+        alert('상품 복사 권한이 없습니다.');
     }
 
-    // 자기 상품인지 확인
+    // 상품 소유권은 it_brand가 아니라 it_seller 기준
     $item = sql_fetch("
         SELECT it_id
         FROM {$g5['g5_shop_item_table']}
-        WHERE it_id = '{$it_id}'
-          AND it_brand = '{$member['mb_id']}'
+        WHERE it_id = '{$it_id_sql}'
+          AND LOWER(TRIM(it_seller)) = LOWER('{$member_id_sql}')
+        LIMIT 1
     ");
 
-    if (!$item['it_id']) {
-        alert("복사 권한이 없는 상품입니다.");
+    if (empty($item['it_id'])) {
+        alert('복사 권한이 없는 상품입니다.');
     }
 }
 
@@ -66,6 +70,19 @@ $sql = " insert {$g5['g5_shop_item_table']}
 			set it_id = '$new_it_id'
                 $sql_common ";
 sql_query($sql);
+
+// 셀러가 복사한 상품의 소유자는 항상 현재 로그인 셀러로 고정.
+// it_brand는 표시/브랜드 메타데이터이므로 원본 값을 그대로 유지한다.
+if ($is_admin !== 'super') {
+    $new_it_id_sql = sql_real_escape_string($new_it_id);
+    $member_id_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+
+    sql_query("
+        UPDATE {$g5['g5_shop_item_table']}
+           SET it_seller = '{$member_id_sql}'
+         WHERE it_id = '{$new_it_id_sql}'
+    ");
+}
 
 // 선택/추가 옵션 copy
 $opt_sql = " insert ignore into {$g5['g5_shop_item_option_table']} ( io_id, io_type, it_id, io_price, io_stock_qty, io_noti_qty, io_use )

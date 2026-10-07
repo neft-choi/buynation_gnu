@@ -21,9 +21,9 @@
   --radius: 14px;
 }
 
-* {
+/* * {
   box-sizing: border-box;
-}
+} */
 
 html {
   scroll-behavior: smooth;
@@ -40,15 +40,15 @@ body {
   word-break: keep-all;
 }
 
-button,
+/* button,
 input,
 select {
   font: inherit;
-}
+} */
 
-button {
+/* button {
   cursor: pointer;
-}
+} */
 
 a {
   color: inherit;

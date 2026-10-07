@@ -6,6 +6,11 @@ include_once(G5_LIB_PATH . '/donuts_delivery.lib.php');
 auth_check_menu($auth, $sub_menu, 'r');
 donuts_delivery_install();
 
+// 배송조건별 개별 배송 여부
+if (!sql_query(" SELECT dc_individual FROM donuts_delivery_conditions LIMIT 1 ", false)) {
+    sql_query("ALTER TABLE donuts_delivery_conditions ADD dc_individual TINYINT(1) NOT NULL DEFAULT 0 AFTER dc_qty", true);
+}
+
 sql_query("
     CREATE TABLE IF NOT EXISTS donuts_brand_sendcost (
         sc_id INT NOT NULL AUTO_INCREMENT,
@@ -212,7 +217,6 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
         <div class="content">
             <div class="page-head">
                 <div>
-                    <h1>배송관리</h1>
                     <p><strong><?php echo get_text($manage_brand_id); ?></strong> 브랜드의 배송조건을 별도로 관리합니다.</p>
                 </div>
                 <div style="display:flex;gap:8px;align-items:center">
@@ -304,7 +308,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                                             <div class="condition-name"><strong><?php echo get_text($c['dc_name']); ?></strong><?php if ($c['is_default']) { ?><span class="badge badge-base">기본</span><?php } ?></div><span class="condition-desc"><?php echo $c['is_default'] ? '브랜드 기본 배송조건' : '직접 추가한 배송조건'; ?></span>
                                         </td>
 
-                                        <td><?php echo delivery_type_label($c['dc_type']); ?></td>
+                                        <td><?php echo delivery_type_label($c['dc_type']); ?><?php if (!empty($c['dc_individual'])) { ?><span class="condition-desc"><strong>개별 배송 적용</strong></span><?php } ?></td>
 
                                         <td><strong><?php echo delivery_condition_main($c); ?></strong><?php $sub = delivery_condition_sub($c);
                                                                                                         if ($sub) { ?><span class="condition-desc"><?php echo get_text($sub); ?></span><?php } ?></td>
@@ -332,7 +336,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                                         <td>
                                             <div class="row-actions">
                                                 <button class="text-btn edit-condition" type="button"
-                                                    data-id="<?php echo (int)$c['dc_id']; ?>" data-name="<?php echo get_text($c['dc_name']); ?>" data-type="<?php echo get_text($c['dc_type']); ?>" data-price="<?php echo (int)$c['dc_price']; ?>" data-minimum="<?php echo (int)$c['dc_minimum']; ?>" data-qty="<?php echo (int)$c['dc_qty']; ?>" data-jeju-use="<?php echo (int)$c['dc_jeju_use']; ?>" data-jeju-price="<?php echo (int)$c['dc_jeju_price']; ?>" data-island-use="<?php echo (int)$c['dc_island_use']; ?>" data-island-price="<?php echo (int)$c['dc_island_price']; ?>" data-ranges='<?php echo htmlspecialchars($c['ranges_json'], ENT_QUOTES); ?>' data-sendcosts='<?php echo htmlspecialchars($c['sendcost_ids_json'], ENT_QUOTES); ?>'>수정</button>
+                                                    data-id="<?php echo (int)$c['dc_id']; ?>" data-name="<?php echo get_text($c['dc_name']); ?>" data-type="<?php echo get_text($c['dc_type']); ?>" data-price="<?php echo (int)$c['dc_price']; ?>" data-minimum="<?php echo (int)$c['dc_minimum']; ?>" data-qty="<?php echo (int)$c['dc_qty']; ?>" data-individual="<?php echo (int)$c['dc_individual']; ?>" data-jeju-use="<?php echo (int)$c['dc_jeju_use']; ?>" data-jeju-price="<?php echo (int)$c['dc_jeju_price']; ?>" data-island-use="<?php echo (int)$c['dc_island_use']; ?>" data-island-price="<?php echo (int)$c['dc_island_price']; ?>" data-ranges='<?php echo htmlspecialchars($c['ranges_json'], ENT_QUOTES); ?>' data-sendcosts='<?php echo htmlspecialchars($c['sendcost_ids_json'], ENT_QUOTES); ?>'>수정</button>
                                                 <form method="post" action="./deliverymanage_update.php" style="display:inline"><input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>"><input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>"><input type="hidden" name="action" value="clone_condition"><input type="hidden" name="dc_id" value="<?php echo (int)$c['dc_id']; ?>"><button class="text-btn" type="submit">복제</button></form>
                                                 <?php if (!$c['is_default']) { ?><form method="post" action="./deliverymanage_update.php" style="display:inline" onsubmit="return confirm('이 배송조건을 삭제하시겠습니까?');"><input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>"><input type="hidden" name="brand_id" value="<?php echo get_text($manage_brand_id); ?>"><input type="hidden" name="action" value="delete_condition"><input type="hidden" name="dc_id" value="<?php echo (int)$c['dc_id']; ?>"><button class="text-btn" type="submit">삭제</button></form><?php } ?>
                                             </div>
@@ -392,10 +396,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             <div class="form-section">
                 <div class="section-title">배송비 유형</div>
                 <div class="fee-types" id="feeTypes"><button class="fee-type" type="button" data-fee="paid">유료</button><button class="fee-type active" type="button" data-fee="conditional">조건부 무료</button><button class="fee-type" type="button" data-fee="free">무료</button><button class="fee-type" type="button" data-fee="quantity">수량별</button></div>
-            </div>
-            <div class="form-section">
-                <div class="section-title">개별 배송</div>
-                <div class="mt-3">
+                <div class="mt-3" id="individualShippingWrap" style="display:none">
                     <label for="individual-shipping" class="inline-flex cursor-pointer items-center gap-2">
                         <input type="checkbox" id="individual-shipping" name="individual_shipping" value="1" class="w-4 h-4">
                         <span class="font-bold text-gray-900">개별 배송 적용</span>
@@ -609,6 +610,8 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
         const baseFee = $('baseFee');
         const freeThreshold = $('freeThreshold');
         const repeatQuantity = $('repeatQuantity');
+        const individualShipping = $('individual-shipping');
+        const individualShippingWrap = $('individualShippingWrap');
         const jejuUse = $('jejuUse');
         const jejuPrice = $('jejuPrice');
         const islandUse = $('islandUse');
@@ -682,6 +685,8 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             if (amountRangeFields) amountRangeFields.style.display = type === 'amount_range' ? 'block' : 'none';
             if (thresholdWrap) thresholdWrap.style.display = type === 'conditional' ? 'block' : 'none';
             if (quantityWrap) quantityWrap.style.display = type === 'quantity' ? 'block' : 'none';
+            if (individualShippingWrap) individualShippingWrap.style.display = type === 'paid' ? 'block' : 'none';
+            if (type !== 'paid' && individualShipping) individualShipping.checked = false;
             updatePreview();
         }
 
@@ -896,6 +901,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             if (baseFee) baseFee.value = 3000;
             if (freeThreshold) freeThreshold.value = 50000;
             if (repeatQuantity) repeatQuantity.value = 1;
+            if (individualShipping) individualShipping.checked = false;
             if (jejuUse) jejuUse.checked = false;
             if (islandUse) islandUse.checked = false;
             if (jejuPrice) jejuPrice.value = 3000;
@@ -919,6 +925,7 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
             if (baseFee) baseFee.value = b.dataset.price;
             if (freeThreshold) freeThreshold.value = b.dataset.minimum;
             if (repeatQuantity) repeatQuantity.value = b.dataset.qty;
+            if (individualShipping) individualShipping.checked = b.dataset.individual === '1';
             if (jejuUse) jejuUse.checked = b.dataset.jejuUse === '1';
             if (jejuPrice) jejuPrice.value = b.dataset.jejuPrice;
             if (islandUse) islandUse.checked = b.dataset.islandUse === '1';
@@ -1879,4 +1886,5 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
         updatePreview();
     })();
 </script>
+
 <?php include_once(G5_ADMIN_PATH . '/admin.tail.php'); ?>

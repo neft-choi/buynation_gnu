@@ -11,6 +11,7 @@ if ($action === 'save_condition') {
     $price = isset($_POST['dc_price']) ? max(0, (int)$_POST['dc_price']) : 0;
     $minimum = isset($_POST['dc_minimum']) ? max(0, (int)$_POST['dc_minimum']) : 0;
     $qty = isset($_POST['dc_qty']) ? max(1, (int)$_POST['dc_qty']) : 1;
+    $individual = ($type === 'paid' && !empty($_POST['individual_shipping'])) ? 1 : 0;
     $jeju_use = !empty($_POST['dc_jeju_use']) ? 1 : 0;
     $island_use = !empty($_POST['dc_island_use']) ? 1 : 0;
     $jeju_price = isset($_POST['dc_jeju_price']) ? max(0, (int)$_POST['dc_jeju_price']) : 3000;
@@ -36,6 +37,7 @@ if ($action === 'save_condition') {
             dc_price = '{$price}',
             dc_minimum = '{$minimum}',
             dc_qty = '{$qty}',
+            dc_individual = '{$individual}',
             dc_jeju_use = '{$jeju_use}',
             dc_jeju_price = '{$jeju_price}',
             dc_island_use = '{$island_use}',
@@ -50,6 +52,7 @@ if ($action === 'save_condition') {
             dc_price = '{$price}',
             dc_minimum = '{$minimum}',
             dc_qty = '{$qty}',
+            dc_individual = '{$individual}',
             dc_jeju_use = '{$jeju_use}',
             dc_jeju_price = '{$jeju_price}',
             dc_island_use = '{$island_use}',
@@ -59,6 +62,11 @@ if ($action === 'save_condition') {
             created_at = NOW(),
             updated_at = NOW()");
         $dc_id = sql_insert_id();
+    }
+
+    // 개별 배송 적용 시 이 조건의 상품은 묶음배송 그룹에서 즉시 분리합니다.
+    if ($individual) {
+        sql_query("UPDATE donuts_delivery_product_settings SET group_id = NULL, updated_at = NOW() WHERE brand_id = '{$brand_id_sql}' AND condition_id = '{$dc_id}'");
     }
 
     sql_query("DELETE FROM donuts_delivery_condition_ranges WHERE dc_id = '{$dc_id}'");
@@ -160,7 +168,7 @@ if ($action === 'clone_condition') {
     $name_sql = sql_real_escape_string($name);
     sql_query("INSERT INTO donuts_delivery_conditions SET
         brand_id = '{$brand_id_sql}', dc_name = '{$name_sql}', dc_type = '" . sql_real_escape_string($row['dc_type']) . "',
-        dc_price = '" . (int)$row['dc_price'] . "', dc_minimum = '" . (int)$row['dc_minimum'] . "', dc_qty = '" . (int)$row['dc_qty'] . "',
+        dc_price = '" . (int)$row['dc_price'] . "', dc_minimum = '" . (int)$row['dc_minimum'] . "', dc_qty = '" . (int)$row['dc_qty'] . "', dc_individual = '" . (int)$row['dc_individual'] . "',
         dc_jeju_use = '" . (int)$row['dc_jeju_use'] . "', dc_jeju_price = '" . (int)$row['dc_jeju_price'] . "',
         dc_island_use = '" . (int)$row['dc_island_use'] . "', dc_island_price = '" . (int)$row['dc_island_price'] . "',
         is_default = 0, use_yn = 'Y', created_at = NOW(), updated_at = NOW()");
@@ -242,7 +250,7 @@ if ($action === 'sync_condition_products') {
     $it_ids = isset($_POST['it_ids']) && is_array($_POST['it_ids']) ? $_POST['it_ids'] : array();
 
     $condition = sql_fetch("
-        SELECT dc_id
+        SELECT dc_id, dc_individual
         FROM donuts_delivery_conditions
         WHERE dc_id = '{$condition_id}'
           AND brand_id = '{$brand_id_sql}'
@@ -277,9 +285,8 @@ if ($action === 'sync_condition_products') {
             continue;
         }
 
-        /*
-         * 배송조건만 변경하고 기존 묶음배송 그룹(group_id)은 유지합니다.
-         */
+        /* 개별 배송 조건이면 묶음배송 그룹을 해제합니다. */
+        $sync_group_update = !empty($condition['dc_individual']) ? ", group_id = NULL" : "";
         sql_query("
             INSERT INTO donuts_delivery_product_settings
                 (brand_id, it_id, condition_id, group_id, created_at, updated_at)
@@ -287,7 +294,7 @@ if ($action === 'sync_condition_products') {
                 ('{$brand_id_sql}', '{$it_id_sql}', '{$condition_id}', NULL, NOW(), NOW())
             ON DUPLICATE KEY UPDATE
                 condition_id = VALUES(condition_id),
-                updated_at = NOW()
+                updated_at = NOW() {$sync_group_update}
         ");
 
         $saved++;
@@ -304,8 +311,12 @@ if ($action === 'apply_products') {
     $group_id = isset($_POST['group_id']) && (int)$_POST['group_id'] > 0 ? (int)$_POST['group_id'] : 0;
     $it_ids = isset($_POST['it_ids']) && is_array($_POST['it_ids']) ? $_POST['it_ids'] : array();
 
-    $condition = sql_fetch("SELECT dc_id FROM donuts_delivery_conditions WHERE dc_id = '{$condition_id}' AND brand_id = '{$brand_id_sql}' LIMIT 1");
+    $condition = sql_fetch("SELECT dc_id, dc_individual FROM donuts_delivery_conditions WHERE dc_id = '{$condition_id}' AND brand_id = '{$brand_id_sql}' LIMIT 1");
     if (empty($condition['dc_id'])) delivery_redirect('배송조건을 선택해 주세요.', $return_url);
+
+    if (!empty($condition['dc_individual'])) {
+        $group_id = 0;
+    }
 
     if ($group_id > 0) {
         $group = sql_fetch("SELECT dg_id FROM donuts_delivery_groups WHERE dg_id = '{$group_id}' AND brand_id = '{$brand_id_sql}' LIMIT 1");
@@ -323,7 +334,7 @@ if ($action === 'apply_products') {
         $group_sql = $group_id > 0 ? "'{$group_id}'" : 'NULL';
         sql_query("INSERT INTO donuts_delivery_product_settings (brand_id, it_id, condition_id, group_id, created_at, updated_at)
             VALUES ('{$brand_id_sql}', '{$it_id_sql}', '{$condition_id}', {$group_sql}, NOW(), NOW())
-            ON DUPLICATE KEY UPDATE condition_id = VALUES(condition_id), group_id = VALUES(group_id), updated_at = NOW()");
+            ON DUPLICATE KEY UPDATE condition_id = VALUES(condition_id), group_id = NULL, updated_at = NOW()");
     }
 
     delivery_redirect('선택 상품의 배송설정을 저장했습니다.', $return_url . '&tab=individual');

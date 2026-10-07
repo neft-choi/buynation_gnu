@@ -346,14 +346,14 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
 ?>
 
 <?php if ($inspection_is_brand_member) { ?>
-<div class="local_desc02 local_desc" style="margin-bottom:15px;">
-    <p>
-        <strong>브랜드 상품 검수제:</strong>
-        상품 저장 후 자동으로 <strong>임시저장</strong> 상태가 되며,
-        <a href="./iteminspectresult.php?status=draft">상품 검수 페이지</a>에서
-        검수 요청을 해야 플랫폼 심사로 넘어갑니다.
-    </p>
-</div>
+    <div class="local_desc02 local_desc" style="margin-bottom:15px;">
+        <p>
+            <strong>브랜드 상품 검수제:</strong>
+            상품 저장 후 자동으로 <strong>임시저장</strong> 상태가 되며,
+            <a href="./iteminspectresult.php?status=draft">상품 검수 페이지</a>에서
+            검수 요청을 해야 플랫폼 심사로 넘어갑니다.
+        </p>
+    </div>
 <?php } ?>
 
 <form name="fitemform" action="./itemformupdate_delivery.php" method="post" enctype="MULTIPART/FORM-DATA" autocomplete="off" onsubmit="return fitemformcheck(this)">
@@ -409,18 +409,25 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             </script>
                         </td>
                     </tr>
-                    <?php for ($i = 2; $i <= 3; $i++) { ?>
-                        <tr>
-                            <th scope="row"><label for="ca_id<?php echo $i; ?>"><?php echo $i; ?>차 분류</label></th>
-                            <td>
-                                <?php echo help($i . '차 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 상품이 포함될 최하위 분류만 선택하시면 됩니다.'); ?>
-                                <select name="ca_id<?php echo $i; ?>" id="ca_id<?php echo $i; ?>">
-                                    <option value="">선택하세요</option>
-                                    <?php echo conv_selected_option($category_select, $it['ca_id' . $i]); ?>
-                                </select>
-                            </td>
-                        </tr>
-                    <?php } ?>
+                    <?php
+                    // 2차 카테고리, 3차 카테고리
+                    // for ($i = 2; $i <= 3; $i++) {
+                    ?>
+                    <tr class="hidden">
+                        <th scope="row">
+                            <label for="ca_id<?php echo $i; ?>"><?php echo $i; ?>차 분류</label>
+                        </th>
+                        <td>
+                            <?php echo help($i . '차 분류는 기본 분류의 하위 분류 개념이 아니므로 기본 분류 선택시 해당 상품이 포함될 최하위 분류만 선택하시면 됩니다.'); ?>
+                            <select name="ca_id<?php echo $i; ?>" id="ca_id<?php echo $i; ?>">
+                                <option value="">선택하세요</option>
+                                <?php echo conv_selected_option($category_select, $it['ca_id' . $i]); ?>
+                            </select>
+                        </td>
+                    </tr>
+                    <?php
+                    // } 
+                    ?>
                 </tbody>
             </table>
         </div>
@@ -443,7 +450,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <td>
                             <?php echo get_skin_select('shop', 'it_skin', 'it_skin', $it['it_skin']); ?>
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_skin" value="1" id="chk_ca_it_skin">
                             <label for="chk_ca_it_skin">분류적용</label>
                             <input type="checkbox" name="chk_all_it_skin" value="1" id="chk_all_it_skin">
@@ -455,7 +462,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <td>
                             <?php echo get_mobile_skin_select('shop', 'it_mobile_skin', 'it_mobile_skin', $it['it_mobile_skin']); ?>
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_mobile_skin" value="1" id="chk_ca_it_mobile_skin">
                             <label for="chk_ca_it_mobile_skin">분류적용</label>
                             <input type="checkbox" name="chk_all_it_mobile_skin" value="1" id="chk_all_it_mobile_skin">
@@ -508,7 +515,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("상품명 하단에 상품에 대한 추가적인 설명이 필요한 경우에 입력합니다. HTML 입력도 가능합니다."); ?>
                             <input type="text" name="it_basic" value="<?php echo get_text(html_purifier($it['it_basic'])); ?>" id="it_basic" class="frm_input" size="95">
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_basic" value="1" id="chk_ca_it_basic">
                             <label for="chk_ca_it_basic">분류적용</label>
                             <input type="checkbox" name="chk_all_it_basic" value="1" id="chk_all_it_basic">
@@ -521,7 +528,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("숫자가 작을 수록 상위에 출력됩니다. 음수 입력도 가능하며 입력 가능 범위는 -2147483648 부터 2147483647 까지입니다.\n<b>입력하지 않으면 자동으로 출력됩니다.</b>"); ?>
                             <input type="text" name="it_order" value="<?php echo $it['it_order']; ?>" id="it_order" class="frm_input" size="12">
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_order" value="1" id="chk_ca_it_order">
                             <label for="chk_ca_it_order">분류적용</label>
                             <input type="checkbox" name="chk_all_it_order" value="1" id="chk_all_it_order">
@@ -545,7 +552,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                 <input type="checkbox" name="it_type5" value="1" <?php echo ($it['it_type5'] ? "checked" : ""); ?> id="it_type5">
                                 <label for="it_type5">할인 <img src="<?php echo G5_SHOP_URL; ?>/img/icon_discount.gif" alt=""></label>
                             </td>
-                            <td class="td_grpset">
+                            <td class="td_grpset hidden">
                                 <input type="checkbox" name="chk_ca_it_type" value="1" id="chk_ca_it_type">
                                 <label for="chk_ca_it_type">분류적용</label>
                                 <input type="checkbox" name="chk_all_it_type" value="1" id="chk_all_it_type">
@@ -560,7 +567,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
                             <input type="text" name="it_maker" value="<?php echo get_text($it['it_maker']); ?>" id="it_maker" class="frm_input" size="40">
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_maker" value="1" id="chk_ca_it_maker">
                             <label for="chk_ca_it_maker">분류적용</label>
                             <input type="checkbox" name="chk_all_it_maker" value="1" id="chk_all_it_maker">
@@ -573,7 +580,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
                             <input type="text" name="it_origin" value="<?php echo get_text($it['it_origin']); ?>" id="it_origin" class="frm_input" size="40">
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_origin" value="1" id="chk_ca_it_origin">
                             <label for="chk_ca_it_origin">분류적용</label>
                             <input type="checkbox" name="chk_all_it_origin" value="1" id="chk_all_it_origin">
@@ -612,25 +619,25 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                     현재 접속한 계정의 브랜드 정보가 자동으로 입력되며, 수정할 수 없습니다.
                                 <?php } ?>
                             </span> -->
-                                 <input type="text" name="it_brand" value="<?php echo get_text($it['it_brand']); ?>" id="it_brand" class="frm_input" size="40">
+                            <input type="text" name="it_brand" value="<?php echo get_text($it['it_brand']); ?>" id="it_brand" class="frm_input" size="40">
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_brand" value="1" id="chk_ca_it_brand">
                             <label for="chk_ca_it_brand">분류적용</label>
                             <input type="checkbox" name="chk_all_it_brand" value="1" id="chk_all_it_brand">
                             <label for="chk_all_it_brand">전체적용</label>
                         </td>
                     </tr>
-                                        <tr>
+                    <tr>
                         <th scope="row"><label for="it_seller">셀러</label></th>
                         <td>
- 
+
                             <input type="text" name="it_seller" value="<?php echo get_text($it['it_seller']); ?>" id="it_seller" class="frm_input" size="40" readonly>
                             <span class="frm_info">
-                               
+
                             </span>
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_brand" value="1" id="chk_ca_it_brand">
                             <label for="chk_ca_it_brand">분류적용</label>
                             <input type="checkbox" name="chk_all_it_brand" value="1" id="chk_all_it_brand">
@@ -643,7 +650,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
                             <input type="text" name="it_model" value="<?php echo get_text($it['it_model']); ?>" id="it_model" class="frm_input" size="40">
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_model" value="1" id="chk_ca_it_model">
                             <label for="chk_ca_it_model">분류적용</label>
                             <input type="checkbox" name="chk_all_it_model" value="1" id="chk_all_it_model">
@@ -656,7 +663,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("상품 금액 대신 전화문의로 표시됩니다."); ?>
                             <input type="checkbox" name="it_tel_inq" value="1" id="it_tel_inq" <?php echo ($it['it_tel_inq']) ? "checked" : ""; ?>> 예
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_tel_inq" value="1" id="chk_ca_it_tel_inq">
                             <label for="chk_ca_it_tel_inq">분류적용</label>
                             <input type="checkbox" name="chk_all_it_tel_inq" value="1" id="chk_all_it_tel_inq">
@@ -675,7 +682,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                 <input type="checkbox" name="it_use" value="1" id="it_use" <?php echo ($it['it_use']) ? "checked" : ""; ?>> 예
                             <?php } ?>
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_use" value="1" id="chk_ca_it_use">
                             <label for="chk_ca_it_use">분류적용</label>
                             <input type="checkbox" name="chk_all_it_use" value="1" id="chk_all_it_use">
@@ -688,7 +695,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("설정에 체크하시면 쿠폰 생성 때 상품 검색 결과에 노출되지 않습니다."); ?>
                             <input type="checkbox" name="it_nocoupon" value="1" id="it_nocoupon" <?php echo ($it['it_nocoupon']) ? "checked" : ""; ?>> 예
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_nocoupon" value="1" id="chk_ca_it_nocoupon">
                             <label for="chk_ca_it_nocoupon">분류적용</label>
                             <input type="checkbox" name="chk_all_it_nocoupon" value="1" id="chk_all_it_nocoupon">
@@ -716,7 +723,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("운영자와 실제 판매자가 다른 경우 실제 판매자의 e-mail을 입력하면, 상품 주문 시점을 기준으로 실제 판매자에게도 주문서를 발송합니다."); ?>
                             <input type="text" name="it_sell_email" value="<?php echo get_sanitize_input($it['it_sell_email']); ?>" id="it_sell_email" class="frm_input" size="40">
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_sell_email" value="1" id="chk_ca_it_sell_email">
                             <label for="chk_ca_it_sell_email">분류적용</label>
                             <input type="checkbox" name="chk_all_it_sell_email" value="1" id="chk_all_it_sell_email">
@@ -726,7 +733,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                     <tr>
                         <th scope="row"><label for="it_shop_memo">상점메모</label></th>
                         <td><textarea name="it_shop_memo" id="it_shop_memo"><?php echo html_purifier($it['it_shop_memo']); ?></textarea></td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_shop_memo" value="1" id="chk_ca_it_shop_memo">
                             <label for="chk_ca_it_shop_memo">분류적용</label>
                             <input type="checkbox" name="chk_all_it_shop_memo" value="1" id="chk_all_it_shop_memo">
@@ -797,7 +804,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                         <td>
                             <input type="text" name="it_price" value="<?php echo $it['it_price']; ?>" id="it_price" class="frm_input" size="8"> 원
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_price" value="1" id="chk_ca_it_price">
                             <label for="chk_ca_it_price">분류적용</label>
                             <input type="checkbox" name="chk_all_it_price" value="1" id="chk_all_it_price">
@@ -810,7 +817,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("입력하지 않으면 상품상세페이지에 출력하지 않습니다."); ?>
                             <input type="text" name="it_cust_price" value="<?php echo $it['it_cust_price']; ?>" id="it_cust_price" class="frm_input" size="8"> 원
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_cust_price" value="1" id="chk_ca_it_cust_price">
                             <label for="chk_ca_it_cust_price">분류적용</label>
                             <input type="checkbox" name="chk_all_it_cust_price" value="1" id="chk_all_it_cust_price">
@@ -837,7 +844,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                 });
                             </script>
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_point_type" value="1" id="chk_ca_it_point_type">
                             <label for="chk_ca_it_point_type">분류적용</label>
                             <input type="checkbox" name="chk_all_it_point_type" value="1" id="chk_all_it_point_type">
@@ -851,7 +858,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <input type="text" name="it_point" value="<?php echo $it['it_point']; ?>" id="it_point" class="frm_input" size="8"> <span id="it_point_unit"><?php if ($it['it_point_type']) echo '%';
                                                                                                                                                                             else echo '점'; ?></span>
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_point" value="1" id="chk_ca_it_point">
                             <label for="chk_ca_it_point">분류적용</label>
                             <input type="checkbox" name="chk_all_it_point" value="1" id="chk_all_it_point">
@@ -864,7 +871,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("상품의 추가옵션상품 구매에 일괄적으로 지급하는 포인트입니다. 0으로 설정하시면 구매포인트를 지급하지 않습니다.\n주문완료후 환경설정에서 설정한 주문완료 설정일 후 회원에게 부여하는 포인트입니다.\n또, 포인트부여를 '아니오'로 설정한 경우 신용카드, 계좌이체로 주문하는 회원께는 부여하지 않습니다."); ?>
                             <input type="text" name="it_supply_point" value="<?php echo $it['it_supply_point']; ?>" id="it_supply_point" class="frm_input" size="8"> 점
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_supply_point" value="1" id="chk_ca_it_supply_point">
                             <label for="chk_ca_it_supply_point">분류적용</label>
                             <input type="checkbox" name="chk_all_it_supply_point" value="1" id="chk_all_it_supply_point">
@@ -877,7 +884,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("잠시 판매를 중단하거나 재고가 없을 경우에 체크해 놓으면 품절상품으로 표시됩니다."); ?>
                             <input type="checkbox" name="it_soldout" value="1" id="it_soldout" <?php echo ($it['it_soldout']) ? "checked" : ""; ?>> 예
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_soldout" value="1" id="chk_ca_it_soldout">
                             <label for="chk_ca_it_soldout">분류적용</label>
                             <input type="checkbox" name="chk_all_it_soldout" value="1" id="chk_all_it_soldout">
@@ -897,7 +904,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("<b>주문관리에서 상품별 상태 변경에 따라 자동으로 재고를 가감합니다.</b> 재고는 규격/색상별이 아닌, 상품별로만 관리됩니다.<br>재고수량을 0으로 설정하시면 품절상품으로 표시됩니다."); ?>
                             <input type="text" name="it_stock_qty" value="<?php echo $it['it_stock_qty']; ?>" id="it_stock_qty" class="frm_input" size="8"> 개
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_stock_qty" value="1" id="chk_ca_it_stock_qty">
                             <label for="chk_ca_it_stock_qty">분류적용</label>
                             <input type="checkbox" name="chk_all_it_stock_qty" value="1" id="chk_all_it_stock_qty">
@@ -910,7 +917,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("상품의 재고가 통보수량보다 작을 때 쇼핑몰관리 메인화면의 재고현황에 재고부족 상품으로 표시됩니다.<br>옵션이 있는 상품은 개별 옵션의 통보수량이 적용됩니다."); ?>
                             <input type="text" name="it_noti_qty" value="<?php echo $it['it_noti_qty']; ?>" id="it_noti_qty" class="frm_input" size="8"> 개
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_noti_qty" value="1" id="chk_ca_it_noti_qty">
                             <label for="chk_ca_it_noti_qty">분류적용</label>
                             <input type="checkbox" name="chk_all_it_noti_qty" value="1" id="chk_all_it_noti_qty">
@@ -923,7 +930,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("상품 구매시 최소 구매 수량을 설정합니다."); ?>
                             <input type="text" name="it_buy_min_qty" value="<?php echo $it['it_buy_min_qty']; ?>" id="it_buy_min_qty" class="frm_input" size="8"> 개
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_buy_min_qty" value="1" id="chk_ca_it_buy_min_qty">
                             <label for="chk_ca_it_buy_min_qty">분류적용</label>
                             <input type="checkbox" name="chk_all_it_buy_min_qty" value="1" id="chk_all_it_buy_min_qty">
@@ -936,7 +943,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                             <?php echo help("상품 구매시 최대 구매 수량을 설정합니다."); ?>
                             <input type="text" name="it_buy_max_qty" value="<?php echo $it['it_buy_max_qty']; ?>" id="it_buy_max_qty" class="frm_input" size="8"> 개
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_buy_max_qty" value="1" id="chk_ca_it_buy_max_qty">
                             <label for="chk_ca_it_buy_max_qty">분류적용</label>
                             <input type="checkbox" name="chk_all_it_buy_max_qty" value="1" id="chk_all_it_buy_max_qty">
@@ -952,7 +959,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                 <option value="1" <?php echo get_selected('1', $it['it_notax']); ?>>비과세</option>
                             </select>
                         </td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_notax" value="1" id="chk_ca_it_notax">
                             <label for="chk_ca_it_notax">분류적용</label>
                             <input type="checkbox" name="chk_all_it_notax" value="1" id="chk_all_it_notax">
@@ -1615,131 +1622,131 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
         include_once G5_ADMIN_PATH . '/shop_admin/sendcostform.php';
         ?>
 
-<script>
-(function () {
-    function restoreSavedDeliverySelection() {
-        var conditionId = <?php echo (int)$dm_selected_condition_id; ?>;
-        var groupId = <?php echo (int)$dm_selected_group_id; ?>;
+        <script>
+            (function() {
+                function restoreSavedDeliverySelection() {
+                    var conditionId = <?php echo (int)$dm_selected_condition_id; ?>;
+                    var groupId = <?php echo (int)$dm_selected_group_id; ?>;
 
-        var cards = document.querySelectorAll('#registerConditions .register-condition');
-        Array.prototype.forEach.call(cards, function (card) {
-            var id = parseInt(card.getAttribute('data-condition-id'), 10) || 0;
-            var selected = conditionId > 0 && id === conditionId;
+                    var cards = document.querySelectorAll('#registerConditions .register-condition');
+                    Array.prototype.forEach.call(cards, function(card) {
+                        var id = parseInt(card.getAttribute('data-condition-id'), 10) || 0;
+                        var selected = conditionId > 0 && id === conditionId;
 
-            card.classList.toggle('selected', selected);
-            card.classList.toggle('active', selected);
-            card.setAttribute('aria-checked', selected ? 'true' : 'false');
-        });
+                        card.classList.toggle('selected', selected);
+                        card.classList.toggle('active', selected);
+                        card.setAttribute('aria-checked', selected ? 'true' : 'false');
+                    });
 
-        var conditionHidden = document.getElementById('dm_condition_id');
-        if (conditionHidden) {
-            conditionHidden.value = String(conditionId || 0);
-        }
+                    var conditionHidden = document.getElementById('dm_condition_id');
+                    if (conditionHidden) {
+                        conditionHidden.value = String(conditionId || 0);
+                    }
 
-        var groupSelect = document.getElementById('delivery_group_id');
-        if (groupSelect) {
-            groupSelect.value = String(groupId || 0);
-        }
+                    var groupSelect = document.getElementById('delivery_group_id');
+                    if (groupSelect) {
+                        groupSelect.value = String(groupId || 0);
+                    }
 
-        var groupHidden = document.getElementById('dm_group_id');
-        if (groupHidden) {
-            groupHidden.value = String(groupId || 0);
-        }
-    }
+                    var groupHidden = document.getElementById('dm_group_id');
+                    if (groupHidden) {
+                        groupHidden.value = String(groupId || 0);
+                    }
+                }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () {
-            window.setTimeout(restoreSavedDeliverySelection, 0);
-        });
-    } else {
-        window.setTimeout(restoreSavedDeliverySelection, 0);
-    }
-})();
-</script>
+                if (document.readyState === 'loading') {
+                    document.addEventListener('DOMContentLoaded', function() {
+                        window.setTimeout(restoreSavedDeliverySelection, 0);
+                    });
+                } else {
+                    window.setTimeout(restoreSavedDeliverySelection, 0);
+                }
+            })();
+        </script>
 
         <?php
         ?>
 
         <script>
-        (function () {
-            'use strict';
+            (function() {
+                'use strict';
 
-            var conditionDisplayMap = <?php
-                echo json_encode(
-                    $dm_condition_display_map,
-                    JSON_UNESCAPED_UNICODE |
-                    JSON_UNESCAPED_SLASHES
-                );
-            ?>;
+                var conditionDisplayMap = <?php
+                                            echo json_encode(
+                                                $dm_condition_display_map,
+                                                JSON_UNESCAPED_UNICODE |
+                                                    JSON_UNESCAPED_SLASHES
+                                            );
+                                            ?>;
 
-            function formatNumber(value) {
-                return String(parseInt(value, 10) || 0)
-                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-            }
-
-            function getFeeText(info) {
-                if (!info) {
-                    return null;
+                function formatNumber(value) {
+                    return String(parseInt(value, 10) || 0)
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 }
 
-                if (info.type === 'free') {
-                    return '배송비 0원';
-                }
-
-                if (info.type === 'amount_range') {
-                    return '배송비 금액 구간별';
-                }
-
-                return '배송비 ' + formatNumber(info.price) + '원';
-            }
-
-            function syncDeliveryConditionFeeLabels() {
-                var cards = document.querySelectorAll(
-                    '#registerConditions .register-condition'
-                );
-
-                Array.prototype.forEach.call(cards, function (card) {
-                    var conditionId = parseInt(
-                        card.getAttribute('data-condition-id'),
-                        10
-                    ) || 0;
-
-                    var info = conditionDisplayMap[conditionId];
-                    var feeText = getFeeText(info);
-
-                    if (!info || !feeText) {
-                        return;
+                function getFeeText(info) {
+                    if (!info) {
+                        return null;
                     }
 
-                    /*
-                     * sendcostform.php의 기존 DOM 구조를 깨지 않고
-                     * "배송비 ..." 텍스트가 들어 있는 span만 교체합니다.
-                     */
-                    var spans = card.querySelectorAll('span');
+                    if (info.type === 'free') {
+                        return '배송비 0원';
+                    }
 
-                    for (var i = 0; i < spans.length; i++) {
-                        var span = spans[i];
+                    if (info.type === 'amount_range') {
+                        return '배송비 금액 구간별';
+                    }
 
-                        if (
-                            span.children.length === 0 &&
-                            /^\s*배송비\s/.test(span.textContent || '')
-                        ) {
-                            span.textContent = feeText;
-                            break;
+                    return '배송비 ' + formatNumber(info.price) + '원';
+                }
+
+                function syncDeliveryConditionFeeLabels() {
+                    var cards = document.querySelectorAll(
+                        '#registerConditions .register-condition'
+                    );
+
+                    Array.prototype.forEach.call(cards, function(card) {
+                        var conditionId = parseInt(
+                            card.getAttribute('data-condition-id'),
+                            10
+                        ) || 0;
+
+                        var info = conditionDisplayMap[conditionId];
+                        var feeText = getFeeText(info);
+
+                        if (!info || !feeText) {
+                            return;
                         }
-                    }
-                });
-            }
 
-            if (document.readyState === 'loading') {
-                document.addEventListener(
-                    'DOMContentLoaded',
-                    syncDeliveryConditionFeeLabels
-                );
-            } else {
-                syncDeliveryConditionFeeLabels();
-            }
-        })();
+                        /*
+                         * sendcostform.php의 기존 DOM 구조를 깨지 않고
+                         * "배송비 ..." 텍스트가 들어 있는 span만 교체합니다.
+                         */
+                        var spans = card.querySelectorAll('span');
+
+                        for (var i = 0; i < spans.length; i++) {
+                            var span = spans[i];
+
+                            if (
+                                span.children.length === 0 &&
+                                /^\s*배송비\s/.test(span.textContent || '')
+                            ) {
+                                span.textContent = feeText;
+                                break;
+                            }
+                        }
+                    });
+                }
+
+                if (document.readyState === 'loading') {
+                    document.addEventListener(
+                        'DOMContentLoaded',
+                        syncDeliveryConditionFeeLabels
+                    );
+                } else {
+                    syncDeliveryConditionFeeLabels();
+                }
+            })();
         </script>
 
         <?php if ($w === 'u' || $w === '') {
@@ -1790,780 +1797,782 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                 }
             }
         ?>
-        <script>
-        (function() {
-            const root = document.getElementById('anc_sitfrm_sendcost');
-            if (!root) return;
+            <script>
+                (function() {
+                    const root = document.getElementById('anc_sitfrm_sendcost');
+                    if (!root) return;
 
-            const conditionId =
-                <?php echo (int)$dm_selected_condition_id; ?>;
-            const conditionName =
-                <?php echo json_encode(
-                    $dm_selected_condition_name,
-                    JSON_UNESCAPED_UNICODE |
-                    JSON_UNESCAPED_SLASHES
-                ); ?>;
+                    const conditionId =
+                        <?php echo (int)$dm_selected_condition_id; ?>;
+                    const conditionName =
+                        <?php echo json_encode(
+                            $dm_selected_condition_name,
+                            JSON_UNESCAPED_UNICODE |
+                                JSON_UNESCAPED_SLASHES
+                        ); ?>;
 
-            const groupId =
-                <?php echo (int)$dm_selected_group_id; ?>;
-            const groupName =
-                <?php echo json_encode(
-                    $dm_selected_group_name,
-                    JSON_UNESCAPED_UNICODE |
-                    JSON_UNESCAPED_SLASHES
-                ); ?>;
+                    const groupId =
+                        <?php echo (int)$dm_selected_group_id; ?>;
+                    const groupName =
+                        <?php echo json_encode(
+                            $dm_selected_group_name,
+                            JSON_UNESCAPED_UNICODE |
+                                JSON_UNESCAPED_SLASHES
+                        ); ?>;
 
-            const conditionNameMap =
-                <?php echo json_encode(
-                    $dm_condition_name_map,
-                    JSON_UNESCAPED_UNICODE |
-                    JSON_UNESCAPED_SLASHES
-                ); ?>;
+                    const conditionNameMap =
+                        <?php echo json_encode(
+                            $dm_condition_name_map,
+                            JSON_UNESCAPED_UNICODE |
+                                JSON_UNESCAPED_SLASHES
+                        ); ?>;
 
-            const groupNameMap =
-                <?php echo json_encode(
-                    $dm_group_name_map,
-                    JSON_UNESCAPED_UNICODE |
-                    JSON_UNESCAPED_SLASHES
-                ); ?>;
+                    const groupNameMap =
+                        <?php echo json_encode(
+                            $dm_group_name_map,
+                            JSON_UNESCAPED_UNICODE |
+                                JSON_UNESCAPED_SLASHES
+                        ); ?>;
 
-            const conditionHidden =
-                document.getElementById('dm_condition_id');
-            const groupHidden =
-                document.getElementById('dm_group_id');
+                    const conditionHidden =
+                        document.getElementById('dm_condition_id');
+                    const groupHidden =
+                        document.getElementById('dm_group_id');
 
-            if (conditionHidden) {
-                conditionHidden.value = String(conditionId || 0);
-            }
-
-            if (groupHidden) {
-                groupHidden.value = String(groupId || 0);
-            }
-
-            function normalize(value) {
-                return String(value || '')
-                    .replace(/\s+/g, ' ')
-                    .trim();
-            }
-
-            /*
-             * 기존 버전 문제:
-             * "테스트"처럼 짧은 이름을 text.indexOf()로 비교하면
-             * "테스트 복사본", "테스트 2", "유료 테스트"까지 모두 일치하여
-             * 마지막 카드/옵션이 선택되는 문제가 있었습니다.
-             *
-             * 이번에는 ID 또는 "정확한 이름"만 일치시킵니다.
-             */
-            function getConditionCardName(card) {
-                if (!card) return '';
-
-                const dataName =
-                    card.getAttribute('data-condition-name') ||
-                    card.getAttribute('data-condition') ||
-                    card.getAttribute('data-name');
-
-                if (dataName) {
-                    return normalize(dataName);
-                }
-
-                const strong = card.querySelector('strong');
-
-                if (strong) {
-                    /*
-                     * "기본" 배지 등의 텍스트는 조건명에 포함시키지 않습니다.
-                     */
-                    const clone = strong.cloneNode(true);
-
-                    clone.querySelectorAll(
-                        '.badge, .tag, .label, small, span.badge'
-                    ).forEach(function(el) {
-                        el.remove();
-                    });
-
-                    return normalize(clone.textContent);
-                }
-
-                return '';
-            }
-
-            function getConditionCardId(card) {
-                if (!card) return 0;
-
-                const raw =
-                    card.getAttribute('data-condition-id') ||
-                    card.getAttribute('data-dc-id') ||
-                    card.getAttribute('data-id') ||
-                    '';
-
-                const id = parseInt(raw, 10);
-                return Number.isFinite(id) ? id : 0;
-            }
-
-            function findExactConditionCard() {
-                const candidates = Array.from(
-                    root.querySelectorAll(
-                        [
-                            '[data-condition-id]',
-                            '[data-dc-id]',
-                            '[data-condition]',
-                            '.condition-card',
-                            '.shipping-card',
-                            '.delivery-card',
-                            '.register-condition'
-                        ].join(',')
-                    )
-                );
-
-                /*
-                 * 1순위: condition_id 정확히 일치.
-                 */
-                if (conditionId > 0) {
-                    const byId = candidates.find(function(card) {
-                        return getConditionCardId(card) === conditionId;
-                    });
-
-                    if (byId) {
-                        return byId;
+                    if (conditionHidden) {
+                        conditionHidden.value = String(conditionId || 0);
                     }
-                }
 
-                /*
-                 * 2순위: 조건명 정확히 일치.
-                 * substring 비교는 절대 하지 않습니다.
-                 */
-                if (conditionName) {
-                    const wanted = normalize(conditionName);
-
-                    const byName = candidates.find(function(card) {
-                        return getConditionCardName(card) === wanted;
-                    });
-
-                    if (byName) {
-                        return byName;
+                    if (groupHidden) {
+                        groupHidden.value = String(groupId || 0);
                     }
-                }
 
-                return null;
-            }
-
-            function applyConditionSelection() {
-                const cards = Array.from(
-                    root.querySelectorAll(
-                        [
-                            '[data-condition-id]',
-                            '[data-dc-id]',
-                            '[data-condition]',
-                            '.condition-card',
-                            '.shipping-card',
-                            '.delivery-card',
-                            '.register-condition'
-                        ].join(',')
-                    )
-                );
-
-                const target = findExactConditionCard();
-
-                if (!target) {
-                    return;
-                }
-
-                /*
-                 * 현재 카드의 실제 condition_id를 hidden에 저장.
-                 * 카드가 이름만 가지고 있어도 서버에서 만든 name -> id 맵으로 변환.
-                 */
-                let selectedConditionId = getConditionCardId(target);
-
-                if (selectedConditionId <= 0) {
-                    const selectedConditionName =
-                        getConditionCardName(target);
-
-                    if (
-                        selectedConditionName &&
-                        Object.prototype.hasOwnProperty.call(
-                            conditionNameMap,
-                            selectedConditionName
-                        )
-                    ) {
-                        selectedConditionId =
-                            parseInt(
-                                conditionNameMap[selectedConditionName],
-                                10
-                            ) || 0;
-                    }
-                }
-
-                if (conditionHidden && selectedConditionId > 0) {
-                    conditionHidden.value =
-                        String(selectedConditionId);
-                }
-
-                /*
-                 * 배송조건 카드들만 선택 해제.
-                 * 페이지 전체의 active/selected는 건드리지 않습니다.
-                 */
-                cards.forEach(function(card) {
-                    const selected = card === target;
-
-                    card.classList.toggle('selected', selected);
-                    card.classList.toggle('active', selected);
-                    card.setAttribute(
-                        'aria-checked',
-                        selected ? 'true' : 'false'
-                    );
-
-                    const input = card.querySelector(
-                        'input[type="radio"], input[type="checkbox"]'
-                    );
-
-                    if (input) {
-                        input.checked = selected;
-                    }
-                });
-
-                /*
-                 * 기존 퍼블리싱의 실제 저장용 hidden 값이 있으면 동기화.
-                 */
-                root.querySelectorAll(
-                    'input[type="hidden"][name*="condition"],' +
-                    'input[type="hidden"][name="dc_id"]'
-                ).forEach(function(input) {
-                    input.value = String(conditionId);
-                });
-
-                /*
-                 * 클릭 이벤트는 "정확히 찾은 카드 1개"에만 한 번 발생시킵니다.
-                 * 반복 타이머마다 클릭하지 않도록 플래그 사용.
-                 */
-                if (!target.dataset.dmSelectionApplied) {
-                    target.dataset.dmSelectionApplied = '1';
-
-                    try {
-                        target.dispatchEvent(
-                            new MouseEvent('click', {
-                                bubbles: true,
-                                cancelable: true,
-                                view: window
-                            })
-                        );
-                    } catch (e) {}
-
-                    /*
-                     * 기존 클릭 핸들러가 다른 카드를 선택하는 경우를 막기 위해
-                     * 클릭 직후 최종 상태를 한 번 다시 확정합니다.
-                     */
-                    cards.forEach(function(card) {
-                        const selected = card === target;
-                        card.classList.toggle('selected', selected);
-                        card.classList.toggle('active', selected);
-
-                        const input = card.querySelector(
-                            'input[type="radio"], input[type="checkbox"]'
-                        );
-                        if (input) input.checked = selected;
-                    });
-                }
-            }
-
-            function optionGroupName(option) {
-                if (!option) return '';
-
-                const explicit =
-                    option.getAttribute('data-group-name') ||
-                    option.getAttribute('data-name');
-
-                if (explicit) {
-                    return normalize(explicit);
-                }
-
-                /*
-                 * "그룹명 · MAX", "그룹명 — MAX" 형식이면
-                 * 구분자 앞쪽만 정확한 그룹명으로 사용합니다.
-                 */
-                const text = normalize(option.textContent);
-
-                return normalize(
-                    text.split(/\s+[·—-]\s+/)[0]
-                );
-            }
-
-            function optionGroupId(option) {
-                if (!option) return 0;
-
-                const explicit =
-                    option.getAttribute('data-group-id') ||
-                    option.getAttribute('data-dg-id');
-
-                if (explicit) {
-                    const id = parseInt(explicit, 10);
-                    if (Number.isFinite(id)) return id;
-                }
-
-                /*
-                 * option value가 정수 ID인 경우만 ID로 사용.
-                 * "none", "그룹명|..." 같은 값은 이름 비교로 넘깁니다.
-                 */
-                const value = String(option.value || '').trim();
-
-                if (/^\d+$/.test(value)) {
-                    return parseInt(value, 10);
-                }
-
-                return 0;
-            }
-
-            function findGroupSelect() {
-                const selects = Array.from(root.querySelectorAll('select'));
-
-                return selects.find(function(select) {
-                    const name = String(select.name || '').toLowerCase();
-                    const id = String(select.id || '').toLowerCase();
-
-                    if (
-                        name.indexOf('group') !== -1 ||
-                        name === 'dg_id' ||
-                        id.indexOf('group') !== -1 ||
-                        id === 'dg_id'
-                    ) {
-                        return true;
+                    function normalize(value) {
+                        return String(value || '')
+                            .replace(/\s+/g, ' ')
+                            .trim();
                     }
 
                     /*
-                     * 마지막 fallback도 select 자체의 label만 확인.
-                     * 상위 큰 div의 전체 텍스트는 사용하지 않습니다.
+                     * 기존 버전 문제:
+                     * "테스트"처럼 짧은 이름을 text.indexOf()로 비교하면
+                     * "테스트 복사본", "테스트 2", "유료 테스트"까지 모두 일치하여
+                     * 마지막 카드/옵션이 선택되는 문제가 있었습니다.
+                     *
+                     * 이번에는 ID 또는 "정확한 이름"만 일치시킵니다.
                      */
-                    if (select.id) {
-                        const label = root.querySelector(
-                            'label[for="' +
-                            CSS.escape(select.id) +
-                            '"]'
+                    function getConditionCardName(card) {
+                        if (!card) return '';
+
+                        const dataName =
+                            card.getAttribute('data-condition-name') ||
+                            card.getAttribute('data-condition') ||
+                            card.getAttribute('data-name');
+
+                        if (dataName) {
+                            return normalize(dataName);
+                        }
+
+                        const strong = card.querySelector('strong');
+
+                        if (strong) {
+                            /*
+                             * "기본" 배지 등의 텍스트는 조건명에 포함시키지 않습니다.
+                             */
+                            const clone = strong.cloneNode(true);
+
+                            clone.querySelectorAll(
+                                '.badge, .tag, .label, small, span.badge'
+                            ).forEach(function(el) {
+                                el.remove();
+                            });
+
+                            return normalize(clone.textContent);
+                        }
+
+                        return '';
+                    }
+
+                    function getConditionCardId(card) {
+                        if (!card) return 0;
+
+                        const raw =
+                            card.getAttribute('data-condition-id') ||
+                            card.getAttribute('data-dc-id') ||
+                            card.getAttribute('data-id') ||
+                            '';
+
+                        const id = parseInt(raw, 10);
+                        return Number.isFinite(id) ? id : 0;
+                    }
+
+                    function findExactConditionCard() {
+                        const candidates = Array.from(
+                            root.querySelectorAll(
+                                [
+                                    '[data-condition-id]',
+                                    '[data-dc-id]',
+                                    '[data-condition]',
+                                    '.condition-card',
+                                    '.shipping-card',
+                                    '.delivery-card',
+                                    '.register-condition'
+                                ].join(',')
+                            )
                         );
 
-                        if (label) {
-                            const labelText = normalize(label.textContent);
+                        /*
+                         * 1순위: condition_id 정확히 일치.
+                         */
+                        if (conditionId > 0) {
+                            const byId = candidates.find(function(card) {
+                                return getConditionCardId(card) === conditionId;
+                            });
 
-                            return (
-                                labelText.indexOf('배송그룹') !== -1 ||
-                                labelText.indexOf('묶음배송') !== -1
+                            if (byId) {
+                                return byId;
+                            }
+                        }
+
+                        /*
+                         * 2순위: 조건명 정확히 일치.
+                         * substring 비교는 절대 하지 않습니다.
+                         */
+                        if (conditionName) {
+                            const wanted = normalize(conditionName);
+
+                            const byName = candidates.find(function(card) {
+                                return getConditionCardName(card) === wanted;
+                            });
+
+                            if (byName) {
+                                return byName;
+                            }
+                        }
+
+                        return null;
+                    }
+
+                    function applyConditionSelection() {
+                        const cards = Array.from(
+                            root.querySelectorAll(
+                                [
+                                    '[data-condition-id]',
+                                    '[data-dc-id]',
+                                    '[data-condition]',
+                                    '.condition-card',
+                                    '.shipping-card',
+                                    '.delivery-card',
+                                    '.register-condition'
+                                ].join(',')
+                            )
+                        );
+
+                        const target = findExactConditionCard();
+
+                        if (!target) {
+                            return;
+                        }
+
+                        /*
+                         * 현재 카드의 실제 condition_id를 hidden에 저장.
+                         * 카드가 이름만 가지고 있어도 서버에서 만든 name -> id 맵으로 변환.
+                         */
+                        let selectedConditionId = getConditionCardId(target);
+
+                        if (selectedConditionId <= 0) {
+                            const selectedConditionName =
+                                getConditionCardName(target);
+
+                            if (
+                                selectedConditionName &&
+                                Object.prototype.hasOwnProperty.call(
+                                    conditionNameMap,
+                                    selectedConditionName
+                                )
+                            ) {
+                                selectedConditionId =
+                                    parseInt(
+                                        conditionNameMap[selectedConditionName],
+                                        10
+                                    ) || 0;
+                            }
+                        }
+
+                        if (conditionHidden && selectedConditionId > 0) {
+                            conditionHidden.value =
+                                String(selectedConditionId);
+                        }
+
+                        /*
+                         * 배송조건 카드들만 선택 해제.
+                         * 페이지 전체의 active/selected는 건드리지 않습니다.
+                         */
+                        cards.forEach(function(card) {
+                            const selected = card === target;
+
+                            card.classList.toggle('selected', selected);
+                            card.classList.toggle('active', selected);
+                            card.setAttribute(
+                                'aria-checked',
+                                selected ? 'true' : 'false'
                             );
+
+                            const input = card.querySelector(
+                                'input[type="radio"], input[type="checkbox"]'
+                            );
+
+                            if (input) {
+                                input.checked = selected;
+                            }
+                        });
+
+                        /*
+                         * 기존 퍼블리싱의 실제 저장용 hidden 값이 있으면 동기화.
+                         */
+                        root.querySelectorAll(
+                            'input[type="hidden"][name*="condition"],' +
+                            'input[type="hidden"][name="dc_id"]'
+                        ).forEach(function(input) {
+                            input.value = String(conditionId);
+                        });
+
+                        /*
+                         * 클릭 이벤트는 "정확히 찾은 카드 1개"에만 한 번 발생시킵니다.
+                         * 반복 타이머마다 클릭하지 않도록 플래그 사용.
+                         */
+                        if (!target.dataset.dmSelectionApplied) {
+                            target.dataset.dmSelectionApplied = '1';
+
+                            try {
+                                target.dispatchEvent(
+                                    new MouseEvent('click', {
+                                        bubbles: true,
+                                        cancelable: true,
+                                        view: window
+                                    })
+                                );
+                            } catch (e) {}
+
+                            /*
+                             * 기존 클릭 핸들러가 다른 카드를 선택하는 경우를 막기 위해
+                             * 클릭 직후 최종 상태를 한 번 다시 확정합니다.
+                             */
+                            cards.forEach(function(card) {
+                                const selected = card === target;
+                                card.classList.toggle('selected', selected);
+                                card.classList.toggle('active', selected);
+
+                                const input = card.querySelector(
+                                    'input[type="radio"], input[type="checkbox"]'
+                                );
+                                if (input) input.checked = selected;
+                            });
                         }
                     }
 
-                    return false;
-                }) || null;
-            }
+                    function optionGroupName(option) {
+                        if (!option) return '';
 
-            function applyGroupSelection() {
-                const select = findGroupSelect();
-                if (!select) return;
+                        const explicit =
+                            option.getAttribute('data-group-name') ||
+                            option.getAttribute('data-name');
 
-                const options = Array.from(select.options || []);
-                let target = null;
+                        if (explicit) {
+                            return normalize(explicit);
+                        }
 
-                if (groupId > 0) {
-                    /*
-                     * 1순위: group_id 정확히 일치
-                     */
-                    target = options.find(function(option) {
-                        return optionGroupId(option) === groupId;
-                    });
-
-                    /*
-                     * 2순위: dg_name 정확히 일치
-                     */
-                    if (!target && groupName) {
-                        const wanted = normalize(groupName);
-
-                        target = options.find(function(option) {
-                            return optionGroupName(option) === wanted;
-                        });
-                    }
-                } else {
-                    target = options.find(function(option) {
-                        const value = normalize(option.value).toLowerCase();
+                        /*
+                         * "그룹명 · MAX", "그룹명 — MAX" 형식이면
+                         * 구분자 앞쪽만 정확한 그룹명으로 사용합니다.
+                         */
                         const text = normalize(option.textContent);
 
-                        return (
-                            value === '' ||
-                            value === '0' ||
-                            value === 'none' ||
-                            text === '선택 안 함' ||
-                            text.indexOf('선택 안 함') === 0 ||
-                            text.indexOf('개별배송') !== -1
+                        return normalize(
+                            text.split(/\s+[·—-]\s+/)[0]
                         );
+                    }
+
+                    function optionGroupId(option) {
+                        if (!option) return 0;
+
+                        const explicit =
+                            option.getAttribute('data-group-id') ||
+                            option.getAttribute('data-dg-id');
+
+                        if (explicit) {
+                            const id = parseInt(explicit, 10);
+                            if (Number.isFinite(id)) return id;
+                        }
+
+                        /*
+                         * option value가 정수 ID인 경우만 ID로 사용.
+                         * "none", "그룹명|..." 같은 값은 이름 비교로 넘깁니다.
+                         */
+                        const value = String(option.value || '').trim();
+
+                        if (/^\d+$/.test(value)) {
+                            return parseInt(value, 10);
+                        }
+
+                        return 0;
+                    }
+
+                    function findGroupSelect() {
+                        const selects = Array.from(root.querySelectorAll('select'));
+
+                        return selects.find(function(select) {
+                            const name = String(select.name || '').toLowerCase();
+                            const id = String(select.id || '').toLowerCase();
+
+                            if (
+                                name.indexOf('group') !== -1 ||
+                                name === 'dg_id' ||
+                                id.indexOf('group') !== -1 ||
+                                id === 'dg_id'
+                            ) {
+                                return true;
+                            }
+
+                            /*
+                             * 마지막 fallback도 select 자체의 label만 확인.
+                             * 상위 큰 div의 전체 텍스트는 사용하지 않습니다.
+                             */
+                            if (select.id) {
+                                const label = root.querySelector(
+                                    'label[for="' +
+                                    CSS.escape(select.id) +
+                                    '"]'
+                                );
+
+                                if (label) {
+                                    const labelText = normalize(label.textContent);
+
+                                    return (
+                                        labelText.indexOf('배송그룹') !== -1 ||
+                                        labelText.indexOf('묶음배송') !== -1
+                                    );
+                                }
+                            }
+
+                            return false;
+                        }) || null;
+                    }
+
+                    function applyGroupSelection() {
+                        const select = findGroupSelect();
+                        if (!select) return;
+
+                        const options = Array.from(select.options || []);
+                        let target = null;
+
+                        if (groupId > 0) {
+                            /*
+                             * 1순위: group_id 정확히 일치
+                             */
+                            target = options.find(function(option) {
+                                return optionGroupId(option) === groupId;
+                            });
+
+                            /*
+                             * 2순위: dg_name 정확히 일치
+                             */
+                            if (!target && groupName) {
+                                const wanted = normalize(groupName);
+
+                                target = options.find(function(option) {
+                                    return optionGroupName(option) === wanted;
+                                });
+                            }
+                        } else {
+                            target = options.find(function(option) {
+                                const value = normalize(option.value).toLowerCase();
+                                const text = normalize(option.textContent);
+
+                                return (
+                                    value === '' ||
+                                    value === '0' ||
+                                    value === 'none' ||
+                                    text === '선택 안 함' ||
+                                    text.indexOf('선택 안 함') === 0 ||
+                                    text.indexOf('개별배송') !== -1
+                                );
+                            });
+                        }
+
+                        if (!target) {
+                            return;
+                        }
+
+                        /*
+                         * 현재 option의 실제 group_id를 hidden에 저장.
+                         * value가 그룹명인 퍼블리싱도 name -> id로 변환.
+                         */
+                        let selectedGroupId = 0;
+
+                        if (groupId > 0) {
+                            selectedGroupId = optionGroupId(target);
+
+                            if (selectedGroupId <= 0) {
+                                const selectedGroupName =
+                                    optionGroupName(target);
+
+                                if (
+                                    selectedGroupName &&
+                                    Object.prototype.hasOwnProperty.call(
+                                        groupNameMap,
+                                        selectedGroupName
+                                    )
+                                ) {
+                                    selectedGroupId =
+                                        parseInt(
+                                            groupNameMap[selectedGroupName],
+                                            10
+                                        ) || 0;
+                                }
+                            }
+                        }
+
+                        if (groupHidden) {
+                            groupHidden.value =
+                                String(selectedGroupId);
+                        }
+
+                        options.forEach(function(option) {
+                            option.selected = option === target;
+                        });
+
+                        select.value = target.value;
+
+                        /*
+                         * 동일 select에 반복 change가 발생하여 마지막 option으로
+                         * 다시 바뀌는 문제를 막기 위해 실제 값이 달라질 때만 1회 호출.
+                         */
+                        if (select.dataset.dmGroupApplied !== String(target.value)) {
+                            select.dataset.dmGroupApplied = String(target.value);
+
+                            try {
+                                select.dispatchEvent(
+                                    new Event('change', {
+                                        bubbles: true
+                                    })
+                                );
+                            } catch (e) {}
+
+                            /*
+                             * 기존 change 핸들러가 값을 덮어쓸 수 있어 즉시 재확정.
+                             */
+                            options.forEach(function(option) {
+                                option.selected = option === target;
+                            });
+                            select.value = target.value;
+                        }
+
+                        root.querySelectorAll(
+                            'input[type="hidden"][name*="group"],' +
+                            'input[type="hidden"][name="dg_id"]'
+                        ).forEach(function(input) {
+                            input.value = String(groupId);
+                        });
+                    }
+
+                    function syncDeliveryManageSelection() {
+                        applyConditionSelection();
+                        applyGroupSelection();
+                    }
+
+                    /*
+                     * 사용자가 배송조건 카드를 직접 변경했을 때
+                     * 저장용 condition_id를 즉시 갱신합니다.
+                     */
+                    root.addEventListener('click', function(event) {
+                        const card = event.target.closest(
+                            '[data-condition-id], [data-dc-id], [data-condition], ' +
+                            '.condition-card, .shipping-card, .delivery-card, ' +
+                            '.register-condition'
+                        );
+
+                        if (!card || !root.contains(card)) {
+                            return;
+                        }
+
+                        let id = getConditionCardId(card);
+
+                        if (id <= 0) {
+                            const name = getConditionCardName(card);
+
+                            if (
+                                name &&
+                                Object.prototype.hasOwnProperty.call(
+                                    conditionNameMap,
+                                    name
+                                )
+                            ) {
+                                id = parseInt(conditionNameMap[name], 10) || 0;
+                            }
+                        }
+
+                        if (conditionHidden && id > 0) {
+                            conditionHidden.value = String(id);
+                        }
+
+                        /*
+                         * 서버 초기값 복원 시 남은 active/selected 상태를 제거하고
+                         * 사용자가 방금 클릭한 카드 하나만 실제 선택 상태로 확정합니다.
+                         */
+                        root.querySelectorAll(
+                            '#registerConditions .register-condition,' +
+                            '[data-condition-id],' +
+                            '[data-dc-id]'
+                        ).forEach(function(conditionCard) {
+                            const selected = conditionCard === card;
+                            conditionCard.classList.toggle('selected', selected);
+                            conditionCard.classList.toggle('active', selected);
+                            conditionCard.setAttribute(
+                                'aria-checked',
+                                selected ? 'true' : 'false'
+                            );
+                        });
                     });
-                }
 
-                if (!target) {
-                    return;
-                }
-
-                /*
-                 * 현재 option의 실제 group_id를 hidden에 저장.
-                 * value가 그룹명인 퍼블리싱도 name -> id로 변환.
-                 */
-                let selectedGroupId = 0;
-
-                if (groupId > 0) {
-                    selectedGroupId = optionGroupId(target);
-
-                    if (selectedGroupId <= 0) {
-                        const selectedGroupName =
-                            optionGroupName(target);
+                    /*
+                     * 사용자가 배송그룹 select를 변경했을 때
+                     * 저장용 group_id를 즉시 갱신합니다.
+                     */
+                    root.addEventListener('change', function(event) {
+                        const select = event.target;
 
                         if (
-                            selectedGroupName &&
-                            Object.prototype.hasOwnProperty.call(
-                                groupNameMap,
-                                selectedGroupName
-                            )
+                            !select ||
+                            select.tagName !== 'SELECT'
                         ) {
-                            selectedGroupId =
-                                parseInt(
-                                    groupNameMap[selectedGroupName],
-                                    10
-                                ) || 0;
+                            return;
                         }
-                    }
-                }
 
-                if (groupHidden) {
-                    groupHidden.value =
-                        String(selectedGroupId);
-                }
+                        const groupSelect = findGroupSelect();
 
-                options.forEach(function(option) {
-                    option.selected = option === target;
-                });
+                        if (select !== groupSelect) {
+                            return;
+                        }
 
-                select.value = target.value;
+                        const option =
+                            select.options[select.selectedIndex];
 
-                /*
-                 * 동일 select에 반복 change가 발생하여 마지막 option으로
-                 * 다시 바뀌는 문제를 막기 위해 실제 값이 달라질 때만 1회 호출.
-                 */
-                if (select.dataset.dmGroupApplied !== String(target.value)) {
-                    select.dataset.dmGroupApplied = String(target.value);
+                        if (!option) {
+                            return;
+                        }
 
-                    try {
-                        select.dispatchEvent(
-                            new Event('change', { bubbles: true })
-                        );
-                    } catch (e) {}
+                        let id = optionGroupId(option);
 
-                    /*
-                     * 기존 change 핸들러가 값을 덮어쓸 수 있어 즉시 재확정.
-                     */
-                    options.forEach(function(option) {
-                        option.selected = option === target;
+                        if (id <= 0) {
+                            const name = optionGroupName(option);
+
+                            if (
+                                name &&
+                                Object.prototype.hasOwnProperty.call(
+                                    groupNameMap,
+                                    name
+                                )
+                            ) {
+                                id = parseInt(groupNameMap[name], 10) || 0;
+                            }
+                        }
+
+                        if (groupHidden) {
+                            groupHidden.value = String(id);
+                        }
                     });
-                    select.value = target.value;
-                }
 
-                root.querySelectorAll(
-                    'input[type="hidden"][name*="group"],' +
-                    'input[type="hidden"][name="dg_id"]'
-                ).forEach(function(input) {
-                    input.value = String(groupId);
-                });
-            }
-
-            function syncDeliveryManageSelection() {
-                applyConditionSelection();
-                applyGroupSelection();
-            }
-
-            /*
-             * 사용자가 배송조건 카드를 직접 변경했을 때
-             * 저장용 condition_id를 즉시 갱신합니다.
-             */
-            root.addEventListener('click', function(event) {
-                const card = event.target.closest(
-                    '[data-condition-id], [data-dc-id], [data-condition], ' +
-                    '.condition-card, .shipping-card, .delivery-card, ' +
-                    '.register-condition'
-                );
-
-                if (!card || !root.contains(card)) {
-                    return;
-                }
-
-                let id = getConditionCardId(card);
-
-                if (id <= 0) {
-                    const name = getConditionCardName(card);
-
-                    if (
-                        name &&
-                        Object.prototype.hasOwnProperty.call(
-                            conditionNameMap,
-                            name
-                        )
-                    ) {
-                        id = parseInt(conditionNameMap[name], 10) || 0;
+                    if (document.readyState === 'loading') {
+                        document.addEventListener(
+                            'DOMContentLoaded',
+                            syncDeliveryManageSelection
+                        );
+                    } else {
+                        syncDeliveryManageSelection();
                     }
-                }
 
-                if (conditionHidden && id > 0) {
-                    conditionHidden.value = String(id);
-                }
-
-                /*
-                 * 서버 초기값 복원 시 남은 active/selected 상태를 제거하고
-                 * 사용자가 방금 클릭한 카드 하나만 실제 선택 상태로 확정합니다.
-                 */
-                root.querySelectorAll(
-                    '#registerConditions .register-condition,' +
-                    '[data-condition-id],' +
-                    '[data-dc-id]'
-                ).forEach(function(conditionCard) {
-                    const selected = conditionCard === card;
-                    conditionCard.classList.toggle('selected', selected);
-                    conditionCard.classList.toggle('active', selected);
-                    conditionCard.setAttribute(
-                        'aria-checked',
-                        selected ? 'true' : 'false'
-                    );
-                });
-            });
-
-            /*
-             * 사용자가 배송그룹 select를 변경했을 때
-             * 저장용 group_id를 즉시 갱신합니다.
-             */
-            root.addEventListener('change', function(event) {
-                const select = event.target;
-
-                if (
-                    !select ||
-                    select.tagName !== 'SELECT'
-                ) {
-                    return;
-                }
-
-                const groupSelect = findGroupSelect();
-
-                if (select !== groupSelect) {
-                    return;
-                }
-
-                const option =
-                    select.options[select.selectedIndex];
-
-                if (!option) {
-                    return;
-                }
-
-                let id = optionGroupId(option);
-
-                if (id <= 0) {
-                    const name = optionGroupName(option);
-
-                    if (
-                        name &&
-                        Object.prototype.hasOwnProperty.call(
-                            groupNameMap,
-                            name
-                        )
-                    ) {
-                        id = parseInt(groupNameMap[name], 10) || 0;
-                    }
-                }
-
-                if (groupHidden) {
-                    groupHidden.value = String(id);
-                }
-            });
-
-            if (document.readyState === 'loading') {
-                document.addEventListener(
-                    'DOMContentLoaded',
-                    syncDeliveryManageSelection
-                );
-            } else {
-                syncDeliveryManageSelection();
-            }
-
-            /*
-             * 기존 퍼블리싱 초기화가 늦게 끝나는 경우만 보정.
-             * 클릭/change는 플래그 때문에 실제로 한 번만 발생합니다.
-             */
-            window.setTimeout(syncDeliveryManageSelection, 100);
-            window.setTimeout(syncDeliveryManageSelection, 400);
-            window.setTimeout(syncDeliveryManageSelection, 1000);
-
-            /*
-             * sendcostform.php가 DOM을 늦게 다시 그리는 경우에도
-             * 현재 상품의 배송조건/그룹 적용값을 다시 반영합니다.
-             */
-            if (window.MutationObserver) {
-                const observer = new MutationObserver(function() {
-                    syncDeliveryManageSelection();
-                });
-
-                observer.observe(root, {
-                    childList: true,
-                    subtree: true
-                });
-            }
-
-            /*
-             * 상품 저장 직전에 실제 UI의 선택값을 dm_* hidden에 최종 반영.
-             * 현재 화면에 보이는 배송조건/배송그룹이 DB에 그대로 저장되게 합니다.
-             */
-            const form = document.forms.fitemform;
-
-            if (form) {
-                form.addEventListener('submit', function() {
                     /*
-                     * 배송조건: 선택된 radio/checkbox/card를 우선 사용.
+                     * 기존 퍼블리싱 초기화가 늦게 끝나는 경우만 보정.
+                     * 클릭/change는 플래그 때문에 실제로 한 번만 발생합니다.
                      */
-                    const checkedCondition = root.querySelector(
-                        'input[type="radio"][name*="condition"]:checked,' +
-                        'input[type="radio"][name="dc_id"]:checked,' +
-                        'input[type="checkbox"][name*="condition"]:checked'
-                    );
+                    window.setTimeout(syncDeliveryManageSelection, 100);
+                    window.setTimeout(syncDeliveryManageSelection, 400);
+                    window.setTimeout(syncDeliveryManageSelection, 1000);
 
-                    if (checkedCondition && conditionHidden) {
-                        let cid = parseInt(checkedCondition.value, 10) || 0;
+                    /*
+                     * sendcostform.php가 DOM을 늦게 다시 그리는 경우에도
+                     * 현재 상품의 배송조건/그룹 적용값을 다시 반영합니다.
+                     */
+                    if (window.MutationObserver) {
+                        const observer = new MutationObserver(function() {
+                            syncDeliveryManageSelection();
+                        });
 
-                        if (cid <= 0) {
-                            const label = checkedCondition.closest(
-                                '[data-condition-id], [data-dc-id], [data-condition], ' +
-                                '.condition-card, .shipping-card, .delivery-card, ' +
-                                '.register-condition'
+                        observer.observe(root, {
+                            childList: true,
+                            subtree: true
+                        });
+                    }
+
+                    /*
+                     * 상품 저장 직전에 실제 UI의 선택값을 dm_* hidden에 최종 반영.
+                     * 현재 화면에 보이는 배송조건/배송그룹이 DB에 그대로 저장되게 합니다.
+                     */
+                    const form = document.forms.fitemform;
+
+                    if (form) {
+                        form.addEventListener('submit', function() {
+                            /*
+                             * 배송조건: 선택된 radio/checkbox/card를 우선 사용.
+                             */
+                            const checkedCondition = root.querySelector(
+                                'input[type="radio"][name*="condition"]:checked,' +
+                                'input[type="radio"][name="dc_id"]:checked,' +
+                                'input[type="checkbox"][name*="condition"]:checked'
                             );
 
-                            if (label) {
-                                cid = getConditionCardId(label);
+                            if (checkedCondition && conditionHidden) {
+                                let cid = parseInt(checkedCondition.value, 10) || 0;
 
                                 if (cid <= 0) {
-                                    const cname = getConditionCardName(label);
+                                    const label = checkedCondition.closest(
+                                        '[data-condition-id], [data-dc-id], [data-condition], ' +
+                                        '.condition-card, .shipping-card, .delivery-card, ' +
+                                        '.register-condition'
+                                    );
+
+                                    if (label) {
+                                        cid = getConditionCardId(label);
+
+                                        if (cid <= 0) {
+                                            const cname = getConditionCardName(label);
+
+                                            if (
+                                                cname &&
+                                                Object.prototype.hasOwnProperty.call(
+                                                    conditionNameMap,
+                                                    cname
+                                                )
+                                            ) {
+                                                cid = parseInt(
+                                                    conditionNameMap[cname],
+                                                    10
+                                                ) || 0;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                if (cid > 0) {
+                                    conditionHidden.value = String(cid);
+                                }
+                            } else {
+                                /*
+                                 * 사용자가 직접 클릭한 상태는 selected를 기준으로 확정합니다.
+                                 * active는 과거 서버값 복원 과정에서 남아 있을 수 있으므로
+                                 * selected 카드가 없는 경우에만 fallback으로 사용합니다.
+                                 */
+                                let activeCondition = root.querySelector(
+                                    '[data-condition-id].selected,' +
+                                    '[data-dc-id].selected,' +
+                                    '.condition-card.selected,' +
+                                    '.shipping-card.selected,' +
+                                    '.delivery-card.selected,' +
+                                    '.register-condition.selected'
+                                );
+
+                                if (!activeCondition) {
+                                    activeCondition = root.querySelector(
+                                        '[data-condition-id].active,' +
+                                        '[data-dc-id].active,' +
+                                        '.condition-card.active,' +
+                                        '.shipping-card.active,' +
+                                        '.delivery-card.active,' +
+                                        '.register-condition.active'
+                                    );
+                                }
+
+                                if (activeCondition && conditionHidden) {
+                                    let cid = getConditionCardId(activeCondition);
+
+                                    if (cid <= 0) {
+                                        const cname =
+                                            getConditionCardName(activeCondition);
+
+                                        if (
+                                            cname &&
+                                            Object.prototype.hasOwnProperty.call(
+                                                conditionNameMap,
+                                                cname
+                                            )
+                                        ) {
+                                            cid = parseInt(
+                                                conditionNameMap[cname],
+                                                10
+                                            ) || 0;
+                                        }
+                                    }
+
+                                    if (cid > 0) {
+                                        conditionHidden.value = String(cid);
+                                    }
+                                }
+                            }
+
+                            /*
+                             * 배송그룹: 실제 select의 현재 선택값을 최종 사용.
+                             */
+                            const selectedGroup = findGroupSelect();
+
+                            if (selectedGroup && groupHidden) {
+                                const option =
+                                    selectedGroup.options[
+                                        selectedGroup.selectedIndex
+                                    ];
+
+                                let gid = optionGroupId(option);
+
+                                if (gid <= 0 && option) {
+                                    const gname = optionGroupName(option);
 
                                     if (
-                                        cname &&
+                                        gname &&
                                         Object.prototype.hasOwnProperty.call(
-                                            conditionNameMap,
-                                            cname
+                                            groupNameMap,
+                                            gname
                                         )
                                     ) {
-                                        cid = parseInt(
-                                            conditionNameMap[cname],
+                                        gid = parseInt(
+                                            groupNameMap[gname],
                                             10
                                         ) || 0;
                                     }
                                 }
+
+                                groupHidden.value = String(gid || 0);
                             }
-                        }
-
-                        if (cid > 0) {
-                            conditionHidden.value = String(cid);
-                        }
-                    } else {
-                        /*
-                         * 사용자가 직접 클릭한 상태는 selected를 기준으로 확정합니다.
-                         * active는 과거 서버값 복원 과정에서 남아 있을 수 있으므로
-                         * selected 카드가 없는 경우에만 fallback으로 사용합니다.
-                         */
-                        let activeCondition = root.querySelector(
-                            '[data-condition-id].selected,' +
-                            '[data-dc-id].selected,' +
-                            '.condition-card.selected,' +
-                            '.shipping-card.selected,' +
-                            '.delivery-card.selected,' +
-                            '.register-condition.selected'
-                        );
-
-                        if (!activeCondition) {
-                            activeCondition = root.querySelector(
-                                '[data-condition-id].active,' +
-                                '[data-dc-id].active,' +
-                                '.condition-card.active,' +
-                                '.shipping-card.active,' +
-                                '.delivery-card.active,' +
-                                '.register-condition.active'
-                            );
-                        }
-
-                        if (activeCondition && conditionHidden) {
-                            let cid = getConditionCardId(activeCondition);
-
-                            if (cid <= 0) {
-                                const cname =
-                                    getConditionCardName(activeCondition);
-
-                                if (
-                                    cname &&
-                                    Object.prototype.hasOwnProperty.call(
-                                        conditionNameMap,
-                                        cname
-                                    )
-                                ) {
-                                    cid = parseInt(
-                                        conditionNameMap[cname],
-                                        10
-                                    ) || 0;
-                                }
-                            }
-
-                            if (cid > 0) {
-                                conditionHidden.value = String(cid);
-                            }
-                        }
+                        }, true);
                     }
-
-                    /*
-                     * 배송그룹: 실제 select의 현재 선택값을 최종 사용.
-                     */
-                    const selectedGroup = findGroupSelect();
-
-                    if (selectedGroup && groupHidden) {
-                        const option =
-                            selectedGroup.options[
-                                selectedGroup.selectedIndex
-                            ];
-
-                        let gid = optionGroupId(option);
-
-                        if (gid <= 0 && option) {
-                            const gname = optionGroupName(option);
-
-                            if (
-                                gname &&
-                                Object.prototype.hasOwnProperty.call(
-                                    groupNameMap,
-                                    gname
-                                )
-                            ) {
-                                gid = parseInt(
-                                    groupNameMap[gname],
-                                    10
-                                ) || 0;
-                            }
-                        }
-
-                        groupHidden.value = String(gid || 0);
-                    }
-                }, true);
-            }
-        })();
-        </script>
+                })();
+            </script>
         <?php } ?>
-            <section id="anc_sitfrm_sendcost_legacy" class="">
-        <h2 class="h2_frm">배송비</h2>
-        <div class="local_desc02 local_desc">
-            <p>쇼핑몰설정 &gt; 배송비유형 설정보다 <strong>개별상품 배송비설정이 우선</strong> 적용됩니다.</p>
-        </div>
+        <section id="anc_sitfrm_sendcost_legacy" class="">
+            <h2 class="h2_frm">배송비</h2>
+            <div class="local_desc02 local_desc">
+                <p>쇼핑몰설정 &gt; 배송비유형 설정보다 <strong>개별상품 배송비설정이 우선</strong> 적용됩니다.</p>
+            </div>
 
-        <div class="tbl_frm01 tbl_wrap">
-            <table class="md:m-[-16px] m-0">
-                <caption>배송비 입력</caption>
-                <colgroup>
-                    <col class="grid_4">
-                    <col>
-                    <col class="grid_3">
-                </colgroup>
-                <tbody>
-                    <!-- <tr>
+            <div class="tbl_frm01 tbl_wrap">
+                <table class="md:m-[-16px] m-0">
+                    <caption>배송비 입력</caption>
+                    <colgroup>
+                        <col class="grid_4">
+                        <col>
+                        <col class="grid_3">
+                    </colgroup>
+                    <tbody>
+                        <!-- <tr>
                         <th scope="row"><label for="it_sc_type">배송비 유형</label></th>
                         <td>
                             <?php echo help("배송비 유형을 선택하면 자동으로 항목이 변환됩니다."); ?>
@@ -2575,133 +2584,134 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                 <option value="4" <?php echo get_selected('4', $it['it_sc_type']); ?>>수량별 부과</option>
                             </select>
                         </td>
-                        <td rowspan="4" id="sc_grp" class="td_grpset">
+                        <td rowspan="4" id="sc_grp" class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_sendcost" value="1" id="chk_ca_it_sendcost">
                             <label for="chk_ca_it_sendcost">분류적용</label>
                             <input type="checkbox" name="chk_all_it_sendcost" value="1" id="chk_all_it_sendcost">
                             <label for="chk_all_it_sendcost">전체적용</label>
                         </td>
                     </tr> -->
-                    <tr id="sc_con_method">
-                        <th scope="row"><label for="it_sc_method">배송비 결제</label></th>
-                        <td>
-                            <select name="it_sc_method" id="it_sc_method">
-                                <option value="0" <?php echo get_selected('0', $it['it_sc_method']); ?>>선불</option>
-                                <option value="1" <?php echo get_selected('1', $it['it_sc_method']); ?>>착불</option>
-                                <!-- <option value="2" <?php echo get_selected('2', $it['it_sc_method']); ?>>사용자선택</option> -->
-                            </select>
-                        </td>
-                    </tr>
-                    <!-- <tr id="sc_con_basic">
+                        <tr id="sc_con_method">
+                            <th scope="row"><label for="it_sc_method">배송비 결제</label></th>
+                            <td>
+                                <select name="it_sc_method" id="it_sc_method">
+                                    <option value="0" <?php echo get_selected('0', $it['it_sc_method']); ?>>선불</option>
+                                    <option value="1" <?php echo get_selected('1', $it['it_sc_method']); ?>>착불</option>
+                                    <!-- <option value="2" <?php echo get_selected('2', $it['it_sc_method']); ?>>사용자선택</option> -->
+                                </select>
+                            </td>
+                        </tr>
+                        <!-- <tr id="sc_con_basic">
                         <th scope="row"><label for="it_sc_price">기본배송비</label></th>
                         <td>
                             <?php echo help("무료배송 이외의 설정에 적용되는 배송비 금액입니다."); ?>
                             <input type="text" name="it_sc_price" value="<?php echo $it['it_sc_price']; ?>" id="it_sc_price" class="frm_input" size="8"> 원
                         </td>
                     </tr> -->
-                    <!-- <tr id="sc_con_minimum">
+                        <!-- <tr id="sc_con_minimum">
                         <th scope="row"><label for="it_sc_minimum">배송비 상세조건</label></th>
                         <td>
                             주문금액 <input type="text" name="it_sc_minimum" value="<?php echo $it['it_sc_minimum']; ?>" id="it_sc_minimum" class="frm_input" size="8"> 이상 무료 배송
                         </td>
                     </tr> -->
-                    <!-- <tr id="sc_con_qty">
+                        <!-- <tr id="sc_con_qty">
                         <th scope="row"><label for="it_sc_qty">배송비 상세조건</label></th>
                         <td>
                             <?php echo help("상품의 주문 수량에 따라 배송비가 부과됩니다. 예를 들어 기본배송비가 3,000원 수량을 3으로 설정했을 경우 상품의 주문수량이 5개이면 6,000원 배송비가 부과됩니다."); ?>
                             주문수량 <input type="text" name="it_sc_qty" value="<?php echo $it['it_sc_qty']; ?>" id="it_sc_qty" class="frm_input" size="8"> 마다 배송비 부과
                         </td>
                     </tr> -->
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
 
 
-        <script>
-            // $(function() {
-            //     <?php
-            //     switch ($it['it_sc_type']) {
-            //         case 1:
-            //             echo '$("#sc_con_method").hide();' . PHP_EOL;
-            //             echo '$("#sc_con_basic").hide();' . PHP_EOL;
-            //             echo '$("#sc_con_minimum").hide();' . PHP_EOL;
-            //             echo '$("#sc_con_qty").hide();' . PHP_EOL;
-            //             echo '$("#sc_grp").attr("rowspan","1");' . PHP_EOL;
-            //             break;
-            //         case 2:
-            //             echo '$("#sc_con_method").show();' . PHP_EOL;
-            //             echo '$("#sc_con_basic").show();' . PHP_EOL;
-            //             echo '$("#sc_con_minimum").show();' . PHP_EOL;
-            //             echo '$("#sc_con_qty").hide();' . PHP_EOL;
-            //             echo '$("#sc_grp").attr("rowspan","4");' . PHP_EOL;
-            //             break;
-            //         case 3:
-            //             echo '$("#sc_con_method").show();' . PHP_EOL;
-            //             echo '$("#sc_con_basic").show();' . PHP_EOL;
-            //             echo '$("#sc_con_minimum").hide();' . PHP_EOL;
-            //             echo '$("#sc_con_qty").hide();' . PHP_EOL;
-            //             echo '$("#sc_grp").attr("rowspan","3");' . PHP_EOL;
-            //             break;
-            //         case 4:
-            //             echo '$("#sc_con_method").show();' . PHP_EOL;
-            //             echo '$("#sc_con_basic").show();' . PHP_EOL;
-            //             echo '$("#sc_con_minimum").hide();' . PHP_EOL;
-            //             echo '$("#sc_con_qty").show();' . PHP_EOL;
-            //             echo '$("#sc_grp").attr("rowspan","4");' . PHP_EOL;
-            //             break;
-            //         default:
-            //             echo '$("#sc_con_method").hide();' . PHP_EOL;
-            //             echo '$("#sc_con_basic").hide();' . PHP_EOL;
-            //             echo '$("#sc_con_minimum").hide();' . PHP_EOL;
-            //             echo '$("#sc_con_qty").hide();' . PHP_EOL;
-            //             echo '$("#sc_grp").attr("rowspan","2");' . PHP_EOL;
-            //             break;
-            //     }
-            //     ?>
-            //     $("#it_sc_type").change(function() {
-            //         var type = $(this).val();
+            <script>
+                // $(function() {
+                //     <?php
+                        //     switch ($it['it_sc_type']) {
+                        //         case 1:
+                        //             echo '$("#sc_con_method").hide();' . PHP_EOL;
+                        //             echo '$("#sc_con_basic").hide();' . PHP_EOL;
+                        //             echo '$("#sc_con_minimum").hide();' . PHP_EOL;
+                        //             echo '$("#sc_con_qty").hide();' . PHP_EOL;
+                        //             echo '$("#sc_grp").attr("rowspan","1");' . PHP_EOL;
+                        //             break;
+                        //         case 2:
+                        //             echo '$("#sc_con_method").show();' . PHP_EOL;
+                        //             echo '$("#sc_con_basic").show();' . PHP_EOL;
+                        //             echo '$("#sc_con_minimum").show();' . PHP_EOL;
+                        //             echo '$("#sc_con_qty").hide();' . PHP_EOL;
+                        //             echo '$("#sc_grp").attr("rowspan","4");' . PHP_EOL;
+                        //             break;
+                        //         case 3:
+                        //             echo '$("#sc_con_method").show();' . PHP_EOL;
+                        //             echo '$("#sc_con_basic").show();' . PHP_EOL;
+                        //             echo '$("#sc_con_minimum").hide();' . PHP_EOL;
+                        //             echo '$("#sc_con_qty").hide();' . PHP_EOL;
+                        //             echo '$("#sc_grp").attr("rowspan","3");' . PHP_EOL;
+                        //             break;
+                        //         case 4:
+                        //             echo '$("#sc_con_method").show();' . PHP_EOL;
+                        //             echo '$("#sc_con_basic").show();' . PHP_EOL;
+                        //             echo '$("#sc_con_minimum").hide();' . PHP_EOL;
+                        //             echo '$("#sc_con_qty").show();' . PHP_EOL;
+                        //             echo '$("#sc_grp").attr("rowspan","4");' . PHP_EOL;
+                        //             break;
+                        //         default:
+                        //             echo '$("#sc_con_method").hide();' . PHP_EOL;
+                        //             echo '$("#sc_con_basic").hide();' . PHP_EOL;
+                        //             echo '$("#sc_con_minimum").hide();' . PHP_EOL;
+                        //             echo '$("#sc_con_qty").hide();' . PHP_EOL;
+                        //             echo '$("#sc_grp").attr("rowspan","2");' . PHP_EOL;
+                        //             break;
+                        //     }
+                        //     
+                        ?>
+                //     $("#it_sc_type").change(function() {
+                //         var type = $(this).val();
 
-            //         switch (type) {
-            //             case "1":
-            //                 $("#sc_con_method").hide();
-            //                 $("#sc_con_basic").hide();
-            //                 $("#sc_con_minimum").hide();
-            //                 $("#sc_con_qty").hide();
-            //                 $("#sc_grp").attr("rowspan", "1");
-            //                 break;
-            //             case "2":
-            //                 $("#sc_con_method").show();
-            //                 $("#sc_con_basic").show();
-            //                 $("#sc_con_minimum").show();
-            //                 $("#sc_con_qty").hide();
-            //                 $("#sc_grp").attr("rowspan", "4");
-            //                 break;
-            //             case "3":
-            //                 $("#sc_con_method").show();
-            //                 $("#sc_con_basic").show();
-            //                 $("#sc_con_minimum").hide();
-            //                 $("#sc_con_qty").hide();
-            //                 $("#sc_grp").attr("rowspan", "3");
-            //                 break;
-            //             case "4":
-            //                 $("#sc_con_method").show();
-            //                 $("#sc_con_basic").show();
-            //                 $("#sc_con_minimum").hide();
-            //                 $("#sc_con_qty").show();
-            //                 $("#sc_grp").attr("rowspan", "4");
-            //                 break;
-            //             default:
-            //                 $("#sc_con_method").hide();
-            //                 $("#sc_con_basic").hide();
-            //                 $("#sc_con_minimum").hide();
-            //                 $("#sc_con_qty").hide();
-            //                 $("#sc_grp").attr("rowspan", "1");
-            //                 break;
-            //         }
-            //     });
-            // });
-        </script>
-    </section>
+                //         switch (type) {
+                //             case "1":
+                //                 $("#sc_con_method").hide();
+                //                 $("#sc_con_basic").hide();
+                //                 $("#sc_con_minimum").hide();
+                //                 $("#sc_con_qty").hide();
+                //                 $("#sc_grp").attr("rowspan", "1");
+                //                 break;
+                //             case "2":
+                //                 $("#sc_con_method").show();
+                //                 $("#sc_con_basic").show();
+                //                 $("#sc_con_minimum").show();
+                //                 $("#sc_con_qty").hide();
+                //                 $("#sc_grp").attr("rowspan", "4");
+                //                 break;
+                //             case "3":
+                //                 $("#sc_con_method").show();
+                //                 $("#sc_con_basic").show();
+                //                 $("#sc_con_minimum").hide();
+                //                 $("#sc_con_qty").hide();
+                //                 $("#sc_grp").attr("rowspan", "3");
+                //                 break;
+                //             case "4":
+                //                 $("#sc_con_method").show();
+                //                 $("#sc_con_basic").show();
+                //                 $("#sc_con_minimum").hide();
+                //                 $("#sc_con_qty").show();
+                //                 $("#sc_grp").attr("rowspan", "4");
+                //                 break;
+                //             default:
+                //                 $("#sc_con_method").hide();
+                //                 $("#sc_con_basic").hide();
+                //                 $("#sc_con_minimum").hide();
+                //                 $("#sc_con_qty").hide();
+                //                 $("#sc_grp").attr("rowspan", "1");
+                //                 break;
+                //         }
+                //     });
+                // });
+            </script>
+        </section>
     </section>
 
 
@@ -3032,7 +3042,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                     <tr>
                         <th scope="row">상품상단내용</th>
                         <td><?php echo help("상품상세설명 페이지 상단에 출력하는 HTML 내용입니다."); ?><?php echo editor_html('it_head_html', get_text(html_purifier($it['it_head_html']), 0)); ?></td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_head_html" value="1" id="chk_ca_it_head_html">
                             <label for="chk_ca_it_head_html">분류적용</label>
                             <input type="checkbox" name="chk_all_it_head_html" value="1" id="chk_all_it_head_html">
@@ -3042,7 +3052,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                     <tr>
                         <th scope="row">상품하단내용</th>
                         <td><?php echo help("상품상세설명 페이지 하단에 출력하는 HTML 내용입니다."); ?><?php echo editor_html('it_tail_html', get_text(html_purifier($it['it_tail_html']), 0)); ?></td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_tail_html" value="1" id="chk_ca_it_tail_html">
                             <label for="chk_ca_it_tail_html">분류적용</label>
                             <input type="checkbox" name="chk_all_it_tail_html" value="1" id="chk_all_it_tail_html">
@@ -3052,7 +3062,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                     <tr>
                         <th scope="row">모바일 상품상단내용</th>
                         <td><?php echo help("모바일 상품상세설명 페이지 상단에 출력하는 HTML 내용입니다."); ?><?php echo editor_html('it_mobile_head_html', get_text(html_purifier($it['it_mobile_head_html']), 0)); ?></td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_mobile_head_html" value="1" id="chk_ca_it_mobile_head_html">
                             <label for="chk_ca_it_mobile_head_html">분류적용</label>
                             <input type="checkbox" name="chk_all_it_mobile_head_html" value="1" id="chk_all_it_mobile_head_html">
@@ -3062,7 +3072,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                     <tr>
                         <th scope="row">모바일 상품하단내용</th>
                         <td><?php echo help("모바일 상품상세설명 페이지 하단에 출력하는 HTML 내용입니다."); ?><?php echo editor_html('it_mobile_tail_html', get_text(html_purifier($it['it_mobile_tail_html']), 0)); ?></td>
-                        <td class="td_grpset">
+                        <td class="td_grpset hidden">
                             <input type="checkbox" name="chk_ca_it_mobile_tail_html" value="1" id="chk_ca_it_mobile_tail_html">
                             <label for="chk_ca_it_mobile_tail_html">분류적용</label>
                             <input type="checkbox" name="chk_all_it_mobile_tail_html" value="1" id="chk_all_it_mobile_tail_html">
@@ -3095,7 +3105,7 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
                                 <label for="it_<?php echo $i ?>">여분필드 <?php echo $i ?> 값</label>
                                 <input type="text" name="it_<?php echo $i ?>" value="<?php echo get_text($it['it_' . $i]) ?>" id="it_<?php echo $i ?>" class="frm_input">
                             </td>
-                            <td class="td_grpset">
+                            <td class="td_grpset hidden">
                                 <input type="checkbox" name="chk_ca_<?php echo $i ?>" value="1" id="chk_ca_<?php echo $i ?>">
                                 <label for="chk_ca_<?php echo $i ?>">분류적용</label>
                                 <input type="checkbox" name="chk_all_<?php echo $i ?>" value="1" id="chk_all_<?php echo $i ?>">
@@ -3131,19 +3141,75 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
     </div>
 </form>
 
-<script>(function(){
- const MAX=1920,Q=.82;
- function sz(n){if(!n)return '0 B';let u=['B','KB','MB','GB'],i=Math.min(Math.floor(Math.log(n)/Math.log(1024)),3);return (n/Math.pow(1024,i)).toFixed(i?1:0)+' '+u[i]}
- function replaceFile(el,file){let dt=new DataTransfer();dt.items.add(file);el.files=dt.files}
- document.addEventListener('change',function(e){
-  let el=e.target;if(!el||!/^it_img(?:10|[1-9])$/.test(el.id)||!el.files[0])return;
-  let f=el.files[0],info=document.getElementById(el.id+'_compress_info');
-  if(!/^image\//.test(f.type))return;if(f.type==='image/gif'){if(info)info.textContent='GIF 원본 유지 ('+sz(f.size)+')';return}
-  if(info)info.textContent='이미지 최적화 중...';let im=new Image(),url=URL.createObjectURL(f);
-  im.onload=function(){let sc=Math.min(1,MAX/Math.max(im.naturalWidth,im.naturalHeight)),w=Math.max(1,Math.round(im.naturalWidth*sc)),h=Math.max(1,Math.round(im.naturalHeight*sc)),c=document.createElement('canvas');c.width=w;c.height=h;let x=c.getContext('2d',{alpha:false});x.fillStyle='#fff';x.fillRect(0,0,w,h);x.drawImage(im,0,0,w,h);c.toBlob(function(b){URL.revokeObjectURL(url);if(!b){if(info)info.textContent='최적화 실패 - 원본 유지';return}if(b.size>=f.size&&sc===1){if(info)info.textContent='원본 유지 ('+sz(f.size)+')';return}let nf=new File([b],f.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg',lastModified:Date.now()});replaceFile(el,nf);if(info)info.textContent='자동 최적화: '+sz(f.size)+' → '+sz(nf.size)+' ('+w+'×'+h+')'},'image/jpeg',Q)};
-  im.onerror=function(){URL.revokeObjectURL(url);if(info)info.textContent='이미지 읽기 실패 - 원본 유지'};im.src=url;
- });
-})();</script>
+<script>
+    (function() {
+        const MAX = 1920,
+            Q = .82;
+
+        function sz(n) {
+            if (!n) return '0 B';
+            let u = ['B', 'KB', 'MB', 'GB'],
+                i = Math.min(Math.floor(Math.log(n) / Math.log(1024)), 3);
+            return (n / Math.pow(1024, i)).toFixed(i ? 1 : 0) + ' ' + u[i]
+        }
+
+        function replaceFile(el, file) {
+            let dt = new DataTransfer();
+            dt.items.add(file);
+            el.files = dt.files
+        }
+        document.addEventListener('change', function(e) {
+            let el = e.target;
+            if (!el || !/^it_img(?:10|[1-9])$/.test(el.id) || !el.files[0]) return;
+            let f = el.files[0],
+                info = document.getElementById(el.id + '_compress_info');
+            if (!/^image\//.test(f.type)) return;
+            if (f.type === 'image/gif') {
+                if (info) info.textContent = 'GIF 원본 유지 (' + sz(f.size) + ')';
+                return
+            }
+            if (info) info.textContent = '이미지 최적화 중...';
+            let im = new Image(),
+                url = URL.createObjectURL(f);
+            im.onload = function() {
+                let sc = Math.min(1, MAX / Math.max(im.naturalWidth, im.naturalHeight)),
+                    w = Math.max(1, Math.round(im.naturalWidth * sc)),
+                    h = Math.max(1, Math.round(im.naturalHeight * sc)),
+                    c = document.createElement('canvas');
+                c.width = w;
+                c.height = h;
+                let x = c.getContext('2d', {
+                    alpha: false
+                });
+                x.fillStyle = '#fff';
+                x.fillRect(0, 0, w, h);
+                x.drawImage(im, 0, 0, w, h);
+                c.toBlob(function(b) {
+                    URL.revokeObjectURL(url);
+                    if (!b) {
+                        if (info) info.textContent = '최적화 실패 - 원본 유지';
+                        return
+                    }
+                    if (b.size >= f.size && sc === 1) {
+                        if (info) info.textContent = '원본 유지 (' + sz(f.size) + ')';
+                        return
+                    }
+                    let nf = new File([b], f.name.replace(/\.[^.]+$/, '') + '.jpg', {
+                        type: 'image/jpeg',
+                        lastModified: Date.now()
+                    });
+                    replaceFile(el, nf);
+                    if (info) info.textContent = '자동 최적화: ' + sz(f.size) + ' → ' + sz(nf.size) + ' (' + w + '×' + h + ')'
+                }, 'image/jpeg', Q)
+            };
+            im.onerror = function() {
+                URL.revokeObjectURL(url);
+                if (info) info.textContent = '이미지 읽기 실패 - 원본 유지'
+            };
+            im.src = url;
+        });
+    })();
+</script>
 <script>
     var f = document.fitemform;
 

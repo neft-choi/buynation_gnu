@@ -7,6 +7,24 @@ $it_id = isset($_REQUEST['it_id']) ? safe_replace_regex($_REQUEST['it_id'], 'it_
 
 auth_check_menu($auth, $sub_menu, "r");
 
+// 셀러는 자신이 소유한(it_seller) 상품만 복사창에 접근 가능
+if ($is_admin !== 'super') {
+    $member_id_sql = sql_real_escape_string(trim((string)$member['mb_id']));
+    $it_id_sql = sql_real_escape_string($it_id);
+
+    $seller_item = sql_fetch("
+        SELECT it_id
+        FROM {$g5['g5_shop_item_table']}
+        WHERE it_id = '{$it_id_sql}'
+          AND LOWER(TRIM(it_seller)) = LOWER('{$member_id_sql}')
+        LIMIT 1
+    ");
+
+    if (empty($seller_item['it_id'])) {
+        alert('복사 권한이 없는 상품입니다.');
+    }
+}
+
 $g5['title'] = '상품 복사';
 include_once(G5_PATH.'/head.sub.php');
 ?>

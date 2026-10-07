@@ -300,7 +300,7 @@ function csv_new_delivery_order_brand($od_id, $brand_id, $receiver_addr, $receiv
         INNER JOIN {$g5['g5_shop_item_table']} i
             ON i.it_id = c.it_id
         WHERE c.od_id = '{$od_id_sql}'
-          AND TRIM(i.it_brand) = '{$brand_id_sql}'
+          AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}')
         GROUP BY c.it_id
         ORDER BY MIN(c.ct_id) ASC
     ", false);
@@ -781,16 +781,10 @@ function csv_final_default_special_non_group_items($items)
 function csv_delivery_condition_region_extra($condition_id, $receiver_zip, $brand_id = '')
 {
     $condition_id = (int)$condition_id;
-
-    if ($condition_id <= 0) {
-        return 0;
-    }
+    if ($condition_id <= 0) return 0;
 
     $zip = preg_replace('/[^0-9]/', '', (string)$receiver_zip);
-
-    if ($zip === '') {
-        return 0;
-    }
+    if ($zip === '') return 0;
 
     $zip_num = (int)$zip;
     $matched_fee = 0;
@@ -799,56 +793,29 @@ function csv_delivery_condition_region_extra($condition_id, $receiver_zip, $bran
 
     if ($brand_id !== '') {
         $brand_id_sql = sql_real_escape_string($brand_id);
-        $brand_where =
-            " AND LOWER(TRIM(s.brand_id)) = LOWER('{$brand_id_sql}') ";
+        $brand_where = " AND LOWER(TRIM(s.brand_id)) = LOWER('{$brand_id_sql}') ";
     }
 
-    /*
-     * sendcostlist.php / deliverymanage.php가 실제로 사용하는
-     * 브랜드 전용 지역 추가배송비 테이블을 조회한다.
-     *
-     * donuts_delivery_condition_sendcosts.sc_id
-     *     -> donuts_brand_sendcost.sc_id
-     */
     $result = sql_query("
-        SELECT
-            s.sc_id,
-            s.sc_zip1,
-            s.sc_zip2,
-            s.sc_price
+        SELECT s.sc_id, s.sc_zip1, s.sc_zip2, s.sc_price
         FROM donuts_delivery_condition_sendcosts m
-        INNER JOIN donuts_brand_sendcost s
-            ON s.sc_id = m.sc_id
+        INNER JOIN donuts_brand_sendcost s ON s.sc_id = m.sc_id
         WHERE m.dc_id = '{$condition_id}'
           {$brand_where}
         ORDER BY s.sc_id ASC
     ", false);
 
-    if (!$result) {
-        return 0;
-    }
+    if (!$result) return 0;
 
     while ($row = sql_fetch_array($result)) {
-        $from = (int)preg_replace(
-            '/[^0-9]/',
-            '',
-            (string)$row['sc_zip1']
-        );
-
-        $to = (int)preg_replace(
-            '/[^0-9]/',
-            '',
-            (string)$row['sc_zip2']
-        );
-
-        if ($from <= $zip_num && $zip_num <= $to) {
-            $matched_fee = max(
-                $matched_fee,
-                max(0, (int)$row['sc_price'])
-            );
+        $from = (int)preg_replace('/[^0-9]/', '', (string)$row['sc_zip1']);
+        $to = (int)preg_replace('/[^0-9]/', '', (string)$row['sc_zip2']);
+        if ($from <= 0) continue;
+        if ($to <= 0) $to = $from;
+        if ($zip_num >= min($from,$to) && $zip_num <= max($from,$to)) {
+            $matched_fee = max($matched_fee, max(0, (int)$row['sc_price']));
         }
     }
-
     return $matched_fee;
 }
 
@@ -885,13 +852,13 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
 
     if ($brand_id !== '') {
         $brand_id_sql = sql_real_escape_string($brand_id);
-        $brand_where = " AND TRIM(i.it_brand) = '{$brand_id_sql}' ";
+        $brand_where = " AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}') ";
     }
 
     $result = sql_query("
         SELECT
             c.it_id,
-            TRIM(i.it_brand) AS item_brand_id,
+            TRIM(i.it_seller) AS item_brand_id,
             SUM(
                 IF(
                     c.io_type = 1,
@@ -905,7 +872,7 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
             ON i.it_id = c.it_id
         WHERE c.od_id = '{$od_id_sql}'
         {$brand_where}
-        GROUP BY c.it_id, i.it_brand
+        GROUP BY c.it_id, i.it_seller
         ORDER BY MIN(c.ct_id)
     ", false);
 

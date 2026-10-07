@@ -24,7 +24,7 @@ include_once(G5_ADMIN_PATH . '/admin.head.php');
 
     <div class="mt-3 overflow-hidden rounded-lg border border-gray-200 bg-white">
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[900px] table-fixed border-collapse text-left text-xs">
+            <table class="w-full min-w-225 table-fixed border-collapse text-left text-xs">
                 <colgroup>
                     <col class="w-[22%]">
                     <col class="w-[17%]">

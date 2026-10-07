@@ -459,17 +459,42 @@ $result = sql_query($sql);
          * 현재 로그인 브랜드 상품금액 + 현재 브랜드 배송비만 매출로 계산.
          */
         if ($sale_is_brand) {
+            /*
+             * it_seller 기준 셀러 매출.
+             * 주문 전체 금액은 반드시 먼저 보존한 뒤 셀러 비율을 계산한다.
+             * (orderprice를 먼저 셀러금액으로 덮어쓰면 비율이 1이 되는 버그 방지)
+             */
+            $full_orderprice = max(0, (int)$row['orderprice']);
+            $full_misu = max(0, (int)$row['od_misu']);
+
             $sale_calc = sale_brand_order_calc(
                 $row['od_id'],
                 $sale_brand_id
             );
 
-            $row['orderprice'] =
-                (int)$sale_calc['order_total'];
+            $seller_orderprice = max(0, (int)$sale_calc['order_total']);
+            $seller_ratio = $full_orderprice > 0
+                ? min(1, $seller_orderprice / $full_orderprice)
+                : 0;
 
-            $row['od_misu'] = sale_brand_misu_calc(
-                $row,
-                $row['orderprice']
+            $row['orderprice'] = $seller_orderprice;
+            $row['od_misu'] = min(
+                $seller_orderprice,
+                (int)round($full_misu * $seller_ratio)
+            );
+
+            // 혼합 주문의 결제/쿠폰/취소/포인트도 다른 셀러 금액이 섞이지 않게 배분
+            $row['couponprice'] = (int)round(
+                max(0, (int)$row['couponprice']) * $seller_ratio
+            );
+            $row['od_cancel_price'] = (int)round(
+                max(0, (int)$row['od_cancel_price']) * $seller_ratio
+            );
+            $row['od_receipt_price'] = (int)round(
+                max(0, (int)$row['od_receipt_price']) * $seller_ratio
+            );
+            $row['od_receipt_point'] = (int)round(
+                max(0, (int)$row['od_receipt_point']) * $seller_ratio
             );
         }
 

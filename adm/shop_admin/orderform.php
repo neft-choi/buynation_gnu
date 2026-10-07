@@ -69,7 +69,7 @@ if ($is_admin !== 'super' && !empty($member['mb_id'])) {
     $login_brand = sql_fetch("
         SELECT brand_id
         FROM donuts_brand
-        WHERE TRIM(brand_id) = '{$login_brand_sql}'
+        WHERE LOWER(TRIM(brand_id)) = LOWER('{$login_brand_sql}')
         LIMIT 1
     ");
 
@@ -189,6 +189,7 @@ add_javascript(G5_POSTCODE_JS, 0);    //다음 주소 js
 
     <form name="frmorderform" method="post" action="./orderformcartupdate.php" onsubmit="return form_submit(this);">
     <input type="hidden" name="od_id" value="<?php echo $od_id; ?>">
+    <input type="hidden" name="token" value="<?php echo get_admin_token(); ?>">
     <input type="hidden" name="mb_id" value="<?php echo $od['mb_id']; ?>">
     <input type="hidden" name="od_email" value="<?php echo $od['od_email']; ?>">
     <input type="hidden" name="sort1" value="<?php echo $sort1; ?>">
@@ -1180,6 +1181,12 @@ function form_submit(f)
 {
     var check = false;
     var status = document.pressed;
+
+    // 송장정보 저장은 상태변경이 아니므로 체크박스 선택을 요구하지 않는다.
+    // 현재 화면에 표시된 ct_id별 택배사/운송장번호를 그대로 저장한다.
+    if (status == "송장정보 저장") {
+        return true;
+    }
 
     for (i=0; i<f.chk_cnt.value; i++) {
         if (document.getElementById('ct_chk_'+i).checked == true)

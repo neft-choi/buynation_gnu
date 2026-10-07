@@ -163,7 +163,7 @@ if ($where)
     $brand = sql_fetch("
         SELECT brand_id
         FROM donuts_brand
-        WHERE brand_id = '{$member['mb_id']}'
+        WHERE LOWER(TRIM(brand_id)) = LOWER(TRIM('{$member['mb_id']}'))
     ");
 
     if ($brand['brand_id']) {
@@ -174,7 +174,7 @@ if ($where)
                 FROM {$g5['g5_shop_cart_table']} c
                 INNER JOIN {$g5['g5_shop_item_table']} i
                     ON c.it_id = i.it_id
-                WHERE TRIM(i.it_seller) = '{$member['mb_id']}'
+                WHERE LOWER(TRIM(i.it_seller)) = LOWER(TRIM('{$member['mb_id']}'))
             )
         ";
 
@@ -281,18 +281,18 @@ fputcsv($fp, array(
 /*
  * 기존 sql_search는 o alias를 사용하므로 그대로 사용.
  * 브랜드 회원은 주문번호뿐 아니라 실제 CSV 행도 자기 판매자(it_seller) 상품으로 제한.
- * 배송정책 계산은 기존 운영 기준(it_brand)을 그대로 유지.
+ * 배송정책 계산도 판매자 소유키(it_seller)를 사용.
  */
 $csv_brand_where = '';
 
 if (!empty($brand['brand_id'])) {
     $brand_id_sql = sql_real_escape_string($member['mb_id']);
-    $csv_brand_where = " AND TRIM(i.it_seller) = '{$brand_id_sql}' ";
+    $csv_brand_where = " AND LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}') ";
 }
 
 /* WHERE가 없는 경우 AND를 붙일 수 없으므로 별도 처리 */
 if (!$sql_search && $csv_brand_where) {
-    $csv_brand_where = " WHERE TRIM(i.it_seller) = '{$brand_id_sql}' ";
+    $csv_brand_where = " WHERE LOWER(TRIM(i.it_seller)) = LOWER('{$brand_id_sql}') ";
 }
 
 /* 주문상품 기준 조회 */
@@ -443,20 +443,18 @@ while ($row = sql_fetch_array($result)) {
     $shipping_type = '';
 
     /*
-     * CSV의 배송비/배송유형/묶음정보는 반드시 같은 계산 결과를 사용한다.
-     * 과거 snapshot은 당시 item_charges가 0으로 남아 있을 수 있으므로,
-     * 현재 배송관리 계산값이 있으면 그것을 우선한다.
+     * 중요: CSV 배송정보는 주문시점 스냅샷을 최우선으로 사용한다.
+     *
+     * it_seller는 "어느 판매자의 주문상품인가"를 구분하는 용도로만 사용하고,
+     * 현재 donuts_delivery_conditions / product_settings를 다시 계산한 값으로
+     * 과거 주문의 배송비/유형/묶음정보를 덮어쓰지 않는다.
+     *
+     * delivery_calc는 위에서:
+     * 1) 주문시점 snapshot
+     * 2) snapshot이 없는 구 주문/예외 데이터만 현재 계산 fallback
+     * 순서로 이미 결정되어 있다.
      */
-    $current_delivery_calc =
-        ($row_brand_id !== '' &&
-         isset($new_delivery_cache[$delivery_cache_key]) &&
-         is_array($new_delivery_cache[$delivery_cache_key]))
-        ? $new_delivery_cache[$delivery_cache_key]
-        : null;
-
-    $csv_delivery_calc = $current_delivery_calc
-        ? $current_delivery_calc
-        : $delivery_calc;
+    $csv_delivery_calc = $delivery_calc;
 
     if ($csv_delivery_calc) {
         $row_shipping_amount =
@@ -584,48 +582,38 @@ while ($row = sql_fetch_array($result)) {
             : '';
 
         /*
-         * 브랜드 CSV는 상품별 배송비와 최종배송비가 서로 다른 계산경로를
-         * 사용하지 않도록 현재 배송관리 계산값 하나만 사용한다.
+         * 최종 배송비 / 지역 추가비 역시 주문시점 snapshot을 사용한다.
+         * seller 패치는 판매자 필터만 담당하고 배송정책 시점을 변경하지 않는다.
          */
-        if (
-            $final_shipping_brand_id !== '' &&
-            isset($new_delivery_cache[$delivery_cache_key]) &&
-            is_array($new_delivery_cache[$delivery_cache_key])
-        ) {
-            $same_calc = $new_delivery_cache[$delivery_cache_key];
+        $snapshot_key_brand =
+            $final_shipping_brand_id !== ''
+            ? $final_shipping_brand_id
+            : '__ALL__';
 
-            $region_detail =
-                csv_new_delivery_final_order_shipping_detail(
-                    $row['od_id'],
-                    $final_shipping_brand_id,
-                    $receiver_addr,
-                    $receiver_zip
-                );
-
-            $final_shipping_cache[$final_shipping_cache_key] = array(
-                'shipping_total' => isset($same_calc['shipping_total'])
-                    ? (int)$same_calc['shipping_total']
-                    : 0,
-                'region_extra' => (
-                    is_array($region_detail) &&
-                    isset($region_detail['region_extra'])
-                )
-                    ? (int)$region_detail['region_extra']
-                    : 0
+        $snapshot_detail =
+            donuts_order_shipping_snapshot_capture_if_missing(
+                $row['od_id'],
+                $snapshot_key_brand,
+                $receiver_addr,
+                $receiver_zip
             );
-        } else {
-            /*
-             * 최고관리자는 여러 판매자의 합산이 필요하므로 기존 전체주문
-             * 최종배송비 계산을 유지한다.
-             */
-            $final_shipping_cache[$final_shipping_cache_key] =
-                csv_new_delivery_final_order_shipping_detail(
-                    $row['od_id'],
-                    $final_shipping_brand_id,
-                    $receiver_addr,
-                    $receiver_zip
-                );
-        }
+
+        $final_shipping_cache[$final_shipping_cache_key] =
+            !empty($snapshot_detail['_snapshot_exists'])
+            ? array(
+                'shipping_total' => isset($snapshot_detail['shipping_total'])
+                    ? (int)$snapshot_detail['shipping_total']
+                    : 0,
+                'region_extra' => isset($snapshot_detail['region_extra'])
+                    ? (int)$snapshot_detail['region_extra']
+                    : 0
+            )
+            : csv_new_delivery_final_order_shipping_detail(
+                $row['od_id'],
+                $final_shipping_brand_id,
+                $receiver_addr,
+                $receiver_zip
+            );
     }
 
     $final_shipping_detail =
@@ -640,6 +628,47 @@ while ($row = sql_fetch_array($result)) {
         isset($final_shipping_detail['shipping_total'])
         ? (int)$final_shipping_detail['shipping_total']
         : 0;
+
+    /*
+     * 택배사 / 운송장 번호 / 운송장 등록일시
+     *
+     * seller 패치에서 CSV 행은 g5_shop_cart 기준으로 분리하지만,
+     * 영카트 기본 배송처리는 주문 테이블(g5_shop_order)의
+     * od_delivery_company / od_invoice / od_invoice_time 에 저장되는 경우가 있습니다.
+     *
+     * 따라서:
+     * 1) ct_* 상품별 송장값이 있으면 그것을 우선
+     * 2) ct_* 값이 비어 있으면 od_* 주문 송장값을 fallback
+     *
+     * 이 방식이면 상품별 송장 기능을 사용한 주문과
+     * 영카트 기본 주문단위 송장 등록 주문을 모두 CSV에 출력할 수 있습니다.
+     */
+    $csv_delivery_company = trim((string)$row['ct_delivery_company']);
+    if ($csv_delivery_company === '') {
+        $csv_delivery_company = isset($row['od_delivery_company'])
+            ? trim((string)$row['od_delivery_company'])
+            : '';
+    }
+
+    $csv_invoice = trim((string)$row['ct_invoice']);
+    if ($csv_invoice === '') {
+        $csv_invoice = isset($row['od_invoice'])
+            ? trim((string)$row['od_invoice'])
+            : '';
+    }
+
+    $csv_invoice_time = trim((string)$row['ct_invoice_time']);
+    if (
+        $csv_invoice_time === '' ||
+        $csv_invoice_time === '0000-00-00 00:00:00'
+    ) {
+        $csv_invoice_time = isset($row['od_invoice_time'])
+            ? trim((string)$row['od_invoice_time'])
+            : '';
+    }
+    if ($csv_invoice_time === '0000-00-00 00:00:00') {
+        $csv_invoice_time = '';
+    }
 
     fputcsv($fp, array(
         $row['od_time'],
@@ -684,9 +713,11 @@ while ($row = sql_fetch_array($result)) {
         $region_extra_amount,
         $final_shipping_amount,
 
-        $row['ct_delivery_company'],
-        $row['ct_invoice'],
-        $row['ct_invoice_time'],
+        // 상품(카트)별 송장정보가 있으면 우선 사용하고,
+        // 비어 있으면 영카트 주문 테이블의 기본 송장정보로 fallback 합니다.
+        $csv_delivery_company,
+        $csv_invoice,
+        $csv_invoice_time,
 
         $row['od_status'],
         $row['od_settle_case'],

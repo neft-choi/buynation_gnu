@@ -4,11 +4,6 @@
   --color-secondary: ##3f51b5;
 }
 
-#gnb .gnb_ul {
-  display: flex;
-  flex-direction: column;
-}
-
 /* 공통 - 상단 버튼 이동 */
 .btn_fixed_top {
   display: flex;

@@ -9,6 +9,11 @@ check_admin_token();
 
 donuts_delivery_install();
 
+// 배송조건별 개별 배송 여부
+if (!sql_query(" SELECT dc_individual FROM donuts_delivery_conditions LIMIT 1 ", false)) {
+    sql_query("ALTER TABLE donuts_delivery_conditions ADD dc_individual TINYINT(1) NOT NULL DEFAULT 0 AFTER dc_qty", true);
+}
+
 /*
  * 배송조건 <-> 추가배송비(sendcostlist) 연결 테이블
  */
