@@ -75,6 +75,7 @@ run_event('cheditor_photo_upload', $data_dir, $data_url);
 //----------------------------------------------------------------------------
 //
 //
+if (empty($_FILES['file']) || !empty($_FILES['file']['error'])) {http_response_code(413);header('Content-Type: application/json; charset=utf-8');echo json_encode(array('error'=>'이미지 용량 또는 업로드 오류'));exit;}
 $tempfile = $_FILES['file']['tmp_name'];
 $filename = $_FILES['file']['name'];
 $filename_len = strrpos($filename, ".");
@@ -100,7 +101,10 @@ if ($found != true || $filename_len != 23) {
 $filename = che_replace_filename($filename);
 $savefile = SAVE_DIR . '/' . $filename;
 
-move_uploaded_file($tempfile, $savefile);
+if (!move_uploaded_file($tempfile,$savefile)) {http_response_code(500);echo json_encode(array('error'=>'이미지 저장 실패'));exit;}
+require_once __DIR__.'/editor_image_optimize.php';
+editor_optimize_uploaded_image($savefile);
+clearstatcache(true,$savefile);
 $imgsize = getimagesize($savefile);
 $filesize = filesize($savefile);
 

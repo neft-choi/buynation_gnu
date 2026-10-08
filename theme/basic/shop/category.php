@@ -233,8 +233,8 @@ $mshop_categories = get_shop_category_array(true);
     </div>
 </div>
 
-<div id="pc-category-modal" class="fixed left-0 top-[158px] z-[60] w-full" style="display:none;">
-    <div class="pc-category-backdrop fixed top-[158px] inset-0 bg-black/20"></div>
+<div id="pc-category-modal" class="fixed left-0 top-[142px] z-[60] w-full" style="display:none;">
+    <div class="pc-category-backdrop fixed top-[142px] inset-0 bg-black/20"></div>
 
     <div class="pc-category-panel relative bg-white">
 

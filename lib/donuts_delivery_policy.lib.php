@@ -10,7 +10,7 @@ if (!defined('_GNUBOARD_')) exit;
  * - 같은 주문번호(od_id)를 계산 단위로 사용
  * - 상품가격 + 옵션가격 + 배송조건 + 묶음배송 조건으로 배송비 계산
  * - 기존 od_send_cost / ct_send_cost 값을 계산 근거로 사용하지 않음
- * - 묶음배송 조건부무료/금액구간은 같은 주문번호 전체 상품금액 기준
+ * - 묶음배송 조건부무료/금액구간은 같은 셀러 상품금액 기준
  */
 
 if (!function_exists('donuts_delivery_policy_is_island_zip')) {
@@ -161,7 +161,7 @@ if (!function_exists('donuts_delivery_policy_item_total')) {
 
         if ($brand_id !== '') {
             $brand_sql = sql_real_escape_string($brand_id);
-            $brand_where = " AND TRIM(i.it_brand) = '{$brand_sql}' ";
+            $brand_where = " AND TRIM(i.it_seller) = '{$brand_sql}' ";
         }
 
         $row = sql_fetch("
@@ -212,15 +212,7 @@ if (!function_exists('donuts_delivery_policy_default_special_non_group_items')) 
                 if ($r) $setting = sql_fetch_array($r);
             }
 
-            if (empty($setting)) {
-                $r = sql_query("
-                    SELECT brand_id, condition_id, group_id
-                    FROM donuts_delivery_product_settings
-                    WHERE it_id = '{$it_id_sql}'
-                    LIMIT 1
-                ", false);
-                if ($r) $setting = sql_fetch_array($r);
-            }
+            // 다른 셀러 배송정책 혼입 방지: 셀러가 일치하는 설정만 사용.
 
             // 실제 묶음배송 상품은 특례에서 완전히 제외
             if (!empty($setting['group_id']) && (int)$setting['group_id'] > 0) {
@@ -267,15 +259,33 @@ if (!function_exists('donuts_delivery_policy_default_special_non_group_items')) 
 
             $type = !empty($condition['dc_type']) ? trim((string)$condition['dc_type']) : '';
 
-            if ($is_default) $default_ids[$it_id] = true;
-            if (!$is_default && in_array($type, array('paid', 'quantity', 'amount_range'), true)) $special_ids[$it_id] = true;
+            if ($is_default) $default_ids[$brand_id . '|' . $it_id] = true;
+            if (!$is_default && in_array($type, array('paid', 'quantity', 'amount_range'), true)) $special_ids[$brand_id . '|' . $it_id] = true;
         }
 
         if (empty($default_ids) || empty($special_ids)) {
             return array();
         }
 
-        return $default_ids + $special_ids;
+        // 기본 배송과 특수 배송의 혼합 여부는 반드시 같은 셀러 안에서 판단한다.
+        $seller_default = array();
+        $seller_special = array();
+        foreach ($default_ids as $key => $unused) {
+            $parts = explode('|', $key, 2);
+            $seller_default[$parts[0]] = true;
+        }
+        foreach ($special_ids as $key => $unused) {
+            $parts = explode('|', $key, 2);
+            $seller_special[$parts[0]] = true;
+        }
+        $mixed = array();
+        foreach ($items as $item) {
+            $seller = trim((string)$item['brand_id']);
+            if (isset($seller_default[$seller]) && isset($seller_special[$seller])) {
+                $mixed[$seller . '|' . $item['it_id']] = true;
+            }
+        }
+        return $mixed;
     }
 }
 
@@ -285,7 +295,8 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
         $brand_id = '',
         $receiver_addr = '',
         $receiver_zip = '',
-        $selected_only = false
+        $selected_only = false,
+        &$shipping_detail = null
     ) {
         global $g5;
 
@@ -300,7 +311,7 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
 
         if ($brand_id !== '') {
             $brand_id_sql = sql_real_escape_string($brand_id);
-            $brand_where = " AND TRIM(i.it_brand) = '{$brand_id_sql}' ";
+            $brand_where = " AND TRIM(i.it_seller) = '{$brand_id_sql}' ";
         }
 
         /*
@@ -309,7 +320,7 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
         $result = sql_query("
             SELECT
                 c.it_id,
-                TRIM(i.it_brand) AS item_brand_id,
+                TRIM(i.it_seller) AS item_brand_id,
                 SUM(
                     IF(
                         c.io_type = 1,
@@ -324,7 +335,7 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
             WHERE c.od_id = '{$od_id_sql}'
             {$select_where}
             {$brand_where}
-            GROUP BY c.it_id, i.it_brand
+            GROUP BY c.it_id, i.it_seller
             ORDER BY MIN(c.ct_id)
         ", false);
 
@@ -350,35 +361,22 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
         $default_special_non_group_items =
             donuts_delivery_policy_default_special_non_group_items($items);
 
-        /*
-         * 묶음배송 무료조건은 "같은 주문번호 전체 상품금액" 기준.
-         * 브랜드 관리자 화면에서도 무료기준은 주문번호 전체 기준을 유지.
-         */
-        $all_select_where = $selected_only ? " AND ct_select = '1' " : '';
-
-        $total_row = sql_fetch("
-            SELECT SUM(
-                IF(
-                    io_type = 1,
-                    io_price * ct_qty,
-                    (ct_price + io_price) * ct_qty
-                )
-            ) AS total_amount
-            FROM {$g5['g5_shop_cart_table']}
-            WHERE od_id = '{$od_id_sql}'
-            {$all_select_where}
-        ");
-
-        $order_total = isset($total_row['total_amount']) ? (int)$total_row['total_amount'] : 0;
-
-        if ($order_total <= 0) {
-            foreach ($items as $tmp) {
-                $order_total += (int)$tmp['amount'];
+        // 셀러별 무료배송 기준 및 묶음배송 금액은 해당 셀러 상품만 집계한다.
+        $seller_totals = array();
+        $seller_item_counts = array();
+        foreach ($items as $seller_item) {
+            $seller_key = strtolower(trim((string)$seller_item['brand_id']));
+            if (!isset($seller_totals[$seller_key])) {
+                $seller_totals[$seller_key] = 0;
+                $seller_item_counts[$seller_key] = 0;
             }
+            $seller_totals[$seller_key] += (int)$seller_item['amount'];
+            $seller_item_counts[$seller_key]++;
         }
 
         $individual_total = 0;
         $bundle_candidates = array();
+        $shipping_detail = array('items' => array(), 'sellers' => array(), 'shipping_total' => 0);
 
         foreach ($items as $item) {
             $it_id = $item['it_id'];
@@ -407,16 +405,7 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
                 if ($sr) $setting = sql_fetch_array($sr);
             }
 
-            if (empty($setting)) {
-                $sr = sql_query("
-                    SELECT brand_id, condition_id, group_id
-                    FROM donuts_delivery_product_settings
-                    WHERE it_id = '{$it_id_sql}'
-                    LIMIT 1
-                ", false);
-
-                if ($sr) $setting = sql_fetch_array($sr);
-            }
+            // 다른 셀러의 설정을 잘못 가져오지 않도록 전체상품 fallback 제거.
 
             $setting_brand = !empty($setting['brand_id'])
                 ? trim((string)$setting['brand_id'])
@@ -486,8 +475,8 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
 
             /*
              * 운영 데이터에서 group_id가 누락된 경우에도
-             * 같은 주문번호에 여러 상품 + 같은 conditional/amount_range 조건이면
-             * 주문번호 전체 금액 기준 묶음조건으로 처리.
+             * 같은 셀러에 여러 상품 + 같은 conditional/amount_range 조건이면
+             * 해당 셀러 금액 기준 묶음조건으로 처리.
              */
             $is_bundle = ($group_id > 0);
 
@@ -496,18 +485,19 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
                 : '';
 
             $is_default_paid_special_item =
-                isset($default_special_non_group_items[$it_id]);
+                isset($default_special_non_group_items[$item_brand . '|' . $it_id]);
 
             if (
                 !$is_default_paid_special_item &&
                 !$is_bundle &&
-                count($items) > 1 &&
+                isset($seller_item_counts[strtolower($item_brand)]) &&
+                $seller_item_counts[strtolower($item_brand)] > 1 &&
                 in_array($condition_type, array('conditional', 'amount_range'), true)
             ) {
                 $is_bundle = true;
             }
 
-            $base_amount = $is_bundle ? $order_total : $item_amount;
+            $base_amount = $is_bundle ? $seller_totals[strtolower($item_brand)] : $item_amount;
 
             if (!empty($condition)) {
                 $fee = donuts_delivery_policy_condition_fee(
@@ -537,16 +527,32 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
             }
 
             $fee = max(0, (int)$fee);
+            $shipping_detail['items'][] = array(
+                'it_id' => $it_id,
+                'seller_id' => $item_brand,
+                'amount' => $item_amount,
+                'qty' => $item_qty,
+                'condition_id' => $condition_id,
+                'group_id' => $group_id,
+                'condition_type' => $condition_type,
+                'base_amount' => $base_amount,
+                'calculated_fee' => $fee,
+                'bundle' => $is_bundle ? 1 : 0
+            );
+            if (!isset($shipping_detail['sellers'][$item_brand])) {
+                $shipping_detail['sellers'][$item_brand] = 0;
+            }
 
             if (!$is_bundle) {
                 $individual_total += $fee;
+                $shipping_detail['sellers'][$item_brand] += $fee;
                 continue;
             }
 
             if ($group_id > 0) {
                 $bundle_key =
                     $od_id . '|G|' .
-                    $setting_brand . '|' .
+                    $item_brand . '|' .
                     $group_id;
 
                 $method = (
@@ -556,7 +562,7 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
             } else {
                 $bundle_key =
                     $od_id . '|C|' .
-                    $setting_brand . '|' .
+                    $item_brand . '|' .
                     $condition_id;
 
                 $method = 'MAX';
@@ -565,7 +571,8 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
             if (!isset($bundle_candidates[$bundle_key])) {
                 $bundle_candidates[$bundle_key] = array(
                     'method' => $method,
-                    'fees' => array()
+                    'fees' => array(),
+                    'seller_id' => $item_brand
                 );
             }
 
@@ -577,14 +584,14 @@ if (!function_exists('donuts_delivery_policy_final_shipping')) {
         foreach ($bundle_candidates as $bundle) {
             if (empty($bundle['fees'])) continue;
 
-            if ($bundle['method'] === 'MIN') {
-                $bundle_total += min($bundle['fees']);
-            } else {
-                $bundle_total += max($bundle['fees']);
-            }
+            $bundle_fee = ($bundle['method'] === 'MIN')
+                ? min($bundle['fees']) : max($bundle['fees']);
+            $bundle_total += $bundle_fee;
+            $shipping_detail['sellers'][$bundle['seller_id']] += $bundle_fee;
         }
 
-        return max(0, (int)$individual_total + (int)$bundle_total);
+        $shipping_detail['shipping_total'] = max(0, (int)$individual_total + (int)$bundle_total);
+        return $shipping_detail['shipping_total'];
     }
 }
 

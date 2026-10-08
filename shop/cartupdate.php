@@ -129,12 +129,15 @@ if ($act == "qtysync") {
         }
     }
 
+    donuts_cart_guard_capture($tmp_cart_id, false);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($response);
     exit;
 }
 
 if ($act == "buy") {
+    $guard_error = donuts_cart_guard_check($tmp_cart_id, false);
+    if ($guard_error) alert($guard_error, G5_SHOP_URL.'/cart.php');
     if (!count($post_ct_chk))
         alert("주문하실 상품을 하나이상 선택해 주십시오.");
 
@@ -471,6 +474,10 @@ if ($act == "buy") {
     }
 }
 
+// 장바구니 담기 완료 후 최초 스냅샷만 저장 (기존 스냅샷 덮어쓰기 금지)
+if ($act != 'buy' && $act != 'alldelete' && $act != 'seldelete') {
+    donuts_cart_guard_capture($tmp_cart_id, false);
+}
 // 바로 구매일 경우
 if ($sw_direct) {
     if ($is_member) {

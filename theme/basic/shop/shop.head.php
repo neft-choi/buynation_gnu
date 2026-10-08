@@ -33,7 +33,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
         <!-- 기본 헤더 본문 (로고/아이콘/검색) -->
         <div id="hd_wrapper">
-            <div class="header-inner mx-auto w-full max-w-[var(--breakpoint-pc)] p-4 pb-0 space-y-4">
+            <div class="header-inner mx-auto w-full max-w-[var(--breakpoint-pc)] p-4 pb-0">
                 <div id="shop-header" class="relative flex items-center justify-between">
                     <div class="inline-flex items-center gap-10">
                         <a href="<?php echo G5_SHOP_URL; ?>/" id="shop-logo-link" class="block">
@@ -174,6 +174,8 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 <script>
                     // 최근 본 상품 패널 열기/닫기 제어
                     $(function () {
+                        $('html').addClass('gutter-stable');
+                        
                         $(document).on('click', '#recent-viewed-open', function () {
                             $('#recent-viewed-backdrop').removeClass('hidden');
                             $('#recent-viewed-panel').removeClass('translate-x-full');

@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+include_once(G5_LIB_PATH.'/donuts_cart_guard.lib.php');
 include_once(G5_LIB_PATH . '/donuts_delivery_policy.lib.php');
 
 // add_javascript('js 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
@@ -27,6 +28,9 @@ if (get_cart_count($tmp_cart_id) == 0)
 if (function_exists('before_check_cart_price')) {
     if (! before_check_cart_price($tmp_cart_id)) alert('장바구니 금액에 변동사항이 있습니다.\n장바구니를 다시 확인해 주세요.', G5_SHOP_URL . '/cart.php');
 }
+
+$guard_error = donuts_cart_guard_check($tmp_cart_id, true);
+if ($guard_error) alert($guard_error, G5_SHOP_URL.'/cart.php');
 
 // 새로운 주문번호 생성
 $od_id = get_uniqid();

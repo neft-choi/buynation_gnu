@@ -5,7 +5,7 @@ include_once('../_common.php');
 auth_check_menu($auth, $sub_menu, 'r');
 
 $g5['title'] = '플랫폼 관리자·권한';
-require_once '../../admin.head.php';
+require_once '../../admin.head2.php';
 ?>
 
 <section>
@@ -130,6 +130,336 @@ require_once '../../admin.head.php';
         </li>
 
         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
+            <div class="flex min-w-0 items-center gap-3">
+                <div
+                    aria-hidden="true"
+                    class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-300 font-bold text-gray-900">
+                    최
+                </div>
+
+                <div class="min-w-0">
+                    <h3 class="font-bold text-gray-900">
+                        최OO · CS 운영자
+                    </h3>
+
+                    <p class="mt-1 text-2xs text-gray-400 font-medium">
+                        cs@donuts.example · 최근 어제 18:02
+                    </p>
+
+                    <ul class="mt-2 flex flex-wrap gap-1" aria-label="보유 권한">
+                        <li class="rounded bg-gray-100 px-2 py-1 text-2xs text-gray-600">
+                            주문·클레임
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <button
+                type="button"
+                aria-label="박○○ 관리자 권한 설정"
+                class="admin-detail-modal-open shrink-0 rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900">
+                권한
+            </button>
+        </li>
+
+         <li class="flex items-center justify-between gap-4 rounded-lg border border-gray-300 bg-white p-4">
             <div class="flex min-w-0 items-center gap-3">
                 <div
                     aria-hidden="true"
@@ -342,4 +672,4 @@ require_once '../../admin.head.php';
 </script>
 
 <?php
-require_once '../../admin.tail.php';
+require_once '../../admin.tail2.php';

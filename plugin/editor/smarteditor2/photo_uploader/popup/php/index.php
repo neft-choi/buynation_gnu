@@ -52,6 +52,13 @@ if( $is_editor_upload ) {
         'image_versions' => array()
     );
 
+    $max=ini_get('post_max_size');$unit=strtolower(substr($max,-1));
+    $units=array('k'=>1024,'m'=>1048576,'g'=>1073741824);
+    $bytes=(float)$max*(isset($units[$unit])?$units[$unit]:1);
+    if ($bytes>0 && !empty($_SERVER['CONTENT_LENGTH']) && $_SERVER['CONTENT_LENGTH']>$bytes) {
+        http_response_code(413);header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(array('files'=>array(array('error'=>'이미지 용량이 서버 post_max_size를 초과했습니다.'))));exit;
+    }
     $upload_handler = new UploadHandler($options);
 
 } else {

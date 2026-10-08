@@ -185,10 +185,10 @@
 }
 
 /* 오늘 본 상품 */
-#stv {
+/* #stv {
   position: relative;
   height: 100%;
-}
+} */
 #stv .li_empty {
   text-align: center;
   line-height: 100px;

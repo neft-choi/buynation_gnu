@@ -1,5 +1,6 @@
 <?php
 include_once('./_common.php');
+include_once(G5_LIB_PATH.'/donuts_cart_guard.lib.php');
 include_once(G5_LIB_PATH.'/mailer.lib.php');
 include_once(G5_LIB_PATH . '/donuts_delivery_policy.lib.php');
 include_once(G5_LIB_PATH . '/donuts_order_shipping_snapshot.lib.php');
@@ -37,6 +38,9 @@ if (get_cart_count($tmp_cart_id) == 0) {    // 장바구니에 담기
     if(function_exists('add_order_post_log')) add_order_post_log('장바구니가 비어 있습니다.');
     alert('장바구니가 비어 있습니다.\\n\\n이미 주문하셨거나 장바구니에 담긴 상품이 없는 경우입니다.', G5_SHOP_URL.'/cart.php');
 }
+
+$guard_error = donuts_cart_guard_check($tmp_cart_id, true);
+if ($guard_error) alert($guard_error, G5_SHOP_URL.'/cart.php');
 
 $sql = "select * from {$g5['g5_shop_order_table']} limit 1";
 $check_tmp = sql_fetch($sql);
@@ -233,13 +237,22 @@ $delivery_receiver_zip = isset($od_b_zip)
         preg_replace('/[^0-9]/', '', isset($od_b_zip2) ? $od_b_zip2 : '')
     );
 // die($od_b_zip);
+$shipping_detail = array();
 $send_cost = donuts_delivery_policy_final_shipping(
     $tmp_cart_id,
     '',
     $delivery_receiver_addr,
     $delivery_receiver_zip,
-    true
+    true,
+    $shipping_detail
 );
+
+// 서버 기준 상품별/셀러별 배송비 합계의 무결성 검증
+$shipping_seller_total = array_sum(isset($shipping_detail['sellers']) ? $shipping_detail['sellers'] : array());
+if (empty($shipping_detail['items']) || (int)$shipping_seller_total !== (int)$send_cost) {
+    error_log('[DONUTS_SHIPPING_INVALID] cart=' . $tmp_cart_id . ' detail=' . json_encode($shipping_detail, JSON_UNESCAPED_UNICODE));
+    alert('배송비 검증에 실패했습니다. 장바구니를 다시 확인해 주세요.', G5_SHOP_URL.'/cart.php');
+}
 
 $tot_sc_cp_price = 0;
 if($is_member && $send_cost > 0) {
@@ -277,8 +290,13 @@ if($is_member && $send_cost > 0) {
 }
 
 if ((int)($send_cost - $tot_sc_cp_price) !== (int)($i_send_cost - $i_send_coupon)) {
-    if(function_exists('add_order_post_log')) add_order_post_log('배송비 최종 계산 Error..');
-    die("Error..");
+    $shipping_log = '[DONUTS_SHIPPING_MISMATCH] cart=' . $tmp_cart_id
+        . ' expected=' . (int)($send_cost - $tot_sc_cp_price)
+        . ' posted=' . (int)($i_send_cost - $i_send_coupon)
+        . ' details=' . json_encode($shipping_detail, JSON_UNESCAPED_UNICODE);
+    error_log($shipping_log);
+    if(function_exists('add_order_post_log')) add_order_post_log($shipping_log);
+    alert('상품별 배송비가 변경되었거나 주문서 금액과 다릅니다. 장바구니를 다시 확인해 주세요.', G5_SHOP_URL.'/cart.php');
 }
 
 // 지역 추가배송비는 donuts 배송정책의 최종 배송비에 이미 포함됨

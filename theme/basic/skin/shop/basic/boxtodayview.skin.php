@@ -60,7 +60,7 @@ if ($tv_tot_count > 0) {
 ?>
 
 <!-- 오늘 본 상품 시작 { -->
-<div id="stv">
+<div id="stv" class="relative h-full">
 
     <?php if ($tv_items) { // 오늘 본 상품이 1개라도 있을 때 
     ?>
@@ -146,13 +146,13 @@ if ($tv_tot_count > 0) {
 
     <?php } else { // 오늘 본 상품이 없을 때 
     ?>
-        <div class="flex flex-col h- items-center justify-center text-gray-300">
+        <div class="flex flex-col h-full items-center justify-center text-gray-300">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-circle-alert-icon lucide-circle-alert w-12 h-12">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" x2="12" y1="8" y2="12" />
                 <line x1="12" x2="12.01" y1="16" y2="16" />
             </svg>
-            <p class="">최근 본 상품이 없습니다</p>
+            <p class="mt-2">최근 본 상품이 없습니다</p>
         </div>
     <?php } ?>
 </div>

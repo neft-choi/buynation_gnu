@@ -1,0 +1,269 @@
+<?php
+if (!defined('_GNUBOARD_')) {
+    exit;
+}
+
+$g5_debug['php']['begin_time'] = $begin_time = get_microtime();
+
+$files = glob(G5_ADMIN_PATH . '/css/admin_extend_*');
+if (is_array($files)) {
+    foreach ((array) $files as $k => $css_file) {
+
+        $fileinfo = pathinfo($css_file);
+        $ext = $fileinfo['extension'];
+
+        if ($ext !== 'css') {
+            continue;
+        }
+
+        $css_file = str_replace(G5_ADMIN_PATH, G5_ADMIN_URL, $css_file);
+        add_stylesheet('<link rel="stylesheet" href="' . $css_file . '">', $k);
+    }
+}
+
+require_once G5_PATH . '/head.sub.php';
+
+function print_menu1($key, $no = '')
+{
+    global $menu;
+
+    $str = print_menu2($key, $no);
+
+    return $str;
+}
+
+function print_menu2($key, $no = '')
+{
+    global $menu, $auth_menu, $is_admin, $auth, $g5, $sub_menu;
+
+    $str = "<ul>";
+    for ($i = 1; $i < count($menu[$key]); $i++) {
+        if (!isset($menu[$key][$i])) {
+            continue;
+        }
+
+        if ($is_admin != 'super' && (!array_key_exists($menu[$key][$i][0], $auth) || !strstr($auth[$menu[$key][$i][0]], 'r'))) {
+            continue;
+        }
+
+        $gnb_grp_div = $gnb_grp_style = '';
+
+        if (isset($menu[$key][$i][4])) {
+            if (($menu[$key][$i][4] == 1 && $gnb_grp_style == false) || ($menu[$key][$i][4] != 1 && $gnb_grp_style == true)) {
+                $gnb_grp_div = 'gnb_grp_div';
+            }
+
+            if ($menu[$key][$i][4] == 1) {
+                $gnb_grp_style = 'gnb_grp_style';
+            }
+        }
+
+        $current_class = '';
+
+        if ($menu[$key][$i][0] == $sub_menu) {
+            $current_class = ' on';
+        }
+
+        $str .= '<li data-menu="' . $menu[$key][$i][0] . '" class="hover:bg-blue-100"><a href="' . $menu[$key][$i][2] . '" class="gnb_2da block py-2 pl-10 pr-4 text-gray-900 font-medium ' . $gnb_grp_style . ' ' . $gnb_grp_div . $current_class . '">' . $menu[$key][$i][1] . '</a></li>';
+
+        $auth_menu[$menu[$key][$i][0]] = $menu[$key][$i][1];
+    }
+    $str .= "</ul>";
+
+    return $str;
+}
+
+$adm_menu_cookie = array(
+    'container' => '',
+);
+?>
+
+<script>
+    const g5_admin_csrf_token_key = "<?php echo (function_exists('admin_csrf_token_key')) ? admin_csrf_token_key() : ''; ?>";
+    let tempX = 0;
+    let tempY = 0;
+
+    function imageview(id, w, h) {
+
+        menu(id);
+
+        const el_id = document.getElementById(id);
+
+        //submenu = eval(name+".style");
+        const submenu = el_id.style;
+        submenu.left = tempX - (w + 11);
+        submenu.top = tempY - (h / 2);
+
+        selectBoxVisible();
+
+        if (el_id.style.display !== 'none')
+            selectBoxHidden(id);
+    }
+</script>
+
+<style>
+    #admin-sidebar .admin-sidebar-panel a.on {
+        position: relative;
+        background-color: #eff6ff;
+        color: #3080ff;
+    }
+</style>
+
+<?php
+// 메뉴 키 별 아이콘 매핑
+$menu_icon_svg_map = array(
+    '100' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-settings-icon lucide-settings h-4 w-4"><path d="M9.671 4.136a2.34 2.34 0 0 1 4.659 0 2.34 2.34 0 0 0 3.319 1.915 2.34 2.34 0 0 1 2.33 4.033 2.34 2.34 0 0 0 0 3.831 2.34 2.34 0 0 1-2.33 4.033 2.34 2.34 0 0 0-3.319 1.915 2.34 2.34 0 0 1-4.659 0 2.34 2.34 0 0 0-3.32-1.915 2.34 2.34 0 0 1-2.33-4.033 2.34 2.34 0 0 0 0-3.831A2.34 2.34 0 0 1 6.35 6.051a2.34 2.34 0 0 0 3.319-1.915"/><circle cx="12" cy="12" r="3"/></svg>',
+    '200' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round-icon lucide-user-round h-4 w-4"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>',
+    '300' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list-icon lucide-clipboard-list h-4 w-4"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>',
+    '400' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-bag-icon lucide-shopping-bag h-4 w-4"><path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/><path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/></svg>',
+    '500' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chart-pie-icon lucide-chart-pie h-4 w-4"><path d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"/><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/></svg>',
+    '900' => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail h-4 w-4"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"/><rect x="2" y="4" width="20" height="16" rx="2"/></svg>',
+);
+
+// 플랫폼 메뉴 아이콘
+if (isset($platform_menu_icon_svg_map) && is_array($platform_menu_icon_svg_map)) {
+    $menu_icon_svg_map = array_replace($menu_icon_svg_map, $platform_menu_icon_svg_map);
+}
+
+// 도티 메뉴 아이콘
+if (isset($dotty_menu_icon_svg_map) && is_array($dotty_menu_icon_svg_map)) {
+    $menu_icon_svg_map = array_replace($menu_icon_svg_map, $dotty_menu_icon_svg_map);
+}
+
+// 도트 메뉴 아이콘
+if (isset($dot_menu_icon_svg_map) && is_array($dot_menu_icon_svg_map)) {
+    $menu_icon_svg_map = array_replace($menu_icon_svg_map, $dot_menu_icon_svg_map);
+}
+
+// 매핑이 없는 메뉴 키 대비 기본 아이콘
+$menu_icon_svg_default = '<svg viewBox="0 0 24 24" aria-hidden="true" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle></svg>';
+?>
+
+<div id="admin-layout" class="flex min-h-dvh">
+    <div id="admin-sidebar-backdrop" class="hidden fixed inset-0 z-40 bg-black/40 md:!hidden" aria-hidden="true"></div>
+    <nav id="admin-sidebar" class="hidden fixed md:sticky md:flex flex-col shrink-0 top-0 left-0 z-50 md:z-auto self-start h-dvh w-(--admin-sidebar-width) max-w-(--admin-sidebar-width) text-xs font-normal bg-white">
+        <div id="logo" class="shrink-0 flex items-center h-(--admin-header-height) border-b border-gray-200 px-4">
+            <a href="<?php echo correct_goto_url(G5_ADMIN_URL); ?>" class="inline-flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="23.999" viewBox="0 0 24 23.999" aria-hidden="true">
+                    <path id="빼기_1" data-name="빼기 1" d="M12,40a12,12,0,1,1,3.4-23.512A6.626,6.626,0,0,0,23.512,24.6,12,12,0,0,1,12,40Zm.138-15.448a3.586,3.586,0,1,0,3.586,3.586A3.59,3.59,0,0,0,12.138,24.552Z" transform="translate(0 -16)" fill="#ffdd56" />
+                </svg>
+                <span class="text-black text-lg font-black">DONUTS ADMIN</span>
+            </a>
+        </div>
+
+        <h2 class="sr-only">관리자 주메뉴</h2>
+
+        <ul class="admin-sidebar-menu min-h-0 flex-1 overflow-y-auto border-r border-gray-200">
+            <?php foreach ($amenu as $key => $value) { ?>
+                <?php if (!isset($menu['menu' . $key][0][2]) || !$menu['menu' . $key][0][2]) continue; ?>
+
+                <?php
+                $is_current_group = isset($sub_menu) &&
+                    (substr($sub_menu, 0, 3) == substr($menu['menu' . $key][0][0], 0, 3));
+
+                $menu_icon_svg = isset($menu_icon_svg_map[$key]) ? $menu_icon_svg_map[$key] : $menu_icon_svg_default;
+                ?>
+
+                <li class="admin-sidebar-item border-b border-gray-200<?php echo $is_current_group ? ' is-open' : ''; ?>">
+                    <h3 class="admin-sidebar-title">
+                        <button type="button"
+                            class="admin-sidebar-trigger flex w-full items-center justify-between px-4 py-3 text-left text-sm font-black text-gray-900"
+                            aria-expanded="<?php echo $is_current_group ? 'true' : 'false'; ?>"
+                            aria-controls="admin-sidebar-panel-<?php echo $key; ?>">
+                            <span class="flex min-w-0 items-center gap-2">
+                                <span aria-hidden="true" class="inline-flex h-4 w-4 shrink-0 items-center justify-center">
+                                    <?php echo $menu_icon_svg; ?>
+                                </span>
+                                <span><?php echo $menu['menu' . $key][0][1]; ?></span>
+                            </span>
+
+                            <span aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="admin-sidebar-chevron lucide lucide-chevron-down w-4 h-4<?php echo $is_current_group ? ' rotate-180' : ''; ?>">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </span>
+                        </button>
+                    </h3>
+
+                    <div id="admin-sidebar-panel-<?php echo $key; ?>" class="admin-sidebar-panel" <?php echo $is_current_group ? '' : ' hidden'; ?>>
+                        <?php echo print_menu1('menu' . $key, 1); ?>
+                    </div>
+                </li>
+            <?php } ?>
+        </ul>
+    </nav>
+
+    <div id="admin-main" class="flex-1 min-w-0 flex flex-col">
+        <header id="hd" class="shrink-0 sticky top-0 z-10 flex flex-col text-xs bg-white">
+            <div id="hd_top" class="flex items-center h-[var(--admin-header-height)] border-b border-gray-200 px-4">
+                <div id="logo_mobile" class="shrink-0 flex md:hidden items-center h-[var(--admin-header-height)]">
+                    <a href="<?php echo correct_goto_url(G5_ADMIN_URL); ?>" class="inline-flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="23.999" viewBox="0 0 24 23.999" aria-hidden="true">
+                            <path id="빼기_1" data-name="빼기 1" d="M12,40a12,12,0,1,1,3.4-23.512A6.626,6.626,0,0,0,23.512,24.6,12,12,0,0,1,12,40Zm.138-15.448a3.586,3.586,0,1,0,3.586,3.586A3.59,3.59,0,0,0,12.138,24.552Z" transform="translate(0 -16)" fill="#ffdd56" />
+                        </svg>
+                        <span class="text-black text-lg font-black">DONUTS ADMIN</span>
+                    </a>
+                </div>
+                <div id="tnb" class="ml-auto">
+                    <ul class="flex items-center gap-4">
+                        <?php if (defined('G5_USE_SHOP') && G5_USE_SHOP) { ?>
+                            <li class="tnb_li">
+                                <a href="<?php echo G5_SHOP_URL ?>/" class="tnb_shop text-gray-500" target="_blank" title="쇼핑몰 바로가기" aria-label="쇼핑몰 바로가기">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-store-icon lucide-store h-5 w-5">
+                                        <path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5" />
+                                        <path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244" />
+                                        <path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05" />
+                                    </svg>
+                                </a>
+                            </li>
+                        <?php } ?>
+
+                        <li class="tnb_li">
+                            <a href="<?php echo G5_URL ?>/" class="tnb_community text-gray-500" target="_blank" title="커뮤니티 바로가기" aria-label="커뮤니티 바로가기">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clipboard-list-icon lucide-clipboard-list h-5 w-5">
+                                    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
+                                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+                                    <path d="M12 11h4" />
+                                    <path d="M12 16h4" />
+                                    <path d="M8 11h.01" />
+                                    <path d="M8 16h.01" />
+                                </svg>
+                            </a>
+                        </li>
+
+                        <li id="tnb_logout" class="block">
+                            <a href="<?php echo G5_BBS_URL ?>/logout.php" class="flex items-center text-white bg-red-500 px-3 py-2 rounded">로그아웃</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <h1 id="container_title" class="shrink-0 relative flex items-center h-[var(--admin-header-height)] border-b border-gray-200 px-4 text-sm text-gray-900 font-black"><?php echo $g5['title'] ?></h1>
+        </header>
+        <script>
+            jQuery(function($) {
+                const $sidebar = $("#admin-sidebar");
+
+                $sidebar.on("click", ".admin-sidebar-trigger", function() {
+                    const $trigger = $(this);
+                    const $item = $trigger.closest(".admin-sidebar-item");
+                    const $panel = $("#" + $trigger.attr("aria-controls"));
+                    const is_open = $trigger.attr("aria-expanded") === "true";
+                    const $other_items = $sidebar.find(".admin-sidebar-item").not($item);
+
+                    $other_items.removeClass("is-open");
+                    $other_items.find(".admin-sidebar-trigger").attr("aria-expanded", "false");
+                    $other_items.find(".admin-sidebar-panel").prop("hidden", true);
+                    $other_items.find(".admin-sidebar-chevron").removeClass("rotate-180");
+
+                    $item.toggleClass("is-open", !is_open);
+                    $trigger.attr("aria-expanded", String(!is_open));
+                    $panel.prop("hidden", is_open);
+                    $item.find(".admin-sidebar-chevron").toggleClass("rotate-180", !is_open);
+                });
+            });
+        </script>
+
+        <div id="wrapper" class="min-h-[480px] w-full max-w-full text-xs font-medium">
+            <div id="container" class="<?php echo $adm_menu_cookie['container']; ?> w-full max-w-full bg-gray-50 md:pb-0 pb-[var(--admin-bottom-nav-height)] flow-root">
+                <div class="container_wr md:m-4 mx-0 my-4 p-4 bg-white md:border border-y border-gray-200 md:rounded rounded-none">

@@ -11,6 +11,7 @@
  * https://github.com/blueimp/jQuery-File-Upload/wiki/Security
  * https://github.com/blueimp/jQuery-File-Upload/pull/148
  */
+require_once __DIR__.'/editor_image_optimize.php';
 class UploadHandler
 {
 
@@ -106,7 +107,7 @@ class UploadHandler
             'max_number_of_files' => null,
             // Defines which files are handled as image files:
             'image_file_types' => '/\.(gif|jpe?g|bmp|png|webp)$/i',
-            'is_resize' => (defined('SMARTEDITOR_UPLOAD_RESIZE') && SMARTEDITOR_UPLOAD_RESIZE) ? true : false,
+            'is_resize' => false,
             'resize_max_width' => (defined('SMARTEDITOR_UPLOAD_MAX_WIDTH') && SMARTEDITOR_UPLOAD_MAX_WIDTH) ? SMARTEDITOR_UPLOAD_MAX_WIDTH : 800,
             'resize_max_height' => (defined('SMARTEDITOR_UPLOAD_MAX_HEIGHT') && SMARTEDITOR_UPLOAD_MAX_HEIGHT) ? SMARTEDITOR_UPLOAD_MAX_HEIGHT : 800,
             'resize_jpeg_compress' => (defined('SMARTEDITOR_UPLOAD_IMAGE_QUALITY') && SMARTEDITOR_UPLOAD_IMAGE_QUALITY) ? SMARTEDITOR_UPLOAD_IMAGE_QUALITY : 800,
@@ -1194,6 +1195,9 @@ class UploadHandler
                         }
                     }
 
+                    editor_optimize_uploaded_image($file_path);
+                    clearstatcache(true,$file_path);
+                    $file->size = $this->get_file_size($file_path,true);
                     $image_width_height = $this->get_image_size($file_path);
                     $file->width = $image_width_height[0];
                     $file->height = $image_width_height[1];

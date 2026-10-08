@@ -239,7 +239,7 @@ jQuery(function ($) {
 
     }).on('fileuploadfail', function (e, data) {
         $.each(data.files, function (index, file) {
-            var error = $('<span class="text-danger"/>').text('File upload failed.');
+            var error = $('<span class="text-danger"/>').text((data.jqXHR && data.jqXHR.status === 413 ? '이미지 용량 초과(HTTP 413). 서버 설정 확인 필요' : '이미지 업로드 실패: ' + (data.errorThrown || '서버 오류')));
             $(data.context.children()[index])
                 .append('<br>')
                 .append(error);
