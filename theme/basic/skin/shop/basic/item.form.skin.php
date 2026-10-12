@@ -1167,3 +1167,45 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 </script>
 <?php /* 2017 리뉴얼한 테마 적용 스크립트입니다. 기존 스크립트를 오버라이드 합니다. */ ?>
 <script src="<?php echo G5_JS_URL; ?>/shop.override.js"></script>
+
+<script>
+	$(function() {
+		setTimeout(function() {
+			const $select = $("select.it_option");
+
+			// 선택 옵션 select가 1개인지 먼저 판별
+			// 추가 옵션과 별개, 추가 옵션은 it_supply 사용
+			if ($select.length !== 1 || $select.prop("disabled")) return;
+			if ($("#sit_sel_option .sit_opt_list").length > 0) return;
+
+			// 선택을 제외한 개별 option 요소를 가져온다
+			const $options = $select.find("option").filter(function() {
+				return this.value !== "";
+			});
+
+			// option 개수가 1개인지, 비활성화인지 검사
+			if ($options.length !== 1 || $options.prop("disabled")) return;
+
+			// 최종 검사 후 통과된 옵션 1개의 값을 조회
+			// 옵션 ID, 추가금액, 옵션 재고
+			const optionValue = $options.val();
+
+			// 옵션 재고를 숫자로 바꿔서 저장
+			const stock = Number(optionValue.split(",")[2]);
+
+			// 재고가 숫자로 해셕되지 않거나, 무한대거나, 0이거나 음수면 종료
+			// 품절 검사
+			if (!Number.isFinite(stock) || stock < 1) return;
+
+			// option_add 는 상품 행을 추가할 지 결정하는 데 사용
+			const previousOptionAdd = option_add;
+			option_add = true;
+			try {
+				// 자동 선택이 일어나도록 기존에 등록된 change 이벤트를 실행
+				$select.val(optionValue).trigger("change");
+			} finally {
+				option_add = previousOptionAdd;
+			}
+		}, 0);
+	});
+</script>

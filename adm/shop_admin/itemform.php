@@ -1620,6 +1620,35 @@ if (!sql_query(" select it_skin from {$g5['g5_shop_item_table']} limit 1", false
         }
 
         include_once G5_ADMIN_PATH . '/shop_admin/sendcostform.php';
+        // 배송그룹 UI는 숨기되, 기존 선택값과 저장 로직은 유지합니다.
+        ?>
+        <style>
+            #anc_sitfrm_sendcost #sc_con_method { display: none !important; }
+        </style>
+        <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var root = document.getElementById('anc_sitfrm_sendcost');
+            if (!root) return;
+            root.querySelectorAll('select').forEach(function (select) {
+                var key = (select.name || '') + ' ' + (select.id || '');
+                var label = select.id ? root.querySelector('label[for="' + select.id.replace(/"/g, '\\"') + '"]') : null;
+                var labelText = label ? label.textContent : '';
+                if (!/(group|dg_id)/i.test(key) && !/배송그룹|묶음배송/.test(labelText)) return;
+                var row = select.closest('tr');
+                if (row) {
+                    row.style.setProperty('display', 'none', 'important');
+                } else {
+                    var container = select.closest('.form-group, .form-row, .field, .input-group');
+                    if (container) container.style.setProperty('display', 'none', 'important');
+                    else {
+                        select.style.setProperty('display', 'none', 'important');
+                        if (label) label.style.setProperty('display', 'none', 'important');
+                    }
+                }
+            });
+        });
+        </script>
+        <?php
         ?>
 
         <script>

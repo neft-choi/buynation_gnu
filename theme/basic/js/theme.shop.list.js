@@ -21,7 +21,7 @@ jQuery(function ($) {
 
     $.post(
       g5_theme_shop_url + "/ajax.action.php",
-      {it_id: it_id, action: "wish_update"},
+      { it_id: it_id, action: "wish_update" },
       function (error) {
         if (error === "로그인 후 이용해 주세요.") {
           location.href = g5_bbs_url + "/login.php?url=" + encodeURIComponent(location.href);
@@ -141,7 +141,7 @@ jQuery(function ($) {
     $.ajax({
       url: ajax_url + "/ajax.action.php",
       type: "GET",
-      data: {action: "refresh_cart"},
+      data: { action: "refresh_cart" },
       dataType: "html",
       async: true,
       cache: false,
@@ -171,7 +171,7 @@ jQuery(function ($) {
     $.ajax({
       url: ajax_url + "/ajax.action.php",
       type: "GET",
-      data: {action: "refresh_wish"},
+      data: { action: "refresh_wish" },
       dataType: "html",
       async: true,
       cache: false,
@@ -234,6 +234,23 @@ jQuery(function ($) {
         $sct_li.addClass(overclass);
         $opt.addClass(cartclass).html(data.html);
 
+        // 상품의 옵션이 1개인 단품 상품일 경우 옵션이 자동 선택
+        const $select = $opt.find("select.it_option");
+        if ($select.length === 1 && !$select.prop("disabled")) {
+          const $options = $select.find("option").filter(function () {
+            return this.value !== "";
+          });
+
+          if ($options.length === 1 && !$options.prop("disabled")) {
+            const optionValue = $options.val();
+            const stock = Number(optionValue.split(",")[2]);
+
+            if (Number.isFinite(stock) && stock >= 1) {
+              $select.val(optionValue).trigger("change");
+            }
+          }
+        }
+
         if (!data.option) {
           mainCart.add_cart($opt.find("form").get(0));
           return;
@@ -283,7 +300,7 @@ jQuery(function ($) {
 
       $.post(
         g5_shop_url + "/itemoption.php",
-        {it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count},
+        { it_id: it_id, opt_id: opt_id, idx: idx, sel_count: sel_count },
         function (data) {
           $sel
             .eq(idx + 1)

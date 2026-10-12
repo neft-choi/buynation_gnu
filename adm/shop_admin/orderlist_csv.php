@@ -344,6 +344,45 @@ $result = sql_query($sql);
 $shipping_written = array();
 $new_delivery_cache = array();
 $final_shipping_cache = array();
+$region_extra_written = array();
+
+/* CSV 표시 전용: 배송조건 유형(dc_type) / 배송조건명(dc_name).
+ * 배송비 계산 및 주문시점 스냅샷 금액은 변경하지 않습니다. */
+$csv_condition_label_cache = array();
+function csv_delivery_condition_labels($brand_id, $it_id) {
+    global $csv_condition_label_cache;
+    $key = $brand_id . '|' . $it_id;
+    if (isset($csv_condition_label_cache[$key])) return $csv_condition_label_cache[$key];
+
+    $brand_sql = sql_real_escape_string($brand_id);
+    $it_sql = sql_real_escape_string($it_id);
+    $condition = array();
+    if ($brand_id !== '' && $it_id !== '') {
+        $setting = sql_fetch("SELECT condition_id FROM donuts_delivery_product_settings
+            WHERE brand_id='{$brand_sql}' AND it_id='{$it_sql}' LIMIT 1", false);
+        if (!empty($setting['condition_id'])) {
+            $cid = (int)$setting['condition_id'];
+            $condition = sql_fetch("SELECT dc_type, dc_name FROM donuts_delivery_conditions
+                WHERE dc_id={$cid} AND brand_id='{$brand_sql}' AND use_yn='Y' LIMIT 1", false);
+        }
+        if (empty($condition['dc_type'])) {
+            $condition = sql_fetch("SELECT dc_type, dc_name FROM donuts_delivery_conditions
+                WHERE brand_id='{$brand_sql}' AND is_default=1 AND use_yn='Y'
+                ORDER BY dc_id DESC LIMIT 1", false);
+        }
+    }
+    $names = array(
+        'paid'=>'유료', 'conditional'=>'조건부 무료', 'free'=>'무료',
+        'quantity'=>'수량별', 'amount_range'=>'금액 구간별'
+    );
+    $type = isset($condition['dc_type']) ? trim((string)$condition['dc_type']) : '';
+    $csv_condition_label_cache[$key] = array(
+        'type' => isset($names[$type]) ? $names[$type] : $type,
+        'name' => isset($condition['dc_name']) ? (string)$condition['dc_name'] : ''
+    );
+    return $csv_condition_label_cache[$key];
+}
+
 
 while ($row = sql_fetch_array($result)) {
 
@@ -624,10 +663,23 @@ while ($row = sql_fetch_array($result)) {
         ? (int)$final_shipping_detail['region_extra']
         : 0;
 
-    $final_shipping_amount =
-        isset($final_shipping_detail['shipping_total'])
-        ? (int)$final_shipping_detail['shipping_total']
-        : 0;
+    // 지역 추가비는 주문번호별 CSV 첫 행에만 기록해 중복 합산을 방지합니다.
+    $region_csv_key = (string)$row['od_id'] . '|' . (!empty($brand['brand_id']) ? (string)$member['mb_id'] : 'ALL');
+    if (isset($region_extra_written[$region_csv_key])) {
+        $region_extra_amount = 0;
+    } else {
+        $region_extra_written[$region_csv_key] = true;
+    }
+
+    // 최종 배송비 컬럼에는 지역 추가비를 포함하지 않습니다.
+    // 지역 추가비는 위 별도 컬럼에만 출력하며, 행별 표시 여부와 관계없이
+    // 주문 전체 지역 추가비를 한 번 제외합니다(스냅샷 포함).
+    $final_shipping_amount = max(0,
+        (isset($final_shipping_detail['shipping_total'])
+            ? (int)$final_shipping_detail['shipping_total'] : 0)
+        - (isset($final_shipping_detail['region_extra'])
+            ? (int)$final_shipping_detail['region_extra'] : 0)
+    );
 
     /*
      * 택배사 / 운송장 번호 / 운송장 등록일시
@@ -670,6 +722,12 @@ while ($row = sql_fetch_array($result)) {
         $csv_invoice_time = '';
     }
 
+    // 화면 표기용 컬럼만 배송조건 원본 값으로 표시 (금액 계산에는 영향 없음).
+    $csv_condition_labels = csv_delivery_condition_labels($row_brand_id, (string)$row['it_id']);
+    $csv_display_type = $csv_condition_labels['type'] !== ''
+        ? $csv_condition_labels['type'] : $shipping_type;
+    $csv_display_name = $csv_condition_labels['name'];
+
     fputcsv($fp, array(
         $row['od_time'],
         $row['od_id'],
@@ -705,10 +763,8 @@ while ($row = sql_fetch_array($result)) {
 
         $row_shipping_amount,
         $shipping_method,
-        $shipping_type,
-        ($csv_delivery_calc && isset($csv_delivery_calc['item_groups'][$row['it_id']]))
-            ? $csv_delivery_calc['item_groups'][$row['it_id']]
-            : '',
+        $csv_display_type,  // 배송비 유형 = 배송조건 유형(dc_type)
+        $csv_display_name,  // 묶음배송 그룹 = 배송조건명(dc_name)
 
         $region_extra_amount,
         $final_shipping_amount,

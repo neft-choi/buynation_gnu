@@ -145,7 +145,7 @@ $menu_icon_svg_default = '<svg viewBox="0 0 24 24" aria-hidden="true" class="h-5
         <div id="logo" class="shrink-0 flex items-center h-(--admin-header-height) border-b border-gray-200 px-4">
             <a href="<?php echo correct_goto_url(G5_ADMIN_URL); ?>" class="inline-flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="23.999" viewBox="0 0 24 23.999" aria-hidden="true">
-                    <path id="빼기_1" data-name="빼기 1" d="M12,40a12,12,0,1,1,3.4-23.512A6.626,6.626,0,0,0,23.512,24.6,12,12,0,0,1,12,40Zm.138-15.448a3.586,3.586,0,1,0,3.586,3.586A3.59,3.59,0,0,0,12.138,24.552Z" transform="translate(0 -16)" fill="#ffdd56" />
+                    <path d="M12,40a12,12,0,1,1,3.4-23.512A6.626,6.626,0,0,0,23.512,24.6,12,12,0,0,1,12,40Zm.138-15.448a3.586,3.586,0,1,0,3.586,3.586A3.59,3.59,0,0,0,12.138,24.552Z" transform="translate(0 -16)" fill="#ffdd56" />
                 </svg>
                 <span class="text-black text-lg font-black">DONUTS ADMIN</span>
             </a>
@@ -199,7 +199,7 @@ $menu_icon_svg_default = '<svg viewBox="0 0 24 24" aria-hidden="true" class="h-5
                 <div id="logo_mobile" class="shrink-0 flex md:hidden items-center h-[var(--admin-header-height)]">
                     <a href="<?php echo correct_goto_url(G5_ADMIN_URL); ?>" class="inline-flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="23.999" viewBox="0 0 24 23.999" aria-hidden="true">
-                            <path id="빼기_1" data-name="빼기 1" d="M12,40a12,12,0,1,1,3.4-23.512A6.626,6.626,0,0,0,23.512,24.6,12,12,0,0,1,12,40Zm.138-15.448a3.586,3.586,0,1,0,3.586,3.586A3.59,3.59,0,0,0,12.138,24.552Z" transform="translate(0 -16)" fill="#ffdd56" />
+                            <path d="M12,40a12,12,0,1,1,3.4-23.512A6.626,6.626,0,0,0,23.512,24.6,12,12,0,0,1,12,40Zm.138-15.448a3.586,3.586,0,1,0,3.586,3.586A3.59,3.59,0,0,0,12.138,24.552Z" transform="translate(0 -16)" fill="#ffdd56" />
                         </svg>
                         <span class="text-black text-lg font-black">DONUTS ADMIN</span>
                     </a>
@@ -264,6 +264,6 @@ $menu_icon_svg_default = '<svg viewBox="0 0 24 24" aria-hidden="true" class="h-5
             });
         </script>
 
-        <div id="wrapper" class="min-h-[480px] w-full max-w-full text-xs font-medium">
-            <div id="container" class="<?php echo $adm_menu_cookie['container']; ?> w-full max-w-full bg-gray-50 md:pb-0 pb-[var(--admin-bottom-nav-height)] flow-root">
-                <div class="container_wr md:m-4 mx-0 my-4 p-4 bg-white md:border border-y border-gray-200 md:rounded rounded-none">
+        <div id="wrapper" class="flex-1 min-h-0 w-full max-w-full text-xs font-medium">
+            <div id="container" class="<?php echo $adm_menu_cookie['container']; ?> w-full max-w-full bg-gray-50 py-4 md:p-4">
+                <div class="container_wr bg-white border-y md:border border-gray-200 rounded-none md:rounded-lg p-4">

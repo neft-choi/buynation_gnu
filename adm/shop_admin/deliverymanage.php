@@ -98,6 +98,7 @@ $condition_result = sql_query("SELECT c.*,
     (SELECT COUNT(*) FROM donuts_delivery_product_settings ps WHERE ps.brand_id = c.brand_id AND ps.condition_id = c.dc_id) AS product_count
     FROM donuts_delivery_conditions c
     WHERE c.brand_id = '{$brand_id_sql}'
+      AND c.dc_type <> 'amount_range'
     ORDER BY c.is_default DESC, c.dc_id ASC");
 while ($row = sql_fetch_array($condition_result)) {
     $ranges = donuts_delivery_condition_ranges($row['dc_id']);
@@ -285,7 +286,6 @@ $active_tab = isset($_GET['tab']) ? $_GET['tab'] : 'conditions';
                                 <option value="conditional">조건부 무료</option>
                                 <option value="free">무료</option>
                                 <option value="quantity">수량별</option>
-                                <option value="amount_range">금액 구간별</option>
                             </select>
                         </div>
                     </div>

@@ -19,7 +19,7 @@ $condition_result = sql_query(" SELECT c.*,
             AND ps.condition_id = c.dc_id
         ) AS product_count
     FROM donuts_delivery_conditions c
-    WHERE LOWER(TRIM(c.brand_id)) = LOWER('{$brand_id_sql}')
+    WHERE c.brand_id = '{$brand_id_sql}'
     AND c.use_yn = 'Y'
     ORDER BY c.is_default DESC, c.dc_id ASC ");
 
@@ -123,10 +123,10 @@ while ($row = sql_fetch_array($condition_result)) {
     }
 </style>
 
-<div class="register-screen active" style="display:block;">
+<div class="register-screen">
     <div class="register-screen-head">
         <h2>배송설정</h2>
-        <p>배송조건으로 금액을 정하고, 배송그룹 선택 여부로 묶음·개별을 결정합니다.</p>
+        <p>상품에 적용할 배송조건을 선택합니다.</p>
     </div>
 
     <section class="mt-4">
@@ -234,7 +234,7 @@ while ($row = sql_fetch_array($condition_result)) {
     $group_result = sql_query("
                         SELECT g.*
                         FROM donuts_delivery_groups AS g
-                        WHERE LOWER(TRIM(g.brand_id)) = LOWER('{$brand_id_sql}')
+                        WHERE g.brand_id = '{$brand_id_sql}'
                         AND g.use_yn = 'Y'
                         ORDER BY g.dg_id ASC
                     ");
@@ -243,7 +243,7 @@ while ($row = sql_fetch_array($condition_result)) {
         $groups[] = $row;
     }
     ?>
-    <section class="mt-8">
+    <section class="mt-8" style="display:none !important;" aria-hidden="true">
         <div class="section-title">
             <span>배송그룹<span class="text-blue-500 ml-1">(선택)</span></span>
         </div>

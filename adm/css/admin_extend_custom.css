@@ -317,9 +317,4 @@
   #smart_editor2 {
     min-width: 0 !important;
   }
-
-  /* 포인트 관리 */
-  #fpointlist2 input {
-    width: 100%;
-  }
 }

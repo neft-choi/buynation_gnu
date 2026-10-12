@@ -24,7 +24,7 @@ $print_version = ($is_admin == 'super') ? 'Version ' . G5_GNUBOARD_VER : '';
 </footer>
 </div> <!-- #wrapper -->
 <!-- 관리자 하단 네비게이션 바 -->
-<nav id="admin_bottom_nav" class="fixed bottom-0 left-0 z-50 w-full max-w-full border-t border-gray-200 bg-white md:!hidden">
+<nav id="admin_bottom_nav" class="sticky bottom-0 left-0 z-50 w-full max-w-full border-t border-gray-200 bg-white md:!hidden">
     <ul class="grid grid-cols-3 h-[var(--admin-bottom-nav-height)]">
         <li class="h-full">
             <button type="button" id="admin-sidebar-toggle-button" aria-label="메뉴 열기" aria-controls="admin-sidebar" aria-expanded="false" class="flex w-full h-full items-center justify-center text-gray-500">

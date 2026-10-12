@@ -938,6 +938,7 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
 
     $individual_total = 0;
     $individual_region_extra = 0;
+    $order_region_extra = 0;
     $bundle_candidates = array();
 
     /*
@@ -1146,7 +1147,8 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
                 $setting_brand
             );
 
-            $fee += $region_extra;
+            // 지역 추가비는 배송비 후보에 더하지 않고 주문 단위로 1회 계산합니다.
+            // $fee += $region_extra;
         } else {
             $region_extra = 0;
             /*
@@ -1173,6 +1175,7 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         $region_extra = isset($region_extra)
             ? max(0, (int)$region_extra)
             : 0;
+        $order_region_extra = max($order_region_extra, $region_extra);
 
         /*
          * 유료 상품만 구성된 주문 판정.
@@ -1256,11 +1259,8 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
             }
         }
 
-        $paid_shipping_total = max(0, (int)$selected_paid['fee']);
-        $paid_region_extra = max(
-            0,
-            (int)$selected_paid['region_extra']
-        );
+        $paid_region_extra = $order_region_extra;
+        $paid_shipping_total = max(0, (int)$selected_paid['fee']) + $paid_region_extra;
 
         return $return_detail
             ? array(
@@ -1313,15 +1313,11 @@ function csv_final_shipping_from_products_and_groups($od_id, $brand_id, $receive
         }
     }
 
+    // 동일 주문의 지역 추가비는 가장 높은 적용액을 딱 1회만 합산합니다.
+    $region_extra_total = $order_region_extra;
     $shipping_total = max(
         0,
-        (int)$individual_total + (int)$bundle_total
-    );
-
-    $region_extra_total = max(
-        0,
-        (int)$individual_region_extra +
-        (int)$bundle_region_extra
+        (int)$individual_total + (int)$bundle_total + $region_extra_total
     );
 
     return $return_detail

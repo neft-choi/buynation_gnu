@@ -39,20 +39,36 @@ if (isset($sort) && !in_array($sort, array('it_name', 'it_sum_qty', 'it_price', 
     $sort = '';
 }
 
-// URL로 전달된 브랜드 ID가 donuts_brand 테이블에 실제로 등록되어 있는지 확인
-$sql = " select b.brand_id, c.brand_name
+// 미니샵 URL ID(en_id)로 조회하되, 기존 셀러 ID URL도 호환합니다.
+// DB 컬럼 생성은 별도 SQL 마이그레이션으로 진행합니다.
+$brand_lookup = sql_real_escape_string($brand_id);
+$sql = " select b.brand_id, b.en_id, b.kr_id, c.brand_name
             from donuts_brand as b
             left join donuts_brand_config as c on c.brand_id collate utf8mb4_general_ci = b.brand_id
-            where b.brand_id = '" . sql_real_escape_string($brand_id) . "'
+            where b.en_id = '{$brand_lookup}' or b.brand_id = '{$brand_lookup}'
+            order by case when b.en_id = '{$brand_lookup}' then 0 else 1 end
             limit 1 ";
-
 $brand = sql_fetch($sql);
 
-if (!isset($brand['brand_id']) || $brand['brand_id'] === '')
+if (empty($brand['brand_id']))
     alert('등록된 브랜드가 없습니다.');
 
-// 페이지 제목 용도로만 사용
-$g5['title'] = !empty($brand['brand_name']) ? $brand['brand_name'] . ' 상품리스트' : $brand['brand_id'] . ' 상품리스트';
+// 과거 URL을 새 미니샵 URL로 정규화합니다. 기존 검색/필터 파라미터는 유지합니다.
+if (!empty($brand['en_id']) && $brand_id !== $brand['en_id']) {
+    $params = $_GET;
+    $params['brand_id'] = $brand['en_id'];
+    $new_url = G5_SHOP_URL . '/brand.php?' . http_build_query($params, '', '&', PHP_QUERY_RFC3986);
+    header('Location: ' . $new_url, true, 302);
+    exit;
+}
+
+$brand_display_name = trim((string)($brand['kr_id'] ?? ''));
+if ($brand_display_name === '')
+    $brand_display_name = trim((string)($brand['brand_name'] ?? ''));
+if ($brand_display_name === '')
+    $brand_display_name = $brand['brand_id'];
+
+$g5['title'] = $brand_display_name . ' 상품리스트';
 
 include_once(G5_SHOP_PATH . '/_head.php');
 
@@ -245,7 +261,7 @@ define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
         echo '<div class="sct_nofile">' . str_replace(G5_PATH . '/', '', $skin_file) . ' 파일을 찾을 수 없습니다.<br>관리자에게 알려주시면 감사하겠습니다.</div>';
     }
 
-    $qstr1 = 'brand_id=' . urlencode($brand['brand_id']);
+    $qstr1 = 'brand_id=' . urlencode(!empty($brand['en_id']) ? $brand['en_id'] : $brand['brand_id']);
     $qstr1 .= '&amp;sort=' . $sort . '&amp;sortodr=' . $sortodr;
 
     // 상품 종류 필터 유지
