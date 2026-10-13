@@ -601,10 +601,8 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						class="absolute -top-0.5 right-5 -translate-y-full inline-flex items-center gap-2 rounded-t bg-(--color-semantic-primary-normal) px-4 py-2"
 						aria-controls="sit_order_summary_inner" aria-expanded="false">
 						<span>상품 선택</span>
-						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-							stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-							class="lucide lucide-chevron-down-icon lucide-chevron-down w-4 h-4">
-							<path d="m6 9 6 6 6-6" />
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up preview-icon w-4 h-4">
+							<path d="m18 15-6-6-6 6" />
 						</svg>
 					</button>
 				</div>
@@ -615,22 +613,23 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 				$(function() {
 					const $toggle = $("#sit_order_summary_toggle");
 					const $inner = $("#sit_order_summary_inner");
+					const $arrow = $toggle.find("svg");
 
 					if (!$toggle.length || !$inner.length) {
 						return;
 					}
 
+					$inner.hide().removeClass("hidden");
+					$arrow.css("transition", "transform 300ms ease");
+
 					$toggle.on("click", function() {
-						$inner.toggleClass("hidden");
+						const isExpanded = $toggle.attr("aria-expanded") !== "true";
 
-						// hidden 클래스가 있으면 true가 되어 접힌 상태인지 확인
-						const isExpanded = !$inner.hasClass("hidden");
-
-						// 접근성 정보도 현재 화면 상태와 동일하게 갱신
 						$toggle.attr("aria-expanded", String(isExpanded));
+						$arrow.css("transform", isExpanded ? "rotate(180deg)" : "rotate(0deg)");
+						$inner.stop(true, false).slideToggle(300);
 					});
 				});
-
 				$(function() {
 					// 본문 장바구니 버튼이 화면 위로 사라졌을 때 주문 요약 보여주기
 					const triggerDOM = $("#sit_order_summary_trigger")[0];

@@ -61,3 +61,16 @@
     line-height: calc(1 / 0.625);
   }
 }
+
+/* datatable 표 스타일 */
+.dt-layout-row:not(.dt-layout-table) {
+  @apply px-3!;
+}
+
+.dt-button.buttons-csv {
+  @apply rounded!
+}
+
+.dt-search .dt-input {
+  @apply w-60! rounded! px-3! py-2!;
+}

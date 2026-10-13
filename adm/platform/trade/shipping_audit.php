@@ -42,67 +42,54 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">거래 조회 목록</caption>
+        <table id="shipping-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">배송 정책 그룹 점검 목록</caption>
 
-                <colgroup>
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[30%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">브랜드</th>
+                    <th scope="col">기본 그룹</th>
+                    <th scope="col">그룹 수</th>
+                    <th scope="col">미지정</th>
+                    <th scope="col">도서산간</th>
+                    <th scope="col">최근 변경</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">점검</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">브랜드</th>
-                        <th scope="col">기본 그룹</th>
-                        <th scope="col">그룹 수</th>
-                        <th scope="col">미지정</th>
-                        <th scope="col">도서산간</th>
-                        <th scope="col">최근 변경</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">점검</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">그린테이블</span>
-                            <span class="block text-zinc-400 font-medium">BRD-00204</span>
-                        </td>
-                        <td>
-                            <span>기본 배송그룹</span>
-                        </td>
-                        <td>
-                            <span>4개</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 1개</span>
-                        </td>
-                        <td>
-                            <span>기본·정기 제주/도서산간 +3,000원 · 냉장 +4,000원 · 대형 +6,000원</span>
-                        </td>
-                        <td>
-                            <span>2026.08.11 10:40</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 조치 필요</span>
-                        </td>
-                        <td>
-                            <button type="button" class="orders-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">그린테이블</span>
+                        <span class="block text-zinc-400 font-medium">BRD-00204</span>
+                    </td>
+                    <td>
+                        <span>기본 배송그룹</span>
+                    </td>
+                    <td>
+                        <span>4개</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 1개</span>
+                    </td>
+                    <td>
+                        <span>기본·정기 제주/도서산간 +3,000원 · 냉장 +4,000원 · 대형 +6,000원</span>
+                    </td>
+                    <td>
+                        <span>2026.08.11 10:40</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 조치 필요</span>
+                    </td>
+                    <td>
+                        <button type="button" class="orders-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -246,6 +233,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('shipping-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6],
+    });
+
     // 배송비 계산 예시 모달
     $('.orders-example-modal-open').on('click', function() {
         $('#orders-example-modal').prop('hidden', false);

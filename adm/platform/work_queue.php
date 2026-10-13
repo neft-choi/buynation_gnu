@@ -8,6 +8,7 @@ $g5['title'] = '처리 업무함';
 require_once '../admin.head.php';
 ?>
 
+
 <section>
     <h2 class="sr-only">처리 업무함</h2>
 
@@ -179,151 +180,138 @@ require_once '../admin.head.php';
         </form>
 
         <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-            <div class="overflow-x-auto">
-                <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                    <colgroup>
-                        <col class="w-[13%]">
-                        <col class="w-[18%]">
-                        <col class="w-[13%]">
-                        <col class="w-[24%]">
-                        <col class="w-[8%]">
-                        <col class="w-[8%]">
-                        <col class="w-[8%]">
-                        <col class="w-[8%]">
-                    </colgroup>
+            <table id="work-queue-processing-table" class="border-collapse w-full text-left">
+                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                    <tr>
+                        <th scope="col">업무 ID / 유형</th>
+                        <th scope="col">대상</th>
+                        <th scope="col">전달 구분·대상</th>
+                        <th scope="col">검토 사유·최근 처리</th>
+                        <th scope="col">기한</th>
+                        <th scope="col">담당자</th>
+                        <th scope="col">상태</th>
+                        <th scope="col">처리</th>
+                    </tr>
+                </thead>
 
-                    <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                        <tr>
-                            <th scope="col">업무 ID / 유형</th>
-                            <th scope="col">대상</th>
-                            <th scope="col">전달 구분·대상</th>
-                            <th scope="col">검토 사유·최근 처리</th>
-                            <th scope="col">기한</th>
-                            <th scope="col">담당자</th>
-                            <th scope="col">상태</th>
-                            <th scope="col">처리</th>
-                        </tr>
-                    </thead>
+                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                    <tr>
+                        <td>
+                            <span class="block font-bold">ESC-0104</span>
+                            <span class="block text-zinc-400 font-normal">보류·에스크로 검토</span>
+                        </td>
+                        <td>
+                            <span class="block font-bold">분쟁 DSP-0182</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-indigo-100 rounded-full text-indigo-700 font-bold px-2 py-1">전달 선택</span>
+                            <span class="mt-1 block text-zinc-400 font-normal">관련 당사자 · 관리자 알림</span>
+                        </td>
+                        <td>
+                            <span>반품비 분쟁 · 36,000원 보류 근거와 해제 조건 확인</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-red-100 rounded-full text-red-700 font-bold px-2 py-1">● 우선 확인</span>
+                        </td>
+                        <td>
+                            <span>정산팀 김OO</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 보류</span>
+                        </td>
+                        <td>
+                            <button type="button" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="js-work-queue-modal-open w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
+                        </td>
+                    </tr>
 
-                    <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                        <tr>
-                            <td>
-                                <span class="block font-bold">ESC-0104</span>
-                                <span class="block text-zinc-400 font-normal">보류·에스크로 검토</span>
-                            </td>
-                            <td>
-                                <span class="block font-bold">분쟁 DSP-0182</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-indigo-100 rounded-full text-indigo-700 font-bold px-2 py-1">전달 선택</span>
-                                <span class="mt-1 block text-zinc-400 font-normal">관련 당사자 · 관리자 알림</span>
-                            </td>
-                            <td>
-                                <span>반품비 분쟁 · 36,000원 보류 근거와 해제 조건 확인</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-red-100 rounded-full text-red-700 font-bold px-2 py-1">● 우선 확인</span>
-                            </td>
-                            <td>
-                                <span>정산팀 김OO</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 보류</span>
-                            </td>
-                            <td>
-                                <button type="button" id="work-queue-modal-open" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <span class="block font-bold">ESC-0112</span>
+                            <span class="block text-zinc-400 font-normal">보류·에스크로 검토</span>
+                        </td>
+                        <td>
+                            <span class="block font-bold">주문 20260810009871</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-indigo-100 rounded-full text-indigo-700 font-bold px-2 py-1">전달 선택</span>
+                            <span class="mt-1 block text-zinc-400 font-normal">관련 당사자 · 관리자 알림</span>
+                        </td>
+                        <td>
+                            <span>이상 거래 검토 · 184,000원 보류 근거와 해제 조건 확인</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-red-100 rounded-full text-red-700 font-bold px-2 py-1">● 우선 확인</span>
+                        </td>
+                        <td>
+                            <span>정산팀 김OO</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 보류</span>
+                        </td>
+                        <td>
+                            <button type="button" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="js-work-queue-modal-open w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td>
-                                <span class="block font-bold">ESC-0112</span>
-                                <span class="block text-zinc-400 font-normal">보류·에스크로 검토</span>
-                            </td>
-                            <td>
-                                <span class="block font-bold">주문 20260810009871</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-indigo-100 rounded-full text-indigo-700 font-bold px-2 py-1">전달 선택</span>
-                                <span class="mt-1 block text-zinc-400 font-normal">관련 당사자 · 관리자 알림</span>
-                            </td>
-                            <td>
-                                <span>이상 거래 검토 · 184,000원 보류 근거와 해제 조건 확인</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-red-100 rounded-full text-red-700 font-bold px-2 py-1">● 우선 확인</span>
-                            </td>
-                            <td>
-                                <span>정산팀 김OO</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 보류</span>
-                            </td>
-                            <td>
-                                <button type="button" id="work-queue-modal-open" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <span class="block font-bold">RPT-DOTI-48H</span>
+                            <span class="block text-zinc-400 font-normal">도티 신고 미처리</span>
+                        </td>
+                        <td>
+                            <span class="block font-bold">RPT-0221 · 48시간 경과</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">전달 필수</span>
+                            <span class="mt-1 block text-zinc-400 font-normal">대상 도티 · 관리자 알림</span>
+                        </td>
+                        <td>
+                            <span>도티 처리 기한 초과 · 플랫폼 5영업일 검토로 에스컬레이션</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-red-100 rounded-full text-red-700 font-bold px-2 py-1">● 즉시</span>
+                        </td>
+                        <td>
+                            <span>커뮤니티 팀</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 처리 필요</span>
+                        </td>
+                        <td>
+                            <button type="button" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="js-work-queue-modal-open w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td>
-                                <span class="block font-bold">RPT-DOTI-48H</span>
-                                <span class="block text-zinc-400 font-normal">도티 신고 미처리</span>
-                            </td>
-                            <td>
-                                <span class="block font-bold">RPT-0221 · 48시간 경과</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">전달 필수</span>
-                                <span class="mt-1 block text-zinc-400 font-normal">대상 도티 · 관리자 알림</span>
-                            </td>
-                            <td>
-                                <span>도티 처리 기한 초과 · 플랫폼 5영업일 검토로 에스컬레이션</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-red-100 rounded-full text-red-700 font-bold px-2 py-1">● 즉시</span>
-                            </td>
-                            <td>
-                                <span>커뮤니티 팀</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 처리 필요</span>
-                            </td>
-                            <td>
-                                <button type="button" id="work-queue-modal-open" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <span class="block font-bold">SYS-SABANG-260821</span>
-                                <span class="block text-zinc-400 font-normal">사방넷 연동 실패</span>
-                            </td>
-                            <td>
-                                <span class="block font-bold">상품·주문 동기화 배치 #240821-04</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-zinc-100 rounded-full text-zinc-700 font-bold px-2 py-1">내부 전용</span>
-                                <span class="mt-1 block text-zinc-400 font-normal">내부 전용 · 없음</span>
-                            </td>
-                            <td>
-                                <span>재시도 3회 실패 · 중복 반영 없이 수동 재처리 여부 확인</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-red-100 rounded-full text-red-700 font-bold px-2 py-1">● 30분 내</span>
-                            </td>
-                            <td>
-                                <span>연동 운영팀</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 처리 필요</span>
-                            </td>
-                            <td>
-                                <button type="button" id="work-queue-modal-open" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                    <tr>
+                        <td>
+                            <span class="block font-bold">SYS-SABANG-260821</span>
+                            <span class="block text-zinc-400 font-normal">사방넷 연동 실패</span>
+                        </td>
+                        <td>
+                            <span class="block font-bold">상품·주문 동기화 배치 #240821-04</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-zinc-100 rounded-full text-zinc-700 font-bold px-2 py-1">내부 전용</span>
+                            <span class="mt-1 block text-zinc-400 font-normal">내부 전용 · 없음</span>
+                        </td>
+                        <td>
+                            <span>재시도 3회 실패 · 중복 반영 없이 수동 재처리 여부 확인</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-red-100 rounded-full text-red-700 font-bold px-2 py-1">● 30분 내</span>
+                        </td>
+                        <td>
+                            <span>연동 운영팀</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-amber-100 rounded-full text-amber-700 font-bold px-2 py-1">● 처리 필요</span>
+                        </td>
+                        <td>
+                            <button type="button" aria-haspopup="dialog" aria-controls="work-queue-modal-container" class="js-work-queue-modal-open w-fit bg-amber-300 rounded-lg text-gray-900 font-bold px-3 py-1">처리</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
     </section>
 
@@ -454,159 +442,146 @@ require_once '../admin.head.php';
         </ul>
 
         <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-            <div class="overflow-x-auto">
-                <table class="border-collapse min-w-400 w-full table-fixed text-left">
-                    <colgroup>
-                        <col class="w-[10%]">
-                        <col class="w-[16%]">
-                        <col class="w-[8%]">
-                        <col class="w-[14%]">
-                        <col class="w-[18%]">
-                        <col class="w-[16%]">
-                        <col class="w-[10%]">
-                        <col class="w-[8%]">
-                    </colgroup>
+            <table id="work-queue-completed-table" class="border-collapse w-full text-left">
+                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                    <tr>
+                        <th scope="col">업무 ID / 유형</th>
+                        <th scope="col">대상</th>
+                        <th scope="col">처리 결과</th>
+                        <th scope="col">전달 구분·대상</th>
+                        <th scope="col">내부 처리 메모</th>
+                        <th scope="col">상대방 전달 사유</th>
+                        <th scope="col">완료</th>
+                        <th scope="col">확인</th>
+                    </tr>
+                </thead>
 
-                    <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                        <tr>
-                            <th scope="col">업무 ID / 유형</th>
-                            <th scope="col">대상</th>
-                            <th scope="col">처리 결과</th>
-                            <th scope="col">전달 구분·대상</th>
-                            <th scope="col">내부 처리 메모</th>
-                            <th scope="col">상대방 전달 사유</th>
-                            <th scope="col">완료</th>
-                            <th scope="col">확인</th>
-                        </tr>
-                    </thead>
+                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-normal [&_td]:px-4 [&_td]:py-3">
+                    <tr>
+                        <td>
+                            <span class="block font-bold">PRD-RV-260806-003</span>
+                            <span class="block text-zinc-400 font-medium">상품 검수</span>
+                        </td>
+                        <td>
+                            <span class="block font-bold">패브릭 수납 바스켓 · P51188</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-emerald-50 rounded-full text-emerald-700 font-bold px-2 py-1">● 승인</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-amber-50 rounded-full text-amber-700 font-bold px-2 py-1">전달 필수</span>
+                            <span class="mt-1 block text-zinc-400 font-normal">브랜드 · 노르딕홈 · 관리자 알림</span>
+                        </td>
+                        <td>
+                            <span>필수 정보·배송그룹·표시사항 체크리스트 확인</span>
+                        </td>
+                        <td>
+                            <span class="block font-normal">상품 검수가 완료되어 판매중으로 전환되었습니다.</span>
+                            <span class="block text-zinc-400 font-normal">전달 완료</span>
+                        </td>
+                        <td>
+                            <span class="block font-normal">2026.08.11 09:18</span>
+                            <span class="block text-zinc-400 font-normal">상품 운영팀 박OO</span>
+                        </td>
+                        <td>
+                            <span class="w-fit border border-gray-300 rounded-lg text-gray-900 font-bold p-2">상세</span>
+                        </td>
+                    </tr>
 
-                    <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-normal [&_td]:px-4 [&_td]:py-3">
-                        <tr>
-                            <td>
-                                <span class="block font-bold">PRD-RV-260806-003</span>
-                                <span class="block text-zinc-400 font-medium">상품 검수</span>
-                            </td>
-                            <td>
-                                <span class="block font-bold">패브릭 수납 바스켓 · P51188</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-emerald-50 rounded-full text-emerald-700 font-bold px-2 py-1">● 승인</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-amber-50 rounded-full text-amber-700 font-bold px-2 py-1">전달 필수</span>
-                                <span class="mt-1 block text-zinc-400 font-normal">브랜드 · 노르딕홈 · 관리자 알림</span>
-                            </td>
-                            <td>
-                                <span>필수 정보·배송그룹·표시사항 체크리스트 확인</span>
-                            </td>
-                            <td>
-                                <span class="block font-normal">상품 검수가 완료되어 판매중으로 전환되었습니다.</span>
-                                <span class="block text-zinc-400 font-normal">전달 완료</span>
-                            </td>
-                            <td>
-                                <span class="block font-normal">2026.08.11 09:18</span>
-                                <span class="block text-zinc-400 font-normal">상품 운영팀 박OO</span>
-                            </td>
-                            <td>
-                                <span class="w-fit border border-gray-300 rounded-lg text-gray-900 font-bold p-2">상세</span>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <span class="block font-bold">RPT-0218</span>
+                            <span class="block text-zinc-400 font-medium">커뮤니티 신고</span>
+                        </td>
+                        <td>
+                            <span class="block font-bold">건강한 식탁 · 댓글 #9122</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-emerald-50 rounded-full text-emerald-700 font-bold px-2 py-1">● 완료</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-gray-50 rounded-full text-gray-700 font-bold px-2 py-1">내부 전용</span>
+                            <span class="mt-1 block text-zinc-400 font-normal">내부 전용 · 없음</span>
+                        </td>
+                        <td>
+                            <span>도티의 선조치와 증빙을 확인하여 플랫폼 개입 없이 종결</span>
+                        </td>
+                        <td>
+                            <span class="block text-zinc-400 font-normal">전달 없음</span>
+                            <span class="block text-zinc-400 font-normal">전달 없음</span>
+                        </td>
+                        <td>
+                            <span class="block font-normal">2026.08.11 08:42</span>
+                            <span class="block text-zinc-400 font-normal">커뮤니티팀 이OO</span>
+                        </td>
+                        <td>
+                            <span class="w-fit border border-gray-300 rounded-lg text-gray-900 font-bold p-2">상세</span>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td>
-                                <span class="block font-bold">RPT-0218</span>
-                                <span class="block text-zinc-400 font-medium">커뮤니티 신고</span>
-                            </td>
-                            <td>
-                                <span class="block font-bold">건강한 식탁 · 댓글 #9122</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-emerald-50 rounded-full text-emerald-700 font-bold px-2 py-1">● 완료</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-gray-50 rounded-full text-gray-700 font-bold px-2 py-1">내부 전용</span>
-                                <span class="mt-1 block text-zinc-400 font-normal">내부 전용 · 없음</span>
-                            </td>
-                            <td>
-                                <span>도티의 선조치와 증빙을 확인하여 플랫폼 개입 없이 종결</span>
-                            </td>
-                            <td>
-                                <span class="block text-zinc-400 font-normal">전달 없음</span>
-                                <span class="block text-zinc-400 font-normal">전달 없음</span>
-                            </td>
-                            <td>
-                                <span class="block font-normal">2026.08.11 08:42</span>
-                                <span class="block text-zinc-400 font-normal">커뮤니티팀 이OO</span>
-                            </td>
-                            <td>
-                                <span class="w-fit border border-gray-300 rounded-lg text-gray-900 font-bold p-2">상세</span>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <span class="block font-bold">BR-VRF-260805-REJ</span>
+                            <span class="block text-zinc-400 font-normal">브랜드 사업자 서류</span>
+                        </td>
+                        <td>
+                            <span class="block font-bold">샘플 브랜드 · BRD-00101</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-red-50 rounded-full text-red-700 font-bold px-2 py-1">● 반려</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-amber-50 rounded-full text-amber-700 font-bold px-2 py-1">전달 필수</span>
+                            <span class="mt-1 block text-zinc-400 font-normal">브랜드 · 샘플 브랜드 · 관리자 알림·이메일</span>
+                        </td>
+                        <td>
+                            <span>사업자등록증 대표자와 계좌 예금주 대조 완료</span>
+                        </td>
+                        <td>
+                            <span class="block font-normal">등록 사업자와 정산계좌 예금주가 일치하지 않아 입점 신청이 반려되었습니다.</span>
+                            <span class="block text-zinc-400 font-normal">전달 완료</span>
+                        </td>
+                        <td>
+                            <span class="block font-normal">2026.08.10 17:20</span>
+                            <span class="block text-zinc-400 font-normal">입점 심사팀 박OO</span>
+                        </td>
+                        <td>
+                            <span class="w-fit border border-gray-300 rounded-lg text-gray-900 font-bold p-2">상세</span>
+                        </td>
+                    </tr>
 
-                        <tr>
-                            <td>
-                                <span class="block font-bold">BR-VRF-260805-REJ</span>
-                                <span class="block text-zinc-400 font-normal">브랜드 사업자 서류</span>
-                            </td>
-                            <td>
-                                <span class="block font-bold">샘플 브랜드 · BRD-00101</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-red-50 rounded-full text-red-700 font-bold px-2 py-1">● 반려</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-amber-50 rounded-full text-amber-700 font-bold px-2 py-1">전달 필수</span>
-                                <span class="mt-1 block text-zinc-400 font-normal">브랜드 · 샘플 브랜드 · 관리자 알림·이메일</span>
-                            </td>
-                            <td>
-                                <span>사업자등록증 대표자와 계좌 예금주 대조 완료</span>
-                            </td>
-                            <td>
-                                <span class="block font-normal">등록 사업자와 정산계좌 예금주가 일치하지 않아 입점 신청이 반려되었습니다.</span>
-                                <span class="block text-zinc-400 font-normal">전달 완료</span>
-                            </td>
-                            <td>
-                                <span class="block font-normal">2026.08.10 17:20</span>
-                                <span class="block text-zinc-400 font-normal">입점 심사팀 박OO</span>
-                            </td>
-                            <td>
-                                <span class="w-fit border border-gray-300 rounded-lg text-gray-900 font-bold p-2">상세</span>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <span class="block font-bold">ROLE-DOTI-260810-02</span>
-                                <span class="block text-zinc-400 font-normal">도티 역할 부여 예외</span>
-                            </td>
-                            <td>
-                                <span class="block font-bold">이전 승계 사례</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-emerald-50 rounded-full text-emerald-700 font-bold px-2 py-1">● 승인</span>
-                            </td>
-                            <td>
-                                <span class="w-fit bg-amber-50 rounded-full text-amber-700 font-bold px-2 py-1">전달 필수</span>
-                                <span class="mt-1 block text-zinc-400 font-normal">승계 대상 도티 · 관리자 알림</span>
-                            </td>
-                            <td>
-                                <span>KCP 본인인증·승계 수락·플랫폼 승인 이력 확인</span>
-                            </td>
-                            <td>
-                                <span class="block font-normal">운영권 승계가 승인되어 동일 계정에 도티 역할이 부여되었습니다.</span>
-                                <span class="block text-zinc-400 font-normal">전달 완료</span>
-                            </td>
-                            <td>
-                                <span class="block font-normal">2026.08.10 15:05</span>
-                                <span class="block text-zinc-400 font-normal">계정 운영팀 이OO</span>
-                            </td>
-                            <td>
-                                <span class="w-fit border border-gray-300 rounded-lg text-gray-900 font-bold p-2">상세</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                    <tr>
+                        <td>
+                            <span class="block font-bold">ROLE-DOTI-260810-02</span>
+                            <span class="block text-zinc-400 font-normal">도티 역할 부여 예외</span>
+                        </td>
+                        <td>
+                            <span class="block font-bold">이전 승계 사례</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-emerald-50 rounded-full text-emerald-700 font-bold px-2 py-1">● 승인</span>
+                        </td>
+                        <td>
+                            <span class="w-fit bg-amber-50 rounded-full text-amber-700 font-bold px-2 py-1">전달 필수</span>
+                            <span class="mt-1 block text-zinc-400 font-normal">승계 대상 도티 · 관리자 알림</span>
+                        </td>
+                        <td>
+                            <span>KCP 본인인증·승계 수락·플랫폼 승인 이력 확인</span>
+                        </td>
+                        <td>
+                            <span class="block font-normal">운영권 승계가 승인되어 동일 계정에 도티 역할이 부여되었습니다.</span>
+                            <span class="block text-zinc-400 font-normal">전달 완료</span>
+                        </td>
+                        <td>
+                            <span class="block font-normal">2026.08.10 15:05</span>
+                            <span class="block text-zinc-400 font-normal">계정 운영팀 이OO</span>
+                        </td>
+                        <td>
+                            <span class="w-fit border border-gray-300 rounded-lg text-gray-900 font-bold p-2">상세</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
     </section>
 </section>
@@ -658,8 +633,10 @@ require_once '../admin.head.php';
                 <div class="flex">
                     <dt class="w-24 shrink-0 bg-gray-50 p-3 font-normal text-gray-500">현재 상태</dt>
                     <dd class="min-w-0 flex-1 p-3 font-bold text-gray-900">
-                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">
-                            <span aria-hidden="true">●</span>
+                        <span class="inline-flex items-center gap-1 w-fit rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">
+                            <svg aria-hidden="true" viewBox="0 0 8 8" fill="currentColor" class="h-1 w-1 shrink-0">
+                                <circle cx="4" cy="4" r="4" />
+                            </svg>
                             보류
                         </span>
                     </dd>
@@ -732,7 +709,23 @@ require_once '../admin.head.php';
         </footer>
     </div>
 </div>
+<script>
+    createSiteTable('work-queue-processing-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6],
+        language: {
+            searchPlaceholder: '업무 ID·대상·메모·전달 사유 검색'
+        }
+    });
 
+    createSiteTable('work-queue-completed-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6],
+        language: {
+            searchPlaceholder: '업무 ID·대상·메모·전달 사유 검색'
+        }
+    });
+</script>
 <script>
     // 탭 선택
     const $workQueueTabs = $('#work-queue-tabs [role="tab"]');
@@ -754,7 +747,7 @@ require_once '../admin.head.php';
     });
 
     // 업무 상세 모달 열기
-    $('#work-queue-modal-open').on('click', function() {
+    $('#work-queue-processing-table').on('click', '.js-work-queue-modal-open', function() {
         $('#work-queue-modal').prop('hidden', false);
         $('#work-queue-modal-container').trigger('focus');
     });

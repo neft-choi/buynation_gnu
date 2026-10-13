@@ -36,195 +36,181 @@ require_once '../../admin.head.php';
     </section>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-300 w-full table-fixed text-left">
-                <caption class="sr-only">토핑 발생 로그 목록</caption>
+        <table id="topping-logs-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">토핑 발생 로그 목록</caption>
 
-                <colgroup>
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[22%]">
-                    <col class="w-[8%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">로그 번호</th>
+                    <th scope="col">일시</th>
+                    <th scope="col">소유자</th>
+                    <th scope="col">발생 근거</th>
+                    <th scope="col">버킷</th>
+                    <th scope="col">변동</th>
+                    <th scope="col">잔액</th>
+                    <th scope="col">정책 메모</th>
+                    <th scope="col">검토</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">로그 번호</th>
-                        <th scope="col">일시</th>
-                        <th scope="col">소유자</th>
-                        <th scope="col">발생 근거</th>
-                        <th scope="col">버킷</th>
-                        <th scope="col">변동</th>
-                        <th scope="col">잔액</th>
-                        <th scope="col">정책 메모</th>
-                        <th scope="col">검토</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">LED-260811-1841</span>
-                        </td>
-                        <td>
-                            <span>2026.08.11 14:22</span>
-                        </td>
-                        <td>
-                            <span class="block">DN-00203</span>
-                        </td>
-                        <td>
-                            <span>주문 20260811001234</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 최초 심사 잠정</span>
-                        </td>
-                        <td>
-                            <span>+2,304T</span>
-                        </td>
-                        <td>
-                            <span>412,000T</span>
-                        </td>
-                        <td>
-                            <span>최초 사업자 심사 중 · 승인 시 현금화 가능</span>
-                        </td>
-                        <td>
-                            <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                기록
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">LED-260811-1839</span>
-                        </td>
-                        <td>
-                            <span>2026.08.11 13:08</span>
-                        </td>
-                        <td>
-                            <span class="block">DN-00417</span>
-                        </td>
-                        <td>
-                            <span>주문 20260811001187</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 현금화 가능</span>
-                        </td>
-                        <td>
-                            <span>+1,152T</span>
-                        </td>
-                        <td>
-                            <span>1,284,000T</span>
-                        </td>
-                        <td>
-                            <span>사업자 승인 도넛</span>
-                        </td>
-                        <td>
-                            <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                기록
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">LED-260810-1722</span>
-                        </td>
-                        <td>
-                            <span>2026.08.10 18:31</span>
-                        </td>
-                        <td>
-                            <span class="block">DN-00688</span>
-                        </td>
-                        <td>
-                            <span>주문 20260810009871</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 전환 심사 잠금</span>
-                        </td>
-                        <td>
-                            <span>+5,888T</span>
-                        </td>
-                        <td>
-                            <span>184,000T</span>
-                        </td>
-                        <td>
-                            <span>비사업자→사업자 전환 심사 중 · 현금화 불가</span>
-                        </td>
-                        <td>
-                            <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                기록
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">LED-260809-1603</span>
-                        </td>
-                        <td>
-                            <span>2026.08.09 10:04</span>
-                        </td>
-                        <td>
-                            <span class="block">DN-00512</span>
-                        </td>
-                        <td>
-                            <span>주문 20260809006102</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 쇼핑 전용</span>
-                        </td>
-                        <td>
-                            <span>+3,200T</span>
-                        </td>
-                        <td>
-                            <span>211,000T</span>
-                        </td>
-                        <td>
-                            <span>비사업자 · 쇼핑 전용</span>
-                        </td>
-                        <td>
-                            <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                기록
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">LED-260808-1511</span>
-                        </td>
-                        <td>
-                            <span>2026.08.08 15:44</span>
-                        </td>
-                        <td>
-                            <span class="block">DOT-48102</span>
-                        </td>
-                        <td>
-                            <span>주문 적립</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 도트 토핑</span>
-                        </td>
-                        <td>
-                            <span>+720T</span>
-                        </td>
-                        <td>
-                            <span>12,400T</span>
-                        </td>
-                        <td>
-                            <span>도트 사용 가능 토핑</span>
-                        </td>
-                        <td>
-                            <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                기록
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">LED-260811-1841</span>
+                    </td>
+                    <td>
+                        <span>2026.08.11 14:22</span>
+                    </td>
+                    <td>
+                        <span class="block">DN-00203</span>
+                    </td>
+                    <td>
+                        <span>주문 20260811001234</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 최초 심사 잠정</span>
+                    </td>
+                    <td>
+                        <span>+2,304T</span>
+                    </td>
+                    <td>
+                        <span>412,000T</span>
+                    </td>
+                    <td>
+                        <span>최초 사업자 심사 중 · 승인 시 현금화 가능</span>
+                    </td>
+                    <td>
+                        <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            기록
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">LED-260811-1839</span>
+                    </td>
+                    <td>
+                        <span>2026.08.11 13:08</span>
+                    </td>
+                    <td>
+                        <span class="block">DN-00417</span>
+                    </td>
+                    <td>
+                        <span>주문 20260811001187</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 현금화 가능</span>
+                    </td>
+                    <td>
+                        <span>+1,152T</span>
+                    </td>
+                    <td>
+                        <span>1,284,000T</span>
+                    </td>
+                    <td>
+                        <span>사업자 승인 도넛</span>
+                    </td>
+                    <td>
+                        <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            기록
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">LED-260810-1722</span>
+                    </td>
+                    <td>
+                        <span>2026.08.10 18:31</span>
+                    </td>
+                    <td>
+                        <span class="block">DN-00688</span>
+                    </td>
+                    <td>
+                        <span>주문 20260810009871</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 전환 심사 잠금</span>
+                    </td>
+                    <td>
+                        <span>+5,888T</span>
+                    </td>
+                    <td>
+                        <span>184,000T</span>
+                    </td>
+                    <td>
+                        <span>비사업자→사업자 전환 심사 중 · 현금화 불가</span>
+                    </td>
+                    <td>
+                        <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            기록
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">LED-260809-1603</span>
+                    </td>
+                    <td>
+                        <span>2026.08.09 10:04</span>
+                    </td>
+                    <td>
+                        <span class="block">DN-00512</span>
+                    </td>
+                    <td>
+                        <span>주문 20260809006102</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 쇼핑 전용</span>
+                    </td>
+                    <td>
+                        <span>+3,200T</span>
+                    </td>
+                    <td>
+                        <span>211,000T</span>
+                    </td>
+                    <td>
+                        <span>비사업자 · 쇼핑 전용</span>
+                    </td>
+                    <td>
+                        <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            기록
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">LED-260808-1511</span>
+                    </td>
+                    <td>
+                        <span>2026.08.08 15:44</span>
+                    </td>
+                    <td>
+                        <span class="block">DOT-48102</span>
+                    </td>
+                    <td>
+                        <span>주문 적립</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 도트 토핑</span>
+                    </td>
+                    <td>
+                        <span>+720T</span>
+                    </td>
+                    <td>
+                        <span>12,400T</span>
+                    </td>
+                    <td>
+                        <span>도트 사용 가능 토핑</span>
+                    </td>
+                    <td>
+                        <button type="button" class="payment-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            기록
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -292,6 +278,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('topping-logs-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6, 7],
+    });
+
     $('.payment-audit-modal-open').on('click', function() {
         $('#payment-audit-modal').prop('hidden', false);
     });

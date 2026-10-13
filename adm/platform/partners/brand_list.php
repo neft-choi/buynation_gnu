@@ -44,140 +44,128 @@ require_once '../../admin.head.php';
     </section>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">브랜드 서류 심사 요청 목록</caption>
+        <table id="brand-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">입점사 관리 목록</caption>
 
-                <colgroup>
-                    <col class="w-[20%]">
-                    <col class="w-[20%]">
-                    <col class="w-[10%]">
-                    <col class="w-[15%]">
-                    <col class="w-[15%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">브랜드</th>
+                    <th scope="col">사업자번호</th>
+                    <th scope="col">담당자</th>
+                    <th scope="col">서류</th>
+                    <th scope="col">배송</th>
+                    <th scope="col">상품</th>
+                    <th scope="col">관리</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">브랜드</th>
-                        <th scope="col">사업자번호</th>
-                        <th scope="col">담당자</th>
-                        <th scope="col">서류</th>
-                        <th scope="col">배송</th>
-                        <th scope="col">상품</th>
-                        <th scope="col">관리</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">노르딕홈</span>
-                            <span class="block text-zinc-400">BRD-00182</span>
-                        </td>
-                        <td>
-                            <span>214-81-00931</span>
-                        </td>
-                        <td>
-                            <span>이서연</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-700 px-2 py-1">● 연동 전</span>
-                        </td>
-                        <td>
-                            <span>0개</span>
-                        </td>
-                        <td>
-                            <button type="button" class="brand-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                통합 보기
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">그린리프</span>
-                            <span class="block text-zinc-400">BRD-00179</span>
-                        </td>
-                        <td>
-                            <span>128-86-01277</span>
-                        </td>
-                        <td>
-                            <span>박준호</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-700 px-2 py-1">● 연동 전</span>
-                        </td>
-                        <td>
-                            <span>0개</span>
-                        </td>
-                        <td>
-                            <button type="button" class="brand-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                통합 보기
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">그린테이블</span>
-                            <span class="block text-zinc-400">BRD-00204</span>
-                        </td>
-                        <td>
-                            <span>123-45-67890</span>
-                        </td>
-                        <td>
-                            <span>김브랜드</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-700 px-2 py-1">● 보완 요청</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-700 px-2 py-1">● 조치 필요</span>
-                        </td>
-                        <td>
-                            <span>3개</span>
-                        </td>
-                        <td>
-                            <button type="button" class="brand-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                통합 보기
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">문스앤 리빙</span>
-                            <span class="block text-zinc-400">BRD-00168</span>
-                        </td>
-                        <td>
-                            <span>317-88-00654</span>
-                        </td>
-                        <td>
-                            <span>김지현</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-700 px-2 py-1">● 승인</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-700 px-2 py-1">● 연동 전</span>
-                        </td>
-                        <td>
-                            <span>2개</span>
-                        </td>
-                        <td>
-                            <button type="button" class="brand-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                통합 보기
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">노르딕홈</span>
+                        <span class="block text-zinc-400">BRD-00182</span>
+                    </td>
+                    <td>
+                        <span>214-81-00931</span>
+                    </td>
+                    <td>
+                        <span>이서연</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-700 px-2 py-1">● 연동 전</span>
+                    </td>
+                    <td>
+                        <span>0개</span>
+                    </td>
+                    <td>
+                        <button type="button" class="brand-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            통합 보기
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">그린리프</span>
+                        <span class="block text-zinc-400">BRD-00179</span>
+                    </td>
+                    <td>
+                        <span>128-86-01277</span>
+                    </td>
+                    <td>
+                        <span>박준호</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-700 px-2 py-1">● 연동 전</span>
+                    </td>
+                    <td>
+                        <span>0개</span>
+                    </td>
+                    <td>
+                        <button type="button" class="brand-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            통합 보기
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">그린테이블</span>
+                        <span class="block text-zinc-400">BRD-00204</span>
+                    </td>
+                    <td>
+                        <span>123-45-67890</span>
+                    </td>
+                    <td>
+                        <span>김브랜드</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-700 px-2 py-1">● 보완 요청</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-700 px-2 py-1">● 조치 필요</span>
+                    </td>
+                    <td>
+                        <span>3개</span>
+                    </td>
+                    <td>
+                        <button type="button" class="brand-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            통합 보기
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">문스앤 리빙</span>
+                        <span class="block text-zinc-400">BRD-00168</span>
+                    </td>
+                    <td>
+                        <span>317-88-00654</span>
+                    </td>
+                    <td>
+                        <span>김지현</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-700 px-2 py-1">● 승인</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-700 px-2 py-1">● 연동 전</span>
+                    </td>
+                    <td>
+                        <span>2개</span>
+                    </td>
+                    <td>
+                        <button type="button" class="brand-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            통합 보기
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -248,6 +236,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('brand-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5],
+    });
+
     $('.brand-detail-modal-open').on('click', function() {
         $('#brand-detail-modal').prop('hidden', false);
     });

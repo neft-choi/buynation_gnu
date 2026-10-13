@@ -12,67 +12,54 @@ require_once '../../admin.head.php';
     <p class="text-gray-600 font-normal">브랜드의 주문·반품 처리와 플랫폼 개입 업무를 SLA 기준으로 구분합니다.</p>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">클레임·분쟁 목록</caption>
+        <table id="disputes-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">클레임·분쟁 목록</caption>
 
-                <colgroup>
-                    <col class="w-[12%]">
-                    <col class="w-[13%]">
-                    <col class="w-[13%]">
-                    <col class="w-[13%]">
-                    <col class="w-[13%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">분쟁번호</th>
+                    <th scope="col">주문번호</th>
+                    <th scope="col">유형</th>
+                    <th scope="col">브랜드 / 도트</th>
+                    <th scope="col">담당</th>
+                    <th scope="col">SLA</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">처리</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">분쟁번호</th>
-                        <th scope="col">주문번호</th>
-                        <th scope="col">유형</th>
-                        <th scope="col">브랜드 / 도트</th>
-                        <th scope="col">담당</th>
-                        <th scope="col">SLA</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">처리</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="font-bold">ORD-1038</span>
-                        </td>
-                        <td>
-                            <span>20260809007112</span>
-                        </td>
-                        <td>
-                            <span>반품비 이견</span>
-                        </td>
-                        <td>
-                            <span>그린테이블</span>
-                            <span class="block text-gray-400 font-normal">DOT-38904</span>
-                        </td>
-                        <td>
-                            <span>플랫폼 CS</span>
-                        </td>
-                        <td>
-                            <span>2시간 남음</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="disputes-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="font-bold">ORD-1038</span>
+                    </td>
+                    <td>
+                        <span>20260809007112</span>
+                    </td>
+                    <td>
+                        <span>반품비 이견</span>
+                    </td>
+                    <td>
+                        <span>그린테이블</span>
+                        <span class="block text-gray-400 font-normal">DOT-38904</span>
+                    </td>
+                    <td>
+                        <span>플랫폼 CS</span>
+                    </td>
+                    <td>
+                        <span>2시간 남음</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="disputes-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -146,6 +133,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('disputes-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6],
+    });
+
     // 거래 상세 모달
     $('.disputes-detail-modal-open').on('click', function() {
         $('#disputes-detail-modal').prop('hidden', false);

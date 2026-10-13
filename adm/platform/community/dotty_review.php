@@ -55,172 +55,160 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">도넛 사업자 심사 목록</caption>
+        <table id="dotty-review-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">도넛 사업자 심사 목록</caption>
 
-                <colgroup>
-                    <col class="w-[28%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">신청번호 / 도넛</th>
+                    <th scope="col">신청 유형</th>
+                    <th scope="col">개설·기한</th>
+                    <th scope="col">제출</th>
+                    <th scope="col">심사중 적립</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">심사</th>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">신청번호 / 도넛</th>
-                        <th scope="col">신청 유형</th>
-                        <th scope="col">개설·기한</th>
-                        <th scope="col">제출</th>
-                        <th scope="col">심사중 적립</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">심사</th>
+                </tr>
+            </thead>
 
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">테니스 커뮤니티</span>
-                            <span class="block text-zinc-400 font-medium">DTV-TENNIS-260704 · DONUT-TENNIS</span>
-                        </td>
-                        <td>
-                            <span>최초 사업자 인증</span>
-                        </td>
-                        <td>
-                            <span class="block">2026.07.01</span>
-                            <span class="block text-zinc-400">기한 2026.07.15</span>
-                        </td>
-                        <td>
-                            <span>2026.07.04</span>
-                        </td>
-                        <td>
-                            <span>680,000T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 승인</span>
-                        </td>
-                        <td>
-                            <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">러닝 메이트</span>
-                            <span class="block text-zinc-400 font-medium">DTV-RUNNING-260811 · DONUT-RUNNING</span>
-                        </td>
-                        <td>
-                            <span>최초 사업자 인증</span>
-                        </td>
-                        <td>
-                            <span class="block">2026.08.01</span>
-                            <span class="block text-zinc-400">기한 2026.08.15</span>
-                        </td>
-                        <td>
-                            <span>미제출</span>
-                        </td>
-                        <td>
-                            <span>1,286,400T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-600 px-2 py-1">● 미제출</span>
-                        </td>
-                        <td>
-                            <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">사진 산책회</span>
-                            <span class="block text-zinc-400 font-medium">DTV-PHOTO-260808 · DONUT-PHOTO</span>
-                        </td>
-                        <td>
-                            <span>최초 사업자 인증</span>
-                        </td>
-                        <td>
-                            <span class="block">2026.08.02</span>
-                            <span class="block text-zinc-400">기한 2026.08.16</span>
-                        </td>
-                        <td>
-                            <span>2026.08.08</span>
-                        </td>
-                        <td>
-                            <span>742,000T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">독서 라운지</span>
-                            <span class="block text-zinc-400 font-medium">DTV-BOOK-260807 · DONUT-BOOK</span>
-                        </td>
-                        <td>
-                            <span>최초 사업자 인증</span>
-                        </td>
-                        <td>
-                            <span class="block">2026.08.03</span>
-                            <span class="block text-zinc-400">기한 2026.08.17</span>
-                        </td>
-                        <td>
-                            <span>2026.08.07</span>
-                        </td>
-                        <td>
-                            <span>384,000T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 보완 요청</span>
-                        </td>
-                        <td>
-                            <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">홈베이킹 살롱</span>
-                            <span class="block text-zinc-400 font-medium">DTV-BAKING-260724 · DONUT-BAKING</span>
-                        </td>
-                        <td>
-                            <span>최초 사업자 인증</span>
-                        </td>
-                        <td>
-                            <span class="block">2026.07.18</span>
-                            <span class="block text-zinc-400">기한 2026.08.01</span>
-                        </td>
-                        <td>
-                            <span>2026.07.24</span>
-                        </td>
-                        <td>
-                            <span>918,000T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 최종 거절</span>
-                        </td>
-                        <td>
-                            <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">테니스 커뮤니티</span>
+                        <span class="block text-zinc-400 font-medium">DTV-TENNIS-260704 · DONUT-TENNIS</span>
+                    </td>
+                    <td>
+                        <span>최초 사업자 인증</span>
+                    </td>
+                    <td>
+                        <span class="block">2026.07.01</span>
+                        <span class="block text-zinc-400">기한 2026.07.15</span>
+                    </td>
+                    <td>
+                        <span>2026.07.04</span>
+                    </td>
+                    <td>
+                        <span>680,000T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 승인</span>
+                    </td>
+                    <td>
+                        <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">러닝 메이트</span>
+                        <span class="block text-zinc-400 font-medium">DTV-RUNNING-260811 · DONUT-RUNNING</span>
+                    </td>
+                    <td>
+                        <span>최초 사업자 인증</span>
+                    </td>
+                    <td>
+                        <span class="block">2026.08.01</span>
+                        <span class="block text-zinc-400">기한 2026.08.15</span>
+                    </td>
+                    <td>
+                        <span>미제출</span>
+                    </td>
+                    <td>
+                        <span>1,286,400T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-600 px-2 py-1">● 미제출</span>
+                    </td>
+                    <td>
+                        <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">사진 산책회</span>
+                        <span class="block text-zinc-400 font-medium">DTV-PHOTO-260808 · DONUT-PHOTO</span>
+                    </td>
+                    <td>
+                        <span>최초 사업자 인증</span>
+                    </td>
+                    <td>
+                        <span class="block">2026.08.02</span>
+                        <span class="block text-zinc-400">기한 2026.08.16</span>
+                    </td>
+                    <td>
+                        <span>2026.08.08</span>
+                    </td>
+                    <td>
+                        <span>742,000T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">독서 라운지</span>
+                        <span class="block text-zinc-400 font-medium">DTV-BOOK-260807 · DONUT-BOOK</span>
+                    </td>
+                    <td>
+                        <span>최초 사업자 인증</span>
+                    </td>
+                    <td>
+                        <span class="block">2026.08.03</span>
+                        <span class="block text-zinc-400">기한 2026.08.17</span>
+                    </td>
+                    <td>
+                        <span>2026.08.07</span>
+                    </td>
+                    <td>
+                        <span>384,000T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 보완 요청</span>
+                    </td>
+                    <td>
+                        <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">홈베이킹 살롱</span>
+                        <span class="block text-zinc-400 font-medium">DTV-BAKING-260724 · DONUT-BAKING</span>
+                    </td>
+                    <td>
+                        <span>최초 사업자 인증</span>
+                    </td>
+                    <td>
+                        <span class="block">2026.07.18</span>
+                        <span class="block text-zinc-400">기한 2026.08.01</span>
+                    </td>
+                    <td>
+                        <span>2026.07.24</span>
+                    </td>
+                    <td>
+                        <span>918,000T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 최종 거절</span>
+                    </td>
+                    <td>
+                        <button type="button" class="dotty-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -338,6 +326,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('dotty-review-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5],
+    });
+
     $('.dotty-review-modal-open').on('click', function() {
         $('#dotty-review-modal').prop('hidden', false);
     });

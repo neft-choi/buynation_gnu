@@ -12,114 +12,102 @@ require_once '../../admin.head.php';
     <p class="text-gray-600 font-normal">도티·운영자 1차 처리와 플랫폼 직접 개입 건을 구분합니다.</p>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">커뮤니티 모니터링 목록</caption>
+        <table id="community-audit-list-table" class="border-collapse min-w-250 w-full table-fixed text-left">
+            <caption class="sr-only">커뮤니티 모니터링 목록</caption>
 
-                <colgroup>
-                    <col class="w-[16%]">
-                    <col class="w-[14%]">
-                    <col class="w-[14%]">
-                    <col class="w-[14%]">
-                    <col class="w-[14%]">
-                    <col class="w-[14%]">
-                    <col class="w-[14%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">신고번호 / 도넛</th>
+                    <th scope="col">유형</th>
+                    <th scope="col">대상</th>
+                    <th scope="col">신고</th>
+                    <th scope="col">현재 담당</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">확인</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">신고번호 / 도넛</th>
-                        <th scope="col">유형</th>
-                        <th scope="col">대상</th>
-                        <th scope="col">신고</th>
-                        <th scope="col">현재 담당</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">확인</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">전국 러닝크루</span>
-                            <span class="block text-zinc-400 font-medium">RPT-0221</span>
-                        </td>
-                        <td>
-                            <span>반복 홍보</span>
-                        </td>
-                        <td>
-                            <span>게시글 #1841</span>
-                        </td>
-                        <td>
-                            <span>7건</span>
-                        </td>
-                        <td>
-                            <span>도티 확인 대기</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="community-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">건강한 식탁</span>
-                            <span class="block text-zinc-400 font-medium">RPT-0218</span>
-                        </td>
-                        <td>
-                            <span>욕설·비방</span>
-                        </td>
-                        <td>
-                            <span>댓글 #9122</span>
-                        </td>
-                        <td>
-                            <span>4건</span>
-                        </td>
-                        <td>
-                            <span>운영자 조치 완료</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 완료</span>
-                        </td>
-                        <td>
-                            <button type="button" class="community-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">문장 수집소</span>
-                            <span class="block text-zinc-400 font-medium">RPT-0214</span>
-                        </td>
-                        <td>
-                            <span>상품 링크 오남용</span>
-                        </td>
-                        <td>
-                            <span>게시글 #1784</span>
-                        </td>
-                        <td>
-                            <span>3건</span>
-                        </td>
-                        <td>
-                            <span>플랫폼 검토</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 검토 중</span>
-                        </td>
-                        <td>
-                            <button type="button" class="community-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">전국 러닝크루</span>
+                        <span class="block text-zinc-400 font-medium">RPT-0221</span>
+                    </td>
+                    <td>
+                        <span>반복 홍보</span>
+                    </td>
+                    <td>
+                        <span>게시글 #1841</span>
+                    </td>
+                    <td>
+                        <span>7건</span>
+                    </td>
+                    <td>
+                        <span>도티 확인 대기</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="community-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">건강한 식탁</span>
+                        <span class="block text-zinc-400 font-medium">RPT-0218</span>
+                    </td>
+                    <td>
+                        <span>욕설·비방</span>
+                    </td>
+                    <td>
+                        <span>댓글 #9122</span>
+                    </td>
+                    <td>
+                        <span>4건</span>
+                    </td>
+                    <td>
+                        <span>운영자 조치 완료</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 완료</span>
+                    </td>
+                    <td>
+                        <button type="button" class="community-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">문장 수집소</span>
+                        <span class="block text-zinc-400 font-medium">RPT-0214</span>
+                    </td>
+                    <td>
+                        <span>상품 링크 오남용</span>
+                    </td>
+                    <td>
+                        <span>게시글 #1784</span>
+                    </td>
+                    <td>
+                        <span>3건</span>
+                    </td>
+                    <td>
+                        <span>플랫폼 검토</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 검토 중</span>
+                    </td>
+                    <td>
+                        <button type="button" class="community-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -185,6 +173,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('community-audit-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5],
+    });
+
     $('.community-audit-modal-open').on('click', function() {
         $('#community-audit-modal').prop('hidden', false);
     });

@@ -19,128 +19,126 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">도넛 목록</caption>
+        <table id="donuts-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">도넛 목록</caption>
 
-                <colgroup>
-                    <col class="w-[16%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                </colgroup>
+            <colgroup>
+                <col class="w-[16%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+            </colgroup>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">도넛</th>
-                        <th scope="col">도티</th>
-                        <th scope="col">가입 도트</th>
-                        <th scope="col">운영</th>
-                        <th scope="col">사업자 상태</th>
-                        <th scope="col">현금화 가능</th>
-                        <th scope="col">쇼핑 전용·잠정</th>
-                        <th scope="col">관리</th>
-                    </tr>
-                </thead>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">도넛</th>
+                    <th scope="col">도티</th>
+                    <th scope="col">가입 도트</th>
+                    <th scope="col">운영</th>
+                    <th scope="col">사업자 상태</th>
+                    <th scope="col">현금화 가능</th>
+                    <th scope="col">쇼핑 전용·잠정</th>
+                    <th scope="col">관리</th>
+                </tr>
+            </thead>
 
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">테니스 커뮤니티</span>
-                            <span class="block text-zinc-400 font-medium">DONUT-TENNIS</span>
-                        </td>
-                        <td>
-                            <span class="block">김도윤</span>
-                            <span class="block text-zinc-400">DOTI-0001</span>
-                        </td>
-                        <td>
-                            <span>8,720명</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 사업자 승인</span>
-                        </td>
-                        <td>
-                            <span>680,000T</span>
-                        </td>
-                        <td>
-                            <span>0T</span>
-                        </td>
-                        <td>
-                            <button type="button" class="donuts-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">러닝 메이트</span>
-                            <span class="block text-zinc-400 font-medium">DONUT-RUNNING</span>
-                        </td>
-                        <td>
-                            <span class="block">김도윤</span>
-                            <span class="block text-zinc-400">DOTI-0001</span>
-                        </td>
-                        <td>
-                            <span>4,360명</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 최초 심사 중</span>
-                        </td>
-                        <td>
-                            <span>0T</span>
-                        </td>
-                        <td>
-                            <span>1,286,400T</span>
-                        </td>
-                        <td>
-                            <button type="button" class="donuts-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">반려생활 연구소</span>
-                            <span class="block text-zinc-400 font-medium">DONUT-PET</span>
-                        </td>
-                        <td>
-                            <span class="block">김도윤</span>
-                            <span class="block text-zinc-400">DOTI-0001</span>
-                        </td>
-                        <td>
-                            <span>5,180명</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-600 px-2 py-1">● 비사업자</span>
-                        </td>
-                        <td>
-                            <span>0T</span>
-                        </td>
-                        <td>
-                            <span>635,000T</span>
-                        </td>
-                        <td>
-                            <button type="button" class="donuts-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">테니스 커뮤니티</span>
+                        <span class="block text-zinc-400 font-medium">DONUT-TENNIS</span>
+                    </td>
+                    <td>
+                        <span class="block">김도윤</span>
+                        <span class="block text-zinc-400">DOTI-0001</span>
+                    </td>
+                    <td>
+                        <span>8,720명</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 사업자 승인</span>
+                    </td>
+                    <td>
+                        <span>680,000T</span>
+                    </td>
+                    <td>
+                        <span>0T</span>
+                    </td>
+                    <td>
+                        <button type="button" class="donuts-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">러닝 메이트</span>
+                        <span class="block text-zinc-400 font-medium">DONUT-RUNNING</span>
+                    </td>
+                    <td>
+                        <span class="block">김도윤</span>
+                        <span class="block text-zinc-400">DOTI-0001</span>
+                    </td>
+                    <td>
+                        <span>4,360명</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 최초 심사 중</span>
+                    </td>
+                    <td>
+                        <span>0T</span>
+                    </td>
+                    <td>
+                        <span>1,286,400T</span>
+                    </td>
+                    <td>
+                        <button type="button" class="donuts-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">반려생활 연구소</span>
+                        <span class="block text-zinc-400 font-medium">DONUT-PET</span>
+                    </td>
+                    <td>
+                        <span class="block">김도윤</span>
+                        <span class="block text-zinc-400">DOTI-0001</span>
+                    </td>
+                    <td>
+                        <span>5,180명</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-600 px-2 py-1">● 비사업자</span>
+                    </td>
+                    <td>
+                        <span>0T</span>
+                    </td>
+                    <td>
+                        <span>635,000T</span>
+                    </td>
+                    <td>
+                        <button type="button" class="donuts-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -235,6 +233,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('donuts-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6],
+    });
+
     $('.donuts-detail-modal-open').on('click', function() {
         $('#donuts-detail-modal').prop('hidden', false);
     });

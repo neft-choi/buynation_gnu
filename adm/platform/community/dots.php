@@ -20,136 +20,122 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">도트 목록</caption>
+        <table id="dots-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">도트 목록</caption>
 
-                <colgroup>
-                    <col class="w-[12%]">
-                    <col class="w-[11%]">
-                    <col class="w-[11%]">
-                    <col class="w-[11%]">
-                    <col class="w-[11%]">
-                    <col class="w-[11%]">
-                    <col class="w-[11%]">
-                    <col class="w-[11%]">
-                    <col class="w-[11%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">도트</th>
+                    <th scope="col">가입일</th>
+                    <th scope="col">가입 도넛</th>
+                    <th scope="col">운영 권한</th>
+                    <th scope="col">주문</th>
+                    <th scope="col">토핑</th>
+                    <th scope="col">위험</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">관리</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">도트</th>
-                        <th scope="col">가입일</th>
-                        <th scope="col">가입 도넛</th>
-                        <th scope="col">운영 권한</th>
-                        <th scope="col">주문</th>
-                        <th scope="col">토핑</th>
-                        <th scope="col">위험</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">관리</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">홍길동</span>
-                            <span class="block text-zinc-400 font-medium">DOT-48102</span>
-                        </td>
-                        <td>
-                            <span>2025.11.01</span>
-                        </td>
-                        <td>
-                            <span>7개</span>
-                        </td>
-                        <td>
-                            <span>6건</span>
-                        </td>
-                        <td>
-                            <span>1건</span>
-                        </td>
-                        <td>
-                            <span>3,000T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 낮음</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <button type="button" class="dots-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">리뷰왕</span>
-                            <span class="block text-zinc-400 font-medium">DOT-41255</span>
-                        </td>
-                        <td>
-                            <span>2026.03.22</span>
-                        </td>
-                        <td>
-                            <span>1개</span>
-                        </td>
-                        <td>
-                            <span>0건</span>
-                        </td>
-                        <td>
-                            <span>122건</span>
-                        </td>
-                        <td>
-                            <span>86,700T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 높음</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 활동 제한</span>
-                        </td>
-                        <td>
-                            <button type="button" class="dots-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">계정공유의심</span>
-                            <span class="block text-zinc-400 font-medium">DOT-39771</span>
-                        </td>
-                        <td>
-                            <span>2026.02.18</span>
-                        </td>
-                        <td>
-                            <span>0개</span>
-                        </td>
-                        <td>
-                            <span>0건</span>
-                        </td>
-                        <td>
-                            <span>7건</span>
-                        </td>
-                        <td>
-                            <span>3,200T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 주의</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 검토 중</span>
-                        </td>
-                        <td>
-                            <button type="button" class="dots-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">홍길동</span>
+                        <span class="block text-zinc-400 font-medium">DOT-48102</span>
+                    </td>
+                    <td>
+                        <span>2025.11.01</span>
+                    </td>
+                    <td>
+                        <span>7개</span>
+                    </td>
+                    <td>
+                        <span>6건</span>
+                    </td>
+                    <td>
+                        <span>1건</span>
+                    </td>
+                    <td>
+                        <span>3,000T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 낮음</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <button type="button" class="dots-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">리뷰왕</span>
+                        <span class="block text-zinc-400 font-medium">DOT-41255</span>
+                    </td>
+                    <td>
+                        <span>2026.03.22</span>
+                    </td>
+                    <td>
+                        <span>1개</span>
+                    </td>
+                    <td>
+                        <span>0건</span>
+                    </td>
+                    <td>
+                        <span>122건</span>
+                    </td>
+                    <td>
+                        <span>86,700T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 높음</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 활동 제한</span>
+                    </td>
+                    <td>
+                        <button type="button" class="dots-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">계정공유의심</span>
+                        <span class="block text-zinc-400 font-medium">DOT-39771</span>
+                    </td>
+                    <td>
+                        <span>2026.02.18</span>
+                    </td>
+                    <td>
+                        <span>0개</span>
+                    </td>
+                    <td>
+                        <span>0건</span>
+                    </td>
+                    <td>
+                        <span>7건</span>
+                    </td>
+                    <td>
+                        <span>3,200T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 주의</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 검토 중</span>
+                    </td>
+                    <td>
+                        <button type="button" class="dots-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -255,6 +241,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('dots-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6, 7],
+    });
+
     $('.dots-detail-modal-open').on('click', function() {
         $('#dots-detail-modal').prop('hidden', false);
     });

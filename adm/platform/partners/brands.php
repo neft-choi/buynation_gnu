@@ -43,120 +43,108 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">브랜드 서류 심사 요청 목록</caption>
+        <table id="brand-review-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">브랜드 서류 심사 요청 목록</caption>
 
-                <colgroup>
-                    <col class="w-[30%]">
-                    <col class="w-[12%]">
-                    <col class="w-[15%]">
-                    <col class="w-[8%]">
-                    <col class="w-[8%]">
-                    <col class="w-[15%]">
-                    <col class="w-[12%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">요청번호 / 브랜드</th>
+                    <th scope="col">유형</th>
+                    <th scope="col">제출</th>
+                    <th scope="col">서류</th>
+                    <th scope="col">SLA</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">심사</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">요청번호 / 브랜드</th>
-                        <th scope="col">유형</th>
-                        <th scope="col">제출</th>
-                        <th scope="col">서류</th>
-                        <th scope="col">SLA</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">심사</th>
-                    </tr>
-                </thead>
+            <tbody id="brand-review-list" class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr data-status="pending">
+                    <td>
+                        <span class="block font-bold">노르딕홈</span>
+                        <span class="block text-zinc-400">BR-VRF-2026-0811 · BRD-00182</span>
+                    </td>
+                    <td>신규 입점</td>
+                    <td>2026.08.08 09:20</td>
+                    <td>0/4</td>
+                    <td>D-2</td>
+                    <td><span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span></td>
+                    <td>
+                        <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
 
-                <tbody id="brand-review-list" class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr data-status="pending">
-                        <td>
-                            <span class="block font-bold">노르딕홈</span>
-                            <span class="block text-zinc-400">BR-VRF-2026-0811 · BRD-00182</span>
-                        </td>
-                        <td>신규 입점</td>
-                        <td>2026.08.08 09:20</td>
-                        <td>0/4</td>
-                        <td>D-2</td>
-                        <td><span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span></td>
-                        <td>
-                            <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
+                <tr data-status="pending">
+                    <td>
+                        <span class="block font-bold">그린리프</span>
+                        <span class="block text-zinc-400">BR-VRF-2026-0809 · BRD-00179</span>
+                    </td>
+                    <td>신규 입점</td>
+                    <td>2026.08.07 15:10</td>
+                    <td>0/3</td>
+                    <td>D-1</td>
+                    <td><span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span></td>
+                    <td>
+                        <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
 
-                    <tr data-status="pending">
-                        <td>
-                            <span class="block font-bold">그린리프</span>
-                            <span class="block text-zinc-400">BR-VRF-2026-0809 · BRD-00179</span>
-                        </td>
-                        <td>신규 입점</td>
-                        <td>2026.08.07 15:10</td>
-                        <td>0/3</td>
-                        <td>D-1</td>
-                        <td><span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span></td>
-                        <td>
-                            <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
+                <tr data-status="supplement">
+                    <td>
+                        <span class="block font-bold">그린테이블</span>
+                        <span class="block text-zinc-400">BR-VRF-2026-0718 · BRD-00204</span>
+                    </td>
+                    <td>서류 변경</td>
+                    <td>2026.08.08 11:05</td>
+                    <td>3/4</td>
+                    <td>D-1</td>
+                    <td><span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 보완 요청</span></td>
+                    <td>
+                        <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
 
-                    <tr data-status="supplement">
-                        <td>
-                            <span class="block font-bold">그린테이블</span>
-                            <span class="block text-zinc-400">BR-VRF-2026-0718 · BRD-00204</span>
-                        </td>
-                        <td>서류 변경</td>
-                        <td>2026.08.08 11:05</td>
-                        <td>3/4</td>
-                        <td>D-1</td>
-                        <td><span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 보완 요청</span></td>
-                        <td>
-                            <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
+                <tr data-status="approved">
+                    <td>
+                        <span class="block font-bold">몬스테리</span>
+                        <span class="block text-zinc-400">BR-VRF-2026-0602 · BRD-00168</span>
+                    </td>
+                    <td>신규 입점</td>
+                    <td>2026.06.10 11:22</td>
+                    <td>3/3</td>
+                    <td>완료</td>
+                    <td><span class="rounded-full bg-emerald-50 text-2xs font-bold text-emerald-700 px-2 py-1">● 승인</span></td>
+                    <td>
+                        <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
 
-                    <tr data-status="approved">
-                        <td>
-                            <span class="block font-bold">몬스테리</span>
-                            <span class="block text-zinc-400">BR-VRF-2026-0602 · BRD-00168</span>
-                        </td>
-                        <td>신규 입점</td>
-                        <td>2026.06.10 11:22</td>
-                        <td>3/3</td>
-                        <td>완료</td>
-                        <td><span class="rounded-full bg-emerald-50 text-2xs font-bold text-emerald-700 px-2 py-1">● 승인</span></td>
-                        <td>
-                            <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr data-status="rejected">
-                        <td>
-                            <span class="block font-bold">하루마켓</span>
-                            <span class="block text-zinc-400">BR-VRF-2026-0521 · BRD-00155</span>
-                        </td>
-                        <td>신규 입점</td>
-                        <td>2026.07.14 09:05</td>
-                        <td>0/3</td>
-                        <td>종료</td>
-                        <td><span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 최종 거절</span></td>
-                        <td>
-                            <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                <tr data-status="rejected">
+                    <td>
+                        <span class="block font-bold">하루마켓</span>
+                        <span class="block text-zinc-400">BR-VRF-2026-0521 · BRD-00155</span>
+                    </td>
+                    <td>신규 입점</td>
+                    <td>2026.07.14 09:05</td>
+                    <td>0/3</td>
+                    <td>종료</td>
+                    <td><span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 최종 거절</span></td>
+                    <td>
+                        <button type="button" class="brand-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -266,6 +254,14 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('brand-review-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5],
+        language: {
+            searchPlaceholder: '검색어를 입력하세요'
+        }
+    });
+
     $('#brand-review-filters button').on('click', function() {
         const status = $(this).data('status');
 

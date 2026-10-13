@@ -19,80 +19,67 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">추가 토핑 심사 목록</caption>
+        <table id="campaign-review-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">추가 토핑 심사 목록</caption>
 
-                <colgroup>
-                    <col class="w-[16%]">
-                    <col class="w-[10%]">
-                    <col class="w-[14%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[20%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">요청번호 / 캠페인</th>
+                    <th scope="col">브랜드</th>
+                    <th scope="col">기간</th>
+                    <th scope="col">상품</th>
+                    <th scope="col">추가율</th>
+                    <th scope="col">범위</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">심사</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">요청번호 / 캠페인</th>
-                        <th scope="col">브랜드</th>
-                        <th scope="col">기간</th>
-                        <th scope="col">상품</th>
-                        <th scope="col">추가율</th>
-                        <th scope="col">범위</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">심사</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">건강한 여름 추가 토핑</span>
-                            <span class="block text-zinc-400">CMP-RV-260801-01</span>
-                        </td>
-                        <td>그린테이블</td>
-                        <td>2026.08.01 ~ 2026.08.31</td>
-                        <td>1개</td>
-                        <td>+4%</td>
-                        <td>
-                            <span>DONUT-TENNIS · 테니스 커뮤니티</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 승인</span>
-                        </td>
-                        <td>
-                            <button type="button" class="campaign-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">ECO KITCHEN WEEK</span>
-                            <span class="block text-zinc-400">EVT-0191</span>
-                        </td>
-                        <td>그린리프</td>
-                        <td>2026.08.15 ~ 2026.08.28</td>
-                        <td>6개</td>
-                        <td>+3%</td>
-                        <td>
-                            <span>음식 카테고리</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="campaign-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">건강한 여름 추가 토핑</span>
+                        <span class="block text-zinc-400">CMP-RV-260801-01</span>
+                    </td>
+                    <td>그린테이블</td>
+                    <td>2026.08.01 ~ 2026.08.31</td>
+                    <td>1개</td>
+                    <td>+4%</td>
+                    <td>
+                        <span>DONUT-TENNIS · 테니스 커뮤니티</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 승인</span>
+                    </td>
+                    <td>
+                        <button type="button" class="campaign-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">ECO KITCHEN WEEK</span>
+                        <span class="block text-zinc-400">EVT-0191</span>
+                    </td>
+                    <td>그린리프</td>
+                    <td>2026.08.15 ~ 2026.08.28</td>
+                    <td>6개</td>
+                    <td>+3%</td>
+                    <td>
+                        <span>음식 카테고리</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="campaign-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -162,6 +149,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('campaign-review-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6],
+    });
+
     $('.campaign-review-modal-open').on('click', function() {
         $('#campaign-review-modal').prop('hidden', false);
     });

@@ -17,62 +17,60 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">도티 승계 심사 목록</caption>
+        <table id="transfer_review-list-table" class="border-collapse min-w-250 w-full table-fixed text-left">
+            <caption class="sr-only">도티 승계 심사 목록</caption>
 
-                <colgroup>
-                    <col class="w-[20%]">
-                    <col class="w-[12%]">
-                    <col class="w-[20%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                    <col class="w-[12%]">
-                </colgroup>
+            <colgroup>
+                <col class="w-[20%]">
+                <col class="w-[12%]">
+                <col class="w-[20%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+                <col class="w-[12%]">
+            </colgroup>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">요청번호 / 도넛</th>
-                        <th scope="col">현재 도티</th>
-                        <th scope="col">승계 도티</th>
-                        <th scope="col">가입 도트</th>
-                        <th scope="col">본인확인</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">심사</th>
-                    </tr>
-                </thead>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">요청번호 / 도넛</th>
+                    <th scope="col">현재 도티</th>
+                    <th scope="col">승계 도티</th>
+                    <th scope="col">가입 도트</th>
+                    <th scope="col">본인확인</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">심사</th>
+                </tr>
+            </thead>
 
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">반려생활 연구소</span>
-                            <span class="block text-zinc-400 font-medium">SUC-PET-001 · DONUT-PET</span>
-                        </td>
-                        <td>
-                            <span>김도윤 · 도티 역할</span>
-                        </td>
-                        <td>
-                            <span>김도현 · 도티 역할 요청</span>
-                        </td>
-                        <td>
-                            <span>DOT-41092</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 완료</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="transfer_review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">반려생활 연구소</span>
+                        <span class="block text-zinc-400 font-medium">SUC-PET-001 · DONUT-PET</span>
+                    </td>
+                    <td>
+                        <span>김도윤 · 도티 역할</span>
+                    </td>
+                    <td>
+                        <span>김도현 · 도티 역할 요청</span>
+                    </td>
+                    <td>
+                        <span>DOT-41092</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 완료</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="transfer_review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -146,6 +144,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('transfer_review-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5],
+    });
+
     $('.transfer_review-modal-open').on('click', function() {
         $('#transfer_review-modal').prop('hidden', false);
     });

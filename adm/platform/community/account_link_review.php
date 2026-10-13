@@ -19,62 +19,50 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">도트 목록</caption>
+        <table id="account-review-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">도트 목록</caption>
 
-                <colgroup>
-                    <col class="w-[20%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[20%]">
-                    <col class="w-[14%]">
-                    <col class="w-[13%]">
-                    <col class="w-[13%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">요청번호</th>
+                    <th scope="col">계정</th>
+                    <th scope="col">요청 역할</th>
+                    <th scope="col">본인인증·수락</th>
+                    <th scope="col">요청일</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">심사</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">요청번호</th>
-                        <th scope="col">계정</th>
-                        <th scope="col">요청 역할</th>
-                        <th scope="col">본인인증·수락</th>
-                        <th scope="col">요청일</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">심사</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">ROLE-DOTI-260811-01</span>
-                        </td>
-                        <td>
-                            <span class="block">김도현</span>
-                            <span class="block text-zinc-400">DOT-41092</span>
-                        </td>
-                        <td>
-                            <span>도티 역할</span>
-                        </td>
-                        <td>
-                            <span>KCP 본인인증·승계 수락 완료</span>
-                        </td>
-                        <td>
-                            <span>2026.08.11 10:20</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="account-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">ROLE-DOTI-260811-01</span>
+                    </td>
+                    <td>
+                        <span class="block">김도현</span>
+                        <span class="block text-zinc-400">DOT-41092</span>
+                    </td>
+                    <td>
+                        <span>도티 역할</span>
+                    </td>
+                    <td>
+                        <span>KCP 본인인증·승계 수락 완료</span>
+                    </td>
+                    <td>
+                        <span>2026.08.11 10:20</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="account-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -152,6 +140,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('account-review-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5],
+    });
+
     $('.account-review-modal-open').on('click', function() {
         $('#account-review-modal').prop('hidden', false);
     });

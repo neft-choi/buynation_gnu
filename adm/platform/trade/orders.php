@@ -18,147 +18,132 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">거래 조회 목록</caption>
+        <table id="orders-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">거래 조회 목록</caption>
 
-                <colgroup>
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">주문번호</th>
+                    <th scope="col">주문일</th>
+                    <th scope="col">구매자</th>
+                    <th scope="col">브랜드</th>
+                    <th scope="col">상품액</th>
+                    <th scope="col">배송비</th>
+                    <th scope="col">기여 도넛</th>
+                    <th scope="col">기여 도핑</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">상세</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">주문번호</th>
-                        <th scope="col">주문일</th>
-                        <th scope="col">구매자</th>
-                        <th scope="col">브랜드</th>
-                        <th scope="col">상품액</th>
-                        <th scope="col">배송비</th>
-                        <th scope="col">기여 도넛</th>
-                        <th scope="col">기여 도핑</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">상세</th>
-                    </tr>
-                </thead>
-
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">ORD-1038</span>
-                            <span class="block text-zinc-400 font-medium">P-801</span>
-                        </td>
-                        <td>
-                            <span>2026.08.11 10:24</span>
-                        </td>
-                        <td>
-                            <span>DOT-48102</span>
-                        </td>
-                        <td>
-                            <span>그린테이블</span>
-                        </td>
-                        <td>
-                            <span>37,800원</span>
-                        </td>
-                        <td>
-                            <span>3,000원</span>
-                        </td>
-                        <td>
-                            <span>DONUT-TENNIS</span>
-                        </td>
-                        <td>
-                            <span>1,209T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 결제 완료</span>
-                        </td>
-                        <td>
-                            <button type="button" class="orders-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">ORD-1055</span>
-                            <span class="block text-zinc-400 font-medium">P-804</span>
-                        </td>
-                        <td>
-                            <span>2026.08.10 16:40</span>
-                        </td>
-                        <td>
-                            <span>DOT-39811</span>
-                        </td>
-                        <td>
-                            <span>그린테이블</span>
-                        </td>
-                        <td>
-                            <span>96,000원</span>
-                        </td>
-                        <td>
-                            <span>16,000원</span>
-                        </td>
-                        <td>
-                            <span>DONUT-CAMPING</span>
-                        </td>
-                        <td>
-                            <span>3,072T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 배송 중</span>
-                        </td>
-                        <td>
-                            <button type="button" class="orders-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">ORD-1036</span>
-                            <span class="block text-zinc-400 font-medium">P-801</span>
-                        </td>
-                        <td>
-                            <span>2026.08.08 13:05</span>
-                        </td>
-                        <td>
-                            <span>DOT-48102</span>
-                        </td>
-                        <td>
-                            <span>그린테이블</span>
-                        </td>
-                        <td>
-                            <span>18,900원</span>
-                        </td>
-                        <td>
-                            <span>3,000원</span>
-                        </td>
-                        <td>
-                            <span>DONUT-TENNIS</span>
-                        </td>
-                        <td>
-                            <span>0T</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 완료</span>
-                        </td>
-                        <td>
-                            <button type="button" class="orders-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">ORD-1038</span>
+                        <span class="block text-zinc-400 font-medium">P-801</span>
+                    </td>
+                    <td>
+                        <span>2026.08.11 10:24</span>
+                    </td>
+                    <td>
+                        <span>DOT-48102</span>
+                    </td>
+                    <td>
+                        <span>그린테이블</span>
+                    </td>
+                    <td>
+                        <span>37,800원</span>
+                    </td>
+                    <td>
+                        <span>3,000원</span>
+                    </td>
+                    <td>
+                        <span>DONUT-TENNIS</span>
+                    </td>
+                    <td>
+                        <span>1,209T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 결제 완료</span>
+                    </td>
+                    <td>
+                        <button type="button" class="orders-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">ORD-1055</span>
+                        <span class="block text-zinc-400 font-medium">P-804</span>
+                    </td>
+                    <td>
+                        <span>2026.08.10 16:40</span>
+                    </td>
+                    <td>
+                        <span>DOT-39811</span>
+                    </td>
+                    <td>
+                        <span>그린테이블</span>
+                    </td>
+                    <td>
+                        <span>96,000원</span>
+                    </td>
+                    <td>
+                        <span>16,000원</span>
+                    </td>
+                    <td>
+                        <span>DONUT-CAMPING</span>
+                    </td>
+                    <td>
+                        <span>3,072T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">● 배송 중</span>
+                    </td>
+                    <td>
+                        <button type="button" class="orders-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">ORD-1036</span>
+                        <span class="block text-zinc-400 font-medium">P-801</span>
+                    </td>
+                    <td>
+                        <span>2026.08.08 13:05</span>
+                    </td>
+                    <td>
+                        <span>DOT-48102</span>
+                    </td>
+                    <td>
+                        <span>그린테이블</span>
+                    </td>
+                    <td>
+                        <span>18,900원</span>
+                    </td>
+                    <td>
+                        <span>3,000원</span>
+                    </td>
+                    <td>
+                        <span>DONUT-TENNIS</span>
+                    </td>
+                    <td>
+                        <span>0T</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 완료</span>
+                    </td>
+                    <td>
+                        <button type="button" class="orders-detail-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -302,6 +287,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('orders-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6, 7],
+    });
+
     // 배송비 계산 예시 모달
     $('.orders-example-modal-open').on('click', function() {
         $('#orders-example-modal').prop('hidden', false);

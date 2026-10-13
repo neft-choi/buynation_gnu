@@ -32,131 +32,129 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">도넛 운영자 권한 목록</caption>
+        <table id="delegate-audit-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">도넛 운영자 권한 목록</caption>
 
-                <colgroup>
-                    <col class="w-[20%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[20%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                </colgroup>
+            <colgroup>
+                <col class="w-[20%]">
+                <col class="w-[10%]">
+                <col class="w-[10%]">
+                <col class="w-[20%]">
+                <col class="w-[10%]">
+                <col class="w-[10%]">
+                <col class="w-[10%]">
+                <col class="w-[10%]">
+            </colgroup>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">권한번호 / 도넛</th>
-                        <th scope="col">도트</th>
-                        <th scope="col">역할</th>
-                        <th scope="col">부여 권한</th>
-                        <th scope="col">최근 사용</th>
-                        <th scope="col">위험</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">감독</th>
-                    </tr>
-                </thead>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">권한번호 / 도넛</th>
+                    <th scope="col">도트</th>
+                    <th scope="col">역할</th>
+                    <th scope="col">부여 권한</th>
+                    <th scope="col">최근 사용</th>
+                    <th scope="col">위험</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">감독</th>
+                </tr>
+            </thead>
 
-                <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr>
-                        <td>
-                            <span class="block font-bold">테니스 커뮤니티</span>
-                            <span class="block text-zinc-400 font-medium">DLG-TENNIS-001 · DONUT-TENNIS</span>
-                        </td>
-                        <td>
-                            <span class="block">홍길동</span>
-                            <span class="block text-zinc-400">DOT-48102</span>
-                        </td>
-                        <td>
-                            <span>도넛 운영자</span>
-                        </td>
-                        <td>
-                            <span class="block">1개</span>
-                            <span class="block text-zinc-400">가입 심사</span>
-                        </td>
-                        <td>
-                            <span>오늘 11:20</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <button type="button" class="delegate-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">홈베이킹 살롱</span>
-                            <span class="block text-zinc-400 font-medium">DLG-BAKING-001 · DONUT-BAKING</span>
-                        </td>
-                        <td>
-                            <span class="block">홍길동</span>
-                            <span class="block text-zinc-400">DOT-48102</span>
-                        </td>
-                        <td>
-                            <span>초대 대기</span>
-                        </td>
-                        <td>
-                            <span class="block">2개</span>
-                            <span class="block text-zinc-400">공지 · 추천상품</span>
-                        </td>
-                        <td>
-                            <span>-</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="delegate-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <span class="block font-bold">캠핑 위켄드</span>
-                            <span class="block text-zinc-400 font-medium">DLG-CAMPING-001 · DONUT-CAMPING</span>
-                        </td>
-                        <td>
-                            <span class="block">홍길동</span>
-                            <span class="block text-zinc-400">DOT-48102</span>
-                        </td>
-                        <td>
-                            <span>도넛 운영자</span>
-                        </td>
-                        <td>
-                            <span class="block">5개</span>
-                            <span class="block text-zinc-400">가입 심사 · 회원 조회 · 콘텐츠 · 공지 · 추천상품</span>
-                        </td>
-                        <td>
-                            <span>오늘 11:20</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
-                        </td>
-                        <td>
-                            <button type="button" class="delegate-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                상세
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr>
+                    <td>
+                        <span class="block font-bold">테니스 커뮤니티</span>
+                        <span class="block text-zinc-400 font-medium">DLG-TENNIS-001 · DONUT-TENNIS</span>
+                    </td>
+                    <td>
+                        <span class="block">홍길동</span>
+                        <span class="block text-zinc-400">DOT-48102</span>
+                    </td>
+                    <td>
+                        <span>도넛 운영자</span>
+                    </td>
+                    <td>
+                        <span class="block">1개</span>
+                        <span class="block text-zinc-400">가입 심사</span>
+                    </td>
+                    <td>
+                        <span>오늘 11:20</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <button type="button" class="delegate-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">홈베이킹 살롱</span>
+                        <span class="block text-zinc-400 font-medium">DLG-BAKING-001 · DONUT-BAKING</span>
+                    </td>
+                    <td>
+                        <span class="block">홍길동</span>
+                        <span class="block text-zinc-400">DOT-48102</span>
+                    </td>
+                    <td>
+                        <span>초대 대기</span>
+                    </td>
+                    <td>
+                        <span class="block">2개</span>
+                        <span class="block text-zinc-400">공지 · 추천상품</span>
+                    </td>
+                    <td>
+                        <span>-</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">● 심사 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="delegate-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="block font-bold">캠핑 위켄드</span>
+                        <span class="block text-zinc-400 font-medium">DLG-CAMPING-001 · DONUT-CAMPING</span>
+                    </td>
+                    <td>
+                        <span class="block">홍길동</span>
+                        <span class="block text-zinc-400">DOT-48102</span>
+                    </td>
+                    <td>
+                        <span>도넛 운영자</span>
+                    </td>
+                    <td>
+                        <span class="block">5개</span>
+                        <span class="block text-zinc-400">가입 심사 · 회원 조회 · 콘텐츠 · 공지 · 추천상품</span>
+                    </td>
+                    <td>
+                        <span>오늘 11:20</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <span class="rounded-full bg-emerald-100 text-2xs font-bold text-emerald-600 px-2 py-1">● 정상</span>
+                    </td>
+                    <td>
+                        <button type="button" class="delegate-audit-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            상세
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -224,7 +222,7 @@ require_once '../../admin.head.php';
 
             <div class="mt-3 rounded-lg bg-amber-50 p-3">
                 <p class="mt-1 text-2xs text-amber-600">플랫폼 중지는 도티의 부여 기록을 삭제하지 않고 사용만 차단하며, 사유를 감사 로그에 남깁니다.</p>
-            </div>   
+            </div>
         </div>
 
         <div id="delegate-audit-modal-footer" class="sticky bottom-0 z-10 flex justify-end gap-2 border-t border-gray-300 bg-white p-4">
@@ -236,6 +234,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('delegate-audit-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6],
+    });
+
     $('.delegate-audit-modal-open').on('click', function() {
         $('#delegate-audit-modal').prop('hidden', false);
     });

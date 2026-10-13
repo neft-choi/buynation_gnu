@@ -50,135 +50,123 @@ require_once '../../admin.head.php';
     </div>
 
     <section class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-250 w-full table-fixed text-left">
-                <caption class="sr-only">상품 검수 요청 목록</caption>
+        <table id="product-review-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">상품 검수 요청 목록</caption>
 
-                <colgroup>
-                    <col class="w-[26%]">
-                    <col class="w-[11%]">
-                    <col class="w-[9%]">
-                    <col class="w-[20%]">
-                    <col class="w-[14%]">
-                    <col class="w-[10%]">
-                    <col class="w-[10%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">접수번호 / 상품</th>
+                    <th scope="col">브랜드</th>
+                    <th scope="col">구분</th>
+                    <th scope="col">배송그룹</th>
+                    <th scope="col">요청일</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">검수</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">접수번호 / 상품</th>
-                        <th scope="col">브랜드</th>
-                        <th scope="col">구분</th>
-                        <th scope="col">배송그룹</th>
-                        <th scope="col">요청일</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">검수</th>
-                    </tr>
-                </thead>
+            <tbody id="product-review-list" class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr data-status="pending">
+                    <td>
+                        <span class="block font-bold">신제품 수프 체험팩</span>
+                        <span class="block text-zinc-400">PRD-RV-260811-07 · P-807 · GT-SP-001</span>
+                    </td>
+                    <td>그린테이블</td>
+                    <td>신규</td>
+                    <td>기본 배송그룹 · 묶음배송</td>
+                    <td>2026.08.11 10:40</td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span>
+                        <span class="mt-1 block text-zinc-400">판매 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검수
+                        </button>
+                    </td>
+                </tr>
 
-                <tbody id="product-review-list" class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr data-status="pending">
-                        <td>
-                            <span class="block font-bold">신제품 수프 체험팩</span>
-                            <span class="block text-zinc-400">PRD-RV-260811-07 · P-807 · GT-SP-001</span>
-                        </td>
-                        <td>그린테이블</td>
-                        <td>신규</td>
-                        <td>기본 배송그룹 · 묶음배송</td>
-                        <td>2026.08.11 10:40</td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span>
-                            <span class="mt-1 block text-zinc-400">판매 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검수
-                            </button>
-                        </td>
-                    </tr>
+                <tr data-status="supplement">
+                    <td>
+                        <span class="block font-bold">저염 버섯스프 3팩</span>
+                        <span class="block text-zinc-400">PRD-RV-260810-03 · P-809 · GT-MS-003</span>
+                    </td>
+                    <td>그린테이블</td>
+                    <td>신규</td>
+                    <td>묶음배송 · 상온</td>
+                    <td>2026.08.10 09:15</td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 보완 요청</span>
+                        <span class="mt-1 block text-zinc-400">판매 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검수
+                        </button>
+                    </td>
+                </tr>
 
-                    <tr data-status="supplement">
-                        <td>
-                            <span class="block font-bold">저염 버섯스프 3팩</span>
-                            <span class="block text-zinc-400">PRD-RV-260810-03 · P-809 · GT-MS-003</span>
-                        </td>
-                        <td>그린테이블</td>
-                        <td>신규</td>
-                        <td>묶음배송 · 상온</td>
-                        <td>2026.08.10 09:15</td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 보완 요청</span>
-                            <span class="mt-1 block text-zinc-400">판매 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검수
-                            </button>
-                        </td>
-                    </tr>
+                <tr data-status="rejected">
+                    <td>
+                        <span class="block font-bold">상온 크림 샐러드</span>
+                        <span class="block text-zinc-400">PRD-RV-260809-02 · P-810 · GT-CR-001</span>
+                    </td>
+                    <td>그린테이블</td>
+                    <td>신규</td>
+                    <td><span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 미지정</span></td>
+                    <td>2026.08.09 13:20</td>
+                    <td>
+                        <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 최종 거절</span>
+                        <span class="mt-1 block text-zinc-400">등록 반려</span>
+                    </td>
+                    <td>
+                        <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검수
+                        </button>
+                    </td>
+                </tr>
 
-                    <tr data-status="rejected">
-                        <td>
-                            <span class="block font-bold">상온 크림 샐러드</span>
-                            <span class="block text-zinc-400">PRD-RV-260809-02 · P-810 · GT-CR-001</span>
-                        </td>
-                        <td>그린테이블</td>
-                        <td>신규</td>
-                        <td><span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 미지정</span></td>
-                        <td>2026.08.09 13:20</td>
-                        <td>
-                            <span class="rounded-full bg-red-100 text-2xs font-bold text-red-600 px-2 py-1">● 최종 거절</span>
-                            <span class="mt-1 block text-zinc-400">등록 반려</span>
-                        </td>
-                        <td>
-                            <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검수
-                            </button>
-                        </td>
-                    </tr>
+                <tr data-status="pending">
+                    <td>
+                        <span class="block font-bold">대나무 욕실 정리 선반</span>
+                        <span class="block text-zinc-400">PRD-RV-260811-028 · P51218 · ML-BT-811</span>
+                    </td>
+                    <td>몬스앤리빙</td>
+                    <td>신규</td>
+                    <td>개별배송 · 대형</td>
+                    <td>2026.08.11 08:35</td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span>
+                        <span class="mt-1 block text-zinc-400">판매 대기</span>
+                    </td>
+                    <td>
+                        <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검수
+                        </button>
+                    </td>
+                </tr>
 
-                    <tr data-status="pending">
-                        <td>
-                            <span class="block font-bold">대나무 욕실 정리 선반</span>
-                            <span class="block text-zinc-400">PRD-RV-260811-028 · P51218 · ML-BT-811</span>
-                        </td>
-                        <td>몬스앤리빙</td>
-                        <td>신규</td>
-                        <td>개별배송 · 대형</td>
-                        <td>2026.08.11 08:35</td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-700 px-2 py-1">● 심사 대기</span>
-                            <span class="mt-1 block text-zinc-400">판매 대기</span>
-                        </td>
-                        <td>
-                            <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검수
-                            </button>
-                        </td>
-                    </tr>
-
-                    <tr data-status="approved">
-                        <td>
-                            <span class="block font-bold">패브릭 수납 박스</span>
-                            <span class="block text-zinc-400">PRD-RV-260806-03 · P51188 · ML-FB-204</span>
-                        </td>
-                        <td>몬스앤리빙</td>
-                        <td>정보 변경</td>
-                        <td>묶음배송 · 상온</td>
-                        <td>2026.08.06 13:18</td>
-                        <td>
-                            <span class="rounded-full bg-emerald-50 text-2xs font-bold text-emerald-700 px-2 py-1">● 승인</span>
-                            <span class="mt-1 block text-zinc-400">판매중</span>
-                        </td>
-                        <td>
-                            <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검수
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                <tr data-status="approved">
+                    <td>
+                        <span class="block font-bold">패브릭 수납 박스</span>
+                        <span class="block text-zinc-400">PRD-RV-260806-03 · P51188 · ML-FB-204</span>
+                    </td>
+                    <td>몬스앤리빙</td>
+                    <td>정보 변경</td>
+                    <td>묶음배송 · 상온</td>
+                    <td>2026.08.06 13:18</td>
+                    <td>
+                        <span class="rounded-full bg-emerald-50 text-2xs font-bold text-emerald-700 px-2 py-1">● 승인</span>
+                        <span class="mt-1 block text-zinc-400">판매중</span>
+                    </td>
+                    <td>
+                        <button type="button" class="product-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검수
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -296,6 +284,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('product-review-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5],
+    });
+
     $('#product-review-filters button').on('click', function() {
         const status = $(this).data('status');
 
