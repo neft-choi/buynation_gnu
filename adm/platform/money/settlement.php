@@ -44,53 +44,22 @@ require_once '../../admin.head.php';
             <legend class="sr-only">정산 구분 필터</legend>
 
             <div>
-                <input
-                    type="radio"
-                    id="filter-all"
-                    name="settlement-filter"
-                    value="all"
-                    class="peer sr-only"
-                    checked>
-                <label
-                    for="filter-all"
-                    class="block cursor-pointer rounded-full border border-gray-300 px-3 py-2
-                       peer-checked:border-gray-900
-                       peer-checked:bg-gray-900
-                       peer-checked:text-white">
+                <input type="radio" id="filter-all" name="settlement-filter" value="all" class="peer sr-only" checked>
+                <label for="filter-all" class="block cursor-pointer rounded-full border border-gray-300 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white">
                     전체
                 </label>
             </div>
 
             <div>
-                <input
-                    type="radio"
-                    id="filter-brand"
-                    name="settlement-filter"
-                    value="brand"
-                    class="peer sr-only">
-                <label
-                    for="filter-brand"
-                    class="block cursor-pointer rounded-full border border-gray-300 px-3 py-2
-                       peer-checked:border-gray-900
-                       peer-checked:bg-gray-900
-                       peer-checked:text-white">
+                <input type="radio" id="filter-brand" name="settlement-filter" value="brand" class="peer sr-only">
+                <label for="filter-brand" class="block cursor-pointer rounded-full border border-gray-300 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white">
                     브랜드
                 </label>
             </div>
 
             <div>
-                <input
-                    type="radio"
-                    id="filter-donut"
-                    name="settlement-filter"
-                    value="donut"
-                    class="peer sr-only">
-                <label
-                    for="filter-donut"
-                    class="block cursor-pointer rounded-full border border-gray-300 px-3 py-2
-                       peer-checked:border-gray-900
-                       peer-checked:bg-gray-900
-                       peer-checked:text-white">
+                <input type="radio" id="filter-donut" name="settlement-filter" value="donut" class="peer sr-only">
+                <label for="filter-donut" class="block cursor-pointer rounded-full border border-gray-300 px-3 py-2 peer-checked:border-gray-900 peer-checked:bg-gray-900 peer-checked:text-white">
                     도넛
                 </label>
             </div>
@@ -98,147 +67,132 @@ require_once '../../admin.head.php';
     </form>
 
     <div class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-300 w-full table-fixed text-left">
-                <caption class="sr-only">정산 검토 대상 목록</caption>
+        <table id="settlement-list-table" class="border-collapse w-full text-left">
+            <caption class="sr-only">정산 검토 대상 목록</caption>
 
-                <colgroup>
-                    <col class="w-[14%]">
-                    <col class="w-[8%]">
-                    <col class="w-[8%]">
-                    <col class="w-[8%]">
-                    <col class="w-[8%]">
-                    <col class="w-[8%]">
-                    <col class="w-[14%]">
-                    <col class="w-[14%]">
-                    <col class="w-[10%]">
-                    <col class="w-[8%]">
-                </colgroup>
+            <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">정산번호 / 대상</th>
+                    <th scope="col">구분</th>
+                    <th scope="col">기간</th>
+                    <th scope="col">집계액</th>
+                    <th scope="col">차감</th>
+                    <th scope="col">검토 금액</th>
+                    <th scope="col">계좌</th>
+                    <th scope="col">기준</th>
+                    <th scope="col">상태</th>
+                    <th scope="col">확인</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">정산번호 / 대상</th>
-                        <th scope="col">구분</th>
-                        <th scope="col">기간</th>
-                        <th scope="col">집계액</th>
-                        <th scope="col">차감</th>
-                        <th scope="col">검토 금액</th>
-                        <th scope="col">계좌</th>
-                        <th scope="col">기준</th>
-                        <th scope="col">상태</th>
-                        <th scope="col">확인</th>
-                    </tr>
-                </thead>
-
-                <tbody id="settlement-list" class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_th]:px-4 [&_th]:py-3 [&_td]:px-4 [&_td]:py-3">
-                    <tr data-type="brand">
-                        <th scope="row">
-                            <span class="block font-bold">그린테이블</span>
-                            <span class="block text-gray-400 font-bold">SET-B-GT-2607</span>
-                        </th>
-                        <td>브랜드</td>
-                        <td>2026.07</td>
-                        <td>5,138,000원/T</td>
-                        <td>571,600</td>
-                        <td>4,566,400</td>
-                        <td>○○ 123-****-567890</td>
-                        <td>2026.08.12</td>
-                        <td>
-                            <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1">
-                                <span aria-hidden="true">●</span>
-                                결제 완료
-                            </span>
-                        </td>
-                        <td>
-                            <button type="button" aria-label="그린테이블 정산 검토" class="settlement-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-type="donut">
-                        <th scope="row">
-                            <span class="block font-bold">테니스 커뮤니티</span>
-                            <span class="block text-gray-400 font-bold">SET-D-TENNIS-2607 · DONUT-TENNIS</span>
-                        </th>
-                        <td>
-                            <span>도넛</span>
-                            <span class="block text-gray-400">사업자 승인</span>
-                        </td>
-                        <td>2026.07</td>
-                        <td>680,000원/T</td>
-                        <td>0</td>
-                        <td>680,000</td>
-                        <td>신한 110-***-123456</td>
-                        <td>월말 마감 · 익월 12일</td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">
-                                <span aria-hidden="true">●</span>
-                                검토 중
-                            </span>
-                        </td>
-                        <td>
-                            <button type="button" aria-label="테니스 커뮤니티 정산 검토" class="settlement-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-type="donut">
-                        <th scope="row">
-                            <span class="block font-bold">켐핑 위켄드</span>
-                            <span class="block text-gray-400 font-bold">SET-CAMP-2608 · DONUT-CAMPING</span>
-                        </th>
-                        <td>
-                            <span>도넛</span>
-                            <span class="block text-gray-400">사업자 승인</span>
-                        </td>
-                        <td>2026.07</td>
-                        <td>860,000원/T</td>
-                        <td>0</td>
-                        <td>860,000</td>
-                        <td>카카오뱅크 3333-**-5502101</td>
-                        <td>2026.08.12</td>
-                        <td>
-                            <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1">
-                                <span aria-hidden="true">●</span>
-                                검토 중
-                            </span>
-                        </td>
-                        <td>
-                            <button type="button" aria-label="켐핑 위켄드 정산 검토" class="settlement-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                    <tr data-type="donut">
-                        <th scope="row">
-                            <span class="block font-bold">홈베이킹 살롱</span>
-                            <span class="block text-gray-400 font-bold">SET-D-BAKING-2607 · DONUT-BAKING</span>
-                        </th>
-                        <td>
-                            <span>도넛</span>
-                            <span class="block text-gray-400">비사업자</span>
-                        </td>
-                        <td>2026.07</td>
-                        <td>918,000원/T</td>
-                        <td>0</td>
-                        <td>0</td>
-                        <td>정산 불가</td>
-                        <td>정산 불가</td>
-                        <td>
-                            <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-600 px-2 py-1">
-                                <span aria-hidden="true">●</span>
-                                정산 불가
-                            </span>
-                        </td>
-                        <td>
-                            <button type="button" aria-label="홈베이킹 살롱 정산 검토" class="settlement-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
-                                검토
-                            </button>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+            <tbody id="settlement-list" class="text-gray-900 text-2xs font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_th]:px-4 [&_th]:py-3 [&_td]:px-4 [&_td]:py-3">
+                <tr data-type="brand">
+                    <th scope="row">
+                        <span class="block font-bold">그린테이블</span>
+                        <span class="block text-gray-400 font-bold">SET-B-GT-2607</span>
+                    </th>
+                    <td>브랜드</td>
+                    <td>2026.07</td>
+                    <td>5,138,000원/T</td>
+                    <td>571,600</td>
+                    <td>4,566,400</td>
+                    <td>○○ 123-****-567890</td>
+                    <td>2026.08.12</td>
+                    <td>
+                        <span class="rounded-full bg-blue-100 text-2xs font-bold text-blue-600 px-2 py-1 whitespace-nowrap">
+                            <span aria-hidden="true">●</span>
+                            결제 완료
+                        </span>
+                    </td>
+                    <td>
+                        <button type="button" aria-label="그린테이블 정산 검토" class="settlement-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+                <tr data-type="donut">
+                    <th scope="row">
+                        <span class="block font-bold">테니스 커뮤니티</span>
+                        <span class="block text-gray-400 font-bold">SET-D-TENNIS-2607 · DONUT-TENNIS</span>
+                    </th>
+                    <td>
+                        <span>도넛</span>
+                        <span class="block text-gray-400">사업자 승인</span>
+                    </td>
+                    <td>2026.07</td>
+                    <td>680,000원/T</td>
+                    <td>0</td>
+                    <td>680,000</td>
+                    <td>신한 110-***-123456</td>
+                    <td>월말 마감 · 익월 12일</td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1 whitespace-nowrap">
+                            <span aria-hidden="true">●</span>
+                            검토 중
+                        </span>
+                    </td>
+                    <td>
+                        <button type="button" aria-label="테니스 커뮤니티 정산 검토" class="settlement-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+                <tr data-type="donut">
+                    <th scope="row">
+                        <span class="block font-bold">켐핑 위켄드</span>
+                        <span class="block text-gray-400 font-bold">SET-CAMP-2608 · DONUT-CAMPING</span>
+                    </th>
+                    <td>
+                        <span>도넛</span>
+                        <span class="block text-gray-400">사업자 승인</span>
+                    </td>
+                    <td>2026.07</td>
+                    <td>860,000원/T</td>
+                    <td>0</td>
+                    <td>860,000</td>
+                    <td>카카오뱅크 3333-**-5502101</td>
+                    <td>2026.08.12</td>
+                    <td>
+                        <span class="rounded-full bg-amber-100 text-2xs font-bold text-amber-600 px-2 py-1 whitespace-nowrap">
+                            <span aria-hidden="true">●</span>
+                            검토 중
+                        </span>
+                    </td>
+                    <td>
+                        <button type="button" aria-label="켐핑 위켄드 정산 검토" class="settlement-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+                <tr data-type="donut">
+                    <th scope="row">
+                        <span class="block font-bold">홈베이킹 살롱</span>
+                        <span class="block text-gray-400 font-bold">SET-D-BAKING-2607 · DONUT-BAKING</span>
+                    </th>
+                    <td>
+                        <span>도넛</span>
+                        <span class="block text-gray-400">비사업자</span>
+                    </td>
+                    <td>2026.07</td>
+                    <td>918,000원/T</td>
+                    <td>0</td>
+                    <td>0</td>
+                    <td>정산 불가</td>
+                    <td>정산 불가</td>
+                    <td>
+                        <span class="rounded-full bg-gray-100 text-2xs font-bold text-gray-600 px-2 py-1 whitespace-nowrap">
+                            <span aria-hidden="true">●</span>
+                            정산 불가
+                        </span>
+                    </td>
+                    <td>
+                        <button type="button" aria-label="홈베이킹 살롱 정산 검토" class="settlement-review-modal-open rounded-lg border border-gray-300 bg-white text-2xs font-bold text-gray-900 px-3 py-2">
+                            검토
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </section>
 
@@ -338,6 +292,11 @@ require_once '../../admin.head.php';
 </div>
 
 <script>
+    createSiteTable('settlement-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+    });
+
     // 정산 검토 구분 필터
     $('input[name="settlement-filter"]').on('change', function() {
         const filter = $(this).val();

@@ -159,11 +159,12 @@ while ($type_category_row = sql_fetch_array($type_category_result)) {
     <div class="flex flex-col items-center px-4 pc:px-5 pc:py-7">
         <h2 class="hidden pc:block text-4xl font-bold"><?php echo $g5['title']; ?></h2>
 
-        <div class="flex items-center justify-between gap-4 w-full overflow-x-auto my-2 mb-4 pc:my-7">
+        <div class="w-full overflow-x-auto my-2 mb-4 pc:my-7">
             <ul class="flex items-center gap-2 text-sm pc:text-base text-nowrap pc:px-2">
                 <?php foreach ($type_category_items as $category_item) { ?>
                     <?php
                     $category_class = $category_item['active']
+                    
                         ? 'bg-[var(--color-primary)] text-black font-semibold'
                         : 'bg-gray-100 text-gray-700 font-medium';
                     ?>
@@ -175,15 +176,6 @@ while ($type_category_row = sql_fetch_array($type_category_result)) {
                     </li>
                 <?php } ?>
             </ul>
-
-            <button type="button"
-                class="inline-flex items-center justify-center w-11 h-11 shrink-0 border border-gray-300 rounded-full cursor-pointer">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-chevron-down-icon lucide-chevron-down w-5 h-5">
-                    <path d="m6 9 6 6 6-6" />
-                </svg>
-            </button>
         </div>
     </div>
 </section>

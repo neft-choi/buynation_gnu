@@ -1057,44 +1057,11 @@
   .h-\[350px\] {
     height: 350px;
   }
-  .h-\[ca\] {
-    height: ca;
-  }
-  .h-\[calc\(\)\] {
-    height: calc();
-  }
-  .h-\[calc\(80\%-var\(--bottom-nav-height\)\)\] {
-    height: calc(80% - var(--bottom-nav-height));
-  }
-  .h-\[calc\(100\%\)\] {
-    height: calc(100%);
-  }
-  .h-\[calc\(100\%-\)\] {
-    height: calc(100% - );
-  }
-  .h-\[calc\(100\%-var\(--bottom-nav-height\)\)\] {
-    height: calc(100% - var(--bottom-nav-height));
-  }
-  .h-\[calc\(100\%-var\)\] {
-    height: calc(100% - var);
-  }
-  .h-\[calc\(100\)\] {
-    height: calc(100);
-  }
-  .h-\[calc\(100-var\(--bottom-nav-height\)\)\] {
-    height: calc(100 - var(--bottom-nav-height));
-  }
   .h-\[calc\(100dvh-var\(--bottom-nav-height\)-56px\)\] {
     height: calc(100dvh - var(--bottom-nav-height) - 56px);
   }
   .h-\[calc\(100vh-112px\)\] {
     height: calc(100vh - 112px);
-  }
-  .h-\[calc\(100vh-var\(--bottom-nav-height\)\)\] {
-    height: calc(100vh - var(--bottom-nav-height));
-  }
-  .h-\[calc\] {
-    height: calc;
   }
   .h-\[var\(--admin-bottom-nav-height\)\] {
     height: var(--admin-bottom-nav-height);
@@ -1380,9 +1347,6 @@
   }
   .w-\[27\%\] {
     width: 27%;
-  }
-  .w-\[30\%\] {
-    width: 30%;
   }
   .w-\[40\%\] {
     width: 40%;
@@ -5082,6 +5046,16 @@
       padding-bottom: calc(var(--spacing) * 3);
     }
   }
+  .\[\&\>button\]\:rounded {
+    &>button {
+      border-radius: 0.25rem;
+    }
+  }
+  .\[\&\>button\]\:p-1 {
+    &>button {
+      padding: calc(var(--spacing) * 1);
+    }
+  }
   .\[\&\>dd\]\:m-0 {
     &>dd {
       margin: calc(var(--spacing) * 0);
@@ -5208,6 +5182,31 @@
     &>dt:last-of-type {
       border-bottom-style: var(--tw-border-style);
       border-bottom-width: 0px;
+    }
+  }
+  .\[\&\>input\]\:rounded {
+    &>input {
+      border-radius: 0.25rem;
+    }
+  }
+  .\[\&\>input\]\:p-1 {
+    &>input {
+      padding: calc(var(--spacing) * 1);
+    }
+  }
+  .\[\&\>input\]\:px-1 {
+    &>input {
+      padding-inline: calc(var(--spacing) * 1);
+    }
+  }
+  .\[\&\>input\]\:px-2 {
+    &>input {
+      padding-inline: calc(var(--spacing) * 2);
+    }
+  }
+  .\[\&\>input\]\:py-1 {
+    &>input {
+      padding-block: calc(var(--spacing) * 1);
     }
   }
   .\[\&\>li\]\:pb-4 {
