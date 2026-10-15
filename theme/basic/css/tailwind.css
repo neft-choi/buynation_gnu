@@ -74,3 +74,7 @@
 .dt-search .dt-input {
   @apply w-60! rounded! px-3! py-2!;
 }
+
+table.dataTable tbody td.dt-empty {
+  @apply h-40 align-middle;
+}

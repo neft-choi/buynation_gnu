@@ -3167,12 +3167,13 @@ function get_notification()
         <?php } ?>
     </button>
 
+
     <script>
         const userId = "<?= $member['mb_id'] ?>"; // PHP에서 로그인한 유저 ID
         const storageKey = "readNoti_" + userId;
         const unreadCount = JSON.parse(localStorage.getItem(storageKey) || "[]");
         let noti = document.getElementById('noti')
-        noti.innerText = g5_is_member ? "<?= get_total_noti_count($member, get_table()); ?>" - unreadCount.length : 0
+        noti.innerText = g5_is_member ? Math.max(0, "<?= get_total_noti_count($member, get_table()); ?>" - unreadCount.length) : 0
     </script>
 <?php
     return ob_get_clean();

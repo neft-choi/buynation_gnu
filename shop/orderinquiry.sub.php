@@ -104,14 +104,11 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
     $order_ids[] = "'" . sql_real_escape_string($row['od_id']) . "'";
 }
 
-// $first_items = array();
-// $first_item_ids = array();
-// $first_item_options = array();
-
 $order_items = array();
 $order_item_options = array();
 
 if (!empty($order_ids)) {
+    // 상품의 상태를 데이터베이스에서 가져온다
     $item_sql = " select od_id, it_id, it_name, ct_qty, ct_price, io_price, io_type, io_id, ct_option, ct_status
                 from {$g5['g5_shop_cart_table']}
                where od_id in (" . implode(',', $order_ids) . ")
@@ -156,28 +153,6 @@ if (!empty($order_ids)) {
             'ct_option' => isset($item_row['ct_option']) ? $item_row['ct_option'] : '',
             'ct_qty' => $item_qty
         );
-
-        // if (!isset($first_items[$od_id])) {
-        //     $first_items[$od_id] = $item_row;
-        // }
-
-        // if (!isset($first_item_ids[$od_id])) {
-        //     $first_item_ids[$od_id] = $it_id;
-        // }
-
-        // if ($first_item_ids[$od_id] === $it_id) {
-        //     if (!isset($first_item_options[$od_id])) {
-        //         $first_item_options[$od_id] = array();
-        //     }
-
-        //     $first_item_options[$od_id][] = array(
-        //         'it_id' => $it_id,
-        //         'io_id' => isset($item_row['io_id']) ? $item_row['io_id'] : '',
-        //         'io_type' => isset($item_row['io_type']) ? (string) $item_row['io_type'] : '0',
-        //         'ct_option' => isset($item_row['ct_option']) ? $item_row['ct_option'] : '',
-        //         'ct_qty' => isset($item_row['ct_qty']) ? (int) $item_row['ct_qty'] : 1
-        //     );
-        // }
     }
 }
 ?>
@@ -392,7 +367,7 @@ if (!empty($order_ids)) {
             $complete_count = isset($item_status_counts['완료']) ? $item_status_counts['완료'] : 0;
             $total_item_count = count($order_item_rows);
 
-            if ($complete_count > 0 && $complete_count < $total_item_count) {
+            if (count($item_status_counts) > 1) {
                 $status_summary = array();
 
                 foreach ($item_status_labels as $status_key => $status_label) {

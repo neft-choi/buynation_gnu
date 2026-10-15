@@ -27,8 +27,8 @@ require_once '../admin.head.php';
 
         <div>
             <p>도트 리스트(임시)</p>
-            <div class="tbl_head01 tbl_wrap !mt-2">
-                <table>
+            <div class="tbl_head01 tbl_wrap !mt-2 border border-gray-200 rounded">
+                <table id="member-list-table">
                     <thead>
                         <tr>
                             <th scope="col" class="th_left">회원아이디</th>
@@ -167,16 +167,25 @@ require_once '../admin.head.php';
     </div>
 </section>
 <script>
-    $(function () {
+    $(function() {
+        createSiteTable('member-list-table', {
+            csv: true,
+            csvColumns: [0, 1, 2, 3],
+            language: {
+                // searchPlaceholder: '검색',
+                emptyTable: '등록된 회원이 없습니다.'
+            }
+        });
+
         // 도트 정보 모달 열기
-        $(".dot_view").on("click", function () {
+        $(".dot_view").on("click", function() {
             const $dotInfoModalOverlay = $("#dot_info_modal_overlay");
 
             $dotInfoModalOverlay.removeClass("hidden");
         });
 
         // 흰색 모달 바깥 영역 클릭 시 닫기
-        $("#dot_info_modal_overlay").on("click", function (event) {
+        $("#dot_info_modal_overlay").on("click", function(event) {
             if (event.target !== event.currentTarget) {
                 return;
             }
@@ -185,7 +194,7 @@ require_once '../admin.head.php';
         });
 
         // 도트 삭제 로직 (임시)
-        $(".dot_delete").on("click", function () {
+        $(".dot_delete").on("click", function() {
             const isConfirmed = window.confirm("해당 도트를 삭제하시겠습니까?");
 
             if (!isConfirmed) {

@@ -64,73 +64,69 @@ $admin_token = get_admin_token();
         <a href="./itemform.php" class="btn btn_01">상품 등록</a>
     </div>
 
-    <div class="tbl_head01 tbl_wrap">
-        <table>
+    <div class="tbl_head01 tbl_wrap border border-gray-300 rounded">
+        <table id="item-list-table">
             <thead>
-            <tr>
-                <th>상품코드</th>
-                <th>상품명</th>
-                <th>원 판매가</th>
-                <th>기여금율</th>
-                <th>할인율</th>
-                <th>노출여부</th>
-                <th>정렬</th>
-                <th>관리</th>
-            </tr>
+                <tr>
+                    <th>상품코드</th>
+                    <th>상품명</th>
+                    <th>원 판매가</th>
+                    <th>기여금율</th>
+                    <th>할인율</th>
+                    <th>노출여부</th>
+                    <th>정렬</th>
+                    <th>관리</th>
+                </tr>
             </thead>
 
             <tbody>
-            <?php
-            $i = 0;
-            while ($row = sql_fetch_array($result)) {
-                $i++;
+                <?php
+                $i = 0;
+                while ($row = sql_fetch_array($result)) {
+                    $i++;
 
-                $discount_amount = floor((int)$row['it_price'] * (float)$row['discount_rate'] / 100);
-                $display_price = max(0, (int)$row['it_price'] - $discount_amount);
-            ?>
-                <tr>
-                    <td class="td_numbig"><?php echo get_text($row['it_id']); ?></td>
-                    <td class="td_left">
-                        <a href="<?php echo shop_item_url($row['it_id']); ?>" target="_blank">
-                            <?php echo get_it_image($row['it_id'], 50, 50); ?>
-                            <?php echo get_text($row['it_name']); ?>
-                        </a>
-                        <br>
-                        <small>도티 노출가: <?php echo number_format($display_price); ?>원</small>
-                    </td>
-                    <td class="td_price"><?php echo number_format($row['it_price']); ?>원</td>
-                    <td class="td_num"><?php echo number_format($row['contribution_rate'], 1); ?>%</td>
-                    <td class="td_num"><?php echo number_format($row['discount_rate'], 1); ?>%</td>
-                    <td class="td_mngsmall"><?php echo $row['use_yn'] === 'Y' ? '노출' : '숨김'; ?></td>
-                    <td class="td_num"><?php echo number_format($row['sort_order']); ?></td>
-                    <td class="td_mng">
-                        <form method="post"
-                              action="./item_toggle.php"
-                              style="display:inline-block; margin:0;">
-                            <input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>">
-                            <input type="hidden" name="id" value="<?php echo (int)$row['id']; ?>">
-                            <button type="submit" class="btn btn_03">
-                                <?php echo $row['use_yn'] === 'Y' ? '숨김' : '노출'; ?>
-                            </button>
-                        </form>
+                    $discount_amount = floor((int)$row['it_price'] * (float)$row['discount_rate'] / 100);
+                    $display_price = max(0, (int)$row['it_price'] - $discount_amount);
+                ?>
+                    <tr>
+                        <td class="td_numbig"><?php echo get_text($row['it_id']); ?></td>
+                        <td class="td_left">
+                            <a href="<?php echo shop_item_url($row['it_id']); ?>" target="_blank">
+                                <?php echo get_it_image($row['it_id'], 50, 50); ?>
+                                <?php echo get_text($row['it_name']); ?>
+                            </a>
+                            <br>
+                            <small>도티 노출가: <?php echo number_format($display_price); ?>원</small>
+                        </td>
+                        <td class="td_price"><?php echo number_format($row['it_price']); ?>원</td>
+                        <td class="td_num"><?php echo number_format($row['contribution_rate'], 1); ?>%</td>
+                        <td class="td_num"><?php echo number_format($row['discount_rate'], 1); ?>%</td>
+                        <td class="td_mngsmall"><?php echo $row['use_yn'] === 'Y' ? '노출' : '숨김'; ?></td>
+                        <td class="td_num"><?php echo number_format($row['sort_order']); ?></td>
+                        <td class="td_mng">
+                            <form method="post"
+                                action="./item_toggle.php"
+                                style="display:inline-block; margin:0;">
+                                <input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>">
+                                <input type="hidden" name="id" value="<?php echo (int)$row['id']; ?>">
+                                <button type="submit" class="btn btn_03">
+                                    <?php echo $row['use_yn'] === 'Y' ? '숨김' : '노출'; ?>
+                                </button>
+                            </form>
 
-                        <form method="post"
-                              action="./item_delete.php"
-                              style="display:inline-block; margin:0;"
-                              onsubmit="return confirm('등록 상품에서 실제로 삭제하시겠습니까?');">
-                            <input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>">
-                            <input type="hidden" name="id" value="<?php echo (int)$row['id']; ?>">
-                            <button type="submit" class="btn btn_02">삭제</button>
-                        </form>
-                    </td>
-                </tr>
-            <?php
-            }
-
-            if (!$i) {
-                echo '<tr><td colspan="8" class="empty_table">등록된 상품이 없습니다.</td></tr>';
-            }
-            ?>
+                            <form method="post"
+                                action="./item_delete.php"
+                                style="display:inline-block; margin:0;"
+                                onsubmit="return confirm('등록 상품에서 실제로 삭제하시겠습니까?');">
+                                <input type="hidden" name="token" value="<?php echo get_text($admin_token); ?>">
+                                <input type="hidden" name="id" value="<?php echo (int)$row['id']; ?>">
+                                <button type="submit" class="btn btn_02">삭제</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php
+                }
+                ?>
             </tbody>
         </table>
     </div>
@@ -146,6 +142,16 @@ $admin_token = get_admin_token();
     }
     ?>
 </section>
+
+<script>
+    createSiteTable('item-list-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5, 6, 7],
+        language: {
+            emptyTable: '등록된 상품이 없습니다.'
+        }
+    });
+</script>
 
 <?php
 include_once(G5_ADMIN_PATH . '/admin.tail.php');

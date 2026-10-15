@@ -114,6 +114,13 @@ $result = sql_query($sql);
         $result2 = sql_query($sql2);
 
         ?>
+
+        <?php if ($is_notification_popover && sql_num_rows($result2) === 0 && sql_num_rows($result) === 0) { ?>
+            <p class="flex min-h-100 items-center justify-center px-6 py-10 text-center text-sm text-zinc-500">
+                현재 알림이 없습니다.
+            </p>
+        <?php } ?>
+
         <?php while ($row = sql_fetch_array($result2)) { ?>
 
             <?php

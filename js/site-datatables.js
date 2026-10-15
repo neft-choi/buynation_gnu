@@ -16,7 +16,7 @@ function createSiteTable(tableId, options = {}) {
         searchPlaceholder: '검색어를 입력하세요',
         lengthMenu: '_MENU_ 개씩 보기',
         info: '전체 _TOTAL_건 중 _START_~_END_건 표시',
-        infoEmpty: '표시할 데이터가 없습니다.',
+        infoEmpty: '전체 _TOTAL_건',
         infoFiltered: '(전체 _MAX_건에서 검색)',
         emptyTable: '등록된 데이터가 없습니다.',
         zeroRecords: '검색 결과가 없습니다.',
