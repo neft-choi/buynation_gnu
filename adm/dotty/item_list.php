@@ -64,7 +64,7 @@ $admin_token = get_admin_token();
         <a href="./itemform.php" class="btn btn_01">상품 등록</a>
     </div>
 
-    <div class="tbl_head01 tbl_wrap border border-gray-300 rounded">
+    <div class="datatable-card tbl_head01 tbl_wrap border border-gray-300 rounded">
         <table id="item-list-table">
             <thead>
                 <tr>

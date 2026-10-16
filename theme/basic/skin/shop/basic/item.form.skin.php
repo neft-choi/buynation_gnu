@@ -484,7 +484,8 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 				<div class="hidden pc:flex gap-3 mt-6">
 					<button type="button"
-						class="flex h-14 w-14 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
+						class="btn_wish flex h-14 w-14 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-700 cursor-pointer hover:bg-gray-50"
+						data-it_id="<?php echo $it['it_id']; ?>"
 						aria-label="위시리스트">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
 							stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

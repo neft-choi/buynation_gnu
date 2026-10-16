@@ -28,7 +28,7 @@ require_once '../admin.head.php';
         <div>
             <p>주문 리스트(임시)</p>
             <div class="tbl_head01 tbl_wrap !mt-2">
-                <table>
+                <table id="order-list-table">
                     <thead>
                         <tr>
                             <th scope="col">브랜드</th>
@@ -72,7 +72,11 @@ require_once '../admin.head.php';
 </section>
 
 <script>
-    $(function () {
+    $(function() {
+        createSiteTable('order-list-table', {
+            csv: true,
+            csvColumns: [0, 1, 2, 3, 4, 5],
+        });
         // // 주문 정보 모달 보기
         // $(".order_modal_view").on("click", function () {
         //     const $orderInfoModalOverlay = $("#order_info_modal_overlay");

@@ -4,6 +4,7 @@ function createSiteTable(tableId, options = {}) {
         csv = false,
         search = true,
         paging = true,
+        lengthChange = true,
         pageLength = 10,
         csvFilename = 'csv 파일',
         csvColumns = ':visible',
@@ -31,7 +32,7 @@ function createSiteTable(tableId, options = {}) {
     // 상단 컨트롤 구성
     const topControls = [];
 
-    if (paging) {
+    if (paging && lengthChange) {
         topControls.push('pageLength');
     }
 

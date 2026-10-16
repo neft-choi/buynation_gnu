@@ -63,17 +63,34 @@
 }
 
 /* datatable 표 스타일 */
-.dt-layout-row:not(.dt-layout-table) {
-  @apply px-3!;
+div.dt-container div.dt-layout-row {
+  margin: 0;
+}
+
+table.dataTable>thead>tr>th, table.dataTable>thead>tr>td {
+  @apply px-4 py-2;
+}
+
+table.dataTable>tbody>tr>th, table.dataTable>tbody>tr>td {
+  @apply px-4 py-2;
+}
+
+div.dt-container > div.dt-layout-row:not(.dt-layout-table) {
+  @apply py-2;
+}
+
+.datatable-card > div.dt-container > div.dt-layout-row:not(.dt-layout-table) {
+  @apply px-4 py-2;
 }
 
 .dt-button.buttons-csv {
-  @apply rounded!
+  @apply rounded!;
 }
 
 .dt-search .dt-input {
   @apply w-60! rounded! px-3! py-2!;
 }
+
 
 table.dataTable tbody td.dt-empty {
   @apply h-40 align-middle;

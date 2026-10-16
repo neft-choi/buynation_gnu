@@ -558,7 +558,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 		?>
 		<?php if ($i > 0) { ?>
 			<section
-				class="cart-floating-pay pc:hidden fixed inset-x-0 bottom-0 z-40 border-t border-[#8D8D8D29] bg-white/95 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur">
+				class="cart-floating-pay pc:hidden sticky bottom-0 z-40 w-full shrink-0 border-t border-[#8D8D8D29] bg-white/95 shadow-[0_-8px_24px_rgba(0,0,0,0.08)] backdrop-blur">
 				<div class="mx-auto p-4 w-full max-w-full space-y-2 text-sm">
 					<div class="flex items-center justify-between">
 						<span class="text-zinc-500">총 할인금액</span>
@@ -615,6 +615,9 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 
 <script>
 	$(function() {
+		// 하단 플로팅 바를 #app-shell의 맨 하단으로 이동
+		$(".cart-floating-pay").appendTo("#app-shell");
+
 		// 장바구니 페이지 배경색 교체
 		// $("#wrapper").css("background-color", "#f8f8f8")
 		document.getElementById("wrapper").style.setProperty("background-color", "#FAFAFA", "important");

@@ -49,7 +49,7 @@ require_once '../admin.head.php';
     </section>
 
     <div class="mt-4 grid grid-cols-1 gap-4 pc:grid-cols-5">
-        <section class="overflow-hidden rounded-lg border border-gray-300 bg-white pc:col-span-3">
+        <section class="datatable-card overflow-hidden rounded-lg border border-gray-300 bg-white pc:col-span-3">
             <header class="flex items-center justify-between gap-3 border-b border-gray-300 px-4 py-3">
                 <div>
                     <h3 class="text-sm font-bold text-gray-900">
@@ -69,59 +69,49 @@ require_once '../admin.head.php';
                 </a>
             </header>
 
-            <div class="overflow-x-auto">
-                <table class="border-collapse min-w-180 w-full table-fixed text-left">
-                    <colgroup>
-                        <col class="w-[20%]">
-                        <col class="w-[20%]">
-                        <col class="w-[20%]">
-                        <col class="w-[20%]">
-                        <col class="w-[20%]">
-                    </colgroup>
+            <table id="dashboard-join-request-table" class="border-collapse text-left">
+                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                    <tr>
+                        <th scope="col">신청자</th>
+                        <th scope="col">신청일</th>
+                        <th scope="col">대기</th>
+                        <th scope="col">상태</th>
+                        <th scope="col">처리</th>
+                    </tr>
+                </thead>
 
-                    <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                        <tr>
-                            <th scope="col">신청자</th>
-                            <th scope="col">신청일</th>
-                            <th scope="col">대기</th>
-                            <th scope="col">상태</th>
-                            <th scope="col">처리</th>
-                        </tr>
-                    </thead>
+                <tbody class="text-gray-900 font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                    <tr>
+                        <td>
+                            <span class="block font-bold">캠핑 위켄드새싹</span>
+                            <span class="block text-2xs text-zinc-400 font-normal">APP-CAMPING-2608-001</span>
+                        </td>
+                        <td>2026.08.10 10:20</td>
+                        <td>대기 1시간</td>
+                        <td>
+                            <span class="w-fit bg-orange-100 rounded-full text-2xs text-orange-700 font-bold px-2 py-1">● 승인 대기</span>
+                        </td>
+                        <td>
+                            <button type="button" class="border border-gray-300 rounded-lg text-2xs font-bold px-3 py-2">검토</button>
+                        </td>
+                    </tr>
 
-                    <tbody class="text-gray-900 font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                        <tr>
-                            <td>
-                                <span class="block font-bold">캠핑 위켄드새싹</span>
-                                <span class="block text-2xs text-zinc-400 font-normal">APP-CAMPING-2608-001</span>
-                            </td>
-                            <td>2026.08.10 10:20</td>
-                            <td>대기 1시간</td>
-                            <td>
-                                <span class="w-fit bg-orange-100 rounded-full text-2xs text-orange-700 font-bold px-2 py-1">● 승인 대기</span>
-                            </td>
-                            <td>
-                                <button type="button" class="border border-gray-300 rounded-lg text-2xs font-bold px-3 py-2">검토</button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <span class="block font-bold">캠핑 위켄드친구</span>
-                                <span class="block text-2xs text-zinc-400 font-normal">APP-CAMPING-2608-002</span>
-                            </td>
-                            <td>2026.08.09 11:20</td>
-                            <td>대기 2시간</td>
-                            <td>
-                                <span class="w-fit bg-orange-100 rounded-full text-2xs text-orange-700 font-bold px-2 py-1">● 승인 대기</span>
-                            </td>
-                            <td>
-                                <button type="button" class="border border-gray-300 rounded-lg text-2xs font-bold px-3 py-2">검토</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                    <tr>
+                        <td>
+                            <span class="block font-bold">캠핑 위켄드친구</span>
+                            <span class="block text-2xs text-zinc-400 font-normal">APP-CAMPING-2608-002</span>
+                        </td>
+                        <td>2026.08.09 11:20</td>
+                        <td>대기 2시간</td>
+                        <td>
+                            <span class="w-fit bg-orange-100 rounded-full text-2xs text-orange-700 font-bold px-2 py-1">● 승인 대기</span>
+                        </td>
+                        <td>
+                            <button type="button" class="border border-gray-300 rounded-lg text-2xs font-bold px-3 py-2">검토</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
 
         <section class="rounded-lg border border-gray-300 bg-white pc:col-span-2">
@@ -330,6 +320,13 @@ require_once '../admin.head.php';
         </section>
     </div>
 </section>
+
+<script>
+    createSiteTable('dashboard-join-request-table', {
+        search: false,
+        lengthChange: false,
+    });
+</script>
 
 <?php
 require_once '../admin.tail.php';

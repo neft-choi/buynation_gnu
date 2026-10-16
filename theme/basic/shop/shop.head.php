@@ -21,15 +21,15 @@ add_javascript('<script src="' . G5_JS_URL . '/owlcarousel/owl.carousel.min.js">
 add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.carousel.css">', 0);
 ?>
 
-<div id="app-shell" class="app-shell">
+<div id="app-shell" class="app-shell flex flex-col min-h-dvh bg-white">
     <!-- 상단 시작 -->
     <header id="hd" class="sticky top-0 left-0 z-30 !bg-white">
         <h1 id="hd_h1"><?php echo $g5['title'] ?></h1>
         <div id="skip_to_container"><a href="#container">본문 바로가기</a></div>
 
         <?php if (defined('_INDEX_')) { // index에서만 실행
-                include G5_BBS_PATH . '/newwin.inc.php'; // 팝업레이어
-            } ?>
+            include G5_BBS_PATH . '/newwin.inc.php'; // 팝업레이어
+        } ?>
 
         <!-- 기본 헤더 본문 (로고/아이콘/검색) -->
         <div id="hd_wrapper">
@@ -56,13 +56,13 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 </div>
 
                 <script>
-                    $(function () {
+                    $(function() {
                         const $notificationButton = $('#notification-open');
                         const $notificationPopover = $('#notification-popover');
                         const $notificationPopoverContent = $('#notification-popover-content');
                         let isNotificationPc = false;
 
-                        syncWithPcBreakpoint(function (isPc) {
+                        syncWithPcBreakpoint(function(isPc) {
                             isNotificationPc = isPc;
 
                             if (!isNotificationPc) {
@@ -71,7 +71,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                             }
                         });
 
-                        $(document).on('click', '#notification-open', function (event) {
+                        $(document).on('click', '#notification-open', function(event) {
                             if (!isNotificationPc || !g5_is_member) {
                                 return;
                             }
@@ -90,12 +90,14 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
                             // 서버에 GET 요청을 보낸다
                             // { view: 'popover' } 는 뒤에 함께 보낼 데이터
-                            $.get(notificationUrl, { view: 'popover' })
+                            $.get(notificationUrl, {
+                                    view: 'popover'
+                                })
 
                                 // GET 요청 성공 시
                                 // html은 서버가 응답으로 보낸 문자열
                                 // 여기서 html은 head/tail 없는 알림 목록 HTML
-                                .done(function (html) {
+                                .done(function(html) {
                                     // #notification-popover-content에 기존 내용 지우고 html 삽입
                                     $notificationPopoverContent.html(html);
 
@@ -104,7 +106,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                                     const storageKey = "readNoti_" + userId;
                                     const readList = JSON.parse(localStorage.getItem(storageKey) || "[]");
 
-                                    $notificationPopoverContent.find('.noti-item').each(function () {
+                                    $notificationPopoverContent.find('.noti-item').each(function() {
                                         const notificationItem = this;
                                         const id = notificationItem.dataset.id;
 
@@ -112,7 +114,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                                             notificationItem.classList.add('opacity-50');
                                         }
 
-                                        notificationItem.addEventListener('click', function () {
+                                        notificationItem.addEventListener('click', function() {
                                             if (!readList.includes(id)) {
                                                 readList.push(id);
                                                 localStorage.setItem(storageKey, JSON.stringify(readList));
@@ -125,14 +127,14 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                                 })
 
                                 // GET 요청 실패 시
-                                .fail(function () {
+                                .fail(function() {
                                     // 원래 알림 주소로인 알림 버튼의 href로 이동
                                     window.location.href = notificationUrl;
                                 });
                         });
 
                         // 알림 아이콘 혹은 알림 팝오버 외부를 클릭했을 때 팝오버 hidden 처리
-                        $(document).on('click', function (event) {
+                        $(document).on('click', function(event) {
                             const $target = $(event.target);
 
                             if ($target.closest('#notification-open, #notification-popover').length) {
@@ -173,16 +175,16 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
                 <script>
                     // 최근 본 상품 패널 열기/닫기 제어
-                    $(function () {
+                    $(function() {
                         $('html').addClass('gutter-stable');
-                        
-                        $(document).on('click', '#recent-viewed-open', function () {
+
+                        $(document).on('click', '#recent-viewed-open', function() {
                             $('#recent-viewed-backdrop').removeClass('hidden');
                             $('#recent-viewed-panel').removeClass('translate-x-full');
                             $('html, body').addClass('!overflow-hidden');
                         });
 
-                        $(document).on('click', '#recent-viewed-close, #recent-viewed-backdrop', function () {
+                        $(document).on('click', '#recent-viewed-close, #recent-viewed-backdrop', function() {
                             $('#recent-viewed-backdrop').addClass('hidden');
                             $('#recent-viewed-panel').addClass('translate-x-full');
                             $('html, body').removeClass('!overflow-hidden');
@@ -199,7 +201,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 </div>
                 <script>
                     // PC 반응형 분기
-                    syncWithPcBreakpoint(function (isPc) {
+                    syncWithPcBreakpoint(function(isPc) {
                         const searchbarRoot = document.getElementById('shop-searchbar-root');
                         const desktopSlot = document.getElementById('shop-searchbar-desktop-slot');
                         const defaultSlot = document.getElementById('shop-searchbar-default-slot');
@@ -421,8 +423,8 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
         </div>
     </div>
     <script>
-        jQuery(function ($) {
-            $(".btn_member_mn").on("click", function () {
+        jQuery(function($) {
+            $(".btn_member_mn").on("click", function() {
                 $(".member_mn").toggle();
                 $(".btn_member_mn").toggleClass("btn_member_mn_on");
             });
@@ -431,7 +433,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 side_btn_el = "#quick .btn_sm",
                 quick_container = ".qk_con";
 
-            $(document).on("click", side_btn_el, function (e) {
+            $(document).on("click", side_btn_el, function(e) {
                 e.preventDefault();
 
                 var $this = $(this);
@@ -450,12 +452,12 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 } else if ($this.hasClass("btn_sm_cl4")) {
                     $(".side_mn_wr4").show();
                 }
-            }).on("click", ".con_close", function (e) {
+            }).on("click", ".con_close", function(e) {
                 $(quick_container).hide();
                 $(side_btn_el).removeClass(active_class);
             });
 
-            $(document).mouseup(function (e) {
+            $(document).mouseup(function(e) {
                 var container = $(quick_container),
                     mn_container = $(".shop_login");
                 if (container.has(e.target).length === 0) {
@@ -468,7 +470,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                 }
             });
 
-            $("#top_btn").on("click", function () {
+            $("#top_btn").on("click", function() {
                 $("html, body").animate({
                     scrollTop: 0
                 }, '500');
@@ -483,14 +485,14 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
     }
     ?>
     <!-- 전체 콘텐츠 시작 { -->
-    <main id="wrapper" class="relative <?php echo implode(' ', $wrapper_class); ?>">
+    <main id="wrapper" class="relative flex-1 <?php echo implode(' ', $wrapper_class); ?>">
         <!-- #container 시작 { -->
         <div id="container" class="max-w-[var(--breakpoint-pc)] !w-full !bg-white">
 
             <?php if (defined('_INDEX_')) { ?>
                 <aside id="aside" class="!hidden">
                     <?php include_once(G5_SHOP_SKIN_PATH . '/boxcategory.skin.php'); // 상품분류 
-                        ?>
+                    ?>
                     <?php if ($default['de_type4_list_use']) { ?>
                         <!-- 인기상품 시작 { -->
                         <section id="side_pd">
@@ -514,7 +516,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
                     <?php echo display_banner('왼쪽', 'boxbanner.skin.php'); ?>
                     <?php echo poll('theme/shop_basic'); // 설문조사 
-                        ?>
+                    ?>
                 </aside>
             <?php } // end if 
             ?>
