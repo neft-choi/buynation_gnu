@@ -28,7 +28,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 
 <section id="sit_info">
 	<div id="sit_tab">
-		<ul class="tab_tit sticky top-[168px] pc:top-0 flex items-center justify-between border-b border-[#e8e8e8]">
+		<ul class="tab_tit sticky top-[var(--shop-header-height)] flex items-center justify-between border-b border-[#e8e8e8]">
 			<li><button type="button" id="btn_sit_inf" rel="#sit_inf" class="selected">상품설명</button></li>
 			<li><button type="button" id="btn_sit_dvex" rel="#sit_dex">상세정보</button></li>
 			<li><button type="button" id="btn_sit_use" rel="#sit_use">리뷰 <span
@@ -42,7 +42,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			<li id="sit_inf">
 				<h2 class="contents_tit"><span>상품 정보</span></h2>
 				<?php if ($it['it_explan']) { // 상품 상세설명 
-						?>
+				?>
 					<h3>상품 상세설명</h3>
 					<div id="sit_inf_explan">
 						<?php echo conv_content($it['it_explan'], 1); ?>
@@ -74,7 +74,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 					if (is_array($info_data)) {
 						$gubun = $it['it_info_gubun'];
 						$info_array = $item_info[$gubun]['article'];
-						?>
+				?>
 						<button type="button" id="sit_inf_required_toggle"
 							class="flex w-full items-center justify-between border-b border-gray-300 py-4 text-left"
 							aria-expanded="true" aria-controls="sit_inf_open">
@@ -97,7 +97,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 							foreach ($info_data as $key => $val) {
 								$ii_title = $info_array[$key][0];
 								$ii_value = $val;
-								?>
+							?>
 								<div class="grid grid-cols-[72px_1fr] gap-x-4 py-4 border-b border-gray-200">
 									<div class="text-sm text-gray-500"><?php echo $ii_title; ?></div>
 									<div class="text-sm font-medium text-gray-900"><?php echo $ii_value; ?></div>
@@ -124,13 +124,13 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 								</button>
 							</div>
 						</div>
-						<?php
+				<?php
 					}
 				}
 				?>
 
 				<?php if ($default['de_baesong_content']) { // 배송정보 내용이 있다면 
-						?>
+				?>
 					<!-- 배송 시작 { -->
 					<button type="button" id="sit_ship_toggle"
 						class="mt-6 flex w-full items-center justify-between border-b border-gray-300 py-4 text-left"
@@ -158,7 +158,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 				<?php } ?>
 
 				<?php if ($default['de_change_content']) { // 교환/반품 내용이 있다면 
-						?>
+				?>
 					<!-- 교환 시작 { -->
 					<button type="button" id="sit_change_toggle"
 						class="mt-6 flex w-full items-center justify-between border-b border-gray-300 py-4 text-left"
@@ -190,10 +190,27 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 		</ul>
 	</div>
 	<script>
-		$(function () {
+		$(function() {
+			// 현재 헤더인 #hd 높이를 조회하고 높이가 변경될때도 재조회
+			const header = document.getElementById("hd");
+
+			if (header) {
+				// 높이 측정 함수 정의
+				const updateHeaderHeight = function() {
+					const headerHeight = header.getBoundingClientRect().height;
+					document.documentElement.style.setProperty("--shop-header-height", `${headerHeight}px`);
+				};
+
+				// 최초 높이 측정
+				updateHeaderHeight();
+
+				const headerObserver = new ResizeObserver(updateHeaderHeight);
+				headerObserver.observe(header);
+			}
+
 			$(".tab_con>li").hide();
 			$(".tab_con>li:first").show();
-			$(".tab_tit li button").click(function () {
+			$(".tab_tit li button").click(function() {
 				const target = $(this).attr("rel");
 				const tabTop = $("#sit_tab").offset().top;
 
@@ -207,7 +224,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 		});
 	</script>
 	<script>
-		(function () {
+		(function() {
 			function bindAccordion(toggleId, panelId, downIconId, upIconId) {
 				var toggleButton = document.getElementById(toggleId);
 				var panel = document.getElementById(panelId);
@@ -218,7 +235,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 					return;
 				}
 
-				toggleButton.addEventListener("click", function () {
+				toggleButton.addEventListener("click", function() {
 					var isExpanded = toggleButton.getAttribute("aria-expanded") === "true";
 					toggleButton.setAttribute("aria-expanded", isExpanded ? "false" : "true");
 					panel.classList.toggle("hidden", isExpanded);
@@ -243,30 +260,30 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 	<div id="sit_buy" class="fix" style="display:none !important;" aria-hidden="true">
 		<div class="sit_buy_inner">
 			<?php if ($option_item) {    // 선택옵션이 있다면 
-					?>
+			?>
 				<!-- 선택옵션 시작 { -->
 				<section class="sit_side_option">
 					<h3>선택옵션</h3>
 					<?php // 선택옵션
-						echo str_replace(array('class="get_item_options"', 'id="it_option_', 'class="it_option"'), array('class="get_side_item_options"', 'id="it_side_option_', 'class="it_side_option"'), $option_item);
-						?>
+					echo str_replace(array('class="get_item_options"', 'id="it_option_', 'class="it_option"'), array('class="get_side_item_options"', 'id="it_side_option_', 'class="it_side_option"'), $option_item);
+					?>
 				</section>
 				<!-- } 선택옵션 끝 -->
 			<?php } // end if
-				?>
+			?>
 
 			<?php if ($supply_item) {    // 추가옵션이 있다면 
-					?>
+			?>
 				<!-- 추가옵션 시작 { -->
 				<section class="sit_side_option">
 					<h3>추가옵션</h3>
 					<?php // 추가옵션
-						echo str_replace(array('id="it_supply_', 'class="it_supply"'), array('id="it_side_supply_', 'class="it_side_supply"'), $supply_item);
-						?>
+					echo str_replace(array('id="it_supply_', 'class="it_supply"'), array('id="it_side_supply_', 'class="it_side_supply"'), $supply_item);
+					?>
 				</section>
 				<!-- } 추가옵션 끝 -->
 			<?php } // end if
-				?>
+			?>
 
 			<?php if ($is_orderable) { ?>
 				<!-- 선택된 옵션 시작 { -->
@@ -312,10 +329,10 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 </section>
 
 <script>
-	jQuery(function ($) {
+	jQuery(function($) {
 		var change_name = "ct_copy_qty";
 
-		$(document).on("select_it_option_change", "select.it_option", function (e, $othis) {
+		$(document).on("select_it_option_change", "select.it_option", function(e, $othis) {
 			var value = $othis.val(),
 				change_id = $othis.attr("id").replace("it_option_", "it_side_option_");
 
@@ -324,7 +341,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			}
 		});
 
-		$(document).on("select_it_option_post", "select.it_option", function (e, $othis, idx, sel_count, data) {
+		$(document).on("select_it_option_post", "select.it_option", function(e, $othis, idx, sel_count, data) {
 			var value = $othis.val(),
 				change_id = $othis.attr("id").replace("it_option_", "it_side_option_");
 
@@ -336,7 +353,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			}
 		});
 
-		$(document).on("add_sit_sel_option", "#sit_sel_option", function (e, opt) {
+		$(document).on("add_sit_sel_option", "#sit_sel_option", function(e, opt) {
 
 			opt = opt.replace('name="ct_qty[', 'name="' + change_name + '[');
 
@@ -348,18 +365,18 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 
 		});
 
-		$(document).on("price_calculate", "#sit_tot_price", function (e, total) {
+		$(document).on("price_calculate", "#sit_tot_price", function(e, total) {
 
 			$(".sum_section .sit_tot_price").empty().html("<span>총 금액 </span><strong>" + number_format(String(total)) + "</strong> 원");
 
 		});
 
-		$(".sit_side_option").on("change", "select.it_side_option", function (e) {
+		$(".sit_side_option").on("change", "select.it_side_option", function(e) {
 			var idx = $("select.it_side_option").index($(this)),
 				value = $(this).val();
 
 			if (value) {
-				if (typeof (option_add) != "undefined") {
+				if (typeof(option_add) != "undefined") {
 					option_add = true;
 				}
 
@@ -367,11 +384,11 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			}
 		});
 
-		$(".sit_side_option").on("change", "select.it_side_supply", function (e) {
+		$(".sit_side_option").on("change", "select.it_side_supply", function(e) {
 			var value = $(this).val();
 
 			if (value) {
-				if (typeof (supply_add) != "undefined") {
+				if (typeof(supply_add) != "undefined") {
 					supply_add = true;
 				}
 
@@ -379,7 +396,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			}
 		});
 
-		$(".sit_opt_added").on("click", "button", function (e) {
+		$(".sit_opt_added").on("click", "button", function(e) {
 			e.preventDefault();
 
 			var $this = $(this),
@@ -406,7 +423,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 
 		});
 
-		$(document).on("sit_sel_option_success", "#sit_sel_option li button", function (e, $othis, mode, this_qty) {
+		$(document).on("sit_sel_option_success", "#sit_sel_option li button", function(e, $othis, mode, this_qty) {
 			var ori_index = $othis.closest('li').index();
 
 			switch (mode) {
@@ -420,7 +437,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			}
 		});
 
-		$(document).on("change_option_qty", "input[name^=ct_qty]", function (e, $othis, val, force_val) {
+		$(document).on("change_option_qty", "input[name^=ct_qty]", function(e, $othis, val, force_val) {
 			var $this = $(this),
 				ori_index = $othis.closest('li').index(),
 				this_val = force_val ? force_val : val;
@@ -428,7 +445,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			$(".sit_opt_added").find("li").eq(ori_index).find("input[name^=" + change_name + "]").val(this_val);
 		});
 
-		$(".sit_opt_added").on("keyup paste", "input[name^=" + change_name + "]", function (e) {
+		$(".sit_opt_added").on("keyup paste", "input[name^=" + change_name + "]", function(e) {
 			var $this = $(this),
 				val = $this.val(),
 				this_index = $("input[name^=" + change_name + "]").index(this);
@@ -436,7 +453,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			$("input[name^=ct_qty]").eq(this_index).val(val).trigger("keyup");
 		});
 
-		$(".sit_order_btn").on("click", "button", function (e) {
+		$(".sit_order_btn").on("click", "button", function(e) {
 			e.preventDefault();
 
 			var $this = $(this);

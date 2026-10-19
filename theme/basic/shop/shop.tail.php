@@ -34,7 +34,7 @@ $admin = get_admin("super");
                 <span><?php echo $default['de_admin_company_name']; ?> 대표이사 <?php echo $default['de_admin_company_owner']; ?></span>
                 <span class="mx-2">|</span>
                 <span>주소 : <?php echo $default['de_admin_company_addr']; ?></span>
-                                <span class="mx-2">|</span>
+                <span class="mx-2">|</span>
                 <span>사업자 등록번호 : <?php echo $default['de_admin_company_saupja_no']; ?></span>
                 <span class="mx-2">|</span>
 
@@ -49,15 +49,15 @@ $admin = get_admin("super");
                 <!-- <span><b>개인정보 보호책임자</b> <?php echo $default['de_admin_info_name']; ?></span> -->
                 <!-- <?php if ($default['de_admin_buga_no'])
                             echo '<span><b>부가통신사업신고번호</b> ' . $default['de_admin_buga_no'] . '</span>'; ?> -->
-   
+
                 <span>고객센터 : <?php echo $default['de_admin_company_tel']; ?></span>
                 <span class="mx-2">|</span>
                 <span>상담가능시간 : 평일 09:00 ~ 18:00</span>
-                 <span class="mx-2">|</span>
+                <span class="mx-2">|</span>
                 <span>통신판매업신고 : 2026-성남분당A-0745</span>
                 <span class="mx-2">|</span>
                 <span>e-mail : <?php echo $default['de_admin_info_email']; ?></span>
-                
+
             </div>
         </div>
 
@@ -164,9 +164,9 @@ if ($show_bottom_nav) {
                     <span>검색</span>
                 </button>
             </li>
-            <li>
+            <li class="relative h-full">
                 <a href="<?php echo G5_SHOP_URL; ?>"
-                    class="flex mx-auto -mt-[calc(var(--bottom-nav-icon)-var(--bottom-nav-height))] h-[var(--bottom-nav-icon)] w-[var(--bottom-nav-icon)] items-center justify-center rounded-full bg-yellow-400 text-4xl font-bold text-black">
+                    class="absolute bottom-0 left-1/2 -translate-x-1/2 flex h-[var(--bottom-nav-icon)] w-[var(--bottom-nav-icon)] items-center justify-center rounded-full bg-yellow-400 text-4xl font-bold text-black">
                     D
                 </a>
             </li>
@@ -266,6 +266,11 @@ if ($show_bottom_nav) {
 <?php } ?>
 
 </div><!-- #app-shell 끝 -->
+
+<div id="shop-overlay-root"
+    class="pointer-events-none fixed inset-x-0 top-0 z-40 overflow-hidden <?php echo $show_bottom_nav ? 'bottom-[var(--bottom-nav-height)] pc:bottom-0' : 'bottom-0'; ?>">
+    <?php include_once(G5_THEME_SHOP_PATH . '/_recent_viewed.php'); ?>
+</div>
 
 <?php
 include_once(G5_THEME_PATH . '/tail.sub.php');

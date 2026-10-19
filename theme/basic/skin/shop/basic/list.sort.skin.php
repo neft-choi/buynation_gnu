@@ -69,7 +69,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 
         <div class="relative">
             <select id="ssch_sort_select"
-                class="block w-fit appearance-none rounded-xs border border-gray-300 bg-white pl-3 pr-8 py-2 text-sm text-gray-900">
+                class="block w-fit appearance-none rounded-xs border border-gray-300 bg-white pl-3 pr-8 py-2 text-sm text-gray-900 cursor-pointer">
                 <option value="">정렬 선택</option>
                 <?php foreach ($sort_options as $option) { ?>
                     <?php

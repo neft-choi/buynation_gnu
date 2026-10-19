@@ -687,7 +687,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			</script>
 
 			<div id="sit_bottom_fab"
-				class="pc:hidden fixed inset-x-0 bottom-0 z-[60] border-t border-gray-200 bg-white/95 px-4 py-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] backdrop-blur">
+				class="pc:hidden sticky bottom-0 z-40 w-full shrink-0 border-t border-gray-200 bg-white/95 px-4 py-2 backdrop-blur">
 				<div class="mx-auto grid w-full max-w-full grid-cols-[48px_48px_1fr] gap-2">
 					<button type="button"
 						class="btn_wish flex h-12 w-12 items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
@@ -764,14 +764,17 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					</div>
 				</div>
 			</div>
-</div>
 
-<?php } ?>
-</form>
+
+		<?php } ?>
+	</form>
 </div>
 
 <script>
 	$(function() {
+		// 모바일 하단 결제 바를 app-shell 제일 아래로 이동
+		$("#sit_bottom_fab").appendTo("#app-shell");
+
 		const $drawer = $("#sit_purchase_drawer");
 		const $overlay = $("#sit_drawer_overlay");
 		const $openDrawerBtn = $("#sit_open_drawer");

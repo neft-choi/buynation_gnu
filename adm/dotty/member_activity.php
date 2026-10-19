@@ -6,7 +6,8 @@ auth_check_menu($auth, $sub_menu, 'r');
 
 $g5['title'] = '가입 도트';
 
-function ma_e($v) {
+function ma_e($v)
+{
     return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 }
 
@@ -30,7 +31,7 @@ if (empty($check['cnt'])) {
 }
 
 /* 기존 join_request 기능에서 생성한 테이블도 ALTER 누락 여부까지 확인 */
-$required_columns = array('dot_id','role_type','member_status','restricted_reason','last_active_at','post_count','comment_count');
+$required_columns = array('dot_id', 'role_type', 'member_status', 'restricted_reason', 'last_active_at', 'post_count', 'comment_count');
 foreach ($required_columns as $col) {
     $col_sql = sql_real_escape_string($col);
     $ck = sql_fetch("
@@ -49,13 +50,13 @@ foreach ($required_columns as $col) {
 if (isset($_GET['download']) && $_GET['download'] === 'csv') {
     auth_check_menu($auth, $sub_menu, 'r');
 
-    $filename = 'dot_members_'.date('Ymd_His').'.csv';
+    $filename = 'dot_members_' . date('Ymd_His') . '.csv';
     header('Content-Type: text/csv; charset=UTF-8');
-    header('Content-Disposition: attachment; filename="'.$filename.'"');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
     echo "\xEF\xBB\xBF";
 
     $fp = fopen('php://output', 'w');
-    fputcsv($fp, array('닉네임','이름','도트 ID','회원 ID','가입일','작성 글','작성 댓글','권한','상태','최근 활동'));
+    fputcsv($fp, array('닉네임', '이름', '도트 ID', '회원 ID', '가입일', '작성 글', '작성 댓글', '권한', '상태', '최근 활동'));
 
     $csv = sql_query("
         SELECT d.*, m.mb_name, m.mb_nick
@@ -68,9 +69,16 @@ if (isset($_GET['download']) && $_GET['download'] === 'csv') {
         $role = $r['role_type'] === 'operator' ? '지정 운영자' : '도트';
         $status_label = $r['member_status'] === 'restricted' ? '활동 제한' : ($r['member_status'] === 'withdrawn' ? '탈퇴' : '정상');
         fputcsv($fp, array(
-            $r['mb_nick'], $r['mb_name'], $r['dot_id'], $r['mb_id'],
-            $r['joined_at'], (int)$r['post_count'], (int)$r['comment_count'],
-            $role, $status_label, $r['last_active_at']
+            $r['mb_nick'],
+            $r['mb_name'],
+            $r['dot_id'],
+            $r['mb_id'],
+            $r['joined_at'],
+            (int)$r['post_count'],
+            (int)$r['comment_count'],
+            $role,
+            $status_label,
+            $r['last_active_at']
         ));
     }
     fclose($fp);
@@ -109,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE id='{$member_id}'
               AND dotty_mb_id='{$dotty_mb_id_sql}'
         ");
-        alert('활동 제한 처리했습니다.', './member_activity.php?mb_id='.urlencode($dotty_mb_id));
+        alert('활동 제한 처리했습니다.', './member_activity.php?mb_id=' . urlencode($dotty_mb_id));
     }
 
     if ($action === 'restore') {
@@ -122,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE id='{$member_id}'
               AND dotty_mb_id='{$dotty_mb_id_sql}'
         ");
-        alert('활동 제한을 해제했습니다.', './member_activity.php?mb_id='.urlencode($dotty_mb_id));
+        alert('활동 제한을 해제했습니다.', './member_activity.php?mb_id=' . urlencode($dotty_mb_id));
     }
 
     if ($action === 'role') {
@@ -135,7 +143,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
               AND dotty_mb_id='{$dotty_mb_id_sql}'
               AND member_status <> 'withdrawn'
         ");
-        alert('권한을 변경했습니다.', './member_activity.php?mb_id='.urlencode($dotty_mb_id));
+        alert('권한을 변경했습니다.', './member_activity.php?mb_id=' . urlencode($dotty_mb_id));
     }
 
     alert('올바르지 않은 요청입니다.');
@@ -143,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $q = isset($_GET['q']) ? trim((string)$_GET['q']) : '';
 $status = isset($_GET['status']) ? trim((string)$_GET['status']) : 'all';
-if (!in_array($status, array('all','normal','restricted','withdrawn'), true)) $status = 'all';
+if (!in_array($status, array('all', 'normal', 'restricted', 'withdrawn'), true)) $status = 'all';
 
 $where = array("d.dotty_mb_id = '{$dotty_mb_id_sql}'");
 if ($status === 'normal') $where[] = "d.member_status = 'active'";
@@ -196,12 +204,14 @@ while ($r = sql_fetch_array($res)) {
 
 $admin_token = get_admin_token();
 
-function ma_status_label($s) {
+function ma_status_label($s)
+{
     if ($s === 'restricted') return '활동 제한';
     if ($s === 'withdrawn') return '탈퇴';
     return '정상';
 }
-function ma_status_class($s) {
+function ma_status_class($s)
+{
     if ($s === 'restricted') return 'bg-red-50 text-red-600';
     if ($s === 'withdrawn') return 'bg-gray-100 text-gray-600';
     return 'bg-emerald-50 text-emerald-700';
@@ -252,51 +262,61 @@ require_once '../admin.head.php';
                 <button type="submit" class="shrink-0 p-3 text-gray-900">검색</button>
             </div>
             <select name="status" onchange="this.form.submit()" class="shrink-0 rounded-lg border border-gray-300 bg-white text-gray-900">
-                <option value="all"<?php echo $status==='all'?' selected':''; ?>>전체 상태</option>
-                <option value="normal"<?php echo $status==='normal'?' selected':''; ?>>정상</option>
-                <option value="restricted"<?php echo $status==='restricted'?' selected':''; ?>>활동 제한</option>
-                <option value="withdrawn"<?php echo $status==='withdrawn'?' selected':''; ?>>탈퇴</option>
+                <option value="all" <?php echo $status === 'all' ? ' selected' : ''; ?>>전체 상태</option>
+                <option value="normal" <?php echo $status === 'normal' ? ' selected' : ''; ?>>정상</option>
+                <option value="restricted" <?php echo $status === 'restricted' ? ' selected' : ''; ?>>활동 제한</option>
+                <option value="withdrawn" <?php echo $status === 'withdrawn' ? ' selected' : ''; ?>>탈퇴</option>
             </select>
             <span class="shrink-0 text-2xs text-gray-500">검색 결과 <?php echo number_format($result_count); ?>명</span>
         </form>
 
-        <div class="mt-4 overflow-x-auto rounded-lg border border-gray-300 bg-white">
-            <table class="border-collapse w-full min-w-225 text-left text-xs text-gray-900">
+        <div class="datatable-card mt-4 overflow-x-auto rounded-lg border border-gray-300 bg-white">
+            <table id="member-activity-table" class="border-collapse w-full min-w-225 text-left text-xs text-gray-900">
                 <thead class="border-b border-gray-300 bg-gray-50 text-gray-500 font-bold [&_th]:p-3">
-                    <tr><th>도트</th><th>도트 ID</th><th>가입일</th><th>작성 글</th><th>작성 댓글</th><th>권한</th><th>상태</th><th class="th_center">상세</th></tr>
+                    <tr>
+                        <th>도트</th>
+                        <th>도트 ID</th>
+                        <th>가입일</th>
+                        <th>작성 글</th>
+                        <th>작성 댓글</th>
+                        <th>권한</th>
+                        <th>상태</th>
+                        <th class="th_center">상세</th>
+                    </tr>
                 </thead>
                 <tbody class="[&_td]:p-3">
-                <?php if (!$members) { ?><tr><td colspan="8" class="p-6 text-center text-xs text-gray-500">검색 결과가 없습니다.</td></tr><?php } ?>
-                <?php foreach ($members as $r) {
-                    $nick = $r['mb_nick'] !== '' ? $r['mb_nick'] : $r['mb_id'];
-                    $name = $r['mb_name'] !== '' ? $r['mb_name'] : $r['mb_id'];
-                    $cert = !empty($r['mb_certify']) ? strtoupper($r['mb_certify']).' 본인인증 완료' : '본인인증 정보 없음';
-                ?>
-                    <tr class="border-b border-gray-200">
-                        <td><p class="font-bold"><?php echo ma_e($nick); ?></p><span class="mt-1 block text-2xs text-gray-400"><?php echo ma_e($name); ?></span></td>
-                        <td><?php echo ma_e($r['dot_id']); ?></td>
-                        <td><?php echo !empty($r['joined_at']) ? ma_e(date('Y.m.d', strtotime($r['joined_at']))) : '-'; ?></td>
-                        <td><?php echo number_format((int)$r['post_count']); ?></td>
-                        <td><?php echo number_format((int)$r['comment_count']); ?></td>
-                        <td><?php echo $r['role_type']==='operator' ? '<span class="inline-flex rounded-full bg-blue-50 px-2 py-1 text-2xs font-bold text-blue-700">• 지정 운영자</span>' : '도트'; ?></td>
-                        <td><span class="inline-flex items-center rounded-full px-2 py-1 text-2xs font-bold <?php echo ma_status_class($r['member_status']); ?>">• <?php echo ma_e(ma_status_label($r['member_status'])); ?></span></td>
-                        <td class="td_center">
-                            <button type="button" class="member-activity-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900"
-                                data-id="<?php echo (int)$r['id']; ?>"
-                                data-nick="<?php echo ma_e($nick); ?>"
-                                data-name="<?php echo ma_e($name); ?>"
-                                data-dot-id="<?php echo ma_e($r['dot_id']); ?>"
-                                data-joined="<?php echo !empty($r['joined_at']) ? ma_e(date('Y.m.d', strtotime($r['joined_at']))) : '-'; ?>"
-                                data-posts="<?php echo (int)$r['post_count']; ?>"
-                                data-comments="<?php echo (int)$r['comment_count']; ?>"
-                                data-role="<?php echo ma_e($r['role_type']); ?>"
-                                data-status="<?php echo ma_e($r['member_status']); ?>"
-                                data-status-label="<?php echo ma_e(ma_status_label($r['member_status'])); ?>"
-                                data-reason="<?php echo ma_e($r['restricted_reason']); ?>"
-                                data-cert="<?php echo ma_e($cert); ?>">보기</button>
-                        </td>
-                    </tr>
-                <?php } ?>
+                    <?php foreach ($members as $r) {
+                        $nick = $r['mb_nick'] !== '' ? $r['mb_nick'] : $r['mb_id'];
+                        $name = $r['mb_name'] !== '' ? $r['mb_name'] : $r['mb_id'];
+                        $cert = !empty($r['mb_certify']) ? strtoupper($r['mb_certify']) . ' 본인인증 완료' : '본인인증 정보 없음';
+                    ?>
+                        <tr class="border-b border-gray-200">
+                            <td>
+                                <p class="font-bold"><?php echo ma_e($nick); ?></p><span class="mt-1 block text-2xs text-gray-400"><?php echo ma_e($name); ?></span>
+                            </td>
+                            <td><?php echo ma_e($r['dot_id']); ?></td>
+                            <td><?php echo !empty($r['joined_at']) ? ma_e(date('Y.m.d', strtotime($r['joined_at']))) : '-'; ?></td>
+                            <td><?php echo number_format((int)$r['post_count']); ?></td>
+                            <td><?php echo number_format((int)$r['comment_count']); ?></td>
+                            <td><?php echo $r['role_type'] === 'operator' ? '<span class="inline-flex rounded-full bg-blue-50 px-2 py-1 text-2xs font-bold text-blue-700">• 지정 운영자</span>' : '도트'; ?></td>
+                            <td><span class="inline-flex items-center rounded-full px-2 py-1 text-2xs font-bold <?php echo ma_status_class($r['member_status']); ?>">• <?php echo ma_e(ma_status_label($r['member_status'])); ?></span></td>
+                            <td class="td_center">
+                                <button type="button" class="member-activity-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900"
+                                    data-id="<?php echo (int)$r['id']; ?>"
+                                    data-nick="<?php echo ma_e($nick); ?>"
+                                    data-name="<?php echo ma_e($name); ?>"
+                                    data-dot-id="<?php echo ma_e($r['dot_id']); ?>"
+                                    data-joined="<?php echo !empty($r['joined_at']) ? ma_e(date('Y.m.d', strtotime($r['joined_at']))) : '-'; ?>"
+                                    data-posts="<?php echo (int)$r['post_count']; ?>"
+                                    data-comments="<?php echo (int)$r['comment_count']; ?>"
+                                    data-role="<?php echo ma_e($r['role_type']); ?>"
+                                    data-status="<?php echo ma_e($r['member_status']); ?>"
+                                    data-status-label="<?php echo ma_e(ma_status_label($r['member_status'])); ?>"
+                                    data-reason="<?php echo ma_e($r['restricted_reason']); ?>"
+                                    data-cert="<?php echo ma_e($cert); ?>">보기</button>
+                            </td>
+                        </tr>
+                    <?php } ?>
                 </tbody>
             </table>
         </div>
@@ -323,8 +343,13 @@ require_once '../admin.head.php';
                     </div>
                 </div>
             </div>
-            <div class="rounded-lg bg-gray-100 p-3"><span class="block text-2xs text-gray-400">현재 상태</span><p id="ma-status" class="mt-2"></p><p id="ma-reason" class="mt-1 text-red-600"></p></div>
-            <div class="rounded-lg bg-gray-100 p-3"><span class="block text-2xs text-gray-400">본인인증</span><p id="ma-cert" class="mt-2"></p></div>
+            <div class="rounded-lg bg-gray-100 p-3"><span class="block text-2xs text-gray-400">현재 상태</span>
+                <p id="ma-status" class="mt-2"></p>
+                <p id="ma-reason" class="mt-1 text-red-600"></p>
+            </div>
+            <div class="rounded-lg bg-gray-100 p-3"><span class="block text-2xs text-gray-400">본인인증</span>
+                <p id="ma-cert" class="mt-2"></p>
+            </div>
 
             <form method="post" class="rounded-lg border border-gray-200 p-3">
                 <input type="hidden" name="token" value="<?php echo ma_e($admin_token); ?>">
@@ -368,28 +393,45 @@ require_once '../admin.head.php';
 </div>
 
 <script>
-const $maModal = $('#member-activity-modal');
-$('.member-activity-modal-open').on('click', function() {
-    const $b = $(this), status = String($b.data('status') || '');
-    $('.ma-member-id').val($b.data('id'));
-    $('#ma-avatar').text(String($b.data('nick') || '?').substring(0, 1));
-    $('#ma-nick').text($b.data('nick'));
-    $('#ma-sub').text($b.data('name') + ' · ' + $b.data('dot-id'));
-    $('#ma-joined').text($b.data('joined'));
-    $('#ma-posts').text($b.data('posts'));
-    $('#ma-comments').text($b.data('comments'));
-    $('#ma-status').text($b.data('status-label'));
-    $('#ma-reason').text(status === 'restricted' ? ($b.data('reason') || '') : '');
-    $('#ma-cert').text($b.data('cert'));
-    $('#ma-role').val($b.data('role'));
-    $('#ma-restrict-reason').val('');
-    $('#ma-restrict-form').prop('hidden', status === 'restricted' || status === 'withdrawn');
-    $('#ma-restore-form').prop('hidden', status !== 'restricted');
-    $maModal.prop('hidden', false);
-});
-$('.member-activity-modal-close, #member-activity-modal-backdrop').on('click', function(){ $maModal.prop('hidden', true); });
-$('#ma-restrict-form').on('submit', function(e){ if (!confirm('이 도트의 커뮤니티 활동을 제한하시겠습니까?')) e.preventDefault(); });
-$('#ma-restore-form').on('submit', function(e){ if (!confirm('활동 제한을 해제하시겠습니까?')) e.preventDefault(); });
+    const $maModal = $('#member-activity-modal');
+    $('.member-activity-modal-open').on('click', function() {
+        const $b = $(this),
+            status = String($b.data('status') || '');
+        $('.ma-member-id').val($b.data('id'));
+        $('#ma-avatar').text(String($b.data('nick') || '?').substring(0, 1));
+        $('#ma-nick').text($b.data('nick'));
+        $('#ma-sub').text($b.data('name') + ' · ' + $b.data('dot-id'));
+        $('#ma-joined').text($b.data('joined'));
+        $('#ma-posts').text($b.data('posts'));
+        $('#ma-comments').text($b.data('comments'));
+        $('#ma-status').text($b.data('status-label'));
+        $('#ma-reason').text(status === 'restricted' ? ($b.data('reason') || '') : '');
+        $('#ma-cert').text($b.data('cert'));
+        $('#ma-role').val($b.data('role'));
+        $('#ma-restrict-reason').val('');
+        $('#ma-restrict-form').prop('hidden', status === 'restricted' || status === 'withdrawn');
+        $('#ma-restore-form').prop('hidden', status !== 'restricted');
+        $maModal.prop('hidden', false);
+    });
+    $('.member-activity-modal-close, #member-activity-modal-backdrop').on('click', function() {
+        $maModal.prop('hidden', true);
+    });
+    $('#ma-restrict-form').on('submit', function(e) {
+        if (!confirm('이 도트의 커뮤니티 활동을 제한하시겠습니까?')) e.preventDefault();
+    });
+    $('#ma-restore-form').on('submit', function(e) {
+        if (!confirm('활동 제한을 해제하시겠습니까?')) e.preventDefault();
+    });
+
+    $(function() {
+        createSiteTable('member-activity-table', {
+            csv: true,
+            csvColumns: ':not(:last-child)',
+            language: {
+                searchPlaceholder: '닉네임, 이름 또는 도트 ID 검색',
+            },
+        });
+    });
 </script>
 
 <?php include_once(G5_ADMIN_PATH . '/admin.tail.php'); ?>

@@ -64,7 +64,7 @@ if ($tv_tot_count > 0) {
 
     <?php if ($tv_items) { // 오늘 본 상품이 1개라도 있을 때 
     ?>
-        <ul id="stv_ul" class="space-y-3">
+        <ul id="stv_ul" class="space-y-4">
             <?php foreach ($tv_items as $item) { ?>
                 <li class="stv_item sct_li c<?php echo $item['group']; ?> flex items-start gap-4">
                     <div class="prd_img rounded overflow-hidden">
