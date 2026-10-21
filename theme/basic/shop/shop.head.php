@@ -71,12 +71,26 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                             }
                         });
 
+                        // 알림 아이콘 클릭
                         $(document).on('click', '#notification-open', function(event) {
-                            if (!isNotificationPc || !g5_is_member) {
+
+                            // PC 상태가 아니라면 return 으로 현재 클릭 함수 종료
+                            // 알림 아이콘의 링크를 따라 알림 페이지로 이동
+                            if (!isNotificationPc) {
                                 return;
                             }
-
+                            
+                            // 위에서 return 하지 않았으므로 PC 상태
+                            // 알림 아이콘의 링크 주소로 이동하는 기본 동작 취소
                             event.preventDefault();
+
+                            // 비로그인 상태인지 확인
+                            if (!g5_is_member) {
+                                const returnUrl = new URL(window.location.href);
+                                returnUrl.searchParams.set('open_notification', '1');
+                                window.location.href = g5_bbs_url + '/login.php?url=' + encodeURIComponent(returnUrl.href);
+                                return;
+                            }
 
                             // 알림 팝오버 토글
                             if (!$notificationPopover.hasClass('hidden')) {
@@ -124,6 +138,26 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
 
                                     $notificationPopover.removeClass('hidden');
                                     $notificationButton.addClass('bg-zinc-200');
+
+                                    $notificationPopoverContent.find('.notification-images').each(function() {
+                                        if (this.scrollHeight > this.clientHeight) {
+                                            $(this).parent().siblings('.notification-more').removeClass('hidden');
+                                        }
+                                    });
+
+                                    $notificationPopoverContent.find('.notification-more').on('click', function() {
+                                        const $images = $(this).siblings('.noti-item').find('.notification-images');
+
+                                        if ($(this).attr('aria-expanded') === 'true') {
+                                            $images.addClass('max-h-12');
+                                            $(this).attr('aria-expanded', 'false');
+                                            $(this).text('더보기');
+                                        } else {
+                                            $images.removeClass('max-h-12');
+                                            $(this).attr('aria-expanded', 'true');
+                                            $(this).text('닫기');
+                                        }
+                                    });
                                 })
 
                                 // GET 요청 실패 시
@@ -144,6 +178,14 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                             $notificationPopover.addClass('hidden');
                             $notificationButton.removeClass('bg-zinc-200');
                         });
+
+                        // const currentUrl = new URL(window.location.href);
+
+                        // if (isNotificationPc && g5_is_member && currentUrl.searchParams.get('open_notification') === '1') {
+                        //     currentUrl.searchParams.delete('open_notification');
+                        //     window.history.replaceState(window.history.state, '', currentUrl.href);
+                        //     $notificationButton.trigger('click');
+                        // }
                     });
                 </script>
 

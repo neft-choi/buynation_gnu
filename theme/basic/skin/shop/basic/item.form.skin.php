@@ -157,10 +157,25 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			<!-- 상품 요약정보 및 구매 시작 { -->
 			<section id="sit_ov" class="relative w-full !h-auto p-4 pc:p-0x">
 				<p class="flex items-center gap-1 text-sm text-zinc-500 font-semibold">
-					<?php if (!empty($it['it_seller'])) { ?>
-						<a href="<?php echo G5_SHOP_URL . '/brand.php?brand_id=' . urlencode($it['it_seller']); ?>"
+					<?php
+					// 아래 SQL 실행으로 반환될 한 행
+					$seller_brand = array();
+
+					if (!empty($it['it_seller'])) {
+						$seller_id_sql = sql_real_escape_string($it['it_seller']);
+						$seller_brand = sql_fetch("
+							SELECT kr_id, en_id
+							FROM donuts_brand
+							WHERE brand_id = '{$seller_id_sql}'
+							LIMIT 1
+						");
+					}
+
+					if (!empty($seller_brand['kr_id']) && !empty($seller_brand['en_id'])) {
+					?>
+						<a href="<?php echo G5_SHOP_URL . '/brand.php?brand_id=' . urlencode($seller_brand['en_id']); ?>"
 							class="inline-flex items-center gap-1">
-							<?php echo get_text($it['it_seller']); ?>
+							<?php echo get_text($seller_brand['kr_id']); ?>
 							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
 								stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
 								class="lucide lucide-chevron-right-icon lucide-chevron-right">

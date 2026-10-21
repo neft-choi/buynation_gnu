@@ -6,10 +6,12 @@ auth_check_menu($auth, $sub_menu, 'r');
 
 $g5['title'] = '공지사항 및 핀';
 
-function np_e($v) {
+function np_e($v)
+{
     return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 }
-function np_code($id) {
+function np_code($id)
+{
     return 'NTC-' . str_pad((string)(int)$id, 4, '0', STR_PAD_LEFT);
 }
 
@@ -83,12 +85,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 SET notice_subject = '{$subject_sql}',
                     notice_content = '{$content_sql}',
                     is_pinned = '{$want_pin}',
-                    pinned_at = ".($want_pin === 'Y' ? "IF(pinned_at IS NULL, NOW(), pinned_at)" : "NULL").",
+                    pinned_at = " . ($want_pin === 'Y' ? "IF(pinned_at IS NULL, NOW(), pinned_at)" : "NULL") . ",
                     updated_at = NOW()
                 WHERE notice_id = '{$notice_id}'
                   AND dotty_mb_id = '{$dotty_sql}'
             ");
-            alert('공지를 수정했습니다.', './notice_pin.php?mb_id='.urlencode($dotty_mb_id));
+            alert('공지를 수정했습니다.', './notice_pin.php?mb_id=' . urlencode($dotty_mb_id));
         }
 
         if ($want_pin === 'Y') {
@@ -118,12 +120,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 notice_content = '{$content_sql}',
                 view_count = 0,
                 is_pinned = '{$want_pin}',
-                pinned_at = ".($want_pin === 'Y' ? "NOW()" : "NULL").",
+                pinned_at = " . ($want_pin === 'Y' ? "NOW()" : "NULL") . ",
                 use_yn = 'Y',
                 created_at = NOW(),
                 updated_at = NOW()
         ");
-        alert('공지를 등록했습니다.', './notice_pin.php?mb_id='.urlencode($dotty_mb_id));
+        alert('공지를 등록했습니다.', './notice_pin.php?mb_id=' . urlencode($dotty_mb_id));
     }
 
     if ($action === 'toggle_pin') {
@@ -145,7 +147,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 WHERE notice_id = '{$notice_id}'
                   AND dotty_mb_id = '{$dotty_sql}'
             ");
-            alert('핀 고정을 해제했습니다.', './notice_pin.php?mb_id='.urlencode($dotty_mb_id));
+            alert('핀 고정을 해제했습니다.', './notice_pin.php?mb_id=' . urlencode($dotty_mb_id));
         }
 
         $pin_cnt = sql_fetch("
@@ -165,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE notice_id = '{$notice_id}'
               AND dotty_mb_id = '{$dotty_sql}'
         ");
-        alert('공지를 상단에 고정했습니다.', './notice_pin.php?mb_id='.urlencode($dotty_mb_id));
+        alert('공지를 상단에 고정했습니다.', './notice_pin.php?mb_id=' . urlencode($dotty_mb_id));
     }
 
     if ($action === 'delete') {
@@ -186,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             WHERE notice_id = '{$notice_id}'
               AND dotty_mb_id = '{$dotty_sql}'
         ");
-        alert('공지를 삭제했습니다.', './notice_pin.php?mb_id='.urlencode($dotty_mb_id));
+        alert('공지를 삭제했습니다.', './notice_pin.php?mb_id=' . urlencode($dotty_mb_id));
     }
 
     alert('올바르지 않은 요청입니다.');
@@ -202,7 +204,7 @@ if (isset($_GET['view_notice_id']) && (int)$_GET['view_notice_id'] > 0) {
           AND dotty_mb_id = '{$dotty_sql}'
           AND use_yn = 'Y'
     ");
-    goto_url('./notice_pin.php?mb_id='.urlencode($dotty_mb_id));
+    goto_url('./notice_pin.php?mb_id=' . urlencode($dotty_mb_id));
 }
 
 $q = isset($_GET['q']) ? trim((string)$_GET['q']) : '';
@@ -279,7 +281,7 @@ require_once '../admin.head.php';
                 <?php } ?>
             </div>
             <p class="mt-2 text-2xs text-gray-400">
-                <?php echo $pin_count > 0 ? '고정 공지가 총 '.number_format($pin_count).'개입니다.' : '공지 목록에서 핀을 추가할 수 있습니다.'; ?>
+                <?php echo $pin_count > 0 ? '고정 공지가 총 ' . number_format($pin_count) . '개입니다.' : '공지 목록에서 핀을 추가할 수 있습니다.'; ?>
             </p>
         </div>
 
@@ -291,7 +293,7 @@ require_once '../admin.head.php';
                 <?php if ($pin_count >= 3) { ?>
                     <span class="rounded-full bg-amber-100 px-2 py-1 text-2xs font-bold text-amber-700">● 고정 한도 도달</span>
                 <?php } else { ?>
-                    <span class="rounded-full bg-emerald-50 px-2 py-1 text-2xs font-bold text-emerald-700">● <?php echo 3-$pin_count; ?>개 추가 가능</span>
+                    <span class="rounded-full bg-emerald-50 px-2 py-1 text-2xs font-bold text-emerald-700">● <?php echo 3 - $pin_count; ?>개 추가 가능</span>
                 <?php } ?>
             </div>
             <p class="mt-4 text-2xs text-gray-400">고정 공지는 최대 3개까지 운영할 수 있습니다.</p>
@@ -307,60 +309,65 @@ require_once '../admin.head.php';
         <span class="shrink-0 text-2xs text-gray-400">검색 결과 <?php echo number_format($result_count); ?>건</span>
     </div>
 
-    <div class="mt-4 overflow-x-auto rounded-lg border border-gray-300 bg-white">
-        <table class="border-collapse text-left min-w-225 w-full">
+    <div class="datatable-card mt-4 overflow-x-auto rounded-lg border border-gray-300 bg-white">
+        <table id="notice-pin-table" class="border-collapse text-left min-w-225 w-full">
             <caption class="sound_only">공지 사항 목록</caption>
             <thead class="border-b border-gray-300 bg-gray-50 text-gray-500 font-bold [&_th]:p-3">
                 <tr>
-                    <th class="th_center">구분</th><th>제목</th><th>작성자</th><th>등록일</th><th>조회</th><th class="th_center">핀 상태</th><th class="th_center">관리</th>
+                    <th class="th_center">구분</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록일</th>
+                    <th>조회</th>
+                    <th class="th_center">핀 상태</th>
+                    <th class="th_center">관리</th>
                 </tr>
             </thead>
             <tbody class="text-gray-900 [&_td]:p-3">
-            <?php if (!$notices) { ?>
-                <tr><td colspan="7" class="p-6 text-center text-xs text-gray-500">등록된 공지가 없습니다.</td></tr>
-            <?php } ?>
-            <?php
-            $pin_no = 0;
-            foreach ($notices as $r) {
-                if ($r['is_pinned'] === 'Y') $pin_no++;
-                $writer = $r['writer_nick'] ?: $r['writer_name'] ?: $r['writer_mb_id'];
-            ?>
-                <tr class="border-b border-gray-200">
-                    <td class="td_center">
-                        <?php if ($r['is_pinned'] === 'Y') { ?>
-                            <span class="rounded-full bg-amber-100 px-2 py-1 text-2xs font-bold text-amber-700">● 고정 <?php echo $pin_no; ?></span>
-                        <?php } else { ?>
-                            <span class="rounded-full bg-gray-100 px-2 py-1 text-2xs font-bold text-gray-700">● 공지</span>
-                        <?php } ?>
-                    </td>
-                    <td><p class="font-bold"><?php echo np_e($r['notice_subject']); ?></p><span class="mt-1 block text-2xs text-gray-400"><?php echo np_code($r['notice_id']); ?></span></td>
-                    <td><?php echo np_e($writer); ?></td>
-                    <td><?php echo np_e(date('Y.m.d', strtotime($r['created_at']))); ?></td>
-                    <td><?php echo number_format((int)$r['view_count']); ?></td>
-                    <td class="td_center">
-                        <form method="post">
-                            <input type="hidden" name="token" value="<?php echo np_e($admin_token); ?>">
-                            <input type="hidden" name="mb_id" value="<?php echo np_e($dotty_mb_id); ?>">
-                            <input type="hidden" name="action" value="toggle_pin">
-                            <input type="hidden" name="notice_id" value="<?php echo (int)$r['notice_id']; ?>">
-                            <button type="submit" class="rounded-lg border <?php echo $r['is_pinned']==='Y'?'border-red-300 text-red-600':'border-gray-300 text-gray-900'; ?> bg-white px-3 py-2 text-2xs font-bold">
-                                <?php echo $r['is_pinned']==='Y'?'📌 고정 해제':'핀 추가'; ?>
-                            </button>
-                        </form>
-                    </td>
-                    <td class="td_center">
-                        <button type="button" class="notice-detail-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900"
-                            data-id="<?php echo (int)$r['notice_id']; ?>"
-                            data-code="<?php echo np_e(np_code($r['notice_id'])); ?>"
-                            data-subject="<?php echo np_e($r['notice_subject']); ?>"
-                            data-content="<?php echo np_e($r['notice_content']); ?>"
-                            data-writer="<?php echo np_e($writer); ?>"
-                            data-date="<?php echo np_e(date('Y.m.d', strtotime($r['created_at']))); ?>"
-                            data-view="<?php echo (int)$r['view_count']; ?>"
-                            data-pin="<?php echo np_e($r['is_pinned']); ?>">상세</button>
-                    </td>
-                </tr>
-            <?php } ?>
+                <?php
+                $pin_no = 0;
+                foreach ($notices as $r) {
+                    if ($r['is_pinned'] === 'Y') $pin_no++;
+                    $writer = $r['writer_nick'] ?: $r['writer_name'] ?: $r['writer_mb_id'];
+                ?>
+                    <tr class="border-b border-gray-200">
+                        <td class="td_center">
+                            <?php if ($r['is_pinned'] === 'Y') { ?>
+                                <span class="rounded-full bg-amber-100 px-2 py-1 text-2xs font-bold text-amber-700">● 고정 <?php echo $pin_no; ?></span>
+                            <?php } else { ?>
+                                <span class="rounded-full bg-gray-100 px-2 py-1 text-2xs font-bold text-gray-700">● 공지</span>
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <p class="font-bold"><?php echo np_e($r['notice_subject']); ?></p><span class="mt-1 block text-2xs text-gray-400"><?php echo np_code($r['notice_id']); ?></span>
+                        </td>
+                        <td><?php echo np_e($writer); ?></td>
+                        <td><?php echo np_e(date('Y.m.d', strtotime($r['created_at']))); ?></td>
+                        <td><?php echo number_format((int)$r['view_count']); ?></td>
+                        <td class="td_center">
+                            <form method="post">
+                                <input type="hidden" name="token" value="<?php echo np_e($admin_token); ?>">
+                                <input type="hidden" name="mb_id" value="<?php echo np_e($dotty_mb_id); ?>">
+                                <input type="hidden" name="action" value="toggle_pin">
+                                <input type="hidden" name="notice_id" value="<?php echo (int)$r['notice_id']; ?>">
+                                <button type="submit" class="rounded-lg border <?php echo $r['is_pinned'] === 'Y' ? 'border-red-300 text-red-600' : 'border-gray-300 text-gray-900'; ?> bg-white px-3 py-2 text-2xs font-bold">
+                                    <?php echo $r['is_pinned'] === 'Y' ? '📌 고정 해제' : '핀 추가'; ?>
+                                </button>
+                            </form>
+                        </td>
+                        <td class="td_center">
+                            <button type="button" class="notice-detail-modal-open rounded-lg border border-gray-300 bg-white px-3 py-2 text-2xs font-bold text-gray-900"
+                                data-id="<?php echo (int)$r['notice_id']; ?>"
+                                data-code="<?php echo np_e(np_code($r['notice_id'])); ?>"
+                                data-subject="<?php echo np_e($r['notice_subject']); ?>"
+                                data-content="<?php echo np_e($r['notice_content']); ?>"
+                                data-writer="<?php echo np_e($writer); ?>"
+                                data-date="<?php echo np_e(date('Y.m.d', strtotime($r['created_at']))); ?>"
+                                data-view="<?php echo (int)$r['view_count']; ?>"
+                                data-pin="<?php echo np_e($r['is_pinned']); ?>">상세</button>
+                        </td>
+                    </tr>
+                <?php } ?>
             </tbody>
         </table>
     </div>
@@ -408,13 +415,30 @@ require_once '../admin.head.php';
         </div>
         <div class="p-4">
             <dl class="overflow-hidden rounded-lg border border-gray-300">
-                <div class="grid grid-cols-[110px_1fr] border-b"><dt class="bg-gray-50 p-3 text-gray-500">공지 ID</dt><dd id="detail-code" class="p-3 font-bold"></dd></div>
-                <div class="grid grid-cols-[110px_1fr] border-b"><dt class="bg-gray-50 p-3 text-gray-500">제목</dt><dd id="detail-subject" class="p-3 font-bold"></dd></div>
-                <div class="grid grid-cols-[110px_1fr] border-b"><dt class="bg-gray-50 p-3 text-gray-500">작성자</dt><dd id="detail-writer" class="p-3 font-bold"></dd></div>
-                <div class="grid grid-cols-[110px_1fr] border-b"><dt class="bg-gray-50 p-3 text-gray-500">등록일</dt><dd id="detail-date" class="p-3 font-bold"></dd></div>
-                <div class="grid grid-cols-[110px_1fr]"><dt class="bg-gray-50 p-3 text-gray-500">조회</dt><dd id="detail-view" class="p-3 font-bold"></dd></div>
+                <div class="grid grid-cols-[110px_1fr] border-b">
+                    <dt class="bg-gray-50 p-3 text-gray-500">공지 ID</dt>
+                    <dd id="detail-code" class="p-3 font-bold"></dd>
+                </div>
+                <div class="grid grid-cols-[110px_1fr] border-b">
+                    <dt class="bg-gray-50 p-3 text-gray-500">제목</dt>
+                    <dd id="detail-subject" class="p-3 font-bold"></dd>
+                </div>
+                <div class="grid grid-cols-[110px_1fr] border-b">
+                    <dt class="bg-gray-50 p-3 text-gray-500">작성자</dt>
+                    <dd id="detail-writer" class="p-3 font-bold"></dd>
+                </div>
+                <div class="grid grid-cols-[110px_1fr] border-b">
+                    <dt class="bg-gray-50 p-3 text-gray-500">등록일</dt>
+                    <dd id="detail-date" class="p-3 font-bold"></dd>
+                </div>
+                <div class="grid grid-cols-[110px_1fr]">
+                    <dt class="bg-gray-50 p-3 text-gray-500">조회</dt>
+                    <dd id="detail-view" class="p-3 font-bold"></dd>
+                </div>
             </dl>
-            <div class="mt-4 rounded-lg bg-gray-100 p-3"><span class="block text-2xs text-gray-500">공지 내용</span><p id="detail-content" class="mt-2 whitespace-pre-wrap text-2xs text-gray-900"></p></div>
+            <div class="mt-4 rounded-lg bg-gray-100 p-3"><span class="block text-2xs text-gray-500">공지 내용</span>
+                <p id="detail-content" class="mt-2 whitespace-pre-wrap text-2xs text-gray-900"></p>
+            </div>
         </div>
         <div class="sticky bottom-0 z-10 flex flex-wrap justify-end gap-2 border-t border-gray-300 bg-white p-4">
             <button type="button" id="notice-edit-button" class="rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-bold">수정</button>
@@ -431,55 +455,66 @@ require_once '../admin.head.php';
 </div>
 
 <script>
-let currentNotice = null;
+    let currentNotice = null;
 
-$('#notice-write-modal-open').on('click', function() {
-    $('#notice-action').val('write');
-    $('#notice-id').val('');
-    $('#notice-subject').val('');
-    $('#notice-content').val('');
-    $('#notice-pin').prop('checked', false);
-    $('#notice-write-modal-title').text('공지사항 작성');
-    $('#notice-submit').text('공지 등록');
-    $('#notice-write-modal').prop('hidden', false);
-});
-$('.notice-write-modal-close, #notice-write-modal-backdrop').on('click', function() {
-    $('#notice-write-modal').prop('hidden', true);
-});
+    $('#notice-write-modal-open').on('click', function() {
+        $('#notice-action').val('write');
+        $('#notice-id').val('');
+        $('#notice-subject').val('');
+        $('#notice-content').val('');
+        $('#notice-pin').prop('checked', false);
+        $('#notice-write-modal-title').text('공지사항 작성');
+        $('#notice-submit').text('공지 등록');
+        $('#notice-write-modal').prop('hidden', false);
+    });
+    $('.notice-write-modal-close, #notice-write-modal-backdrop').on('click', function() {
+        $('#notice-write-modal').prop('hidden', true);
+    });
 
-$('.notice-detail-modal-open').on('click', function() {
-    const $b = $(this);
-    currentNotice = {
-        id: $b.data('id'),
-        subject: $b.attr('data-subject') || '',
-        content: $b.attr('data-content') || '',
-        pin: $b.data('pin')
-    };
-    $('#detail-code').text($b.data('code'));
-    $('#detail-subject').text(currentNotice.subject);
-    $('#detail-writer').text($b.data('writer'));
-    $('#detail-date').text($b.data('date'));
-    $('#detail-view').text(Number($b.data('view') || 0).toLocaleString());
-    $('#detail-content').text(currentNotice.content);
-    $('#detail-delete-id').val(currentNotice.id);
-    $('#notice-detail-modal').prop('hidden', false);
-});
-$('.notice-detail-modal-close, #notice-detail-modal-backdrop').on('click', function() {
-    $('#notice-detail-modal').prop('hidden', true);
-});
+    $('.notice-detail-modal-open').on('click', function() {
+        const $b = $(this);
+        currentNotice = {
+            id: $b.data('id'),
+            subject: $b.attr('data-subject') || '',
+            content: $b.attr('data-content') || '',
+            pin: $b.data('pin')
+        };
+        $('#detail-code').text($b.data('code'));
+        $('#detail-subject').text(currentNotice.subject);
+        $('#detail-writer').text($b.data('writer'));
+        $('#detail-date').text($b.data('date'));
+        $('#detail-view').text(Number($b.data('view') || 0).toLocaleString());
+        $('#detail-content').text(currentNotice.content);
+        $('#detail-delete-id').val(currentNotice.id);
+        $('#notice-detail-modal').prop('hidden', false);
+    });
+    $('.notice-detail-modal-close, #notice-detail-modal-backdrop').on('click', function() {
+        $('#notice-detail-modal').prop('hidden', true);
+    });
 
-$('#notice-edit-button').on('click', function() {
-    if (!currentNotice) return;
-    $('#notice-detail-modal').prop('hidden', true);
-    $('#notice-action').val('edit');
-    $('#notice-id').val(currentNotice.id);
-    $('#notice-subject').val(currentNotice.subject);
-    $('#notice-content').val(currentNotice.content);
-    $('#notice-pin').prop('checked', currentNotice.pin === 'Y');
-    $('#notice-write-modal-title').text('공지사항 수정');
-    $('#notice-submit').text('수정 저장');
-    $('#notice-write-modal').prop('hidden', false);
-});
+    $('#notice-edit-button').on('click', function() {
+        if (!currentNotice) return;
+        $('#notice-detail-modal').prop('hidden', true);
+        $('#notice-action').val('edit');
+        $('#notice-id').val(currentNotice.id);
+        $('#notice-subject').val(currentNotice.subject);
+        $('#notice-content').val(currentNotice.content);
+        $('#notice-pin').prop('checked', currentNotice.pin === 'Y');
+        $('#notice-write-modal-title').text('공지사항 수정');
+        $('#notice-submit').text('수정 저장');
+        $('#notice-write-modal').prop('hidden', false);
+    });
+
+    $(function() {
+        createSiteTable('notice-pin-table', {
+            csv: true,
+            csvColumns: [0, 1, 2, 3, 4],
+            language: {
+                searchPlaceholder: '공지 제목 또는 작성자 검색',
+                emptyTable: '등록된 공지가 없습니다.',
+            },
+        });
+    });
 </script>
 
 <?php include_once(G5_ADMIN_PATH . '/admin.tail.php'); ?>

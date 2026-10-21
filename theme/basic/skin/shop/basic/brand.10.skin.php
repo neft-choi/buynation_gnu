@@ -19,9 +19,11 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
     </div>
     <?php include __DIR__ . '/_filter_drawer.php'; ?>
 
-    <!-- 상품진열 10 시작 { -->
+    <!-- 브랜드 진열 10 시작 { -->
     <div class="flex-1">
-        <h2 class="text-2xl pc:text-3xl font-bold mb-4"><?php echo get_text(!empty($brand['brand_name']) ? $brand['brand_name'] : $brand['brand_id']); ?></h2>
+        <?php if (!empty($brand['kr_id'])) { ?>
+            <h2 class="text-2xl pc:text-3xl font-bold mb-4"><?php echo get_text($brand['kr_id']); ?></h2>
+        <?php } ?>
 
         <?php
         $i = 0;
@@ -189,7 +191,7 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
                 <p class="sct_noitem">등록된 상품이 없습니다.</p>
             <?php } ?>
     </div>
-    <!-- } 상품진열 10 끝 -->
+    <!-- } 브랜드 진열 10 끝 -->
 </div>
 
 <script>

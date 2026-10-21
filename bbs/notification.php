@@ -60,7 +60,7 @@ $result = sql_query($sql);
             // 내 글 댓글
             $queries[] = "
             SELECT 
-                 a.wr_id,
+                a.wr_id,
                 a.wr_parent,
                 a.wr_content,
                 a.wr_datetime,
@@ -170,36 +170,42 @@ $result = sql_query($sql);
             $noti_id = "order_" . $od['od_id']; // 주문
             ?>
 
-            <a href="/shop/orderinquiryview.php?od_id=<?php echo $od_id ?>" data-id="<?= $noti_id ?>"
-                class="noti-item block font-medium text-gray-900 p-4 ">
+            <div class="p-4">
+                <a href="/shop/orderinquiryview.php?od_id=<?php echo $od_id ?>" data-id="<?= $noti_id ?>"
+                    class="noti-item block font-medium text-gray-900">
 
-                <!-- 상품 이미지들 -->
-                <div class="flex">
-                    <div class="">
+                    <!-- 상품 이미지들 -->
+                    <div class="flex">
+                        <div class="">
 
-                        주문하신 상품
-                        <?php if ($item_count > 1) { ?>
-                            <?php echo $first_item['it_name'] ?> 외 <?php echo $item_count - 1 ?>건
-                        <?php } else { ?>
-                            <?php echo $first_item['it_name'] ?>
-                        <?php } ?>
+                            주문하신 상품
+                            <?php if ($item_count > 1) { ?>
+                                <?php echo $first_item['it_name'] ?> 외 <?php echo $item_count - 1 ?>건
+                            <?php } else { ?>
+                                <?php echo $first_item['it_name'] ?>
+                            <?php } ?>
 
-                        (이/가) <?php echo $od['od_status'] ?> 상태입니다
-                    </div>
-                </div>
-                <div class="flex gap-2 mt-2">
-                    <?php while ($item = sql_fetch_array($res2)) { ?>
-                        <div class="w-12 h-12 overflow-hidden rounded border border-gray-200">
-                            <?php echo get_it_image($item['it_id'], 48, 48); ?>
+                            (이/가) <?php echo $od['od_status'] ?> 상태입니다
                         </div>
-                    <?php } ?>
-                </div>
+                    </div>
 
-                <!-- 텍스트 -->
+                    <div class="notification-images mt-2 flex gap-2 flex-wrap max-h-12 overflow-hidden">
+                        <?php while ($item = sql_fetch_array($res2)) { ?>
+                            <div class="shrink-0 w-12 h-12 overflow-hidden rounded border border-gray-200">
+                                <?php echo get_it_image($item['it_id'], 48, 48); ?>
+                            </div>
+                        <?php } ?>
+                    </div>
 
+                    <!-- 텍스트 -->
 
-            </a>
+                </a>
 
+                <button type="button" class="notification-more hidden mt-4 w-full text-center text-sm text-gray-500 cursor-pointer hover:text-gray-400"
+                    aria-expanded="false">
+                    더보기
+                </button>
+            </div>
         <?php } ?>
 
 
@@ -252,6 +258,28 @@ $result = sql_query($sql);
         if (notificationBackButton) {
             notificationBackButton.addEventListener('click', goBackFromNotification);
         }
+
+        $(function() {
+            $('.notification-images').each(function() {
+                if (this.scrollHeight > this.clientHeight) {
+                    $(this).parent().siblings('.notification-more').removeClass('hidden');
+                }
+            });
+
+            $('.notification-more').on('click', function() {
+                const $images = $(this).siblings('.noti-item').find('.notification-images');
+
+                if ($(this).attr('aria-expanded') === 'true') {
+                    $images.addClass('max-h-12');
+                    $(this).attr('aria-expanded', 'false');
+                    $(this).text('더보기');
+                } else {
+                    $images.removeClass('max-h-12');
+                    $(this).attr('aria-expanded', 'true');
+                    $(this).text('닫기');
+                }
+            });
+        });
     </script>
 <?php } ?>
 

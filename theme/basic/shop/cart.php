@@ -312,7 +312,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 						}
 				?>
 						<li
-							class="sod_li cart-maker-card overflow-hidden rounded-xl border border-(--color-semantic-border-normal-default) bg-white">
+							class="sod_li cart-maker-card overflow-hidden border-rounded bg-white">
 							<div class="border-b border-(--color-semantic-border-normal-default) p-3 pc:p-4">
 								<div class="li_chk chk_box flex items-center gap-4">
 									<input type="checkbox" name="vendor_chk[<?php echo $brand_index; ?>]" value="1"
@@ -579,7 +579,7 @@ $cart_debug_rows = $cart_debug ? g5_sql_fetch_all($sql) : array();
 	</div>
 
 	<!-- 결제 정보 섹션 -->
-	<section class="hidden pc:block sticky top-64 w-90 shrink-0 border border-gray-300 rounded-lg bg-white p-7 space-y-4 ml-2 mt-14">
+	<section class="hidden pc:block sticky top-64 w-90 shrink-0 border-rounded bg-white p-7 space-y-4 ml-2 mt-14">
 		<div class="flex items-center pb-4 border-b border-gray-500">
 			<h2 class="text-[20px] font-semibold">결제정보</h2>
 		</div>

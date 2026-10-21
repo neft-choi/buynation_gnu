@@ -42,6 +42,7 @@ if (isset($sort) && !in_array($sort, array('it_name', 'it_sum_qty', 'it_price', 
 // 미니샵 URL ID(en_id)로 조회하되, 기존 셀러 ID URL도 호환합니다.
 // DB 컬럼 생성은 별도 SQL 마이그레이션으로 진행합니다.
 $brand_lookup = sql_real_escape_string($brand_id);
+
 $sql = " select b.brand_id, b.en_id, b.kr_id, c.brand_name
             from donuts_brand as b
             left join donuts_brand_config as c on c.brand_id collate utf8mb4_general_ci = b.brand_id
@@ -114,7 +115,7 @@ define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
     $count_where[] = " it_use = '1' ";
 
     // 현재 브랜드에 등록된 상품 조회
-    $count_where[] = " it_seller = '" . sql_real_escape_string($brand['brand_id']) . "' ";
+    $count_where[] = " b.en_id = '{$brand_lookup}' AND b.en_id <> '' ";
 
     // 상품 종류 필터 SQL
     $item_type_conditions = array();
@@ -144,9 +145,11 @@ define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
     }
 
     // 배열에 담긴 조건을 and로 연결
-    $count_sql = " select count(*) as cnt
-               from {$g5['g5_shop_item_table']}
-               where " . implode(' and ', $count_where);
+    $count_sql = " select count(distinct i.it_id) as cnt
+                from {$g5['g5_shop_item_table']} as i
+                inner join donuts_brand as b
+                    on i.it_seller = b.brand_id collate utf8mb4_general_ci
+                where " . implode(' and ', $count_where);
 
     // SQL 실행
     $count_row = sql_fetch($count_sql);
@@ -235,7 +238,7 @@ define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
 
         $list_where[] = " it_use = '1' ";
 
-        $list_where[] = " it_seller = '" . sql_real_escape_string($brand['brand_id']) . "' ";
+        $list_where[] = " b.en_id = '{$brand_lookup}' AND b.en_id <> '' ";
 
         if ($item_type_where) {
             $list_where[] = $item_type_where;
@@ -245,11 +248,13 @@ define('G5_SHOP_CSS_URL', str_replace(G5_PATH, G5_URL, $skin_dir));
             $list_where[] = $price_where;
         }
 
-        $list_sql = " select *
-                      from {$g5['g5_shop_item_table']}
-                      where " . implode(' and ', $list_where) . "
-                      order by {$order_by}
-                      limit {$from_record}, {$items} ";
+        $list_sql = " select distinct i.*
+              from {$g5['g5_shop_item_table']} as i
+              inner join donuts_brand as b
+                on i.it_seller = b.brand_id collate utf8mb4_general_ci
+              where " . implode(' and ', $list_where) . "
+              order by {$order_by}
+              limit {$from_record}, {$items} ";
 
         $list->set_query($list_sql);
 

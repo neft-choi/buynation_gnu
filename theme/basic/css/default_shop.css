@@ -305,7 +305,6 @@
 .td_left{text-align:left !important}
 .td_right{text-align:right !important}
 
-/* 인풋 테마 */
 
 /* :where(input[type="text"], input[type="password"], input[type="email"]) {
   width: 100%;
@@ -323,10 +322,7 @@
   color: #a1a1aa;
 } */
 
-/* :where(input[type="text"], input[type="password"], input[type="email"]):focus {
-  border-color: #a1a1aa;
-  outline: none;
-} */
+
 
 /* :where(textarea) {
   padding: 16px;
