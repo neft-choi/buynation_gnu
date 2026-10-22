@@ -585,7 +585,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		<!-- PC 하단 상품 주문 영역 -->
 		<?php if ($is_orderable) { ?>
 			<div id="sit_order_summary_pc" data-visible="false"
-				class="hidden pc:flex data-[visible=false]:!hidden fixed inset-x-0 bottom-0 z-60 border-t-2 border-(--color-semantic-primary-normal) bg-white">
+				class="hidden pc:flex data-[visible=false]:!hidden fixed inset-x-0 bottom-0 z-30 border-t-2 border-(--color-semantic-primary-normal) bg-white">
 				<div id="sit_order_summary_panel" class="relative w-full max-w-[var(--breakpoint-pc)] mx-auto">
 
 					<div id="sit_order_summary_inner" class="hidden flex items-end gap-20 px-5 py-10">
@@ -702,7 +702,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			</script>
 
 			<div id="sit_bottom_fab"
-				class="pc:hidden sticky bottom-0 z-40 w-full shrink-0 border-t border-gray-200 bg-white/95 px-4 py-2 backdrop-blur">
+				class="pc:hidden sticky bottom-0 z-30 w-full shrink-0 border-t border-gray-200 bg-white/95 px-4 py-2 backdrop-blur">
 				<div class="mx-auto grid w-full max-w-full grid-cols-[48px_48px_1fr] gap-2">
 					<button type="button"
 						class="btn_wish flex h-12 w-12 items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
@@ -734,10 +734,10 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 				</div>
 			</div>
 
-			<div id="sit_drawer_overlay" class="fixed inset-0 z-[70] hidden bg-black/40" aria-hidden="true"></div>
+			<div id="sit_drawer_overlay" class="fixed inset-0 z-40 hidden bg-black/40" aria-hidden="true"></div>
 
 			<div id="sit_purchase_drawer"
-				class="fixed inset-x-0 bottom-0 z-[80] hidden translate-y-full transition-transform duration-300 ease-out"
+				class="fixed inset-x-0 bottom-0 z-50 hidden translate-y-full transition-transform duration-300 ease-out"
 				role="dialog" aria-modal="true" aria-labelledby="sit_drawer_title" aria-hidden="true">
 				<div class="mx-auto w-full max-w-full rounded-t-2xl bg-white shadow-2xl">
 					<div class="flex items-center justify-between border-b border-gray-200 px-4 py-3">

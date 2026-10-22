@@ -269,6 +269,10 @@ if ($show_bottom_nav) {
 
 <div id="shop-overlay-root"
     class="pointer-events-none fixed inset-x-0 top-0 z-40 overflow-hidden <?php echo $show_bottom_nav ? 'bottom-[var(--bottom-nav-height)] pc:bottom-0' : 'bottom-0'; ?>">
+
+    <div id="shop-overlay-backdrop"
+        class="hidden pointer-events-auto absolute inset-0 z-40 bg-black/40" aria-hidden="true"></div>
+
     <?php include_once(G5_THEME_SHOP_PATH . '/_recent_viewed.php'); ?>
 </div>
 

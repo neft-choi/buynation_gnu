@@ -3,8 +3,6 @@ if (!defined("_GNUBOARD_")) exit;
 ?>
 
 <!-- 최근 본 상품 -->
-<div id="recent-viewed-backdrop" class="hidden pointer-events-auto absolute inset-0 z-40 bg-black/40"></div>
-
 <div id="recent-viewed-panel"
     class="pointer-events-auto absolute top-0 right-0 z-50 flex flex-col h-full w-full max-w-110 translate-x-full bg-white">
     <div class="flex items-center justify-between border-b border-zinc-200 p-5">
@@ -31,18 +29,29 @@ if (!defined("_GNUBOARD_")) exit;
 <script>
     // 최근 본 상품 패널 열기/닫기 제어
     $(function() {
+
+        // 쇼핑몰 공용 오버레이 영역
+        const $overlayRoot = $('#shop-overlay-root');
+
         $('html').addClass('gutter-stable');
 
+        // 최근 본 상품 아이콘 클릭 시
         $(document).on('click', '#recent-viewed-open', function() {
-            $('#recent-viewed-backdrop').removeClass('hidden');
+            $overlayRoot.attr('data-active-panel', 'recent-viewed');
+            $('#shop-overlay-backdrop').removeClass('hidden');
             $('#recent-viewed-panel').removeClass('translate-x-full');
             $('html').addClass('!overflow-hidden');
         });
 
-        $(document).on('click', '#recent-viewed-close, #recent-viewed-backdrop', function() {
-            $('#recent-viewed-backdrop').addClass('hidden');
+        $(document).on('click', '#recent-viewed-close, #shop-overlay-backdrop', function() {
+            if ($overlayRoot.attr('data-active-panel') !== 'recent-viewed') {
+                return;
+            }
+
+            $('#shop-overlay-backdrop').addClass('hidden');
             $('#recent-viewed-panel').addClass('translate-x-full');
             $('html').removeClass('!overflow-hidden');
+            $overlayRoot.removeAttr('data-active-panel');
         });
     });
 </script>

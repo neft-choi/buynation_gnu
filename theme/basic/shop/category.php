@@ -28,7 +28,6 @@ $mshop_categories = get_shop_category_array(true);
         /* max-width: 375px; */
         height: 100dvh;
         overflow: hidden;
-        z-index: 30;
         pointer-events: none;
     }
 
@@ -112,7 +111,7 @@ $mshop_categories = get_shop_category_array(true);
         color: #000;
     }
 </style>
-<div id="category_clip">
+<div id="category_clip" class="z-50">
     <div id="category">
         <div class="flex h-14 items-center border-b border-gray-200 px-2">
 
@@ -233,7 +232,7 @@ $mshop_categories = get_shop_category_array(true);
     </div>
 </div>
 
-<div id="pc-category-modal" class="fixed left-0 top-[142px] z-[60] w-full" style="display:none;">
+<div id="pc-category-modal" class="fixed left-0 top-[142px] z-40 w-full" style="display:none;">
     <div class="pc-category-backdrop fixed top-[142px] inset-0 bg-black/20"></div>
 
     <div class="pc-category-panel relative bg-white">

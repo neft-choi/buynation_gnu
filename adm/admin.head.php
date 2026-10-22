@@ -203,7 +203,37 @@ $adm_menu_cookie = array(
 
             <ul class="admin-sidebar-menu h-full overflow-y-auto border-r border-gray-200">
                 <?php foreach ($amenu as $key => $value) { ?>
-                    <?php if (!isset($menu['menu' . $key][0][2]) || !$menu['menu' . $key][0][2]) continue; ?>
+                    <?php
+                    if (!isset($menu['menu' . $key][0][2]) || !$menu['menu' . $key][0][2]) continue;
+
+                    // 최고관리자가 아닌 경우 메뉴 출력 로직
+                    if ($is_admin != 'super') {
+
+                        // 현재 메뉴에 읽을 수 있는 하위 메뉴를 가지고 있는지 기록하는 변수
+                        // 아직 메뉴를 살펴보기 전이므로, 읽을 수 있는 메뉴를 발견하지 못한 것으로 시작 
+                        $has_readable_menu = false;
+
+                        // 메뉴 그룹 정보 0번을 제외한, 실제로 존재하는 하위 메뉴를 확인
+                        for ($menu_index = 1; $menu_index < count($menu['menu' . $key]); $menu_index++) {
+                            if (!isset($menu['menu' . $key][$menu_index])) {
+                                continue;
+                            }
+
+                            // 읽기 권한이 있는 하위 메뉴를 하나 찾으면 검사를 끝낸다
+                            $menu_code = $menu['menu' . $key][$menu_index][0];
+
+                            if (array_key_exists($menu_code, $auth) && strstr($auth[$menu_code], 'r')) {
+                                $has_readable_menu = true;
+                                break;
+                            }
+                        }
+
+                        // 읽을 수 있는 하위 메뉴가 없으면 아코디언 그룹 전체를 출력하지 않는다
+                        if (!$has_readable_menu) {
+                            continue;
+                        }
+                    }
+                    ?>
 
                     <?php
                     $is_current_group = isset($sub_menu) &&

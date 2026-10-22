@@ -226,14 +226,12 @@ if (!defined('_GNUBOARD_'))
 <script>
     // 필터 버튼 누르면 Drawer 열림
     $('#filterDrawerOpen').on('click', function() {
-        $('#hd').css('z-index', 4);
         $('#filterDrawer').removeClass('hidden');
     })
 
     // 필터 Drawer 안 X 버튼과 뒷배경 누르면 Drawer hidden 처리
     $('#filterDrawerClose, #filterDrawerBackdrop').on('click', function() {
         $('#filterDrawer').addClass('hidden');
-        $('#hd').css('z-index', '');
     });
 
     function setActiveFilterTab($activeTab) {

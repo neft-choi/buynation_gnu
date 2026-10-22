@@ -84,7 +84,7 @@ $shop_searchbar_arrow_up_right_icon = '
         </form>
 
         <div id="shop-searchbar-panel"
-            class="hidden absolute top-full left-1/2 z-20 h-[calc(100vh-112px)] pc:h-auto w-screen -translate-x-1/2 bg-white overflow-y-auto"
+            class="hidden absolute top-full left-1/2 z-20 h-[calc(100dvh-100%-var(--bottom-nav-height))] pc:h-auto w-screen -translate-x-1/2 bg-white overflow-y-auto"
             role="dialog" aria-label="쇼핑 검색 영역" aria-hidden="true">
 
             <div id="shop-searchbar-panel-inner" class="max-w-[var(--breakpoint-pc)] mx-auto pb-4">
@@ -326,44 +326,31 @@ $shop_searchbar_arrow_up_right_icon = '
     </div>
 
     <script>
-        $(function () {
-            const $html = $('html');
-            const $header = $('#hd');
-            const $searchbarInput = $('#shop_searchbar_input');
-            const $searchbarPanel = $('#shop-searchbar-panel');
-            const $searchbarClose = $('#shop-searchbar-panel-close');
-
-            $searchbarInput.on('focus', function () {
-                $html.css({
-                    'overflow': 'hidden',
-                    'scrollbar-gutter': 'stable'
-                });
-                $header.css('z-index', 51);
-                $searchbarPanel.removeClass('hidden').attr('aria-hidden', 'false');
+        $(function() {
+            // 검색 창 포커스 시
+            $('#shop_searchbar_input').on('focus', function() {
+                $('html').addClass('!overflow-hidden gutter-stable');
+                $('#hd').removeClass('z-10').addClass('z-50');
+                $('#shop-overlay-root').attr('data-active-panel', 'search');
+                if ($('#shop_searchbar_input').closest('#shop-searchbar-desktop-slot').length) {
+                    $('#shop-overlay-backdrop').removeClass('hidden');
+                }
+                $('#shop-searchbar-panel').removeClass('hidden').attr('aria-hidden', 'false');
             });
 
-            // 검색 패널 닫기 버튼 클릭 시
-            $searchbarClose.on('click', function () {
-                $html.css({
-                    'overflow': '',
-                    'scrollbar-gutter': ''
-                });
-                $header.css('z-index', '');
-                $searchbarPanel.addClass('hidden').attr('aria-hidden', 'true');
-            })
-
-            $(document).on('click', function (event) {
-                if ($(event.target).closest('#shop-searchbar-root').length) {
+            // 검색 패널 닫기
+            $(document).on('click', '#shop-searchbar-panel-close, #shop-overlay-backdrop', function() {
+                if ($('#shop-searchbar-panel').hasClass('hidden')) {
                     return;
                 }
 
-                $html.css({
-                    overflow: '',
-                    'scrollbar-gutter': ''
-                });
-
-                $header.css('z-index', '');
-                $searchbarPanel.addClass('hidden').attr('aria-hidden', 'true');
+                $('#hd').removeClass('z-50').addClass('z-10');
+                $('#shop-searchbar-panel').addClass('hidden').attr('aria-hidden', 'true');
+                if ($('#shop-overlay-root').attr('data-active-panel') === 'search') {
+                    $('html').removeClass('!overflow-hidden');
+                    $('#shop-overlay-backdrop').addClass('hidden');
+                    $('#shop-overlay-root').removeAttr('data-active-panel');
+                }
             });
         });
     </script>

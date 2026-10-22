@@ -205,7 +205,7 @@ require_once '../admin.head.php';
                     <th>승계 가능</th>
                 </tr>
             </thead>
-            <tbody class="text-sm [&_td]:p-3">
+            <tbody class="[&_td]:p-3">
                 <?php foreach ($candidates as $c) {
                     $n = $c['mb_nick'] ?: $c['mb_name'] ?: $c['mb_id'];
                     $cert = !empty($c['mb_certify']); ?>
