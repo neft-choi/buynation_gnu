@@ -879,54 +879,6 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			});
 		});
 
-		// // 이미지 슬라이더
-		// const $slider = $("#sit_pvi_big .sit-pvi-slider");
-		// const $zoomButton = $("#popup_item_image");
-
-		// if ($slider.length && $.fn.owlCarousel) {
-		// 	const slideCount = $slider.find(".sit-pvi-slide").length;
-
-		// 	$slider.owlCarousel({
-		// 		items: 1,
-		// 		margin: 0,
-		// 		nav: false,
-		// 		dots: true,
-		// 		autoplay: false,
-		// 		loop: slideCount > 1,
-		// 		mouseDrag: slideCount > 1,
-		// 		touchDrag: slideCount > 1,
-		// 		pullDrag: slideCount > 1
-		// 	});
-
-		// 	if ($zoomButton.length) {
-		// 		const syncZoomButtonHref = function(e) {
-		// 			let index = 0;
-		// 			if (e && e.item && typeof e.item.index !== "undefined") {
-		// 				index = e.item.index;
-		// 			}
-
-		// 			const href = $slider.find(".owl-item").eq(index).find(".popup_item_image").attr("href");
-		// 			if (href) {
-		// 				$zoomButton.attr("href", href);
-		// 			}
-		// 		};
-
-		// 		syncZoomButtonHref();
-		// 		$slider.on("changed.owl.carousel", syncZoomButtonHref);
-		// 	}
-		// }
-
-		// // 상품이미지 크게보기
-		// $(".popup_item_image").click(function() {
-		// 	const url = $(this).attr("href");
-		// 	const top = 10;
-		// 	const left = 10;
-		// 	const opt = 'scrollbars=yes,top=' + top + ',left=' + left;
-		// 	popup_window(url, "largeimage", opt);
-
-		// 	return false;
-		// });
-
 		// btn_wish 클래스가 있
 		$(document).on("click", ".btn_wish", function(e) {
 			e.preventDefault();
@@ -982,6 +934,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 		function copyWithFallback(text) {
 			const $temp = $("<input>").val(text).appendTo("body");
+			
 			$temp.trigger("select");
 
 			try {

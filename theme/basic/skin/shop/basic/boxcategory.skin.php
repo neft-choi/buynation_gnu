@@ -8,7 +8,7 @@ $mshop_categories = get_shop_category_array(true);
 ?>
 
 <!-- 쇼핑몰 카테고리 시작 { -->
-<nav id="gnb">
+<nav id="gnb" class="relative z-0">
     <h2>쇼핑몰 카테고리</h2>
     <ul id="gnb_1dul">
         <?php

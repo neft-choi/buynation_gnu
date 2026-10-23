@@ -141,61 +141,50 @@ require_once '../admin.head.php';
 
 
     <div class="mt-4 grid grid-cols-1 gap-4 pc:grid-cols-5">
-        <section aria-labelledby="settlement-list-title" class="overflow-hidden rounded-lg border border-gray-300 bg-white pc:col-span-3">
-            <header class="flex items-center justify-between gap-3 border-b border-gray-300 p-4">
+        <section aria-labelledby="settlement-list-title" class="datatable-card overflow-hidden rounded-lg border border-gray-300 bg-white pc:col-span-3">
+            <header class="flex items-center justify-between gap-3 border-b border-gray-300 px-4 py-3">
                 <div>
                     <h3 id="settlement-list-title" class="text-lg font-bold text-gray-900">
                         정산 내역
                     </h3>
 
-                    <p class="mt-2 text-2xs text-gray-400">
+                    <p class="mt-1 text-2xs text-gray-400">
                         도넛별 신청·지급 내역이며 다른 도넛과 합산되지 않습니다.
                     </p>
                 </div>
 
-                <button type="button" class="shrink-0 text-2xs text-gray-500">
+                <button type="button" id="settlement-csv-download" class="shrink-0 text-2xs text-gray-500">
                     내역 내려받기
                 </button>
             </header>
 
-            <div class="overflow-x-auto">
-                <table class="border-collapse min-w-180 w-full table-fixed text-left">
-                    <colgroup>
-                        <col class="w-[20%]">
-                        <col class="w-[17%]">
-                        <col class="w-[17%]">
-                        <col class="w-[17%]">
-                        <col class="w-[16%]">
-                        <col class="w-[13%]">
-                    </colgroup>
+            <table id="dotty-settlement-table" class="border-collapse text-left">
+                <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                    <tr>
+                        <th scope="col">정산번호</th>
+                        <th scope="col">대상 월</th>
+                        <th scope="col">신청일</th>
+                        <th scope="col">기준일</th>
+                        <th scope="col">상태</th>
+                        <th scope="col" class="text-right">정산 금액</th>
+                    </tr>
+                </thead>
 
-                    <thead class="bg-gray-50 text-2xs text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                        <tr>
-                            <th scope="col">정산번호</th>
-                            <th scope="col">대상 월</th>
-                            <th scope="col">신청일</th>
-                            <th scope="col">기준일</th>
-                            <th scope="col">상태</th>
-                            <th scope="col" class="text-right">정산 금액</th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="text-gray-900 font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                        <tr>
-                            <td>SET-260712-001</td>
-                            <td>2026.06</td>
-                            <td>2026.07.01</td>
-                            <td>2026.07.12</td>
-                            <td>
-                                <span class="rounded-lg bg-emerald-50 px-2 py-1 text-2xs font-bold text-emerald-700">
-                                    지급 완료
-                                </span>
-                            </td>
-                            <td class="text-right font-bold">530,000원</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <tbody class="text-gray-900 font-normal [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                    <tr>
+                        <td>SET-260712-001</td>
+                        <td>2026.06</td>
+                        <td>2026.07.01</td>
+                        <td>2026.07.12</td>
+                        <td>
+                            <span class="rounded-lg bg-emerald-50 px-2 py-1 text-2xs font-bold text-emerald-700">
+                                지급 완료
+                            </span>
+                        </td>
+                        <td class="text-right font-bold">530,000원</td>
+                    </tr>
+                </tbody>
+            </table>
         </section>
 
         <section aria-labelledby="settlement-guide-title" class="rounded-lg border border-gray-300 bg-white p-5 pc:col-span-2">
@@ -390,6 +379,20 @@ require_once '../admin.head.php';
 
     $('#settlement-account-modal-close, #settlement-account-modal-cancel, #settlement-account-modal-backdrop').on('click', function() {
         $('#settlement-account-modal').prop('hidden', true);
+    });
+
+    // 데이터 테이블 함수
+    const settlementTable = createSiteTable('dotty-settlement-table', {
+        csv: true,
+        csvColumns: [0, 1, 2, 3, 4, 5],
+        search: false,
+        lengthChange: false,
+    });
+
+    settlementTable.button(0).node().closest('.dt-layout-row').detach();
+
+    $('#settlement-csv-download').on('click', function() {
+        settlementTable.button(0).trigger();
     });
 </script>
 

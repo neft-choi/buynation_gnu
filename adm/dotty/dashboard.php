@@ -49,7 +49,7 @@ require_once '../admin.head.php';
     </section>
 
     <div class="mt-4 grid grid-cols-1 gap-4 pc:grid-cols-5">
-        <section class="datatable-card overflow-hidden rounded-lg border border-gray-300 bg-white pc:col-span-3">
+        <section class="x overflow-hidden rounded-lg border border-gray-300 bg-white pc:col-span-3">
             <header class="flex items-center justify-between gap-3 border-b border-gray-300 px-4 py-3">
                 <div>
                     <h3 class="text-sm font-bold text-gray-900">

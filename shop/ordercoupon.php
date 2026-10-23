@@ -51,7 +51,7 @@ $count = sql_num_rows($result);
 
 <!-- 쿠폰 선택 시작 { -->
 <div class="od_coupon_wrap">
-    <div id="od_coupon_frm" class="od_coupon pc:!max-w-100 rounded-lg text-sm p-4">
+    <div id="od_coupon_frm" class="od_coupon z-50 pc:max-w-100 rounded-lg text-sm p-4">
         <h3 class="text-lg font-semibold">쿠폰 선택</h3>
         <div class="tbl_head02 tbl_wrap !my-2">
             <table>

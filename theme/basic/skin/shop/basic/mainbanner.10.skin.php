@@ -68,7 +68,7 @@ for ($i = 0; $row = sql_fetch_array($result); $i++) {
             } */
         </style>
 
-        <div id="main_bn" class="!mt-0">
+        <div id="main_bn" class="!mt-0 z-0">
             <div class="main_image_area">
                 <div class="main_banner_owl owl-carousel">
                 <?php

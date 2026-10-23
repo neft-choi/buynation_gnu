@@ -156,6 +156,4 @@ if ($tv_tot_count > 0) {
         </div>
     <?php } ?>
 </div>
-
-<script src="<?php echo G5_JS_URL ?>/scroll_oldie.js"></script>
 <!-- } 오늘 본 상품 끝 -->

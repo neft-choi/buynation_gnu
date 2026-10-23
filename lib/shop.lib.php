@@ -1036,7 +1036,10 @@ function get_item_options($it_id, $subject, $is_div = '', $is_first_option_title
                 $select .= '</select>' . PHP_EOL;
 
                 if ($is_div === 'div') {
-                    $str .= '<span>' . $select . '</span>' . PHP_EOL;
+                    $str .= '<span class="relative block [&>select]:block [&>select]:appearance-none [&>select]:pr-9! mt-2">' . PHP_EOL;
+                    $str .= $select;
+                    $str .= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down preview-icon w-4 h-4 pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>' . PHP_EOL;
+                    $str .= '</span>' . PHP_EOL;
                     $str .= '</div>' . PHP_EOL;
                 } else {
                     $str .= '<td>' . $select . '</td>' . PHP_EOL;
@@ -1071,7 +1074,10 @@ function get_item_options($it_id, $subject, $is_div = '', $is_first_option_title
         $select .= '</select>' . PHP_EOL;
 
         if ($is_div === 'div') {
-            $str .= '<span>' . $select . '</span>' . PHP_EOL;
+            $str .= '<span class="relative block [&>select]:block [&>select]:appearance-none [&>select]:pr-9! mt-2">' . PHP_EOL;
+            $str .= $select;
+            $str .= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down preview-icon w-4 h-4 pointer-events-none absolute right-3 top-1/2 -translate-y-1/2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>' . PHP_EOL;
+            $str .= '</span>' . PHP_EOL;
             $str .= '</div>' . PHP_EOL;
         } else {
             $str .= '<td>' . $select . '</td>' . PHP_EOL;

@@ -24,17 +24,8 @@ if (!sql_num_rows($result))
     die('no-cart');
 ?>
 
-<style>
-    .option_wr select {
-        width: 100%;
-        margin-top: 4px;
-        padding: 8px 4px;
-        border: 1px solid #d4d4d4;
-    }
-</style>
-
 <section class="border border-gray-300 rounded-xl bg-white">
-    <h2 class="border-b border-gray-300 text-sm pc:text-base font-semibold leading-none p-3 pc:p-4">상품 옵션 수정</h2>
+    <h2 class="border-b border-gray-300 text-sm pc:text-base font-semibold leading-none p-4">상품 옵션 수정</h2>
     <!-- 장바구니 옵션 시작 { -->
     <form name="foption" method="post" action="<?php echo G5_SHOP_URL; ?>/cartupdate.php"
         onsubmit="return formcheck(this);" class="p-3 pc:p-4">
@@ -53,16 +44,16 @@ if (!sql_num_rows($result))
                 $option_1 = get_item_options($it['it_id'], $it['it_option_subject'], 'div');
             }
             if ($option_1) {
-                ?>
+            ?>
                 <section class="option_wr flex flex-col text-sm">
                     <h3 class="sound_only">옵션 선택</h3>
 
                     <?php // 선택옵션
-                        echo $option_1;
-                        ?>
+                    echo $option_1;
+                    ?>
 
                 </section>
-                <?php
+            <?php
             }
             ?>
 
@@ -74,16 +65,16 @@ if (!sql_num_rows($result))
                 $option_2 = get_item_supply($it['it_id'], $it['it_supply_subject'], 'div');
             }
             if ($option_2) {
-                ?>
+            ?>
                 <section class="option_wr">
                     <h3>추가옵션</h3>
 
                     <?php // 추가옵션
-                        echo $option_2;
-                        ?>
+                    echo $option_2;
+                    ?>
 
                 </section>
-                <?php
+            <?php
             }
             ?>
 
@@ -105,14 +96,11 @@ if (!sql_num_rows($result))
                         $cls = 'opt';
                         if ($row['io_type'])
                             $cls = 'spl';
-                        ?>
+                    ?>
                         <li class="sit_<?php echo $cls; ?>_list text-xs pc:text-sm !p-3">
-                            <input type="hidden" name="io_type[<?php echo $it['it_id']; ?>][]"
-                                value="<?php echo $row['io_type']; ?>">
-                            <input type="hidden" name="io_id[<?php echo $it['it_id']; ?>][]"
-                                value="<?php echo $row['io_id']; ?>">
-                            <input type="hidden" name="io_value[<?php echo $it['it_id']; ?>][]"
-                                value="<?php echo $row['ct_option']; ?>">
+                            <input type="hidden" name="io_type[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['io_type']; ?>">
+                            <input type="hidden" name="io_id[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['io_id']; ?>">
+                            <input type="hidden" name="io_value[<?php echo $it['it_id']; ?>][]" value="<?php echo $row['ct_option']; ?>">
                             <input type="hidden" class="io_price" value="<?php echo $row['io_price']; ?>">
                             <input type="hidden" class="io_stock" value="<?php echo $it_stock_qty; ?>">
 
@@ -146,10 +134,12 @@ if (!sql_num_rows($result))
                                         </svg>
                                         <span class="sound_only">감소</span>
                                     </button>
+
                                     <label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
                                     <input type="text" name="ct_qty[<?php echo $it['it_id']; ?>][]"
                                         value="<?php echo $row['ct_qty']; ?>" id="ct_qty_<?php echo $i; ?>"
                                         class="num_input text-center w-6" size="1">
+                                        
                                     <button type="button"
                                         class="sit_qty_plus shrink-0 inline-flex items-center justify-center w-8 h-8">
                                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
@@ -167,7 +157,7 @@ if (!sql_num_rows($result))
                             </div>
 
                         </li>
-                        <?php
+                    <?php
                     }
                     ?>
                 </ul>
@@ -176,10 +166,10 @@ if (!sql_num_rows($result))
             <div id="sit_tot_price"></div>
 
             <div class="btn_confirm">
-                <button type="submit" class="btn_submit rounded text-xs pc:text-sm text-white bg-[#393939] px-2 py-1">옵션
+                <button type="submit" class="btn_submit rounded text-xs pc:text-sm text-white bg-[#393939] px-3 py-2">옵션
                     적용
                 </button>
-                <button type="button" id="mod_option_close" class="btn_close border border-[#8D8D8D38] rounded text-xs pc:text-sm px-2 py-1">
+                <button type="button" id="mod_option_close" class="btn_close border border-[#8D8D8D38] rounded text-xs pc:text-sm px-3 py-2">
                     취소
                 </button>
             </div>
@@ -194,7 +184,7 @@ if (!sql_num_rows($result))
         var max_qty = parseInt(<?php echo $it['it_buy_max_qty']; ?>);
         var $el_type = $("input[name^=io_type]");
 
-        $("input[name^=ct_qty]").each(function (index) {
+        $("input[name^=ct_qty]").each(function(index) {
             val = $(this).val();
 
             if (val.length < 1) {

@@ -116,7 +116,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 ?>
 
 <!-- 1차 카테고리 -->
-<section class="relative px-5 py-7 bg-white">
+<section class="relative z-0 px-5 py-7 bg-white">
     <button type="button" class="list-cate-nav list-cate-prev hidden pc:inline-flex absolute left-4 top-1/2 z-10 -translate-y-1/2 items-center justify-center w-12 h-12 border border-gray-300 rounded-full">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left-icon lucide-chevron-left w-6 h-6 text-gray-300">
             <path d="m15 18-6-6 6-6" />

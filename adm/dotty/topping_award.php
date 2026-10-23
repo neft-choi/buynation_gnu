@@ -85,84 +85,72 @@ require_once '../admin.head.php';
         </span>
     </div>
 
-    <section aria-labelledby="topping-award-list-title" class="mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
-        <header class="border-b border-gray-300 p-4">
-            <h3 id="topping-award-list-title" class="text-lg font-bold text-gray-900">
+    <section aria-labelledby="topping-award-list-title" class="datatable-card mt-4 overflow-hidden rounded-lg border border-gray-300 bg-white">
+        <header class="border-b border-gray-300 px-4 py-3">
+            <h3 id="topping-award-list-title" class="text-sm font-bold text-gray-900">
                 배분 내역
             </h3>
 
-            <p class="mt-2 text-2xs text-gray-400">
+            <p class="mt-1 text-2xs text-gray-400">
                 도티의 배분 기준과 활동·사용 가능 상태를 함께 기록합니다.
             </p>
         </header>
 
-        <div class="overflow-x-auto">
-            <table class="border-collapse min-w-200 w-full table-fixed text-left">
-                <colgroup>
-                    <col class="w-[15%]">
-                    <col class="w-[16%]">
-                    <col class="w-[18%]">
-                    <col class="w-[18%]">
-                    <col class="w-[14%]">
-                    <col class="w-[12%]">
-                    <col class="w-[7%]">
-                </colgroup>
+        <table id="topping-award-table" class="border-collapse text-left">
+            <thead class="bg-gray-50 text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
+                <tr>
+                    <th scope="col">배분번호</th>
+                    <th scope="col">배분일시</th>
+                    <th scope="col">받은 도트</th>
+                    <th scope="col">배분 기준</th>
+                    <th scope="col">배분자</th>
+                    <th scope="col">사용가능토핑</th>
+                    <th scope="col">상태</th>
+                </tr>
+            </thead>
 
-                <thead class="bg-gray-50 text-gray-500 [&_th]:whitespace-nowrap [&_th]:px-4 [&_th]:py-3 [&_th]:font-bold">
-                    <tr>
-                        <th scope="col">배분번호</th>
-                        <th scope="col">배분일시</th>
-                        <th scope="col">받은 도트</th>
-                        <th scope="col">배분 기준</th>
-                        <th scope="col">배분자</th>
-                        <th scope="col">사용가능토핑</th>
-                        <th scope="col">상태</th>
-                    </tr>
-                </thead>
+            <tbody class="text-gray-900 [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
+                <tr class="topping-award-search-row">
+                    <td>TOP-240803-081</td>
+                    <td>2026.08.03 14:05</td>
+                    <td class="font-bold">김도티 (DOT-39811)</td>
+                    <td>8월 베스트 활동 보상</td>
+                    <td>도티 김도윤</td>
+                    <td class="text-right font-bold">5,000 토핑</td>
+                    <td>사용 가능</td>
+                </tr>
 
-                <tbody class="text-gray-900 [&_tr]:border-t [&_tr]:border-gray-200 [&_td]:whitespace-nowrap [&_td]:px-4 [&_td]:py-3">
-                    <tr class="topping-award-search-row">
-                        <td>TOP-240803-081</td>
-                        <td>2026.08.03 14:05</td>
-                        <td class="font-bold">김도티 (DOT-39811)</td>
-                        <td>8월 베스트 활동 보상</td>
-                        <td>도티 김도윤</td>
-                        <td class="text-right font-bold">5,000 토핑</td>
-                        <td>사용 가능</td>
-                    </tr>
+                <tr class="topping-award-search-row">
+                    <td>TOP-240802-066</td>
+                    <td>2026.08.02 18:30</td>
+                    <td class="font-bold">최서진 (DOT-40277)</td>
+                    <td>우수 후기 콘텐츠 보상</td>
+                    <td>운영자 김도현</td>
+                    <td class="text-right font-bold">3,000 토핑</td>
+                    <td>사용 가능</td>
+                </tr>
 
-                    <tr class="topping-award-search-row">
-                        <td>TOP-240802-066</td>
-                        <td>2026.08.02 18:30</td>
-                        <td class="font-bold">최서진 (DOT-40277)</td>
-                        <td>우수 후기 콘텐츠 보상</td>
-                        <td>운영자 김도현</td>
-                        <td class="text-right font-bold">3,000 토핑</td>
-                        <td>사용 가능</td>
-                    </tr>
+                <tr class="topping-award-search-row">
+                    <td>TOP-240801-031</td>
+                    <td>2026.08.01 10:15</td>
+                    <td class="font-bold">이윤진 (DOT-28770)</td>
+                    <td>정기 모임 운영 지원</td>
+                    <td>도티 김도윤</td>
+                    <td class="text-right font-bold">2,000 토핑</td>
+                    <td>사용 가능</td>
+                </tr>
 
-                    <tr class="topping-award-search-row">
-                        <td>TOP-240801-031</td>
-                        <td>2026.08.01 10:15</td>
-                        <td class="font-bold">이윤진 (DOT-28770)</td>
-                        <td>정기 모임 운영 지원</td>
-                        <td>도티 김도윤</td>
-                        <td class="text-right font-bold">2,000 토핑</td>
-                        <td>사용 가능</td>
-                    </tr>
-
-                    <tr class="topping-award-search-row">
-                        <td>TOP-240729-014</td>
-                        <td>2026.07.29 16:42</td>
-                        <td class="font-bold">박성훈 (DOT-37114)</td>
-                        <td>커뮤니티 이벤트 참여</td>
-                        <td>운영자 김도현</td>
-                        <td class="text-right font-bold">1,000 토핑</td>
-                        <td>사용 가능</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
+                <tr class="topping-award-search-row">
+                    <td>TOP-240729-014</td>
+                    <td>2026.07.29 16:42</td>
+                    <td class="font-bold">박성훈 (DOT-37114)</td>
+                    <td>커뮤니티 이벤트 참여</td>
+                    <td>운영자 김도현</td>
+                    <td class="text-right font-bold">1,000 토핑</td>
+                    <td>사용 가능</td>
+                </tr>
+            </tbody>
+        </table>
     </section>
 </section>
 
@@ -319,6 +307,11 @@ require_once '../admin.head.php';
 
         // 현재 검색 결과 수 표시
         $toppingAwardSearchResult.text('검색 결과 ' + matchedCount + '건');
+    });
+
+    createSiteTable('topping-award-table', {
+        search: false,
+        lengthChange: false,
     });
 </script>
 
