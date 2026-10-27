@@ -2096,6 +2096,10 @@
     border-left-style: var(--tw-border-style);
     border-left-width: 1px;
   }
+  .border-l-0 {
+    border-left-style: var(--tw-border-style);
+    border-left-width: 0px;
+  }
   .border-l-4 {
     border-left-style: var(--tw-border-style);
     border-left-width: 4px;
@@ -4024,6 +4028,13 @@
     &:hover {
       @media (hover: hover) {
         background-color: var(--color-zinc-100);
+      }
+    }
+  }
+  .hover\:text-\[var\(--color-primary\)\] {
+    &:hover {
+      @media (hover: hover) {
+        color: var(--color-primary);
       }
     }
   }

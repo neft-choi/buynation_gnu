@@ -189,7 +189,7 @@ $result = sql_query($sql);
                         </div>
                     </div>
 
-                    <div class="notification-images mt-2 flex gap-2 flex-wrap max-h-12 overflow-hidden">
+                    <div class="notification-images mt-2 flex gap-2 flex-wrap max-h-12 overflow-hidden justify-center">
                         <?php while ($item = sql_fetch_array($res2)) { ?>
                             <div class="shrink-0 w-12 h-12 overflow-hidden rounded border border-gray-200">
                                 <?php echo get_it_image($item['it_id'], 48, 48); ?>
