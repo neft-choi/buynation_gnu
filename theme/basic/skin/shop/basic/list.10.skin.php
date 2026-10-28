@@ -64,11 +64,11 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
             ?>
             <?php if ($i === 1) { ?>
                 <ul
-                    class="<?= $this->css ? $this->css : 'sct sct_10 lists-row grid ' . implode(' ', $classes) . ' pc:grid-cols-4 gap-4 pc:!m-0' ?>">
+                    class="<?= $this->css ? $this->css : 'sct sct_10 lists-row grid ' . implode(' ', $classes) . ' pc:grid-cols-3 gap-4 pc:!m-0' ?>">
                 <?php } ?>
                 <li class="sct_li" data-css="nocss" style="height:auto">
                     <article class="space-y-2">
-                        <div class="relative flex flex-col items-center justify-center bg-[#EEEEEE] rounded-lg overflow-hidden" style="aspect-ratio: <?= (int) $this->img_width ?> / <?= (int) $this->img_height ?>;">
+                        <div class="relative z-0 flex flex-col items-center justify-center bg-[#EEEEEE] rounded-lg overflow-hidden" style="aspect-ratio: <?= (int) $this->img_width ?> / <?= (int) $this->img_height ?>;">
                             <?php if ($this->href) { ?>
                                 <a href="<?= $item_link_href ?>">
                                 <?php } ?>
@@ -81,53 +81,58 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
                                 </a>
                             <?php } ?>
 
-                            <?php if (!$is_soldout) { ?>
-                                <div class="sct_btn list-10-btn">
-                                    <button type="button" class="btn_cart sct_cart" data-it_id="<?= $row['it_id'] ?>"><i
-                                            class="fa fa-shopping-cart" aria-hidden="true"></i> 장바구니</button>
-                                </div>
-                            <?php } ?>
-
-
-
-                            <div class="cart-layer"></div>
-
                             <?php if ($this->view_it_icon && $is_soldout) { ?>
                                 <span class="shop_icon_soldout"><span class="soldout_txt">SOLD OUT</span></span>
                             <?php } ?>
-                        </div>
-                        <div class="flex w-full gap-1">
+
                             <button type="button"
-                                class="btn_wish  sct_btn flex items-center justify-center w-full border border-gray-300 rounded-lg px-4 py-2"
+                                class="btn_wish sct_btn absolute top-2 right-2 z-20 flex items-center justify-center w-8 h-8 border border-gray-300 rounded-full bg-white/90 shadow-sm cursor-pointer"
                                 data-it_id="<?= $row['it_id'] ?>" aria-label="위시리스트">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-heart" aria-hidden="true">
+                                    stroke-linejoin="round" class="lucide lucide-heart w-5 h-5 text-black/70" aria-hidden="true">
                                     <path
                                         d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                                 </svg>
                             </button>
-                            <button type="button"
-                                class="btn_cart sct_btn flex items-center justify-center w-full border border-gray-300 rounded-lg px-4 py-2"
-                                data-it_id="<?= $row['it_id'] ?>" aria-label="장바구니">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
-                                    <circle cx="8" cy="21" r="1" />
-                                    <circle cx="19" cy="21" r="1" />
-                                    <path
-                                        d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                                </svg>
-                            </button>
+
+                            <?php if ($row['it_type1']) { ?>
+                                <p class="absolute inset-x-0 bottom-0 z-10 bg-amber-100/60 py-2 text-center text-xs font-semibold text-amber-700">
+                                    마감까지 <span class="ml-1">01:23:45</span>
+                                </p>
+                            <?php } ?>
                         </div>
 
-                        <div class="sct_ct_wrap space-y-2">
+                        <div class="sct_ct_wrap space-y-1">
+                            <?php
+                            $item_type_labels = array();
+
+                            if ($row['it_type1']) {
+                                $item_type_labels[] = '히트 상품';
+                            }
+                            if ($row['it_type2']) {
+                                $item_type_labels[] = '추천 상품';
+                            }
+                            if ($row['it_type3']) {
+                                $item_type_labels[] = '신상품';
+                            }
+                            if ($row['it_type4']) {
+                                $item_type_labels[] = '인기 상품';
+                            }
+                            if ($row['it_type5']) {
+                                $item_type_labels[] = '할인 상품';
+                            }
+
+                            $item_type_text = $item_type_labels ? implode(' · ', $item_type_labels) : '일반 상품';
+                            ?>
+
                             <?php if ($this->view_it_id) { ?>
                                 <div class="sct_id">&lt;<?= stripslashes($row['it_id']) ?>&gt;</div>
                             <?php } ?>
 
                             <?php if ($this->href) { ?>
-                                <h3 class="font-medium line-clamp-2"><a href="<?= $item_link_href ?>">
+                                <h3 class="text-base font-semibold line-clamp-2">
+                                    <a href="<?= $item_link_href ?>">
                                     <?php } ?>
 
                                     <?php if ($this->view_it_name) { ?>
@@ -135,15 +140,16 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
                                     <?php } ?>
 
                                     <?php if ($this->href) { ?>
-                                    </a></h3>
+                                    </a>
+                                </h3>
                             <?php } ?>
 
                             <div class="sct_bottom">
                                 <?php if ($this->view_it_cust_price || $this->view_it_price) { ?>
-                                    <div class="flex flex-col">
+                                    <div class="flex flex-col gap-1">
                                         <?php if ($this->view_it_cust_price && $it_cust_price > 0 && $it_cust_price > $it_price) { ?>
                                             <span
-                                                class="text-base text-gray-400 line-through"><?= display_price($it_cust_price, $row['it_tel_inq']) ?></span>
+                                                class="text-sm text-gray-400 line-through"><?= display_price($it_cust_price, $row['it_tel_inq']) ?></span>
                                         <?php } ?>
 
                                         <div class="flex gap-1 items-center">
@@ -157,7 +163,9 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
                                             <?php } ?>
                                         </div>
 
-                                        <div class="flex gap-2 text-gray-900 text-sm">
+                                        <p class="text-sm font-semibold text-orange-500">예상 기여금 1,000원</p>
+
+                                        <div class="flex gap-1 text-gray-900 text-sm">
                                             <span class="flex gap-1 items-center">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                                                     viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
@@ -173,10 +181,15 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
                                         </div>
                                     </div>
                                 <?php } ?>
+
                             </div>
 
                             <?php if ($this->view_it_icon) { ?>
-                                <div class="sit_icon_li"><?= item_icon($row) ?></div>
+                                <div class="sit_icon_li">
+                                    <span class="inline-flex rounded-md px-2 py-1 text-xs font-semibold <?= $item_type_labels ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500' ?>">
+                                        <?= $item_type_text ?>
+                                    </span>
+                                </div>
                             <?php } ?>
                         </div>
                     </article>

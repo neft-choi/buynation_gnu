@@ -2402,11 +2402,11 @@ select {
   margin: 0 0 10px;
 }
 
-#sit_title {
+/* #sit_title {
   margin: 0 0 10px;
   font-size: 20px;
   font-weight: 600;
-}
+} */
 
 #sit_desc {
   margin: 0 0 10px;
@@ -2549,12 +2549,12 @@ select {
   font-size: 0.75em;
 }
 
-.sit_info {
-  /* padding: 10px 0;
+/* .sit_info {
+  padding: 10px 0;
   border-top: 1px solid #e2e2e2;
   margin: 10px 0 0;
-  border-bottom: 1px solid #e2e2e2; */
-}
+  border-bottom: 1px solid #e2e2e2;
+} */
 .sit_info .tr_price {
   border-bottom: 1px solid #e2e2e2;
 }

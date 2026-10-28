@@ -17,143 +17,23 @@ function get_mshop_category($ca_id, $len)
 
 $mshop_categories = get_shop_category_array(true);
 ?>
-<style>
-    /* 카테고리 클래핑 래퍼 */
-    #category_clip {
-        position: fixed;
-        top: 0;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 100%;
-        /* max-width: 375px; */
-        height: 100dvh;
-        overflow: hidden;
-        pointer-events: none;
-    }
-
-    /* 카테고리 메뉴 */
-    #category {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        max-width: none;
-        height: 100dvh;
-        overflow: hidden;
-        background: #fff;
-        pointer-events: auto;
-        /* 카테고리 메뉴 초기 위치를 왼쪽으로 */
-        transform: translateX(-100%);
-        transition: transform 0.25s ease;
-    }
-
-    /* 카테고리 메뉴 실행 시 왼쪽에서 등장 */
-    #category.is-open {
-        transform: translateX(0);
-    }
-
-    /* 카테고리 1차 메뉴 2차 메뉴 Grid */
-    #category .cate-shell {
-        display: grid;
-        grid-template-columns: 134px minmax(0, 1fr);
-        height: calc(100dvh - 56px);
-    }
-
-    #category .cate-lv1 {
-        height: 100%;
-        overflow-y: auto;
-        background: rgba(141, 141, 141, 0.08);
-    }
-
-    #category .cate1-btn {
-        width: 100%;
-        padding: 16px;
-        text-align: left;
-        font-size: 16px;
-        color: #000;
-    }
-
-    #category .cate1-btn.is-active {
-        background: #fff;
-        font-weight: 600;
-    }
-
-    #category .cate-lv2-wrap {
-        height: 100%;
-        overflow-y: auto;
-        background: #fff;
-    }
-
-    #category .cate2-panel {
-        display: none;
-    }
-
-    #category .cate2-panel.is-active {
-        display: block;
-    }
-
-    #category .cate2-title {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px;
-        font-size: 16px;
-        font-weight: 500;
-        color: #F1B10F;
-    }
-
-    #category .cate-lv2-list a {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 16px;
-        font-size: 16px;
-        color: #000;
-    }
-</style>
-<div id="category_clip" class="z-50">
-    <div id="category">
-        <div class="flex h-14 items-center border-b border-gray-200 px-2">
-
-            <form class="ml-1 mr-2 flex min-w-0 flex-1 items-center" action="<?php echo G5_SHOP_URL; ?>/search.php"
-                method="get"
-                onsubmit="if (this.q.value.length < 2) { alert('검색어는 두글자 이상 입력하십시오.'); this.q.focus(); return false; } return true;">
-                <label for="category_search_input" class="sound_only">검색어</label>
-                <div
-                    class="flex h-9 w-full items-center gap-1 rounded-full border-2 border-[var(--color-primary)] bg-white pl-2 pr-1">
-                    <input type="search" name="q" id="category_search_input"
-                        value="<?php echo isset($q) ? stripslashes(get_text(get_search_string($q))) : ''; ?>"
-                        class="w-full px-2 border-0 bg-transparent text-sm text-gray-900 outline-none" placeholder=""
-                        required>
-                    <button type="submit"
-                        class="inline-flex h-7 w-7 items-center justify-center text-[var(--color-primary)]"
-                        aria-label="검색">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"
-                            aria-hidden="true">
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.3-4.3" />
-                        </svg>
-                    </button>
-                </div>
-            </form>
-
-            <div class="flex items-center gap-1">
-                <button type="button" class="inline-flex h-9 w-9 items-center justify-center text-gray-700"
-                    aria-label="알림">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-bell-icon lucide-bell">
-                        <path d="M10.268 21a2 2 0 0 0 3.464 0" />
-                        <path
-                            d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+<div id="category_clip" class="fixed inset-x-0 top-0 z-50 h-dvh overflow-hidden pointer-events-none">
+    <div id="category" class="absolute inset-0 overflow-hidden bg-white pointer-events-auto -translate-x-full transition-transform duration-250 ease-[ease] [&.is-open]:translate-x-0">
+        <div class="cate-top">
+            <header class="grid h-14 grid-cols-[36px_1fr_36px] items-center border-b border-gray-200 px-2">
+                <button type="button" class="close_btn inline-flex h-9 w-9 items-center justify-center text-gray-900"
+                    aria-label="카테고리 화면 닫기">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="m15 18-6-6 6-6" />
                     </svg>
                 </button>
+                <h2 class="text-center text-base font-semibold text-gray-900">카테고리</h2>
                 <a href="<?php echo G5_SHOP_URL; ?>/cart.php"
                     class="relative inline-flex h-9 w-9 items-center justify-center text-gray-700" aria-label="장바구니">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-shopping-cart-icon lucide-shopping-cart">
+                        class="lucide lucide-shopping-cart-icon lucide-shopping-cart" aria-hidden="true">
                         <circle cx="8" cy="21" r="1" />
                         <circle cx="19" cy="21" r="1" />
                         <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
@@ -163,12 +43,19 @@ $mshop_categories = get_shop_category_array(true);
                         <?php echo get_boxcart_datas_count(); ?>
                     </span>
                 </a>
+            </header>
+            <div class="px-5 py-6">
+                <h3 class="text-2xl font-bold text-gray-900">카테고리</h3>
+                <p class="mt-2 text-sm text-gray-500">원하는 상품을 찾아보세요.</p>
+                <p class="mt-4 h-5 truncate text-sm text-orange-500" aria-live="polite">
+                    <span class="cate-path-primary"></span><span class="cate-path-secondary"></span>
+                </p>
             </div>
         </div>
         <?php if (!empty($mshop_categories)) { ?>
-            <div class="cate-shell">
+            <div class="cate-shell grid grid-cols-[1fr_2fr] grid-rows-1">
                 <div>
-                    <ul class="cate-lv1">
+                    <ul class="cate-lv1 h-full overflow-y-auto bg-gray-100 divide-y divide-gray-200">
                         <?php
                         $cate_idx = 0;
                         foreach ($mshop_categories as $cate1) {
@@ -178,11 +65,22 @@ $mshop_categories = get_shop_category_array(true);
                             $panel_id = 'cate-panel-' . $cate_idx;
                             $is_active = ($cate_idx === 0) ? ' is-active' : '';
                         ?>
-                            <li>
-                                <button type="button" class="cate1-btn<?php echo $is_active; ?>"
-                                    data-target="<?php echo $panel_id; ?>">
+                            <li class="cate1-btn flex items-stretch text-sm text-black [&.is-active]:font-semibold [&.is-active]:bg-amber-100 [&.is-active>*]:text-amber-700<?php echo $is_active; ?>">
+                                <a href="<?php echo $mshop_ca_row1['url']; ?>"
+                                    class="min-w-0 flex-1 px-2 py-4 text-left">
                                     <?php echo get_text($mshop_ca_row1['ca_name']); ?>
-                                </button>
+                                </a>
+                                <?php if (count($cate1) > 1) { ?>
+                                    <button type="button" class="cate1-toggle flex w-8 shrink-0 items-center justify-center"
+                                        data-target="<?php echo $panel_id; ?>"
+                                        aria-controls="<?php echo $panel_id; ?>"
+                                        aria-expanded="false"
+                                        aria-label="<?php echo get_text($mshop_ca_row1['ca_name']); ?> 하위 분류 펼치기">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right preview-icon w-4 h-4">
+                                            <path d="m9 18 6-6-6-6" />
+                                        </svg>
+                                    </button>
+                                <?php } ?>
                             </li>
                         <?php
                             $cate_idx++;
@@ -191,7 +89,7 @@ $mshop_categories = get_shop_category_array(true);
                     </ul>
                 </div>
 
-                <div class="cate-lv2-wrap">
+                <div class="cate-lv2-wrap col-start-2 row-start-1 overflow-y-auto">
                     <?php
                     $cate_idx = 0;
                     foreach ($mshop_categories as $cate1) {
@@ -201,11 +99,7 @@ $mshop_categories = get_shop_category_array(true);
                         $panel_id = 'cate-panel-' . $cate_idx;
                         $is_active = ($cate_idx === 0) ? ' is-active' : '';
                     ?>
-                        <div id="<?php echo $panel_id; ?>" class="cate2-panel<?php echo $is_active; ?>">
-                            <a href="<?php echo $mshop_ca_row1['url']; ?>" class="cate2-title">
-                                <span><?php echo get_text($mshop_ca_row1['ca_name']); ?></span>
-                                <span aria-hidden="true">&rsaquo;</span>
-                            </a>
+                        <div id="<?php echo $panel_id; ?>" class="cate2-panel hidden [&.is-active]:block<?php echo $is_active; ?>">
                             <div class="cate-lv2-list">
                                 <?php
                                 foreach ($cate1 as $key => $cate2) {
@@ -213,15 +107,69 @@ $mshop_categories = get_shop_category_array(true);
                                         continue;
                                     $mshop_ca_row2 = $cate2['text'];
                                 ?>
-                                    <a href="<?php echo $mshop_ca_row2['url']; ?>">
-                                        <span><?php echo get_text($mshop_ca_row2['ca_name']); ?></span>
-                                        <span aria-hidden="true">&rsaquo;</span>
-                                    </a>
+                                    <div class="cate2-item flex items-stretch [&.is-active>*]:text-[var(--color-primary)]">
+                                        <a href="<?php echo $mshop_ca_row2['url']; ?>"
+                                            class="min-w-0 flex-1 px-2 py-4 text-left text-sm text-black">
+                                            <?php echo get_text($mshop_ca_row2['ca_name']); ?>
+                                        </a>
+                                        <?php if (count($cate2) > 1) { ?>
+                                            <button type="button" class="cate2-toggle flex w-8 shrink-0 items-center justify-center"
+                                                data-target="cate-third-<?php echo get_text($mshop_ca_row2['ca_id']); ?>"
+                                                aria-controls="cate-third-<?php echo get_text($mshop_ca_row2['ca_id']); ?>"
+                                                aria-expanded="false"
+                                                aria-label="<?php echo get_text($mshop_ca_row2['ca_name']); ?> 하위 분류 펼치기">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right preview-icon w-4 h-4">
+                                                    <path d="m9 18 6-6-6-6" />
+                                                </svg>
+                                            </button>
+                                        <?php } ?>
+                                    </div>
                                 <?php } ?>
                             </div>
                         </div>
                     <?php
                         $cate_idx++;
+                    }
+                    ?>
+                </div>
+                <div class="cate-lv3-wrap hidden z-10 col-start-2 row-start-1 min-h-0 min-w-0 overflow-y-auto bg-white">
+                    <div class="flex items-center justify-end border-b border-gray-200 p-2">
+                        <button type="button" class="cate3-close inline-flex items-center justify-center text-gray-700"
+                            aria-label="3차 분류 닫고 2차 분류로 돌아가기">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                class="h-5 w-5" aria-hidden="true">
+                                <path d="m6 6 12 12M6 18 18 6" />
+                            </svg>
+                        </button>
+                    </div>
+                    <?php
+                    foreach ($mshop_categories as $cate1) {
+                        if (empty($cate1) || empty($cate1['text']))
+                            continue;
+                        foreach ($cate1 as $key => $cate2) {
+                            if (empty($cate2) || $key === 'text' || empty($cate2['text']))
+                                continue;
+                            $mshop_ca_row2 = $cate2['text'];
+                    ?>
+                            <div id="cate-third-<?php echo get_text($mshop_ca_row2['ca_id']); ?>" class="cate3-panel hidden">
+                                <ul>
+                                    <?php
+                                    foreach ($cate2 as $sub_key => $cate3) {
+                                        if (empty($cate3) || $sub_key === 'text' || empty($cate3['text']))
+                                            continue;
+                                        $mshop_ca_row3 = $cate3['text'];
+                                    ?>
+                                        <li>
+                                            <a href="<?php echo $mshop_ca_row3['url']; ?>" class="block px-2 py-4 text-sm text-black">
+                                                <?php echo get_text($mshop_ca_row3['ca_name']); ?>
+                                            </a>
+                                        </li>
+                                    <?php } ?>
+                                </ul>
+                            </div>
+                    <?php
+                        }
                     }
                     ?>
                 </div>
@@ -344,8 +292,14 @@ $mshop_categories = get_shop_category_array(true);
             $category.show();
             $categoryBg.show();
 
+            $category.find(".cate1-btn, .cate2-panel").removeClass("is-active");
+            $category.find(".cate1-toggle, .cate2-toggle").attr("aria-expanded", "false");
+            $category.find(".cate2-item").removeClass("is-active font-semibold");
+            $category.find(".cate-lv3-wrap, .cate3-panel").addClass("hidden");
+            $category.find(".cate-path-primary, .cate-path-secondary").text("");
+            const categoryTopHeight = $category.find(".cate-top").outerHeight() || 0;
             const bottomNavHeight = $("#shop-bottom-nav-wrap").outerHeight() || 0;
-            $category.find(".cate-shell").css("height", `calc(100dvh - 56px - ${bottomNavHeight}px)`);
+            $category.find(".cate-shell").css("height", `calc(100dvh - ${categoryTopHeight}px - ${bottomNavHeight}px)`);
 
             requestAnimationFrame(function() {
                 $category.addClass("is-open");
@@ -371,16 +325,50 @@ $mshop_categories = get_shop_category_array(true);
             closeCategory();
         });
 
-        $("#category").on("click", ".cate1-btn", function() {
-            var target = $(this).data("target");
+        $("#category").on("click", ".cate1-toggle", function() {
+            const target = $(this).data("target");
             if (!target) return;
 
+            const categoryName = $(this).closest(".cate1-btn").children("a").text().trim();
+            $("#category .cate-path-primary").text(categoryName);
+            $("#category .cate-path-secondary").text("");
+
             $("#category .cate1-btn").removeClass("is-active");
-            $(this).addClass("is-active");
+            $(this).closest(".cate1-btn").addClass("is-active");
+            $("#category .cate1-toggle").attr("aria-expanded", "false");
+            $(this).attr("aria-expanded", "true");
 
             $("#category .cate2-panel").removeClass("is-active");
             $("#" + target).addClass("is-active");
+            $("#category .cate2-item").removeClass("is-active font-semibold");
+            $("#category .cate2-toggle").attr("aria-expanded", "false");
+            $("#category .cate-lv3-wrap, #category .cate3-panel").addClass("hidden");
         });
+
+        $("#category").on("click", ".cate2-toggle", function() {
+            const target = $(this).data("target");
+            if (!target) return;
+
+            const categoryName = $(this).closest(".cate2-item").children("a").text().trim();
+            $("#category .cate-path-secondary").text(" / " + categoryName);
+
+            $("#category .cate2-item").removeClass("is-active font-semibold");
+            $(this).closest(".cate2-item").addClass("is-active font-semibold");
+            $("#category .cate2-toggle").attr("aria-expanded", "false");
+            $(this).attr("aria-expanded", "true");
+
+            $("#category .cate3-panel").addClass("hidden");
+            $("#" + target).removeClass("hidden");
+            $("#category .cate-lv3-wrap").removeClass("hidden");
+        });
+
+        $("#category").on("click", ".cate3-close", function() {
+            $("#category .cate-lv3-wrap, #category .cate3-panel").addClass("hidden");
+            $("#category .cate2-toggle").attr("aria-expanded", "false");
+            $("#category .cate2-item").removeClass("is-active font-semibold");
+            $("#category .cate-path-secondary").text("");
+        });
+
         var $pcCategoryModal = $("#pc-category-modal");
 
         // PC 카테고리 버튼 호버

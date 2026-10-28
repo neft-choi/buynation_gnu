@@ -156,6 +156,52 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			</script>
 			<!-- 상품 요약정보 및 구매 시작 { -->
 			<section id="sit_ov" class="relative w-full !h-auto p-4 pc:p-0x">
+				<?php
+				$item_type_labels = array();
+
+				if ($it['it_type1']) {
+					$item_type_labels[] = '히트 상품';
+				}
+				if ($it['it_type2']) {
+					$item_type_labels[] = '추천 상품';
+				}
+				if ($it['it_type3']) {
+					$item_type_labels[] = '신상품';
+				}
+				if ($it['it_type4']) {
+					$item_type_labels[] = '인기 상품';
+				}
+				if ($it['it_type5']) {
+					$item_type_labels[] = '할인 상품';
+				}
+
+				$item_type_text = $item_type_labels ? implode(' · ', $item_type_labels) : '일반 상품';
+				?>
+				<div class="mb-2">
+					<span class="inline-flex rounded-md px-2 py-1 text-xs font-semibold <?= $item_type_labels ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500' ?>">
+						<?= $item_type_text ?>
+					</span>
+				</div>
+				<div class="flex items-baseline justify-between">
+
+					<h2 id="sit_title" class="text-2xl font-semibold"><?php echo stripslashes($it['it_name']); ?> <span class="sound_only">요약정보 및
+							구매</span></h2>
+
+					<div class="flex gap-2 items-center text-sm ml-4">
+						<span class="flex gap-1 items-center">
+							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+								fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+								stroke-linejoin="round" class="lucide lucide-star-icon lucide-star">
+								<path
+									d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+							</svg>
+							<?php echo $star_avg; ?>
+						</span>
+						<span class="text-gray-300">|</span>
+						<span class="text-gray-400 underline text-nowrap"><?php echo $it['it_use_cnt']; ?>건</span>
+					</div>
+				</div>
+
 				<p class="flex items-center gap-1 text-sm text-zinc-500 font-semibold">
 					<?php
 					// 아래 SQL 실행으로 반환될 한 행
@@ -184,25 +230,6 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						</a>
 					<?php } ?>
 				</p>
-				<div class="flex items-baseline justify-between">
-
-					<h2 id="sit_title"><?php echo stripslashes($it['it_name']); ?> <span class="sound_only">요약정보 및
-							구매</span></h2>
-
-					<div class="flex gap-2 items-center text-sm ml-4">
-						<span class="flex gap-1 items-center">
-							<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-								fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-								stroke-linejoin="round" class="lucide lucide-star-icon lucide-star">
-								<path
-									d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
-							</svg>
-							<?php echo $star_avg; ?>
-						</span>
-						<span class="text-gray-300">|</span>
-						<span class="text-gray-400 underline text-nowrap"><?php echo $it['it_use_cnt']; ?>건</span>
-					</div>
-				</div>
 
 				<?php if ($is_orderable) { ?>
 					<p id="sit_opt_info">
@@ -245,7 +272,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					});
 				</script>
 
-				<div class="sit_info">
+				<div class="sit_info mt-4">
 					<div class="flex flex-col">
 						<div class="flex items-center gap-2">
 							<?php if ($is_discount) { ?>
@@ -356,12 +383,23 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					</div>
 				</div>
 
+				<p class="mb-4 flex flex-wrap items-center gap-x-2 gap-y-1 rounded-md border border-amber-200 bg-amber-50 px-4 py-4 text-sm text-amber-800">
+					<span>예상 기여금 <strong class="font-bold">980원</strong></span>
+					<span aria-hidden="true">·</span>
+					<span>기본 4% + 추가 3%</span>
+				</p>
+
 				<div id="sit_option_area">
 					<?php
 					if ($option_item) {
 					?>
 						<!-- 선택옵션 시작 { -->
-						<section class="sit_option">
+						<section class="sit_option
+									[&_select.it\_option:disabled]:bg-zinc-100
+									[&_select.it\_option:disabled]:border-zinc-200!
+									[&_select.it\_option:disabled]:text-zinc-400
+									[&_select.it\_option:disabled]:cursor-not-allowed
+									[&_select.it\_option:disabled+svg]:text-zinc-400">
 							<h3>선택옵션</h3>
 							<?php echo $option_item; ?>
 						</section>
@@ -934,7 +972,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 		function copyWithFallback(text) {
 			const $temp = $("<input>").val(text).appendTo("body");
-			
+
 			$temp.trigger("select");
 
 			try {
