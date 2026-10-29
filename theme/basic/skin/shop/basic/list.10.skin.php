@@ -70,7 +70,7 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
                     <article class="space-y-2">
                         <div class="relative z-0 flex flex-col items-center justify-center bg-[#EEEEEE] rounded-lg overflow-hidden" style="aspect-ratio: <?= (int) $this->img_width ?> / <?= (int) $this->img_height ?>;">
                             <?php if ($this->href) { ?>
-                                <a href="<?= $item_link_href ?>">
+                                <a href="<?= $item_link_href ?>" class="absolute inset-0 flex items-center justify-center [&>img]:w-full [&>img]:h-full [&>img]:object-cover">
                                 <?php } ?>
 
                                 <?php if ($this->view_it_img) { ?>

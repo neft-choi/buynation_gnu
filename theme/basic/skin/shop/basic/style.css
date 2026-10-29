@@ -2398,9 +2398,9 @@ select {
   padding: 16px;
 } */
 
-#sit_ov h3 {
+/* #sit_ov h3 {
   margin: 0 0 10px;
-}
+} */
 
 /* #sit_title {
   margin: 0 0 10px;
@@ -2630,9 +2630,9 @@ select {
    */
 }
 
-.sit_option h3 {
+/* .sit_option h3 {
   font-size: 1.083em;
-}
+} */
 .sit_sel_btn {
   position: relative;
 } /* 선택옵션용 추가 버튼 */

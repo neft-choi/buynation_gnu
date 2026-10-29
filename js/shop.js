@@ -416,7 +416,7 @@ function add_sel_option(type, id, option, price, stock) {
       </div>
 
       <div class="flex items-center justify-between gap-2 mt-2">
-        <div class="flex items-center border border-gray-300">
+        <div class="flex items-center border border-gray-300 rounded-md overflow-auto bg-white">
           <button type="button" class="sit_qty_minus inline-flex h-8 w-8 items-center justify-center bg-white text-gray-700">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-minus-icon lucide-minus">
               <path d="M5 12h14" />
@@ -512,11 +512,26 @@ function price_calculate() {
     }
   });
 
-  $("#sit_tot_price")
-    .empty()
-    .html(`<div class="flex items-center justify-end gap-2"><span>합계</span><span class="text-[28px] font-bold">${number_format(String(total))}원</span></div>`);
+  const $totalPrice = $("#sit_tot_price");
 
-  $("#sit_tot_price").trigger("price_calculate", [total]);
+  if ($("#sit_ov").length) {
+    $totalPrice.html(`
+      <div class="space-y-2 border-t border-gray-300 pt-4 mt-4">
+        <div class="flex items-center justify-between gap-2 font-bold">
+          <span class="text-base">합계</span>
+          <span class="text-2xl">${number_format(String(total))}원</span>
+        </div>
+        <div class="flex items-center justify-between gap-2 text-sm font-semibold">
+          <span class="text-zinc-500">총 예상 기여금</span>
+          <span class="text-amber-500">1,000원</span>
+        </div>
+      </div>
+    `);
+  } else {
+    $totalPrice.html(`<div class="flex items-center justify-end gap-2"><span>합계</span><span class="text-[28px] font-bold">${number_format(String(total))}원</span></div>`);
+  }
+
+  $totalPrice.trigger("price_calculate", [total]);
 }
 
 // php chr() 대응

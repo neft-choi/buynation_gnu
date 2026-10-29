@@ -219,14 +219,8 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 					if (!empty($seller_brand['kr_id']) && !empty($seller_brand['en_id'])) {
 					?>
-						<a href="<?php echo G5_SHOP_URL . '/brand.php?brand_id=' . urlencode($seller_brand['en_id']); ?>"
-							class="inline-flex items-center gap-1">
+						<a href="<?php echo G5_SHOP_URL . '/brand.php?brand_id=' . urlencode($seller_brand['en_id']); ?>">
 							<?php echo get_text($seller_brand['kr_id']); ?>
-							<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-								stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-								class="lucide lucide-chevron-right-icon lucide-chevron-right">
-								<path d="m9 18 6-6-6-6" />
-							</svg>
 						</a>
 					<?php } ?>
 				</p>
@@ -272,14 +266,13 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					});
 				</script>
 
-				<div class="sit_info mt-4">
+				<div class="sit_info mt-1">
 					<div class="flex flex-col">
+						<span class="text-base text-gray-400 line-through"><?php echo display_price($it_cust_price); ?></span>
 						<div class="flex items-center gap-2">
 							<?php if ($is_discount) { ?>
 								<span class="text-2xl font-bold text-black"><?php echo $discount_percent; ?>%</span>
 								<span class="text-2xl font-bold text-black"><?php echo display_price($it_price); ?></span>
-								<span
-									class="text-base text-gray-400 line-through"><?php echo display_price($it_cust_price); ?></span>
 							<?php } else { ?>
 								<span class="text-2xl font-bold text-black"><?php echo display_price($it_price); ?></span>
 							<?php } ?>
@@ -389,21 +382,23 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					<span>기본 4% + 추가 3%</span>
 				</p>
 
-				<div id="sit_option_area">
+				<div id="sit_option_area" class="space-y-2">
 					<?php
 					if ($option_item) {
 					?>
-						<!-- 선택옵션 시작 { -->
+						<!-- 상품 옵션 시작 { -->
 						<section class="sit_option
-									[&_select.it\_option:disabled]:bg-zinc-100
-									[&_select.it\_option:disabled]:border-zinc-200!
-									[&_select.it\_option:disabled]:text-zinc-400
-									[&_select.it\_option:disabled]:cursor-not-allowed
-									[&_select.it\_option:disabled+svg]:text-zinc-400">
-							<h3>선택옵션</h3>
-							<?php echo $option_item; ?>
+							[&_select.it\_option:disabled]:bg-zinc-100
+							[&_select.it\_option:disabled]:border-zinc-200!
+							[&_select.it\_option:disabled]:text-zinc-400
+							[&_select.it\_option:disabled+svg]:text-zinc-400">
+
+							<h3>본상품 옵션</h3>
+							<div class="space-y-2 mt-2">
+								<?php echo $option_item; ?>
+							</div>
 						</section>
-						<!-- } 선택옵션 끝 -->
+						<!-- } 상품 옵션 끝 -->
 					<?php
 					}
 					?>
@@ -411,12 +406,14 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					<?php
 					if ($supply_item) {
 					?>
-						<!-- 추가옵션 시작 { -->
-						<section class="sit_option">
-							<h3>추가옵션</h3>
-							<?php echo $supply_item; ?>
+						<!-- 추가 상품 시작 { -->
+						<section class="sit_option [&_select.it\_supply:disabled]:bg-zinc-100 [&_select.it\_supply:disabled]:border-zinc-200! [&_select.it\_supply:disabled]:text-zinc-400">
+							<h3>추가 상품</h3>
+							<div class="mt-2">
+								<?php echo $supply_item; ?>
+							</div>
 						</section>
-						<!-- } 추가옵션 끝 -->
+						<!-- } 추가 상품 끝 -->
 					<?php
 					}
 					?>
@@ -446,7 +443,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 									<div class="opt_count flex items-center justify-between gap-2">
 										<label for="ct_qty_<?php echo $i; ?>" class="sound_only">수량</label>
-										<div class="flex items-center border border-gray-300">
+										<div class="flex items-center border border-gray-300 rounded-md overflow-auto bg-white">
 											<button type="button"
 												class="sit_qty_minus inline-flex h-8 w-8 items-center justify-center bg-white text-gray-700">
 												<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -550,7 +547,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 					<?php if (!$is_orderable) { ?>
 						<?php if ($is_soldout) { ?>
-							<button type="button" data-variant="primary" class="h-14 flex-1 cursor-not-allowed opacity-50"
+							<button type="button" data-variant="primary" class="h-14 flex-1 opacity-50"
 								disabled>
 								품절
 							</button>
@@ -1027,8 +1024,14 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			});
 		}
 
+		function syncSupplyOptionState() {
+			const hasRequiredItem = $("#sit_sel_option .sit_opt_list").length > 0;
+			$("#sit_option_area select.it_supply").prop("disabled", !hasRequiredItem);
+		}
+
 		$("#sit_tot_price").on("price_calculate", function() {
 			syncOptionPriceLabels();
+			syncSupplyOptionState();
 		});
 
 		$("#sit_sel_option").on("add_sit_sel_option", function() {
@@ -1036,6 +1039,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		});
 
 		syncOptionPriceLabels();
+		syncSupplyOptionState();
 	});
 
 	function fsubmit_check(f) {

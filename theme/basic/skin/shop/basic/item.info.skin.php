@@ -98,7 +98,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 								$ii_title = $info_array[$key][0];
 								$ii_value = $val;
 							?>
-								<div class="grid grid-cols-[72px_1fr] gap-x-4 py-4 border-b border-gray-200">
+								<div class="grid grid-cols-[100px_1fr] gap-x-4 py-4 border-b border-gray-200">
 									<div class="text-sm text-gray-500"><?php echo $ii_title; ?></div>
 									<div class="text-sm font-medium text-gray-900"><?php echo $ii_value; ?></div>
 								</div>
