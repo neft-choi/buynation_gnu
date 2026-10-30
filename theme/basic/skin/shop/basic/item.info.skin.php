@@ -28,18 +28,27 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 
 <section id="sit_info">
 	<div id="sit_tab">
-		<ul class="tab_tit sticky top-[var(--shop-header-height)] flex items-center justify-between border-b border-[#e8e8e8]">
-			<li><button type="button" id="btn_sit_inf" rel="#sit_inf" class="selected">상품설명</button></li>
-			<li><button type="button" id="btn_sit_dvex" rel="#sit_dex">상세정보</button></li>
-			<li><button type="button" id="btn_sit_use" rel="#sit_use">리뷰 <span
-						class="item_use_count"><?php echo $item_use_count; ?></span></button></li>
-			<li><button type="button" id="btn_sit_qa" rel="#sit_qa">문의 <span
-						class="item_qa_count"><?php echo $item_qa_count; ?></span></button></li>
-		</ul>
-		<ul class="tab_con">
+		<div id="sit_tab_wrap" class="w-full">
+			<ul class="tab_tit flex w-full items-center border-b border-[#e8e8e8] bg-white" role="tablist" aria-label="상품 상세 정보">
+				<li role="none">
+					<button type="button" id="btn_sit_inf" role="tab" aria-controls="sit_inf" aria-selected="true" class="selected">상품설명</button>
+				</li>
+				<li role="none">
+					<button type="button" id="btn_sit_dvex" role="tab" aria-controls="sit_dex" aria-selected="false">상세정보</button>
+				</li>
+				<li role="none">
+					<button type="button" id="btn_sit_use" role="tab" aria-controls="sit_use" aria-selected="false">리뷰 <span class="item_use_count"><?php echo $item_use_count; ?></span></button>
+				</li>
+				<li role="none">
+					<button type="button" id="btn_sit_qa" role="tab" aria-controls="sit_qa" aria-selected="false">문의 <span class="item_qa_count"><?php echo $item_qa_count; ?></span></button>
+				</li>
+			</ul>
+		</div>
+
+		<ul class="tab_con" role="none">
 
 			<!-- 상품 정보 시작 { -->
-			<li id="sit_inf">
+			<li id="sit_inf" role="tabpanel" aria-labelledby="btn_sit_inf">
 				<h2 class="contents_tit"><span>상품 정보</span></h2>
 				<?php if ($it['it_explan']) { // 상품 상세설명 
 				?>
@@ -51,21 +60,21 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 
 			</li>
 			<!-- 리뷰 시작 { -->
-			<li id="sit_use">
+			<li id="sit_use" role="tabpanel" aria-labelledby="btn_sit_use" hidden>
 				<h2>리뷰</h2>
 				<div id="itemuse"><?php include_once(G5_SHOP_PATH . '/itemuse.php'); ?></div>
 			</li>
 			<!-- } 리뷰 끝 -->
 
 			<!-- 상품문의 시작 { -->
-			<li id="sit_qa">
+			<li id="sit_qa" role="tabpanel" aria-labelledby="btn_sit_qa" hidden>
 				<h2>상품문의</h2>
 				<div id="itemqa"><?php include_once(G5_SHOP_PATH . '/itemqa.php'); ?></div>
 			</li>
 			<!-- } 상품문의 끝 -->
 
 			<!-- 상세정보 시작 { -->
-			<li id="sit_dex" class="px-4 py-6">
+			<li id="sit_dex" class="px-4 py-6" role="tabpanel" aria-labelledby="btn_sit_dvex" hidden>
 
 				<?php
 				// 상품 필수 정보
@@ -98,8 +107,8 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 								$ii_title = $info_array[$key][0];
 								$ii_value = $val;
 							?>
-								<div class="grid grid-cols-[100px_1fr] gap-x-4 py-4 border-b border-gray-200">
-									<div class="text-sm text-gray-500"><?php echo $ii_title; ?></div>
+								<div class="grid grid-cols-[120px_1fr] gap-x-4 py-4 border-b border-gray-200 text">
+									<div class="text-sm text-gray-500 text-pretty"><?php echo $ii_title; ?></div>
 									<div class="text-sm font-medium text-gray-900"><?php echo $ii_value; ?></div>
 								</div>
 							<?php } ?>
@@ -149,7 +158,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 							</svg>
 						</span>
 					</button>
-					<div id="sit_ship_open" class="mt-4 border-t border-gray-200">
+					<div id="sit_ship_open">
 						<div id="sit_dvr">
 							<?php echo conv_content($default['de_baesong_content'], 1); ?>
 						</div>
@@ -191,35 +200,62 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 	</div>
 	<script>
 		$(function() {
-			// 현재 헤더인 #hd 높이를 조회하고 높이가 변경될때도 재조회
 			const header = document.getElementById("hd");
+			const tabWrap = document.getElementById("sit_tab_wrap");
+			const tab = document.querySelector("#sit_tab .tab_tit");
 
-			if (header) {
-				// 높이 측정 함수 정의
-				const updateHeaderHeight = function() {
+			if (header && tabWrap && tab) {
+				const updateTabPosition = function() {
 					const headerHeight = header.getBoundingClientRect().height;
-					document.documentElement.style.setProperty("--shop-header-height", `${headerHeight}px`);
+					const wrapRect = tabWrap.getBoundingClientRect();
+					const isFixed = wrapRect.top <= headerHeight;
+
+					tab.classList.toggle("fixed", isFixed);
+					tab.style.top = isFixed ? `${headerHeight}px` : "";
+					tab.style.left = isFixed ? `${wrapRect.left}px` : "";
+					tab.style.width = isFixed ? `${wrapRect.width}px` : "";
+					tab.style.zIndex = isFixed ? "5" : "";
+					tabWrap.style.height = isFixed ? `${tab.getBoundingClientRect().height}px` : "";
 				};
 
-				// 최초 높이 측정
-				updateHeaderHeight();
+				updateTabPosition();
 
-				const headerObserver = new ResizeObserver(updateHeaderHeight);
-				headerObserver.observe(header);
+				const tabObserver = new ResizeObserver(updateTabPosition);
+				tabObserver.observe(header);
+				tabObserver.observe(tabWrap);
+				tabObserver.observe(tab);
+
+				window.addEventListener("scroll", updateTabPosition, {
+					passive: true
+				});
+				window.addEventListener("resize", updateTabPosition);
+				window.addEventListener("load", updateTabPosition);
 			}
 
-			$(".tab_con>li").hide();
-			$(".tab_con>li:first").show();
-			$(".tab_tit li button").click(function() {
-				const target = $(this).attr("rel");
-				const tabTop = $("#sit_tab").offset().top;
+			const $tabRoot = $("#sit_tab");
+			const $tabs = $tabRoot.find(".tab_tit [role='tab']");
+			const $panels = $tabRoot.find(".tab_con > [role='tabpanel']");
 
-				$(".tab_tit li button").removeClass("selected");
-				$(this).addClass("selected");
-				$(".tab_con>li").hide();
-				$($(this).attr("rel")).show();
+			const selectTab = function(button) {
+				const target = button.getAttribute("aria-controls");
 
-				$(window).scrollTop(tabTop);
+				$tabs.each(function() {
+					const isSelected = this === button;
+					$(this).attr("aria-selected", isSelected ? "true" : "false");
+					$(this).toggleClass("selected", isSelected);
+				});
+
+				$panels.each(function() {
+					this.hidden = this.id !== target;
+				});
+			};
+
+			selectTab($tabs.filter('[aria-selected="true"]')[0]);
+
+			$tabs.on("click", function() {
+				selectTab(this);
+				const tabTop = $tabRoot.offset().top;
+				$(window).scrollTop(tabTop - (header ? header.getBoundingClientRect().height : 0));
 			});
 		});
 	</script>

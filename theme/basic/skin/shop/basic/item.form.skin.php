@@ -27,52 +27,64 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 		<div id="sit_ov_wrap" class="pc:flex w-full gap-25 mt-10">
 			<!-- 상품이미지 미리보기 시작 { -->
-			<div id="sit_pvi" class="hidden pc:flex flex-col pc:flex-row-reverse h-fit px-4 pc:px-0">
+			<div id="sit_pvi" class="hidden pc:flex flex-col gap-3 h-fit px-4 pc:px-0">
 				<div id="sit_pvi_big">
 					<?php
+					/* 큰 이미지 출력 로직 */
 					$big_img_count = 0;
 					$thumbnails = array();
 					for ($i = 1; $i <= 10; $i++) {
+
+						// $it[it_img1] ~ $it[it_img10]
 						if (!$it['it_img' . $i])
 							continue;
 
+						// 큰 이미지 생성
 						$img = get_it_thumbnail($it['it_img' . $i], $default['de_mimg_width'], $default['de_mimg_height']);
 
 						if ($img) {
-							// 썸네일
+							// 작은 썸네일 생성 및 보관
 							$thumb = get_it_thumbnail($it['it_img' . $i], 80, 80);
 							$thumbnails[] = $thumb;
 
-							$img_class = 'popup_item_image w-[470px]';
+							$img_class = 'popup_item_image w-120';
 							if ($big_img_count === 0) {
 								$img_class .= ' visible';
 							}
 
 							$big_img_count++;
 
-							echo '<a href="' . G5_SHOP_URL . '/largeimage.php?it_id=' . $it['it_id'] . '&amp;no=' . $i . '" target="_blank" class="popup_item_image pc:w-[470px] ' . $img_class . '">' . $img . '</a>';
+							// <a> 태그로 이미지를 감싸고 확대 창 주소를 보관
+							// $img 로 큰 이미지 출력
+							echo '<a href="' . G5_SHOP_URL . '/largeimage.php?it_id=' . $it['it_id'] . '&amp;no=' . $i . '" target="_blank" class="popup_item_image pc:w-120 ' . $img_class . '">' . $img . '</a>';
 						}
 					}
 
+					// 출력 가능한 큰 이미지가 없으면 no_image.gif 표시
 					if ($big_img_count == 0) {
 						echo '<img src="' . G5_SHOP_URL . '/img/no_image.gif" alt="">';
 					}
 					?>
 				</div>
+
 				<?php
-				// 썸네일
-				$thumb1 = true;
+				/* 썸네일 출력 로직 */
 				$thumb_count = 0;
-				$total_count = count($thumbnails);
+				$total_count = count($thumbnails); // 썸네일 갯수
+
 				if ($total_count > 0) {
-					echo '<ul id="sit_pvi_thumb" class="flex pc:flex-col w-22">';
+					// 썸네일 리스트 <ul> 우선 출력
+					echo '<ul id="sit_pvi_thumb" class="flex flex-wrap justify-center w-full">';
 					foreach ($thumbnails as $val) {
 						$thumb_count++;
 						$sit_pvi_last = '';
-						if ($thumb_count % 5 == 0)
-							$sit_pvi_last = 'class="li_last"';
+
+						if ($thumb_count % 5 == 0) {
+							$sit_pvi_last = ' li_last';
+						}
+
 						echo '<li class="mb-2 mr-2' . $sit_pvi_last . '">';
-						echo '<a href="' . G5_SHOP_URL . '/largeimage.php?it_id=' . $it['it_id'] . '&amp;no=' . $thumb_count . '" target="_blank" class="popup_item_image img_thumb">' . $val . '<span class="sound_only"> ' . $thumb_count . '번째 이미지 새창</span></a>';
+						echo '<button type="button" aria-current="false" class="img_thumb rounded [&>img]:rounded [&>img]:border [&>img]:border-[#dbdbdb] aria-current:ring-2 aria-current:ring-amber-400 cursor-pointer">' . $val . '<span class="sound_only"> ' . $thumb_count . '번째 상품 이미지 보기</span></button>';
 						echo '</li>';
 					}
 					echo '</ul>';
@@ -101,10 +113,23 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					$thumb_img .= '</li>' . PHP_EOL;
 				}
 				if ($thumb_img) {
-					echo '<div id="sit_pvi_slider">' . PHP_EOL;
+					echo '<div id="sit_pvi_slider" class="relative z-0">' . PHP_EOL;
 					echo '<ul id="sit_pvi_slide" class="owl-carousel">' . PHP_EOL;
 					echo $thumb_img;
 					echo '</ul>' . PHP_EOL;
+				?>
+					<button type="button" id="sit_pvi_prev" aria-label="이전 상품 이미지" class="absolute left-2 top-1/2 z-10 flex w-10 h-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/0 text-zinc-800">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="w-6 h-6">
+							<path d="m15 6-6 6 6 6" />
+						</svg>
+					</button>
+					<button type="button" id="sit_pvi_next" aria-label="다음 상품 이미지" class="absolute right-2 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/0 text-zinc-800">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" class="w-6 h-6">
+							<path d="m9 6 6 6-6 6" />
+						</svg>
+					</button>
+					<span id="sit_pvi_count" class="absolute bottom-4 right-4 z-10 rounded-full bg-black/50 px-4 py-2 text-sm font-semibold text-white"></span>
+				<?php
 					echo '</div>';
 				}
 				?>
@@ -146,12 +171,30 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 			</style>
 
 			<script>
-				$("#sit_pvi_slide").owlCarousel({
-					items: 1,
-					nav: false,
-					dots: true,
-					loop: true,
-					autoplay: false
+				$(function() {
+					const $slider = $("#sit_pvi_slide");
+
+					$slider.on("initialized.owl.carousel translated.owl.carousel refreshed.owl.carousel", function(event) {
+						const current = event.relatedTarget.relative(event.item.index) + 1;
+						$("#sit_pvi_count").text(current + " / " + event.item.count);
+					});
+
+					$slider.owlCarousel({
+						items: 1,
+						nav: false,
+						dots: false,
+						loop: true,
+						rewind: $slider.children("li").length === 1,
+						autoplay: false
+					});
+
+					$("#sit_pvi_prev").on("click", function() {
+						$slider.trigger("prev.owl.carousel");
+					});
+
+					$("#sit_pvi_next").on("click", function() {
+						$slider.trigger("next.owl.carousel");
+					});
 				});
 			</script>
 			<!-- 상품 요약정보 및 구매 시작 { -->
@@ -352,26 +395,6 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 									</div>
 								</div>
 							<?php } ?>
-
-							<?php
-							// 					$ct_send_cost_label = '배송비결제';
-
-							// 					if ($it['it_sc_type'] == 1) {
-							// 						$sc_method = '무료배송';
-							// 					} else {
-							// 						if ($it['it_sc_method'] == 1) {
-							// 							$sc_method = '수령후 지불';
-							// 						} else if ($it['it_sc_method'] == 2) {
-							// 							$ct_send_cost_label = '<label for="ct_send_cost">배송비결제</label>';
-							// 							$sc_method = '<select name="ct_send_cost" id="ct_send_cost" class="border border-gray-300 rounded px-2 py-1 text-sm text-gray-900 bg-white">
-							// 	<option value="0">주문시 결제</option>
-							// 	<option value="1">수령후 지불</option>
-							// </select>';
-							// 						} else {
-							// 							$sc_method = '주문시 결제';
-							// 						}
-							// 					}
-							?>
 						</div>
 					</div>
 				</div>
@@ -532,7 +555,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					});
 				</script>
 
-				<div class="hidden pc:flex gap-3 mt-6">
+				<div class="hidden pc:flex gap-3 mt-8">
 					<button type="button"
 						class="btn_wish flex h-14 w-14 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-700 cursor-pointer hover:bg-gray-50"
 						data-it_id="<?php echo $it['it_id']; ?>"
@@ -553,9 +576,13 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 							</button>
 						<?php } ?>
 					<?php } else { ?>
-						<button type="submit" id="sit_order_summary_trigger" data-variant="primary"
-							onclick="document.pressed=this.value;" value="장바구니" class="h-14 flex-1 cursor-pointer">
-							장바구니 담기
+						<button type="submit" id="sit_order_summary_trigger"
+							onclick="document.pressed=this.value;" value="장바구니" class="flex-1 h-14 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-base font-semibold cursor-pointer">
+							장바구니
+						</button>
+						<button type="submit"
+							onclick="document.pressed=this.value;" value="바로구매" class="flex-1 h-14 border border-transparent rounded-md bg-(--color-primary)/85 hover:bg-(--color-primary) text-base font-semibold cursor-pointer">
+							구매하기
 						</button>
 					<?php } ?>
 				</div>
@@ -640,9 +667,13 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 									</svg>
 								</button>
 
-								<button type="submit" data-variant="primary" onclick="document.pressed=this.value;"
-									value="장바구니" class="h-12.5 flex-1 cursor-pointer">
-									장바구니 담기
+								<button type="submit" onclick="document.pressed=this.value;" value="장바구니"
+									class="flex-1 h-12.5 border border-gray-300 rounded-md bg-white hover:bg-gray-50 text-base font-semibold cursor-pointer">
+									장바구니
+								</button>
+								<button type="submit" onclick="document.pressed=this.value;" value="바로구매"
+									class="flex-1 h-12.5 border border-transparent rounded-md bg-(--color-primary)/85 hover:bg-(--color-primary) text-base font-semibold cursor-pointer">
+									구매하기
 								</button>
 							</div>
 						</div>
@@ -892,14 +923,17 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		});
 
 		$(function() {
-			// 상품이미지 첫번째 링크
+			// 첫 번째 큰 이미지와 썸네일 표시
 			$("#sit_pvi_big a:first").addClass("visible");
+			$("#sit_pvi .img_thumb").first().attr("aria-current", "true");
 
-			// 상품이미지 미리보기 (썸네일에 마우스 오버시)
-			$("#sit_pvi .img_thumb").bind("mouseover focus", function() {
-				var idx = $("#sit_pvi .img_thumb").index($(this));
+			// 썸네일 클릭 시 큰 이미지와 현재 표시 변경
+			$("#sit_pvi .img_thumb").on("click", function() {
+				const idx = $("#sit_pvi .img_thumb").index($(this));
 				$("#sit_pvi_big a.visible").removeClass("visible");
 				$("#sit_pvi_big a:eq(" + idx + ")").addClass("visible");
+				$("#sit_pvi .img_thumb").attr("aria-current", "false");
+				$(this).attr("aria-current", "true");
 			});
 
 			// 상품이미지 크게보기
