@@ -59,12 +59,12 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 				<?php } ?>
 
 			</li>
-			<!-- 리뷰 시작 { -->
+			<!-- 상품 리뷰 시작 { -->
 			<li id="sit_use" role="tabpanel" aria-labelledby="btn_sit_use" hidden>
-				<h2>리뷰</h2>
+				<h2 class="sr-only">리뷰</h2>
 				<div id="itemuse"><?php include_once(G5_SHOP_PATH . '/itemuse.php'); ?></div>
 			</li>
-			<!-- } 리뷰 끝 -->
+			<!-- } 상품 리뷰 끝 -->
 
 			<!-- 상품문의 시작 { -->
 			<li id="sit_qa" role="tabpanel" aria-labelledby="btn_sit_qa" hidden>

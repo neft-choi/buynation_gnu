@@ -1084,7 +1084,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		}
 
 		if ($(".sit_opt_list").length < 1) {
-			alert("상품의 선택옵션을 선택해 주십시오.");
+			alert("상품 옵션을 선택해 주십시오.");
 			return false;
 		}
 
@@ -1157,7 +1157,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 		}
 
 		if ($(".sit_opt_list").length < 1) {
-			alert("상품의 선택옵션을 선택해 주십시오.");
+			alert("상품 옵션을 선택해 주십시오.");
 			return false;
 		}
 

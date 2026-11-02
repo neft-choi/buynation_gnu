@@ -3,8 +3,25 @@ include_once('./_common.php');
 
 $it_id = isset($_REQUEST['it_id']) ? safe_replace_regex($_REQUEST['it_id'], 'it_id') : '';
 
-if( !isset($it) && !get_session("ss_tv_idx") ){
-    if( !headers_sent() ){  //헤더를 보내기 전이면 검색엔진에서 제외합니다.
+
+$review_filter = (isset($_GET['review_filter']) && $_GET['review_filter'] === 'photo')
+    ? 'photo'
+    : 'all';
+
+$review_sort = 'latest';
+$review_order = 'is_id desc';
+
+// 정렬에서 쉼표로 조건 구분하고 쉼표 앞의 값이 같으면 쉼표 뒤가 순차 적용
+if (isset($_GET['review_sort']) && $_GET['review_sort'] === 'score_high') {
+    $review_sort = 'score_high';
+    $review_order = 'is_score desc, is_id desc';
+} elseif (isset($_GET['review_sort']) && $_GET['review_sort'] === 'score_low') {
+    $review_sort = 'score_low';
+    $review_order = 'is_score asc, is_id desc';
+}
+
+if (!isset($it) && !get_session("ss_tv_idx")) {
+    if (!headers_sent()) {  //헤더를 보내기 전이면 검색엔진에서 제외합니다.
         echo '<meta name="robots" content="noindex, nofollow">';
     }
     /*
@@ -15,44 +32,50 @@ if( !isset($it) && !get_session("ss_tv_idx") ){
 }
 
 if (G5_IS_MOBILE) {
-    include_once(G5_MSHOP_PATH.'/itemuse.php');
+    include_once(G5_MSHOP_PATH . '/itemuse.php');
     return;
 }
 
+if (!isset($it)) {
+    $it = get_shop_item($it_id);
+}
+
+
+
 // 썸네일 처리 라이브러리
-include_once(G5_LIB_PATH.'/thumbnail.lib.php');
+include_once(G5_LIB_PATH . '/thumbnail.lib.php');
 
 // 현재 페이지, 총 페이지 수, 한 페이지에 보여줄 행, URL
-function itemuse_page($write_pages, $cur_page, $total_page, $url, $add="")
+function itemuse_page($write_pages, $cur_page, $total_page, $url, $add = "")
 {
     //$url = preg_replace('#&amp;page=[0-9]*(&amp;page=)$#', '$1', $url);
     $url = preg_replace('#&amp;page=[0-9]*#', '', $url) . '&amp;page=';
 
     $str = '';
     if ($cur_page > 1) {
-        $str .= '<a href="'.$url.'1'.$add.'" class="pg_page pg_start">처음</a>'.PHP_EOL;
+        $str .= '<a href="' . $url . '1' . $add . '" class="pg_page pg_start">처음</a>' . PHP_EOL;
     }
 
-    $start_page = ( ( (int)( ($cur_page - 1 ) / $write_pages ) ) * $write_pages ) + 1;
+    $start_page = (((int)(($cur_page - 1) / $write_pages)) * $write_pages) + 1;
     $end_page = $start_page + $write_pages - 1;
 
     if ($end_page >= $total_page) $end_page = $total_page;
 
-    if ($start_page > 1) $str .= '<a href="'.$url.($start_page-1).$add.'" class="pg_page pg_prev">이전</a>'.PHP_EOL;
+    if ($start_page > 1) $str .= '<a href="' . $url . ($start_page - 1) . $add . '" class="pg_page pg_prev">이전</a>' . PHP_EOL;
 
     if ($total_page > 1) {
-        for ($k=$start_page;$k<=$end_page;$k++) {
+        for ($k = $start_page; $k <= $end_page; $k++) {
             if ($cur_page != $k)
-                $str .= '<a href="'.$url.$k.$add.'" class="pg_page">'.$k.'</a><span class="sound_only">페이지</span>'.PHP_EOL;
+                $str .= '<a href="' . $url . $k . $add . '" class="pg_page">' . $k . '</a><span class="sound_only">페이지</span>' . PHP_EOL;
             else
-                $str .= '<span class="sound_only">열린</span><strong class="pg_current">'.$k.'</strong><span class="sound_only">페이지</span>'.PHP_EOL;
+                $str .= '<span class="sound_only">열린</span><strong class="pg_current">' . $k . '</strong><span class="sound_only">페이지</span>' . PHP_EOL;
         }
     }
 
-    if ($total_page > $end_page) $str .= '<a href="'.$url.($end_page+1).$add.'" class="pg_page pg_next">다음</a>'.PHP_EOL;
+    if ($total_page > $end_page) $str .= '<a href="' . $url . ($end_page + 1) . $add . '" class="pg_page pg_next">다음</a>' . PHP_EOL;
 
     if ($cur_page < $total_page) {
-        $str .= '<a href="'.$url.$total_page.$add.'" class="pg_page pg_end">맨끝</a>'.PHP_EOL;
+        $str .= '<a href="' . $url . $total_page . $add . '" class="pg_page pg_end">맨끝</a>' . PHP_EOL;
     }
 
     if ($str)
@@ -61,29 +84,38 @@ function itemuse_page($write_pages, $cur_page, $total_page, $url, $add="")
         return "";
 }
 
-$itemuse_list = G5_SHOP_URL."/itemuselist.php";
-$itemuse_form = G5_SHOP_URL."/itemuseform.php?it_id=".$it_id;
-$itemuse_formupdate = G5_SHOP_URL."/itemuseformupdate.php?it_id=".$it_id;
+$itemuse_list = G5_SHOP_URL . "/itemuselist.php";
+$itemuse_form = G5_SHOP_URL . "/itemuseform.php?it_id=" . $it_id;
+$itemuse_formupdate = G5_SHOP_URL . "/itemuseformupdate.php?it_id=" . $it_id;
 
 $sql_common = " from `{$g5['g5_shop_item_use_table']}` where it_id = '{$it_id}' and is_confirm = '1' ";
 
-// 테이블의 전체 레코드수만 얻음
+// 현재 상품의 승인된 전체 리뷰 개수
 $sql = " select COUNT(*) as cnt " . $sql_common;
 $row = sql_fetch($sql);
-$total_count = $row['cnt'];
+$review_total_count = (int) $row['cnt'];
+$total_count = $review_total_count;
+
+// 사진 리뷰 필터
+if ($review_filter === 'photo') {
+    $sql_common .= " and LOWER(is_content) REGEXP '<img[[:space:]][^>]*>' ";
+    $sql = " select COUNT(*) as cnt " . $sql_common;
+    $row = sql_fetch($sql);
+    $total_count = (int) $row['cnt'];
+}
 
 $rows = 5;
 $total_page  = ceil($total_count / $rows); // 전체 페이지 계산
 if ($page < 1) $page = 1; // 페이지가 없으면 첫 페이지 (1 페이지)
 $from_record = ($page - 1) * $rows; // 시작 레코드 구함
 
-$sql = "select * $sql_common order by is_id desc limit $from_record, $rows ";
+$sql = "select * $sql_common order by $review_order limit $from_record, $rows ";
 $result = sql_query($sql);
 
-$itemuse_skin = G5_SHOP_SKIN_PATH.'/itemuse.skin.php';
+$itemuse_skin = G5_SHOP_SKIN_PATH . '/itemuse.skin.php';
 
-if(!file_exists($itemuse_skin)) {
-    echo str_replace(G5_PATH.'/', '', $itemuse_skin).' 스킨 파일이 존재하지 않습니다.';
+if (!file_exists($itemuse_skin)) {
+    echo str_replace(G5_PATH . '/', '', $itemuse_skin) . ' 스킨 파일이 존재하지 않습니다.';
 } else {
     include_once($itemuse_skin);
 }

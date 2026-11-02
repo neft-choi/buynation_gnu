@@ -3122,18 +3122,18 @@ select {
   height: auto;
 }
 
-#sit_use h2 {
+/* #sit_use h2 {
   position: absolute;
   font-size: 0;
   line-height: 0;
   content: "";
-}
-#sit_use h3 {
+} */
+/* #sit_use h3 {
   font-size: 18px;
   font-weight: bold;
   border-bottom: 2px solid gray;
   padding-bottom: 8px;
-}
+} */
 
 .sit_use_top {
   position: relative;
@@ -3178,19 +3178,19 @@ select {
   border-top: 1px solid #e0e0e0;
   list-style: none;
 }
-.sit_use_li {
+/* .sit_use_li {
   position: relative;
   padding: 16px 0;
-  /* padding-left: 110px; */
+  padding-left: 110px;
   min-height: 120px;
   border-bottom: 1px solid #e0e0e0;
-}
-.sit_use_li:after {
+} */
+/* .sit_use_li:after {
   display: block;
   visibility: hidden;
   clear: both;
   content: "";
-}
+} */
 .sit_use_li_title {
   position: absolute;
   right: 20px;
