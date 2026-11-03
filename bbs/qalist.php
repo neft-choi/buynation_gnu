@@ -48,8 +48,18 @@ if ($qaconfig['qa_category']) {
 }
 
 if (is_file($skin_file)) {
+    $qa_status_filter = isset($_GET['qa_status_filter'])
+        && in_array($_GET['qa_status_filter'], array('0', '1'), true)
+        ? $_GET['qa_status_filter']
+        : '';
+
     $sql_common = " from {$g5['qa_content_table']} ";
     $sql_search = " where qa_type = '0' ";
+
+    if ($qa_status_filter !== '') {
+        $sql_search .= " and qa_status = '{$qa_status_filter}' ";
+        $qstr .= '&amp;qa_status_filter=' . $qa_status_filter;
+    }
 
     if (!$is_admin)
         $sql_search .= " and mb_id = '{$member['mb_id']}' ";

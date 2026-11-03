@@ -14,7 +14,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 </style>
 
 <!-- 상품 사용후기 시작 { -->
-<section id="sit_use_list" class="space-y-4 mt-4">
+<section id="sit_use_list" class="space-y-4 mt-4 px-4 pc:px-0">
     <h3 class="text-lg font-bold text-gray-900">상품 리뷰</h3>
 
     <?php
@@ -71,9 +71,14 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
     for ($i = 0; $row = sql_fetch_array($result); $i++) {
         $is_num     = $total_count - ($page - 1) * $rows - $i;
         $is_star    = get_star($row['is_score']);
-        $is_name    = get_text($row['is_name']);
+        $is_name = get_text(cut_str($row['is_name'], 1, '') . '**');
         $is_subject = conv_subject($row['is_subject'], 50, "…");
+
         $is_content = get_view_thumbnail(conv_content($row['is_content'], 1), $thumbnail_width);
+        $review_image_pattern = '~<a\b[^>]*>\s*<img\b[^>]*>\s*</a>|<img\b[^>]*>~i';
+        preg_match_all($review_image_pattern, $is_content, $review_images);
+        $is_content = preg_replace($review_image_pattern, '', $is_content);
+
         $is_reply_name = !empty($row['is_reply_name']) ? get_text($row['is_reply_name']) : '';
         $is_reply_subject = !empty($row['is_reply_subject']) ? conv_subject($row['is_reply_subject'], 50, "…") : '';
         $is_reply_content = !empty($row['is_reply_content']) ? get_view_thumbnail(conv_content($row['is_reply_content'], 1), $thumbnail_width) : '';
@@ -85,32 +90,55 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
         if ($i == 0) echo '<ol id="sit_use_ol">';
     ?>
 
-        <li class="sit_use_li relative space-y-4 min-h-30 border-b border-gray-300 py-4">
+        <li class="sit_use_li relative space-y-2 min-h-50 border-b border-gray-300 py-4">
             <div class="flex items-center justify-between gap-4">
-                <p class="text-sm text-gray-900 font-bold"><?php echo $is_name; ?></p>
-
-                <div class="flex items-center gap-1" aria-label="별점 <?php echo (int) $is_star; ?>점">
+                <div class="flex items-center" aria-label="별점 <?php echo (int) $is_star; ?>점">
                     <?php for ($rs = 1; $rs <= 5; $rs++) { ?>
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                            class="h-4 w-4 <?php echo ($rs <= (int) $is_star) ? 'text-orange-500' : 'text-gray-300'; ?>"
+                            class="h-4 w-4 <?php echo ($rs <= (int) $is_star) ? 'text-amber-300' : 'text-gray-300'; ?>"
                             fill="<?php echo ($rs <= (int) $is_star) ? 'currentColor' : 'none'; ?>"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"></path>
                         </svg>
                     <?php } ?>
                 </div>
+
+                <time datetime="<?php echo date('Y-m-d', strtotime($row['is_time'])); ?>" class="shrink-0 text-sm text-gray-400">
+                    <?php echo $is_time_dot; ?>
+                </time>
             </div>
 
-            <div id="sit_use_con_<?php echo $i; ?>" class="sit_use_con">
-                <p class="text-base font-medium text-gray-900"><?php echo $is_subject; ?></p>
+            <div class="flex flex-wrap items-center gap-1 text-xs text-gray-400">
+                <p><?php echo $is_name; ?></p>
+                <span>·</span>
+                <span><?php echo get_text($it['it_name']); ?></span>
+            </div>
 
-                <div class="sit_use_p text-sm">
-                    <?php echo $is_content; // 사용후기 내용 
+            <div id="sit_use_con_<?php echo $i; ?>" class="sit_use_con text-sm">
+                <p class="text-base text-gray-900 font-semibold py-2"><?php echo $is_subject; ?></p>
+
+                <div id="review_content_<?php echo $i; ?>" class="sit_use_p line-clamp-4">
+                    <?php echo $is_content; // 사용후기 내용
                     ?>
                 </div>
+                <button type="button" class="review_content_toggle mt-2 cursor-pointer text-sm text-gray-400"
+                    aria-expanded="false" aria-controls="review_content_<?php echo $i; ?>" hidden>
+                    더보기
+                </button>
+
+                <?php if (!empty($review_images[0])) { ?>
+                    <div class="mt-8 flex gap-2 overflow-x-auto">
+                        <?php foreach ($review_images[0] as $review_image_index => $review_image) { ?>
+                            <a href="<?php echo G5_SHOP_URL; ?>/largeimage.php?is_id=<?php echo (int) $row['is_id']; ?>&amp;no=<?php echo $review_image_index + 1; ?>" target="_blank" rel="noopener" aria-label="리뷰 사진 확대"
+                                class="review_image block h-24 w-24 shrink-0 overflow-hidden rounded-lg bg-gray-100 p-2 [&_img]:h-full [&_img]:w-full [&_img]:object-contain">
+                                <?php echo strip_tags($review_image, '<img>'); ?>
+                            </a>
+                        <?php } ?>
+                    </div>
+                <?php } ?>
 
                 <?php if ($is_admin || $row['mb_id'] == $member['mb_id']) { ?>
-                    <div class="sit_use_cmd flex items-center gap-1">
+                    <div class="mt-4 sit_use_cmd flex items-center gap-1">
                         <a href="<?php echo $itemuse_form . "&amp;is_id={$row['is_id']}&amp;w=u"; ?>" class="itemuse_form px-2 py-1 border border-gray-400 text-gray-500 rounded" onclick="return false;">수정</a>
                         <a href="<?php echo $itemuse_formupdate . "&amp;is_id={$row['is_id']}&amp;w=d&amp;hash={$hash}"; ?>" class="itemuse_delete px-2 py-1 border border-gray-400 text-gray-500 rounded">삭제</a>
                     </div>
@@ -199,34 +227,70 @@ echo itemuse_page($config['cf_write_pages'], $page, $total_page, G5_SHOP_URL . "
             });
         });
 
+        $(".review_image").on("click", function() {
+            popup_window(this.href, "largeimage", "scrollbars=yes,top=10,left=10");
+            return false;
+        });
+
         $(".itemuse_form").click(function() {
             window.open(this.href, "itemuse_form", "width=810,height=680,scrollbars=1");
             return false;
         });
 
         $(".itemuse_delete").click(function() {
-            if (confirm("정말 삭제 하시겠습니까?\n\n삭제후에는 되돌릴수 없습니다.")) {
+            if (confirm("삭제 시 복구가 불가능합니다.\n정말 삭제하시겠습니까?")) {
                 return true;
             } else {
                 return false;
             }
         });
 
-        // '내용보기' 버튼 클릭 시 리뷰 본문 아코디언 기능
-        // $(".sit_use_li_title").click(function(){
-        //     var $con = $(this).siblings(".sit_use_con");
-        //     if($con.is(":visible")) {
-        //         $con.slideUp();
-        //     } else {
-        //         $(".sit_use_con:visible").hide();
-        //         $con.slideDown(
-        //             function() {
-        //                 // 이미지 리사이즈
-        //                 $con.viewimageresize2();
-        //             }
-        //         );
-        //     }
-        // });
+        const $reviewContainer = $("#itemuse");
+        const previousObserver = $reviewContainer.data("reviewContentObserver");
+
+        if (previousObserver) {
+            previousObserver.disconnect();
+        }
+
+        const $reviewContents = $("#sit_use_list .sit_use_p");
+
+        const updateReviewButtons = function() {
+            $reviewContents.each(function() {
+                if (this.clientWidth === 0) return;
+
+                const $content = $(this);
+                const $button = $content.next(".review_content_toggle");
+                const isExpanded = $button.attr("aria-expanded") === "true";
+
+                $content.addClass("line-clamp-4");
+                const isOverflowing = this.scrollHeight > this.clientHeight + 1;
+
+                $content.toggleClass("line-clamp-4", !isExpanded || !isOverflowing);
+                $button.prop("hidden", !isOverflowing);
+
+                if (!isOverflowing) {
+                    $button.attr("aria-expanded", "false").text("더보기");
+                }
+            });
+        };
+
+        $("#sit_use_list .review_content_toggle").on("click", function() {
+            const $button = $(this);
+            const $content = $button.prev(".sit_use_p");
+            const isExpanded = $button.attr("aria-expanded") === "true";
+
+            $content.toggleClass("line-clamp-4", isExpanded);
+            $button.attr("aria-expanded", String(!isExpanded));
+            $button.text(isExpanded ? "더보기" : "접기");
+        });
+
+        const reviewContentObserver = new ResizeObserver(updateReviewButtons);
+
+        $reviewContents.each(function() {
+            reviewContentObserver.observe(this);
+        });
+
+        $reviewContainer.data("reviewContentObserver", reviewContentObserver);
 
         // 이미지 리사이즈 기능만 살리기
         $(".sit_use_con").each(function() {

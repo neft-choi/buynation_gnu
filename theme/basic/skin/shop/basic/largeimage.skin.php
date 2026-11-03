@@ -5,7 +5,16 @@ if (!defined('_GNUBOARD_')) exit; // 개별 페이지 접근 불가
 add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.carousel.css">', 0);
 add_javascript('<script src="' . G5_JS_URL . '/owlcarousel/owl.carousel.min.js"></script>', 10);
 
-$images = get_item_images_info($row, $size, 60, 60);
+if ($is_id > 0) {
+    $images = array();
+    foreach ($review_image_sources[1] as $index => $source) {
+        $image_url = htmlspecialchars(html_entity_decode($source, ENT_QUOTES, 'UTF-8'), ENT_QUOTES, 'UTF-8');
+        $images[$index + 1] = array('imagehtml' => '<img src="' . $image_url . '" alt="리뷰 사진">');
+    }
+} else {
+    $images = get_item_images_info($row, $size, 60, 60);
+}
+
 $image_numbers = array_keys($images);
 $start_position = array_search($no, $image_numbers, true);
 $start_position = $start_position === false ? 0 : $start_position;
@@ -13,7 +22,7 @@ $start_position = $start_position === false ? 0 : $start_position;
 
 <div id="sit_pvi_nw" class="flex min-h-dvh flex-col bg-white text-zinc-900">
     <header class="hidden pc:flex items-center justify-between px-4 py-4">
-        <h1 id="win_title" class="text-2xl font-bold">상품 이미지 확대</h1>
+        <h1 id="win_title" class="text-2xl font-bold">이미지 확대</h1>
         <button type="button" onclick="window.close();" class="inline-flex h-6 w-6 shrink-0 items-center justify-center text-zinc-700" aria-label="확대창 닫기">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true">
                 <path d="M18 6 6 18" />
@@ -24,7 +33,7 @@ $start_position = $start_position === false ? 0 : $start_position;
 
     <header class="flex pc:hidden items-center justify-between p-4">
         <div class="h-6 w-6 shrink-0" aria-hidden="true"></div>
-        <h1 class="text-lg font-semibold leading-none text-zinc-900">상품 이미지 확대</h1>
+        <h1 class="text-lg font-semibold leading-none text-zinc-900">이미지 확대</h1>
         <button type="button" onclick="window.close();" class="inline-flex h-6 w-6 shrink-0 items-center justify-center text-zinc-700" aria-label="확대창 닫기">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6" aria-hidden="true">
                 <path d="M18 6 6 18" />
