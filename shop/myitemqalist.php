@@ -1,8 +1,13 @@
 <?php
 include_once('./_common.php');
 
+// 비회원 접근 차단
+if (!$is_member) {
+    alert('회원만 이용하실 수 있습니다.', G5_BBS_URL . '/login.php?url=' . urlencode(G5_SHOP_URL . '/myitemqalist.php'));
+}
+
 add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css">', 0);
-add_javascript('<script src="' . G5_JS_URL . '/viewimageresize.js"></script>', 0);
+add_javascript('<script src="' . G5_JS_URL . '/viewimageresize.js"></script>', 1);
 
 $g5['title'] = '상품 문의 내역';
 include_once('./_head.php');
@@ -15,6 +20,26 @@ $currentUserMbId = $member['mb_id'];
 $sql_search .= " and ( ";
 $sql_search .= " ( a.mb_id = '$currentUserMbId') ";
 $sql_search .= " ) ";
+
+$stx = trim($stx);
+if ($stx !== '') {
+    $sql_search .= " and a.iq_subject like '%{$stx}%' ";
+}
+
+$qa_status_filter = isset($_GET['qa_status_filter'])
+    && in_array($_GET['qa_status_filter'], array('0', '1'), true)
+    ? $_GET['qa_status_filter']
+    : '';
+
+if ($qa_status_filter === '0') {
+    $sql_search .= " and cast(a.iq_answer as binary) in ('', '0') ";
+} elseif ($qa_status_filter === '1') {
+    $sql_search .= " and cast(a.iq_answer as binary) not in ('', '0') ";
+}
+
+if ($qa_status_filter !== '') {
+    $qstr .= '&amp;qa_status_filter=' . $qa_status_filter;
+}
 
 if (!$sst) {
     $sst  = "a.iq_id";
@@ -76,7 +101,49 @@ $result = sql_query($sql);
             </h2>
         </div>
 
+        <form name="fsearch" method="get" action="<?php echo G5_SHOP_URL; ?>/myitemqalist.php"
+            class="flex items-center gap-2 p-4">
+            <input type="hidden" name="sfl" value="a.iq_subject">
+            <input type="hidden" name="qa_status_filter" value="<?php echo $qa_status_filter; ?>">
+            <label for="itemqa-search" class="sound_only">문의 제목 검색</label>
+            <input type="text" name="stx" id="itemqa-search"
+                value="<?php echo get_text(stripslashes($stx)); ?>" required maxlength="20"
+                placeholder="문의 제목 검색"
+                class="min-w-0 flex-1 rounded border border-zinc-300 bg-white text-sm text-zinc-900 placeholder:text-zinc-400 px-3 py-2">
+            <button type="submit"
+                class="shrink-0 rounded border border-zinc-300 bg-white text-sm text-zinc-900 hover:bg-zinc-50 px-3 py-2">검색</button>
+            <button type="button" id="itemqa-search-reset"
+                class="shrink-0 rounded border border-zinc-300 bg-white text-sm text-zinc-700 hover:bg-zinc-50 px-3 py-2">초기화</button>
+        </form>
+
+        <div class="flex flex-wrap items-center gap-2 px-4">
+            <label for="itemqa-type-filter" class="sound_only">문의유형</label>
+            <select id="itemqa-type-filter"
+                class="!w-auto rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900">
+                <option value="">전체 문의유형</option>
+                <option value="product">상품</option>
+                <option value="delivery">배송</option>
+                <option value="return_cancel">반품·취소</option>
+                <option value="exchange">교환</option>
+                <option value="other">기타</option>
+            </select>
+
+            <label for="itemqa-status-filter" class="sound_only">답변상태</label>
+            <select id="itemqa-status-filter"
+                class="!w-auto rounded border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900">
+                <option value="" <?php echo get_selected($qa_status_filter, ''); ?>>전체 답변상태</option>
+                <option value="0" <?php echo get_selected($qa_status_filter, '0'); ?>>답변대기</option>
+                <option value="1" <?php echo get_selected($qa_status_filter, '1'); ?>>답변완료</option>
+            </select>
+        </div>
+
         <div id="sqa" class="p-4">
+            <div class="hidden pc:grid pc:grid-cols-[12%_19%_47%_22%] items-center border-y border-slate-200 bg-zinc-50 text-xs text-slate-500">
+                <span class="p-3">유형</span>
+                <span class="p-3">상태</span>
+                <span class="p-3">제목</span>
+                <span class="p-3">작성일</span>
+            </div>
             <?php
             $thumbnail_width = 500;
 
@@ -85,8 +152,6 @@ $result = sql_query($sql);
 
                 $is_secret = false;
                 if ($row['iq_secret']) {
-                    $iq_subject .= ' <i class="fa fa-lock" aria-hidden="true"></i>';
-
                     if ($is_admin || $member['mb_id'] == $row['mb_id']) {
                         $iq_question = get_view_thumbnail(conv_content($row['iq_question'], 1), $thumbnail_width);
                     } else {
@@ -101,63 +166,63 @@ $result = sql_query($sql);
 
                 if ($row['iq_answer']) {
                     $iq_stats = '답변완료';
-                    $iq_style = 'text-blue-400';
+                    $iq_style = '';
                     $iq_answer = get_view_thumbnail(conv_content($row['iq_answer'], 1), $thumbnail_width);
                 } else {
                     $iq_stats = '답변대기';
-                    $iq_style = 'text-amber-600';
-                    $iq_answer = '답변이 등록되지 않았습니다.';
+                    $iq_style = 'text-gray-500';
+                    $iq_answer = '답변이 아직 등록되지 않았습니다.';
                 }
 
-                if ($i == 0) echo '<ul class="space-y-4">';
+                if ($i == 0) echo '<ul class="space-y-4 pc:space-y-0">';
             ?>
-                <li>
-                    <div class="flex items-start gap-4">
-                        <div class="sqa_img shrink-0">
-                            <a href="<?php echo $it_href; ?>">
-                                <?php echo get_it_image($row['it_id'], 50, 50); ?>
-                                <span class="sr-only"><?php echo $row['it_name']; ?></span>
-                            </a>
+                <li class="border pc:border-0 pc:border-b! border-gray-300 rounded-lg pc:rounded-none">
+                    <div class="grid min-h-[60px] grid-cols-[1fr_auto] items-center gap-x-3 gap-y-2 py-4 text-sm pc:grid-cols-[12%_19%_47%_22%] pc:gap-0">
+                        <a href="<?php echo $it_href; ?>" title="<?php echo get_text($row['it_name']); ?>"
+                            class="hidden px-3 text-slate-900 hover:underline pc:block">상품</a>
+                        <div class="px-3">
+                            <span data-status="<?php echo $row['iq_answer'] ? 'answered' : 'pending'; ?>"
+                                class="inline-flex whitespace-nowrap rounded bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-500 data-[status=answered]:bg-emerald-50 data-[status=answered]:text-emerald-700">
+                                <?php echo $iq_stats; ?>
+                            </span>
+                        </div>
+                        <button type="button"
+                            class="js-itemqa-toggle group order-3 col-span-2 flex min-w-0 items-center gap-2 px-3 text-left text-slate-900 pc:order-none pc:col-span-1"
+                            aria-controls="itemqa_panel_<?php echo $row['iq_id']; ?>" aria-expanded="false">
+                            
+                            <span class="min-w-0 truncate font-medium"><?php echo $iq_subject; ?></span>
+                            <?php if ($row['iq_secret']) { ?>
+                                <i class="fa fa-lock shrink-0" aria-hidden="true"></i>
+                            <?php } ?>
+
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="h-4 w-4 shrink-0 group-aria-expanded:rotate-180">
+                                <path d="m6 9 6 6 6-6" />
+                            </svg>
+                        </button>
+                        <time datetime="<?php echo substr($row['iq_time'], 0, 10); ?>"
+                            class="whitespace-nowrap px-3 text-right text-slate-900 pc:text-left">
+                            <?php echo date('Y.m.d', strtotime($row['iq_time'])); ?>
+                        </time>
+                    </div>
+
+                    <div id="itemqa_panel_<?php echo $row['iq_id']; ?>" class="hidden px-3 pb-4 text-sm">
+                        <div class="sit_qa_qaq min-h-14 rounded-lg bg-gray-100 p-3">
+                            <strong class="sr-only">문의내용</strong>
+                            <span class="qa_alp mb-1 block font-medium">Q</span>
+                            <?php echo $iq_question; ?>
                         </div>
 
-                        <section class="sqa_section flex-1 min-w-0">
-                            <p class="text-sm"><?php echo $iq_subject; ?></p>
-
-                            <div class="flex items-center gap-4 text-sm text-slate-500">
-                                <span class="text-xs <?php echo $iq_style; ?>"><?php echo $iq_stats; ?></span>
-                                <span><?php echo $row['iq_name']; ?></span>
-                                <span><?php echo substr($row['iq_time'], 0, 10); ?></span>
-                            </div>
-
-                            <div id="itemqa_panel_<?php echo $row['iq_id']; ?>" class="hidden text-sm mt-3" aria-hidden="true">
-                                <div class="sit_qa_qaq min-h-14 rounded-lg bg-gray-100 px-4 py-2">
-                                    <strong class="sound_only">문의내용</strong>
-                                    <span class="qa_alp">Q</span>
-                                    <?php echo $iq_question; ?>
+                        <?php if (!$is_secret) { ?>
+                            <div class="sit_qa_qaa mt-2 min-h-14 rounded-lg bg-gray-100 p-3">
+                                <strong class="sr-only">답변</strong>
+                                <span class="qa_alp mb-1 block font-medium">A</span>
+                                <div class="<?php echo $iq_style; ?>">
+                                    <?php echo $iq_answer; ?>
                                 </div>
-
-                                <?php if (!$is_secret) { ?>
-                                    <div class="sit_qa_qaa min-h-14 rounded-lg bg-gray-100 px-4 py-2 mt-2">
-                                        <strong class="sound_only">답변</strong>
-                                        <span class="qa_alp">A</span>
-                                        <?php echo $iq_answer; ?>
-                                    </div>
-                                <?php } ?>
                             </div>
-                        </section>
-
-                        <div class="sqa_con_btn">
-                            <button
-                                type="button"
-                                class="js-itemqa-toggle inline-flex items-center gap-2 border border-gray-900 rounded text-xs px-2 py-1"
-                                aria-controls="itemqa_panel_<?php echo $row['iq_id']; ?>"
-                                aria-expanded="false">
-                                <span class="js-itemqa-toggle-label">내용보기</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="js-itemqa-toggle-icon w-3 h-3">
-                                    <path d="m6 9 6 6 6-6" />
-                                </svg>
-                            </button>
-                        </div>
+                        <?php } ?>
                     </div>
                 </li>
             <?php
@@ -173,6 +238,29 @@ $result = sql_query($sql);
 
     <script>
         $(function() {
+            $('#itemqa-search-reset').on('click', function() {
+                const url = new URL(window.location.href);
+
+                url.searchParams.delete('stx');
+                url.searchParams.delete('page');
+
+                window.location.href = url.toString();
+            });
+
+            $('#itemqa-status-filter').on('change', function() {
+                const url = new URL(window.location.href);
+
+                url.searchParams.delete('page');
+
+                if (this.value === '') {
+                    url.searchParams.delete('qa_status_filter');
+                } else {
+                    url.searchParams.set('qa_status_filter', this.value);
+                }
+
+                window.location.href = url.toString();
+            });
+
             $('.js-itemqa-toggle').on('click', function() {
                 const $button = $(this);
                 const panelId = $button.attr('aria-controls');
@@ -184,40 +272,17 @@ $result = sql_query($sql);
                     const openPanelId = $openButton.attr('aria-controls');
                     const $openPanel = $('#' + openPanelId);
 
-                    $openPanel.stop(true, true).slideUp(function() {
-                        $openPanel.addClass('hidden');
-                        $openPanel.attr('aria-hidden', 'true');
-                    });
-
+                    $openPanel.hide();
                     $openButton.attr('aria-expanded', 'false');
-                    $openButton.find('.js-itemqa-toggle-label').text('내용보기');
-                    $openButton.find('.js-itemqa-toggle-icon').removeClass('rotate-180');
                 });
 
-                if (isExpanded) {
-                    $panel.stop(true, true).slideUp(function() {
-                        $panel.addClass('hidden');
-                        $panel.attr('aria-hidden', 'true');
-                    });
+                $panel.toggle(!isExpanded);
+                $button.attr('aria-expanded', isExpanded ? 'false' : 'true');
 
-                    $button.attr('aria-expanded', 'false');
-                    $button.find('.js-itemqa-toggle-label').text('내용보기');
-                    $button.find('.js-itemqa-toggle-icon').removeClass('rotate-180');
-                    return;
+                if (!isExpanded && !$panel.data('imageResizeInitialized') && $panel.find('img').length > 0) {
+                    $panel.viewimageresize2();
+                    $panel.data('imageResizeInitialized', true);
                 }
-
-                $panel
-                    .stop(true, true)
-                    .removeClass('hidden')
-                    .hide()
-                    .slideDown(function() {
-                        $panel.attr('aria-hidden', 'false');
-                        $panel.viewimageresize2();
-                    });
-
-                $button.attr('aria-expanded', 'true');
-                $button.find('.js-itemqa-toggle-label').text('내용닫기');
-                $button.find('.js-itemqa-toggle-icon').addClass('rotate-180');
             });
         });
 

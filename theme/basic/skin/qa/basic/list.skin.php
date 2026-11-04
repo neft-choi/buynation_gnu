@@ -86,17 +86,21 @@ if (!empty($qaconfig['qa_category'])) {
                     <input type="hidden" name="qa_status_filter" value="<?php echo $qa_status_filter; ?>">
                     <input type="hidden" name="sfl" value="<?php echo $sfl ? $sfl : 'qa_subject'; ?>">
                     <label for="stx" class="sound_only">검색어 <span class="sound_only">필수</span></label>
-                    <div class="relative">
-                        <input type="text" name="stx" value="<?php echo stripslashes($stx); ?>" required id="stx"
-                            class="h-12 w-full px-4 pr-14 rounded border border-zinc-300 text-base text-zinc-900 placeholder-zinc-400"
-                            size="15" maxlength="15" placeholder="궁금하신 내용을 검색해보세요.">
-                        <button type="submit" value="검색" class="absolute top-3.5 right-4 text-zinc-700" aria-label="검색">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" aria-hidden="true">
-                                <circle cx="11" cy="11" r="8"></circle>
-                                <path d="m21 21-4.3-4.3"></path>
-                            </svg>
-                        </button>
+                    <div class="flex items-center gap-2">
+                        <div class="relative min-w-0 flex-1">
+                            <input type="text" name="stx" value="<?php echo stripslashes($stx); ?>" required id="stx"
+                                class="h-12 w-full px-4 pr-14 rounded border border-zinc-300 text-base text-zinc-900 placeholder-zinc-400"
+                                size="15" maxlength="15" placeholder="궁금하신 내용을 검색해보세요.">
+                            <button type="submit" value="검색" class="absolute top-3.5 right-4 text-zinc-700" aria-label="검색">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <path d="m21 21-4.3-4.3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                        <button type="button" id="qa-search-reset"
+                            class="h-12 shrink-0 rounded border border-zinc-300 bg-white px-4 text-sm text-zinc-700 hover:bg-zinc-50">초기화</button>
                     </div>
                 </form>
             </fieldset>
@@ -132,7 +136,7 @@ if (!empty($qaconfig['qa_category'])) {
 
         <section class="p-4">
             <div class="flex items-center justify-between gap-2 mb-2">
-                <h2 class="text-lg font-bold">상품 문의</h2>
+                <h2 class="text-lg font-bold">1:1 문의</h2>
                 <?php if ($write_href) { ?>
                     <a href="<?php echo $write_href; ?>" title="문의하기"
                         class="px-4 py-2 rounded bg-gray-900 text-sm text-white">문의하기</a>
@@ -146,7 +150,7 @@ if (!empty($qaconfig['qa_category'])) {
                 <input type="hidden" name="page" value="<?php echo $page; ?>">
                 <input type="hidden" name="token" value="<?php echo get_text($token); ?>">
 
-                                <div class="overflow-x-auto">
+                <div class="overflow-x-auto">
                     <table class="w-full min-w-[640px] table-fixed border-collapse text-left text-sm">
                         <caption class="sr-only">문의 목록</caption>
                         <colgroup>
@@ -315,6 +319,16 @@ if (!empty($qaconfig['qa_category'])) {
             } else {
                 url.searchParams.set('qa_status_filter', selectedStatus);
             }
+
+            window.location.href = url.toString();
+        });
+
+        // 검색어 초기화 버튼
+        $('#qa-search-reset').on('click', function() {
+            const url = new URL(window.location.href);
+
+            url.searchParams.delete('stx');
+            url.searchParams.delete('page');
 
             window.location.href = url.toString();
         });

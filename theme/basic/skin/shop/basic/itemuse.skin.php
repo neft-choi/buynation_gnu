@@ -14,7 +14,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css"
 </style>
 
 <!-- 상품 사용후기 시작 { -->
-<section id="sit_use_list" class="space-y-4 mt-4 px-4 pc:px-0">
+<section id="sit_use_list" class="space-y-4 mt-5 px-4 pc:px-0">
     <h3 class="text-lg font-bold text-gray-900">상품 리뷰</h3>
 
     <?php
