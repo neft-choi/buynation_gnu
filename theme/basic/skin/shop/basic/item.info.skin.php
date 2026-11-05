@@ -123,14 +123,12 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 									</svg>
 									<span class="whitespace-nowrap text-sm">상품 정보에 문제가 있나요?</span>
 								</div>
-								<button class="flex items-center gap-1 text-sm text-gray-400">
+								<a href="<?php echo G5_SHOP_URL; ?>/itemreportform.php?it_id=<?php echo rawurlencode($it['it_id']); ?>" id="item-report-open" target="item_report_form" class="flex items-center gap-1 text-sm text-gray-400">
 									신고하기
-									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-										fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-										stroke-linejoin="round" class="lucide lucide-chevron-right-icon lucide-chevron-right">
+									<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
 										<path d="m9 18 6-6-6-6" />
 									</svg>
-								</button>
+								</a>
 							</div>
 						</div>
 				<?php
@@ -506,4 +504,20 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_CSS_URL . '/style.css">
 			$("#btn_" + id).trigger("click");
 		};
 	});
+</script>
+<script>
+    $(function() {
+        $('#item-report-open').on('click', function(event) {
+            const reportWindow = window.open(
+                this.href,
+                'item_report_form',
+                'width=720,height=820,scrollbars=yes,resizable=yes'
+            );
+
+            if (reportWindow) {
+                event.preventDefault();
+                reportWindow.focus();
+            }
+        });
+    });
 </script>
