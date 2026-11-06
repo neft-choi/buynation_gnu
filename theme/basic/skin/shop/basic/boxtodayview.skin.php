@@ -72,7 +72,14 @@ if ($tv_tot_count > 0) {
                     </div>
 
                     <div class="prd_cnt flex-1 min-w-0 text-sm">
-                        <a href="<?php echo $item['url']; ?>" class="prd_name line-clamp-3"><?php echo $item['name']; ?></a>
+                        <div class="flex items-start justify-between gap-2">
+                            <a href="<?php echo $item['url']; ?>" class="prd_name font-bold line-clamp-3"><?php echo $item['name']; ?></a>
+                            <button type="button" data-it_id="<?php echo $item['it_id']; ?>" class="btn_wish inline-flex items-center justify-center w-6 h-6 shrink-0 border border-gray-300 rounded text-gray-700 cursor-pointer" aria-label="찜하기">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 0 0 0-7.78Z"></path>
+                                </svg>
+                            </button>
+                        </div>
 
                         <?php if ($item['has_discount']) { ?>
                             <p class="text-gray-400 line-through">
@@ -91,21 +98,12 @@ if ($tv_tot_count > 0) {
                                 <?php echo number_format($item['price']); ?>원
                             </span>
                         </div>
+
+                        <div class="flex flex-col pc:flex-row justify-between text-xs">
+                            <p class="font-semibold text-orange-500">예상 기여금 1,000원</p>
+                            <p class="mt-2 pc:mt-0 w-fit bg-amber-100/60 font-semibold text-amber-700 text-nowrap px-2 py-1">마감까지 01:23:45</p>
+                        </div>
                     </div>
-
-                    <button
-                        type="button"
-                        data-it_id="<?php echo $item['it_id']; ?>"
-                        class="btn_cart inline-flex items-center justify-center w-11 h-11 rounded border border-zinc-300 text-gray-700 ml-1 shrink-0"
-                        aria-label="장바구니 담기">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-                            <circle cx="8" cy="21" r="1"></circle>
-                            <circle cx="19" cy="21" r="1"></circle>
-                            <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-                        </svg>
-                    </button>
-
-                    <div class="cart-layer"></div>
                 </li>
             <?php } ?>
         </ul>

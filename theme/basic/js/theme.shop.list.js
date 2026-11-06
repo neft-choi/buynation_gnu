@@ -33,7 +33,7 @@ jQuery(function ($) {
         }
 
         mainCart.update_wish_side();
-        alert("상품을 위시리스트에 담았습니다.");
+        alert("상품을 찜 목록에 담았습니다.");
         return;
       },
     );

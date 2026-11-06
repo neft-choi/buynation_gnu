@@ -30,11 +30,11 @@ foreach ((array) $list as $row) {
     }
 
     if ($i === 1) {
-        ?>
+?>
         <ul class="sct grid grid-cols-2 pc:grid-cols-5 gap-x-2 pc:gap-x-5 gap-y-6 pc:gap-y-15">
-            <?php
+        <?php
     }
-    ?>
+        ?>
         <li class="sct_li js-search-recommend-item">
             <article class="space-y-2">
                 <div class="relative rounded-lg overflow-hidden">
@@ -52,7 +52,7 @@ foreach ((array) $list as $row) {
                 <div class="flex w-full gap-1">
                     <button type="button"
                         class="btn_wish sct_btn flex items-center justify-center w-full border border-gray-300 rounded-lg bg-white px-4 py-2"
-                        data-it_id="<?php echo $row['it_id']; ?>" aria-label="위시리스트">
+                        data-it_id="<?php echo $row['it_id']; ?>" aria-label="찜 목록">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-heart" aria-hidden="true">
@@ -125,33 +125,33 @@ foreach ((array) $list as $row) {
                 </div>
             </article>
         </li>
-        <?php
+    <?php
 }
 
 if ($i >= 1) {
     ?>
-    </ul>
+        </ul>
     <?php
 }
 
 if ($i === 0) {
     ?>
-    <p class="sct_noitem">등록된 상품이 없습니다.</p>
+        <p class="sct_noitem">등록된 상품이 없습니다.</p>
     <?php
 }
-?>
+    ?>
 
-<script>
-    $(function () {
-        syncWithPcBreakpoint(function (isPc) {
-            const $items = $('#search_recommend .js-search-recommend-item');
+    <script>
+        $(function() {
+            syncWithPcBreakpoint(function(isPc) {
+                const $items = $('#search_recommend .js-search-recommend-item');
 
-            $items.show();
+                $items.show();
 
-            if (!isPc) {
-                $items.slice(4).hide();
-            }
+                if (!isPc) {
+                    $items.slice(4).hide();
+                }
+            });
         });
-    });
-</script>
-<!-- } 검색 추천 상품진열 끝 -->
+    </script>
+    <!-- } 검색 추천 상품진열 끝 -->

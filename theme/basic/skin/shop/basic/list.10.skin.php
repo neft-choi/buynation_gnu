@@ -7,7 +7,7 @@ global $ca;
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="' . G5_SHOP_SKIN_URL . '/style.css">', 0);
 
-// 장바구니 또는 위시리스트 ajax 스크립트
+// 장바구니 또는 찜 목록 ajax 스크립트
 add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></script>', 10);
 ?>
 
@@ -87,7 +87,7 @@ add_javascript('<script src="' . G5_THEME_JS_URL . '/theme.shop.list.js"></scrip
 
                             <button type="button"
                                 class="btn_wish sct_btn absolute top-2 right-2 z-20 flex items-center justify-center w-8 h-8 border border-gray-300 rounded-full bg-white/90 shadow-sm cursor-pointer"
-                                data-it_id="<?= $row['it_id'] ?>" aria-label="위시리스트">
+                                data-it_id="<?= $row['it_id'] ?>" aria-label="찜 목록">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-heart w-5 h-5 text-black/70" aria-hidden="true">

@@ -79,7 +79,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
                             if (!isNotificationPc) {
                                 return;
                             }
-                            
+
                             // 위에서 return 하지 않았으므로 PC 상태
                             // 알림 아이콘의 링크 주소로 이동하는 기본 동작 취소
                             event.preventDefault();
@@ -363,7 +363,7 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
             <li><button class="btn_sm_cl3 btn_sm"><i class="fa fa-shopping-cart" aria-hidden="true"></i><span
                         class="qk_tit">장바구니</span></button></li>
             <li><button class="btn_sm_cl4 btn_sm"><i class="fa fa-heart-o" aria-hidden="true"></i><span
-                        class="qk_tit">위시리스트</span></button></li>
+                        class="qk_tit">찜 목록</span></button></li>
         </ul>
         <button type="button" id="top_btn"><i class="fa fa-arrow-up" aria-hidden="true"></i><span
                 class="sound_only">상단으로</span></button>
@@ -411,10 +411,10 @@ add_stylesheet('<link rel="stylesheet" href="' . G5_JS_URL . '/owlcarousel/owl.c
             </div>
             <div class="side_mn_wr4 qk_con">
                 <div class="qk_con_wr">
-                    <?php include_once(G5_SHOP_SKIN_PATH . '/boxwish.skin.php'); // 위시리스트 
+                    <?php include_once(G5_SHOP_SKIN_PATH . '/boxwish.skin.php'); // 찜 목록 
                     ?>
                     <button type="button" class="con_close"><i class="fa fa-times-circle" aria-hidden="true"></i><span
-                            class="sound_only">위시리스트 닫기</span></button>
+                            class="sound_only">찜 목록 닫기</span></button>
                 </div>
             </div>
         </div>

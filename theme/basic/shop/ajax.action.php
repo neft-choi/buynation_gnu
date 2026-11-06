@@ -26,7 +26,7 @@ switch ($action) {
             die('');
         }
 
-        include_once(G5_SHOP_SKIN_PATH . '/boxwish.skin.php'); // 위시리스트
+        include_once(G5_SHOP_SKIN_PATH . '/boxwish.skin.php'); // 찜 목록
         break;
 
     case 'cart_delete':
@@ -347,9 +347,23 @@ switch ($action) {
 
             die('OK');
         } else {
-            die('위시리스트에 이미 등록된 상품입니다.');
+            die('찜 목록에 이미 등록된 상품입니다.');
         }
 
         break;
+    case 'clear_recent_viewed':
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            die('잘못된 요청입니다.');
+        }
+
+        $tv_idx = (int) get_session('ss_tv_idx');
+
+        for ($i = 1; $i <= $tv_idx; $i++) {
+            unset($_SESSION["ss_tv[$i]"]);
+        }
+
+        unset($_SESSION['ss_tv_idx']);
+        die('OK');
+
     default:
 }

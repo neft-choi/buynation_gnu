@@ -2,20 +2,20 @@
 include_once('./_common.php');
 
 if (!$is_member)
-    goto_url(G5_BBS_URL."/login.php?url=".urlencode(G5_SHOP_URL."/mypage.php"));
+    goto_url(G5_BBS_URL . "/login.php?url=" . urlencode(G5_SHOP_URL . "/mypage.php"));
 
 // 읽지 않은 쪽지수
 $memo_not_read = isset($member['mb_memo_cnt']) ? (int) $member['mb_memo_cnt'] : 0;
 
 if (G5_IS_MOBILE) {
-    include_once(G5_MSHOP_PATH.'/mypage.php');
+    include_once(G5_MSHOP_PATH . '/mypage.php');
     return;
 }
 
 // 테마에 mypage.php 있으면 include
-if(defined('G5_THEME_SHOP_PATH')) {
-    $theme_mypage_file = G5_THEME_SHOP_PATH.'/mypage.php';
-    if(is_file($theme_mypage_file)) {
+if (defined('G5_THEME_SHOP_PATH')) {
+    $theme_mypage_file = G5_THEME_SHOP_PATH . '/mypage.php';
+    if (is_file($theme_mypage_file)) {
         include_once($theme_mypage_file);
         return;
         unset($theme_mypage_file);
@@ -30,12 +30,12 @@ $cp_count = 0;
 $sql = " select cp_id
             from {$g5['g5_shop_coupon_table']}
             where mb_id IN ( '{$member['mb_id']}', '전체회원' )
-              and cp_start <= '".G5_TIME_YMD."'
-              and cp_end >= '".G5_TIME_YMD."' ";
+              and cp_start <= '" . G5_TIME_YMD . "'
+              and cp_end >= '" . G5_TIME_YMD . "' ";
 $res = sql_query($sql);
 
-for($k=0; $cp=sql_fetch_array($res); $k++) {
-    if(!is_used_coupon($member['mb_id'], $cp['cp_id']))
+for ($k = 0; $cp = sql_fetch_array($res); $k++) {
+    if (!is_used_coupon($member['mb_id'], $cp['cp_id']))
         $cp_count++;
 }
 ?>
@@ -72,18 +72,16 @@ for($k=0; $cp=sql_fetch_array($res); $k++) {
             <dt>회원가입일시</dt>
             <dd><?php echo $member['mb_datetime']; ?></dd>
             <dt id="smb_my_ovaddt">주소</dt>
-            <dd id="smb_my_ovaddd"><?php echo sprintf("(%s%s)", $member['mb_zip1'], $member['mb_zip2']).' '.print_address($member['mb_addr1'], $member['mb_addr2'], $member['mb_addr3'], $member['mb_addr_jibeon']); ?></dd>
+            <dd id="smb_my_ovaddd"><?php echo sprintf("(%s%s)", $member['mb_zip1'], $member['mb_zip2']) . ' ' . print_address($member['mb_addr1'], $member['mb_addr2'], $member['mb_addr3'], $member['mb_addr_jibeon']); ?></dd>
         </dl>
         <div class="my_ov_btn"><button type="button" class="btn_op_area"><i class="fa fa-caret-up" aria-hidden="true"></i><span class="sound_only">상세정보 보기</span></button></div>
 
     </section>
     <script>
-    
         $(".btn_op_area").on("click", function() {
             $(".op_area").toggle();
             $(".fa-caret-up").toggleClass("fa-caret-down")
         });
-
     </script>
     <!-- } 회원정보 개요 끝 -->
 
@@ -95,7 +93,7 @@ for($k=0; $cp=sql_fetch_array($res); $k++) {
         define("_ORDERINQUIRY_", true);
 
         $limit = '';
-        include G5_SHOP_PATH.'/orderinquiry.sub.php';
+        include G5_SHOP_PATH . '/orderinquiry.sub.php';
         ?>
 
         <div class="smb_my_more">
@@ -104,39 +102,38 @@ for($k=0; $cp=sql_fetch_array($res); $k++) {
     </section>
     <!-- } 최근 주문내역 끝 -->
 
-    <!-- 최근 위시리스트 시작 { -->
+    <!-- 최근 찜 목록 시작 { -->
     <section id="smb_my_wish">
-        <h2>최근 위시리스트</h2>
+        <h2>최근 찜 목록</h2>
 
         <div class="list_02">
             <ul>
 
-            <?php
-            $sql = " select *
+                <?php
+                $sql = " select *
                        from {$g5['g5_shop_wish_table']} a,
                             {$g5['g5_shop_item_table']} b
                       where a.mb_id = '{$member['mb_id']}'
                         and a.it_id  = b.it_id
                       order by a.wi_id desc
                       limit 0, 8 ";
-            $result = sql_query($sql);
-            for ($i=0; $row = sql_fetch_array($result); $i++)
-            {
-                $image = get_it_image($row['it_id'], 230, 230, true);
-            ?>
+                $result = sql_query($sql);
+                for ($i = 0; $row = sql_fetch_array($result); $i++) {
+                    $image = get_it_image($row['it_id'], 230, 230, true);
+                ?>
 
-            <li>
-                <div class="smb_my_img"><?php echo $image; ?></div>
-                <div class="smb_my_tit"><a href="<?php echo shop_item_url($row['it_id']); ?>"><?php echo stripslashes($row['it_name']); ?></a></div>
-                <div class="smb_my_date"><?php echo $row['wi_time']; ?></div>
-            </li>
+                    <li>
+                        <div class="smb_my_img"><?php echo $image; ?></div>
+                        <div class="smb_my_tit"><a href="<?php echo shop_item_url($row['it_id']); ?>"><?php echo stripslashes($row['it_name']); ?></a></div>
+                        <div class="smb_my_date"><?php echo $row['wi_time']; ?></div>
+                    </li>
 
-            <?php
-            }
+                <?php
+                }
 
-            if ($i == 0)
-                echo '<li class="empty_li">보관 내역이 없습니다.</li>';
-            ?>
+                if ($i == 0)
+                    echo '<li class="empty_li">보관 내역이 없습니다.</li>';
+                ?>
             </ul>
         </div>
 
@@ -144,15 +141,14 @@ for($k=0; $cp=sql_fetch_array($res); $k++) {
             <a href="./wishlist.php">더보기</a>
         </div>
     </section>
-    <!-- } 최근 위시리스트 끝 -->
+    <!-- } 최근 찜 목록 끝 -->
 
 </div>
 
 <script>
-function member_leave()
-{
-    return confirm('정말 회원에서 탈퇴 하시겠습니까?')
-}
+    function member_leave() {
+        return confirm('정말 회원에서 탈퇴 하시겠습니까?')
+    }
 </script>
 <!-- } 마이페이지 끝 -->
 

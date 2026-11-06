@@ -286,7 +286,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 
 					<div id="sit_btn_opt">
 						<span id="btn_wish"><i class="fa fa-heart-o" aria-hidden="true"></i><span
-								class="sound_only">위시리스트</span><span
+								class="sound_only">찜 목록</span><span
 								class="btn_wish_num"><?php echo get_wishlist_count_by_item($it['it_id']); ?></span></span>
 						<button type="button" class="btn_sns_share"><i class="fa fa-share-alt"
 								aria-hidden="true"></i><span class="sound_only">sns 공유</span></button>
@@ -559,7 +559,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 					<button type="button"
 						class="btn_wish flex h-14 w-14 shrink-0 items-center justify-center rounded border border-gray-300 bg-white text-gray-700 cursor-pointer hover:bg-gray-50"
 						data-it_id="<?php echo $it['it_id']; ?>"
-						aria-label="위시리스트">
+						aria-label="찜 목록">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
 							stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
 							class="lucide lucide-heart-icon lucide-heart w-6 h-6">
@@ -658,7 +658,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 							<div class="mt-6 flex items-center gap-3">
 								<button type="button"
 									class="btn_wish shrink-0 inline-flex items-center justify-center h-12.5 w-12.5 rounded border border-gray-300 bg-white text-gray-700"
-									data-it_id="<?php echo $it['it_id']; ?>" aria-label="위시리스트">
+									data-it_id="<?php echo $it['it_id']; ?>" aria-label="찜 목록">
 									<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
 										stroke="currentColor" stroke-width="2" stroke-linecap="round"
 										stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart h-6 w-6">
@@ -772,7 +772,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 				<div class="mx-auto grid w-full max-w-full grid-cols-[48px_48px_1fr] gap-2">
 					<button type="button"
 						class="btn_wish flex h-12 w-12 items-center justify-center rounded border border-gray-300 bg-white text-gray-700"
-						data-it_id="<?php echo $it['it_id']; ?>" aria-label="위시리스트">
+						data-it_id="<?php echo $it['it_id']; ?>" aria-label="찜 목록">
 						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
 							stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
 							class="lucide lucide-heart-icon lucide-heart">
@@ -836,7 +836,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 								<path
 									d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
 							</svg>
-							<span class="sound_only">위시리스트</span>
+							<span class="sound_only">찜 목록</span>
 						</a>
 
 						<?php if ($naverpay_button_js) { ?>
@@ -980,7 +980,7 @@ $use_cnt = isset($item_use_count) ? (int) $item_use_count : (int) $it['it_use_cn
 						mainCart.update_wish_side();
 					}
 
-					alert("상품을 위시리스트에 담았습니다.");
+					alert("상품을 찜 목록에 담았습니다.");
 				}
 			);
 		});

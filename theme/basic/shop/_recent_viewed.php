@@ -20,6 +20,12 @@ if (!defined("_GNUBOARD_")) exit;
         </button>
     </div>
 
+    <?php if (get_view_today_items(true)) { ?>
+        <div id="recent-viewed-actions" class="flex justify-end px-5 pt-4">
+            <button type="button" id="recent-viewed-clear" class="text-sm text-gray-600 hover:underline cursor-pointer disabled:opacity-50">전체 삭제</button>
+        </div>
+    <?php } ?>
+
     <div id="recent-viewed-list" class="min-h-0 flex-1 overflow-y-auto p-5">
         <?php include(G5_SHOP_SKIN_PATH . '/boxtodayview.skin.php'); // 최근 본 상품
         ?>
@@ -34,6 +40,40 @@ if (!defined("_GNUBOARD_")) exit;
         const $overlayRoot = $('#shop-overlay-root');
 
         $('html').addClass('gutter-stable');
+
+        $(document).on('click', '#recent-viewed-clear', function() {
+            const $button = $(this);
+            $button.prop('disabled', true);
+
+            $.ajax({
+                url: g5_theme_shop_url + '/ajax.action.php',
+                type: 'POST',
+                data: {
+                    action: 'clear_recent_viewed'
+                },
+                dataType: 'text'
+            }).done(function(response) {
+                if (response !== 'OK') {
+                    alert(response);
+                    return;
+                }
+
+                $('#recent-viewed-actions').remove();
+                $('#recent-viewed-list').html(`
+            <div class="flex h-full items-center justify-center text-gray-300">
+                <p>최근 본 상품이 없습니다</p>
+            </div>
+        `);
+                $('#recent-viewed-open').html(`
+            <div class="w-6 h-6 border-2 rounded"></div>
+            <div class="w-4 border rounded"></div>
+        `);
+            }).fail(function() {
+                alert('최근 본 상품 삭제 요청에 실패했습니다. 다시 시도해 주세요.');
+            }).always(function() {
+                $button.prop('disabled', false);
+            });
+        });
 
         // 최근 본 상품 아이콘 클릭 시
         $(document).on('click', '#recent-viewed-open', function() {

@@ -80,14 +80,14 @@ header("Pragma: no-cache"); // HTTP/1.0
 
         // PC 반응형 동기화 함수
         function syncWithPcBreakpoint(callback) {
-            var breakpointPc = parseInt(
+            const breakpointPc = parseInt(
                 getComputedStyle(document.documentElement)
                 .getPropertyValue('--breakpoint-pc')
                 .trim(),
                 10
             ) || 1200;
 
-            var mediaQuery = window.matchMedia('(min-width: ' + breakpointPc + 'px)');
+            const mediaQuery = window.matchMedia('(min-width: ' + breakpointPc + 'px)');
 
             callback(mediaQuery.matches);
 

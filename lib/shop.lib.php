@@ -2251,7 +2251,7 @@ function get_boxcart_datas_count()
     return count($cart_datas);
 }
 
-//위시리스트 데이터 가져오기
+//찜 목록 데이터 가져오기
 function get_wishlist_datas($mb_id, $is_cache = false)
 {
     global $g5, $member;
@@ -2281,7 +2281,7 @@ function get_wishlist_datas($mb_id, $is_cache = false)
     return $cache[$mb_id];
 }
 
-//위시리스트 데이터 갯수 출력
+//찜 목록 데이터 갯수 출력
 function get_wishlist_datas_count($mb_id = '')
 {
     global $member;
@@ -2298,7 +2298,7 @@ function get_wishlist_datas_count($mb_id = '')
     return is_array($wishlist_datas) ? count($wishlist_datas) : 0;
 }
 
-//각 상품에 대한 위시리스트 담은 갯수 출력
+//각 상품에 대한 찜 목록 담은 갯수 출력
 function get_wishlist_count_by_item($it_id = '')
 {
     global $g5;
